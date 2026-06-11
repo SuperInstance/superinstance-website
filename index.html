@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Ternary Computing Ecosystem</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--accent-dim:#00cc6a;--text:#e0e0e0;--text-dim:#888;--mono:'JetBrains Mono','Fira Code','SF Mono',Consolas,monospace}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.6;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 24px;position:relative}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(0,255,136,.06) 0%,transparent 70%);pointer-events:none}
+.hero-tag{font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+.hero h1{font-size:clamp(1.8rem,5vw,3.2rem);font-weight:700;line-height:1.2;margin-bottom:32px;max-width:800px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{font-size:clamp(.85rem,1.5vw,1rem);color:var(--text-dim);max-width:640px;margin-bottom:40px}
+.hero-iso{background:var(--surface);border:1px solid #222;border-radius:8px;padding:24px 32px;font-size:clamp(.8rem,1.3vw,.95rem);color:var(--text);max-width:720px;text-align:left;line-height:1.7}
+.hero-iso strong{color:var(--accent)}
+.scroll-hint{position:absolute;bottom:32px;color:var(--text-dim);font-size:.7rem;letter-spacing:.15em;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
+
+/* STATS BAR */
+.stats{border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:28px 0;background:var(--surface)}
+.stats .wrap{display:flex;justify-content:space-around;flex-wrap:wrap;gap:16px}
+.stat{text-align:center;min-width:140px}
+.stat-num{font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--accent)}
+.stat-label{font-size:.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+
+/* SECTIONS */
+section{padding:80px 0}
+section h2{font-size:clamp(1.2rem,3vw,1.8rem);margin-bottom:12px;color:var(--text)}
+section h2 .accent{color:var(--accent)}
+section .subtitle{color:var(--text-dim);font-size:.85rem;margin-bottom:40px;max-width:600px}
+
+/* CONSERVATION LAW */
+.conservation-eq{text-align:center;font-size:clamp(1.6rem,4vw,2.8rem);font-weight:700;margin:32px 0;letter-spacing:.05em}
+.conservation-eq .g{color:#ff6b6b}
+.conservation-eq .e{color:#4ecdc4}
+.conservation-eq .c{color:var(--accent)}
+.law-desc{max-width:640px;margin:0 auto 32px;color:var(--text-dim);font-size:.9rem;line-height:1.7}
+.domain-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.domain-table th{text-align:left;padding:10px 12px;border-bottom:1px solid #333;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:.7rem}
+.domain-table td{padding:10px 12px;border-bottom:1px solid #1a1a1a}
+.domain-table tr:hover td{background:var(--surface)}
+.domain-table .g-col{color:#ff6b6b}
+.domain-table .e-col{color:#4ecdc4}
+
+/* ARCHITECTURE */
+.arch-stack{display:flex;flex-direction:column;gap:2px;margin:32px 0}
+.arch-layer{padding:20px 24px;background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 6px 6px 0}
+.arch-layer .layer-num{font-size:.65rem;color:var(--accent);text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px}
+.arch-layer .layer-name{font-weight:700;font-size:.95rem;margin-bottom:4px}
+.arch-layer .layer-items{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+.arch-layer.l4{border-left-color:#ff6b6b}
+.arch-layer.l3{border-left-color:#ffd93d}
+.arch-layer.l2{border-left-color:#6bcbff}
+.arch-layer.l1{border-left-color:#c084fc}
+.arch-layer.l0{border-left-color:var(--accent)}
+
+/* DOMAIN CARDS */
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:32px}
+.domain-card{background:var(--surface);border:1px solid #222;border-radius:8px;padding:24px;transition:border-color .2s}
+.domain-card:hover{border-color:var(--accent)}
+.domain-card h3{font-size:1rem;margin-bottom:4px;color:var(--accent)}
+.domain-card .card-tag{font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.domain-card p{font-size:.82rem;color:var(--text-dim);line-height:1.6}
+.domain-card .card-stats{margin-top:16px;display:flex;gap:16px;flex-wrap:wrap}
+.domain-card .card-stat{font-size:.7rem;color:var(--text-dim)}
+.domain-card .card-stat strong{color:var(--text)}
+
+/* KERNEL CRATES */
+.kernel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:32px}
+.kernel-crate{background:var(--surface);padding:12px 16px;border-radius:4px;font-size:.82rem;display:flex;justify-content:space-between;align-items:center}
+.kernel-crate .crate-name{color:var(--accent);font-weight:600}
+.kernel-crate .crate-layer{font-size:.65rem;color:var(--text-dim);background:var(--surface2);padding:2px 8px;border-radius:3px}
+.kernel-note{color:var(--text-dim);font-size:.82rem;margin-top:20px;font-style:italic}
+
+/* FOOTER */
+footer{border-top:1px solid #1a1a1a;padding:48px 0;text-align:center}
+footer p{color:var(--text-dim);font-size:.78rem;margin-bottom:12px}
+footer .links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+footer .links a{font-size:.8rem;color:var(--accent-dim)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .stats .wrap{flex-direction:column;align-items:center}
+  .domain-grid{grid-template-columns:1fr}
+  .kernel-grid{grid-template-columns:1fr}
+  .domain-table{font-size:.7rem}
+  .domain-table th,.domain-table td{padding:8px 6px}
+  section{padding:48px 0}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">1,596 repositories · 1 conservation law</div>
+  <h1>Ternary math <em>≅</em> Music theory <em>≅</em> Fleet coordination <em>≅</em> GPU scheduling</h1>
+  <p>One abstraction, every scale. The Z₃ finite field applied across seven domains of distributed intelligence.</p>
+  <div class="hero-iso">
+    A domain is classified into <strong>{−1, 0, +1}</strong>. Zero acts as insulator — it actively blocks propagation. The conservation law <strong>γ + η = C</strong> holds at every boundary. Self-bootstrapping evolution emerges from competition. This is not metaphor. It is <strong>isomorphism</strong>: the same algebraic structure produces the same behavioral patterns regardless of domain.
+  </div>
+  <div class="scroll-hint">▼ SCROLL</div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><div class="stat-num">1,596</div><div class="stat-label">Repositories</div></div>
+    <div class="stat"><div class="stat-num">1,537</div><div class="stat-label">Crates Passing</div></div>
+    <div class="stat"><div class="stat-num">97.5%</div><div class="stat-label">Build Rate</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">Enforcement Crates</div></div>
+  </div>
+</div>
+
+<!-- CONSERVATION LAW -->
+<section>
+  <div class="wrap">
+    <h2>The <span class="accent">Conservation Law</span></h2>
+    <p class="subtitle">Structure cannot appear from nothing. Entropy cannot vanish. Every gain in order is paid for by disorder elsewhere.</p>
+    <div class="conservation-eq">
+      <span class="g">γ</span> + <span class="e">η</span> = <span class="c">C</span>
+    </div>
+    <p class="law-desc">The sum of gamma (structure) and eta (entropy) is constant across any closed operation. The law is not imposed on the system — it <em>emerges</em> from Z₃ arithmetic. In GF(3), every element has an inverse. Information is neither created nor destroyed.</p>
+    <table class="domain-table">
+      <thead><tr><th>Domain</th><th class="g-col">γ Structure</th><th class="e-col">η Entropy</th><th>C Conserved</th></tr></thead>
+      <tbody>
+        <tr><td>Ternary</td><td class="g-col">Ordered trit patterns</td><td class="e-col">Shannon entropy</td><td>Total information</td></tr>
+        <tr><td>Oxide GPU</td><td class="g-col">Kernel allocation</td><td class="e-col">Thermal/noise budget</td><td>Energy per dispatch</td></tr>
+        <tr><td>Fleet</td><td class="g-col">Bottles delivered</td><td class="e-col">Bottles consumed</td><td>Total dispatched</td></tr>
+        <tr><td>Agent</td><td class="g-col">Musical harmony</td><td class="e-col">Improvisational freedom</td><td>Performance budget</td></tr>
+        <tr><td>PLATO</td><td class="g-col">Room depth/nesting</td><td class="e-col">Unresolved tiles</td><td>Tile budget</td></tr>
+        <tr><td>Edge</td><td class="g-col">Verified dispatches</td><td class="e-col">Shed load</td><td>Request total</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section style="background:var(--surface)">
+  <div class="wrap">
+    <h2>Five-Layer <span class="accent">Architecture</span></h2>
+    <p class="subtitle">Each layer depends only on layers below. Layer 0 is no_std. Near-zero internal compile-time dependencies.</p>
+    <div class="arch-stack">
+      <div class="arch-layer l4">
+        <div class="layer-num">Layer 4 — Domain Applications</div>
+        <div class="layer-items">econ · ecology · game-theory · epidemic · blockchain · gpu-ternary-engine · spectral-fleet · tensor-midi · plato-rooms</div>
+      </div>
+      <div class="arch-layer l3">
+        <div class="layer-num">Layer 3 — Systems &amp; Infrastructure</div>
+        <div class="layer-items">oxide-* (GPU, 30 crates) · fleet-* (edge, 28 repos) · agent-* (coordination, 42 crates) · construct-* · spectral-* · raft-*</div>
+      </div>
+      <div class="arch-layer l2">
+        <div class="layer-num">Layer 2 — ML &amp; Intelligence</div>
+        <div class="layer-items">ternary-{activation,conv,attention,grad,bayesian,belief,free-energy,active-inference,ga,distill}</div>
+      </div>
+      <div class="arch-layer l1">
+        <div class="layer-num">Layer 1 — Data Structures &amp; Runtime</div>
+        <div class="layer-items">ternary-cell · ternary-btree · ternary-heap · ternary-bloom-filter · flux-core (VM) · construct-core · superinstance-protocol</div>
+      </div>
+      <div class="arch-layer l0">
+        <div class="layer-num">Layer 0 — Bedrock: Mathematical Primitives</div>
+        <div class="layer-items">ternary-core · ternary-coordination · ternary-entropy · ternary-geometry · ternary-field · ternary-hash · conservation-law · entropy-conservation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section>
+  <div class="wrap">
+    <h2>The <span class="accent">Seven Domains</span></h2>
+    <p class="subtitle">Same abstraction, different lenses. The ternary isomorphism manifests as working code.</p>
+    <div class="domain-grid">
+      <div class="domain-card">
+        <h3>Ternary Mathematics</h3>
+        <div class="card-tag">361 crates · Layer 0–2</div>
+        <p>Z₃ = {−1, 0, +1} as first-class math. GF(3) enables exact division, inversion, and linear algebra that binary cannot. Negative Space Intelligence: reasoning from impossibility via proof by contradiction.</p>
+        <div class="card-stats"><span class="card-stat"><strong>354</strong> pass</span><span class="card-stat"><strong>280+</strong> substantial</span></div>
+      </div>
+      <div class="domain-card">
+        <h3>Agent Coordination</h3>
+        <div class="card-tag">42 crates · Layer 3</div>
+        <p>Music theory IS multi-agent coordination. Counterpoint → distributed coordination. Groove → scheduling. Timbre → identity. Cadence → completion. Self-bootstrapping: riff-v1→v4 competitive evolution.</p>
+        <div class="card-stats"><span class="card-stat"><strong>7</strong> categories</span><span class="card-stat"><strong>41</strong> pass</span></div>
+      </div>
+      <div class="domain-card">
+        <h3>Oxide GPU Infrastructure</h3>
+        <div class="card-tag">30 crates · 100% complete</div>
+        <p>The deepest γ + η = C implementation anywhere. Five-layer GPU pipeline from async runtime through vector DB through bytecode VM through GPU compiler to persistent kernel execution.</p>
+        <div class="card-stats"><span class="card-stat"><strong>30/30</strong> pass</span><span class="card-stat"><strong>★★★★★</strong></span></div>
+      </div>
+      <div class="domain-card">
+        <h3>Fleet Services</h3>
+        <div class="card-tag">28 repos · Edge deployment</div>
+        <p>Cloudflare Workers deployment surface. 6 Workers near-deployable. Shared D1 event database. Vector search pipeline. Bottle/vessel dispatch model. Conservation-verified at CDN edge in &lt;5ms.</p>
+        <div class="card-stats"><span class="card-stat"><strong>26</strong> pass</span><span class="card-stat"><strong>6</strong> workers</span></div>
+      </div>
+      <div class="domain-card">
+        <h3>PLATO Rooms</h3>
+        <div class="card-tag">17 repos · Exploratory</div>
+        <p>RoomDepth enum: Floor→Board→Panel→Code→Metal. Bottle/vessel dispatch. TutorLoop iterative deepening. RDT neural architecture. 1,009 of 8,800 tiles discovered — 88.5% remains unmapped.</p>
+        <div class="card-stats"><span class="card-stat"><strong>1,009</strong> tiles</span><span class="card-stat"><strong>17/17</strong> pass</span></div>
+      </div>
+      <div class="domain-card">
+        <h3>Conservation Verification</h3>
+        <div class="card-tag">6 enforcement crates</div>
+        <p>The law is verified in code at six enforcement points: definition, runtime verification, build-time lint, compile-time injection, GPU kernel boundaries, and no_std CDN edge. From microcontrollers to GPU clusters.</p>
+        <div class="card-stats"><span class="card-stat"><strong>8/8</strong> pass</span><span class="card-stat"><strong>★★★★</strong></span></div>
+      </div>
+      <div class="domain-card">
+        <h3>Flux &amp; Spectral</h3>
+        <div class="card-tag">10 crates · IR + Topology</div>
+        <p>Flux-core: 6,767 LOC bytecode VM — the ecosystem's assembly language. Every domain compiles to Flux. Spectral graph theory provides fleet topology analysis via Laplacian eigenvalues.</p>
+        <div class="card-stats"><span class="card-stat"><strong>10/10</strong> pass</span><span class="card-stat"><strong>★★★★</strong></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE KERNEL -->
+<section style="background:var(--surface)">
+  <div class="wrap">
+    <h2>The <span class="accent">Kernel</span> — 15 Foundational Crates</h2>
+    <p class="subtitle">Remove any of these and the ecosystem cannot function. ~10 external dependencies. #![no_std] where it matters.</p>
+    <div class="kernel-grid">
+      <div class="kernel-crate"><span class="crate-name">ternary-core</span><span class="crate-layer">L0 · no_std</span></div>
+      <div class="kernel-crate"><span class="crate-name">ternary-cell</span><span class="crate-layer">L1</span></div>
+      <div class="kernel-crate"><span class="crate-name">conservation-law</span><span class="crate-layer">L0</span></div>
+      <div class="kernel-crate"><span class="crate-name">conservation-verify</span><span class="crate-layer">L0</span></div>
+      <div class="kernel-crate"><span class="crate-name">entropy-conservation</span><span class="crate-layer">L0</span></div>
+      <div class="kernel-crate"><span class="crate-name">flux-core</span><span class="crate-layer">L1</span></div>
+      <div class="kernel-crate"><span class="crate-name">construct-core</span><span class="crate-layer">L1</span></div>
+      <div class="kernel-crate"><span class="crate-name">oxide-conservation</span><span class="crate-layer">L3</span></div>
+      <div class="kernel-crate"><span class="crate-name">oxide-energy-balance</span><span class="crate-layer">L3</span></div>
+      <div class="kernel-crate"><span class="crate-name">ternary-coordination</span><span class="crate-layer">L0</span></div>
+      <div class="kernel-crate"><span class="crate-name">ternary-entropy</span><span class="crate-layer">L0</span></div>
+      <div class="kernel-crate"><span class="crate-name">spectral-fleet</span><span class="crate-layer">L3</span></div>
+      <div class="kernel-crate"><span class="crate-name">superinstance-protocol</span><span class="crate-layer">L1</span></div>
+      <div class="kernel-crate"><span class="crate-name">fleet-auth</span><span class="crate-layer">L3</span></div>
+      <div class="kernel-crate"><span class="crate-name">edge-conservation-rs</span><span class="crate-layer">L3 · no_std</span></div>
+    </div>
+    <p class="kernel-note">13 internal compile-time dependencies across 1,596 repos. Constellation architecture: every crate shares the metaphor, not the codebase.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <p>SuperInstance Ecosystem · 1,596 repos proving one theorem</p>
+    <div class="links">
+      <a href="https://github.com/superinstance">github.com/superinstance</a>
+      <a href="https://github.com/oxide-¯\_(ツ)_/¯">oxide-* crates</a>
+      <a href="https://github.com/ternary-¯\_(ツ)_/¯">ternary-* crates</a>
+    </div>
+    <p style="margin-top:24px;font-size:.7rem;color:#444">γ + η = C · Z₃ finite field · {-1, 0, +1}</p>
+  </div>
+</footer>
+
+</body>
+</html>
