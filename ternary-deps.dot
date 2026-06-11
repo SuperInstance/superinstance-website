@@ -1,0 +1,33 @@
+digraph ternary_deps {
+  rankdir=LR;
+  node [shape=box, style=filled, fillcolor="#1a1a2e", fontcolor="#00ff88", fontname="monospace"];
+  edge [color="#333"];
+  "ternary-activation" -> "ternary-types";
+  "ternary-benchmark" -> "ternary-packed";
+  "ternary-checkpoint" -> "ternary-types";
+  "ternary-conv" -> "ternary-types";
+  "ternary-dispatch" -> "ternary-packed";
+  "ternary-distill" -> "ternary-types";
+  "ternary-em" -> "ternary-types";
+  "ternary-fuse" -> "ternary-types";
+  "ternary-graph" -> "ternary-weighted";
+  "ternary-haar" -> "ternary-valued";
+  "ternary-hardware" -> "ternary-to-binary";
+  "ternary-hmm" -> "ternary-types";
+  "ternary-inventory" -> "ternary-valued";
+  "ternary-knn" -> "ternary-types";
+  "ternary-logistic" -> "ternary-types";
+  "ternary-loss" -> "ternary-types";
+  "ternary-matmul" -> "ternary-types";
+  "ternary-mesh" -> "ternary-weighted";
+  "ternary-navigator" -> "ternary-weighted";
+  "ternary-network" -> "ternary-weighted";
+  "ternary-norm" -> "ternary-types";
+  "ternary-optimizer" -> "ternary-types";
+  "ternary-pagerank" -> "ternary-weighted";
+  "ternary-pool" -> "ternary-types";
+  "ternary-prune" -> "ternary-types";
+  "ternary-regression" -> "ternary-types";
+  "ternary-svm" -> "ternary-types";
+  "ternary-walsh" -> "ternary-valued";
+}
