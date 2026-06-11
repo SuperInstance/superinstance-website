@@ -1,0 +1,30 @@
+{
+  "generated": "2026-06-11T14:08:43-08:00",
+  "repos": {
+    "total": 1605,
+    "withRemote": 671,
+    "localOnly": 491
+  },
+  "crates": {
+    "total": 1494,
+    "published": 13
+  },
+  "categories": {
+    "ternary": 362,
+    "agent": 42,
+    "fleet": 19,
+    "plato": 17,
+    "oxide": 30,
+    "tensor": 8,
+    "wasm": 8,
+    "config": 8
+  },
+  "ci": {
+    "configured": 1
+  },
+  "buildTest": {
+    "wavesRun": 440,
+    "passRate": 97.5,
+    "totalTested": 1537
+  }
+}
