@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Ecosystem Stats</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--text:#e0e0e0;--dim:#666;--mono:'JetBrains Mono','Fira Code',monospace}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.w{max-width:860px;margin:0 auto;padding:0 24px}
+
+header{padding:40px 0 20px;border-bottom:1px solid #1a1a1a}
+header h1{font-size:1.3rem;margin-bottom:4px}
+header h1 em{font-style:normal;color:var(--accent)}
+header p{font-size:.7rem;color:var(--dim)}
+header .back{font-size:.75rem;color:var(--dim);display:inline-block;margin-bottom:12px}
+
+.updated{font-size:.65rem;color:var(--dim);text-align:right;margin-top:-16px;margin-bottom:24px}
+
+section{padding:48px 0}
+section h2{font-size:1.1rem;margin-bottom:24px}
+section h2 em{font-style:normal;color:var(--accent)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.metric{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;text-align:center}
+.metric b{font-size:1.8rem;color:var(--accent);display:block;line-height:1.2}
+.metric span{font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:6px;display:block}
+
+.bar-section{margin-top:8px}
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.bar-label{font-size:.75rem;color:var(--dim);min-width:80px;text-align:right}
+.bar-track{flex:1;background:var(--surface2);height:20px;border-radius:2px;overflow:hidden;position:relative}
+.bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+.bar-fill.ternary{background:#00ff88}
+.bar-fill.agent{background:#4ecdc4}
+.bar-fill.fleet{background:#ffd93d}
+.bar-fill.oxide{background:#6bcbff}
+.bar-fill.plato{background:#c084fc}
+.bar-fill.other{background:#555}
+.bar-count{font-size:.7rem;color:var(--dim);min-width:50px}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th{text-align:left;font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;padding:8px 12px;border-bottom:1px solid #222}
+td{padding:10px 12px;border-bottom:1px solid #1a1a1a}
+td:first-child{color:var(--accent)}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+
+footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.65rem;color:var(--dim);text-align:center}
+</style>
+</head>
+<body>
+
+<div class="w">
+  <header>
+    <a href="index.html" class="back">← back</a>
+    <h1>Ecosystem <em>Stats</em></h1>
+    <p>live metrics from the SuperInstance monorepo constellation</p>
+  </header>
+
+  <p class="updated">updated 2026-06-11</p>
+
+  <section>
+    <h2>Overview <em>Metrics</em></h2>
+    <div class="grid">
+      <div class="metric">
+        <b>1,605</b>
+        <span>total repos</span>
+      </div>
+      <div class="metric">
+        <b>1,494</b>
+        <span>crates (Cargo.toml)</span>
+      </div>
+      <div class="metric">
+        <b>671</b>
+        <span>github repos</span>
+      </div>
+      <div class="metric">
+        <b>1,162</b>
+        <span>git repos (local)</span>
+      </div>
+      <div class="metric">
+        <b>100%</b>
+        <span>build pass rate</span>
+      </div>
+      <div class="metric">
+        <b>232/232</b>
+        <span>tests passing</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Breakdown by <em>Category</em></h2>
+    <div class="bar-section">
+      <div class="bar-row">
+        <span class="bar-label">ternary-*</span>
+        <div class="bar-track"><div class="bar-fill ternary" style="width:22.8%"></div></div>
+        <span class="bar-count">366</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">agent-*</span>
+        <div class="bar-track"><div class="bar-fill agent" style="width:2.7%"></div></div>
+        <span class="bar-count">43</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">oxide-*</span>
+        <div class="bar-track"><div class="bar-fill oxide" style="width:1.9%"></div></div>
+        <span class="bar-count">30</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">fleet-*</span>
+        <div class="bar-track"><div class="bar-fill fleet" style="width:1.2%"></div></div>
+        <span class="bar-count">20</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">plato-*</span>
+        <div class="bar-track"><div class="bar-fill plato" style="width:1.1%"></div></div>
+        <span class="bar-count">17</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">other</span>
+        <div class="bar-track"><div class="bar-fill other" style="width:70.3%"></div></div>
+        <span class="bar-count">1,129</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Category <em>Summary</em></h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>prefix</th><th>count</th><th class="num">% of total</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ternary-*</td><td class="num">366</td><td class="num">22.8%</td></tr>
+          <tr><td>agent-*</td><td class="num">43</td><td class="num">2.7%</td></tr>
+          <tr><td>oxide-*</td><td class="num">30</td><td class="num">1.9%</td></tr>
+          <tr><td>fleet-*</td><td class="num">20</td><td class="num">1.2%</td></tr>
+          <tr><td>plato-*</td><td class="num">17</td><td class="num">1.1%</td></tr>
+          <tr><td>other</td><td class="num">1,129</td><td class="num">70.3%</td></tr>
+          <tr style="border-top:1px solid #333;font-weight:700"><td>total</td><td class="num">1,605</td><td class="num">100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Health <em>Report</em></h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>repo</th><th class="num">passed</th><th class="num">failed</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>lever-runner</td><td class="num">149</td><td class="num">0</td></tr>
+          <tr><td>fastloop-guard</td><td class="num">28</td><td class="num">0</td></tr>
+          <tr><td>conservation-spectral-topology-rs</td><td class="num">55</td><td class="num">0</td></tr>
+          <tr><td>pincherOS</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td>zeroclaw-arena</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td>metal-lathe</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td>agent-template</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr style="border-top:1px solid #333;font-weight:700"><td>total</td><td class="num">232</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:16px;font-size:.7rem;color:var(--dim)">source: health-report.json (2026-06-04)</p>
+  </section>
+
+  <footer>
+    superinstance ecosystem · generated 2026-06-11 · <a href="index.html">home</a>
+  </footer>
+</div>
+
+</body>
+</html>
