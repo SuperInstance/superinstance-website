@@ -77,22 +77,86 @@ footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.65rem;color:var(--
         <span>crates (Cargo.toml)</span>
       </div>
       <div class="metric">
+        <b>1,091</b>
+        <span>with CI</span>
+      </div>
+      <div class="metric">
         <b>671</b>
         <span>github repos</span>
       </div>
       <div class="metric">
-        <b>1,162</b>
-        <span>git repos (local)</span>
-      </div>
-      <div class="metric">
-        <b>100%</b>
+        <b>97.5%</b>
         <span>build pass rate</span>
       </div>
       <div class="metric">
-        <b>232/232</b>
-        <span>tests passing</span>
+        <b>13</b>
+        <span>published to crates.io</span>
+      </div>
+      <div class="metric">
+        <b>12</b>
+        <span>npm packages</span>
       </div>
     </div>
+  </section>
+
+  <section>
+    <h2>Quality <em>Breakdown</em></h2>
+    <p style="font-size:.78rem;color:var(--dim);margin-bottom:20px">Automated audit of all 1,494 crates by source code depth</p>
+    <div class="bar-section">
+      <div class="bar-row">
+        <span class="bar-label" style="color:#00ff88">REAL</span>
+        <div class="bar-track"><div class="bar-fill" style="width:64.7%;background:#00ff88"></div></div>
+        <span class="bar-count">967 <span style="opacity:.6">(64.7%)</span></span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="color:#ffd93d">STUB</span>
+        <div class="bar-track"><div class="bar-fill" style="width:29.9%;background:#ffd93d"></div></div>
+        <span class="bar-count">448 <span style="opacity:.6">(29.9%)</span></span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="color:#ff6b6b">SKELETON</span>
+        <div class="bar-track"><div class="bar-fill" style="width:5.2%;background:#ff6b6b"></div></div>
+        <span class="bar-count">79 <span style="opacity:.6">(5.2%)</span></span>
+      </div>
+    </div>
+    <div class="grid" style="margin-top:24px">
+      <div class="metric">
+        <b>967</b>
+        <span>REAL — src &gt;50 lines + tests</span>
+      </div>
+      <div class="metric">
+        <b>448</b>
+        <span>STUB — 11–50 src lines</span>
+      </div>
+      <div class="metric">
+        <b>79</b>
+        <span>SKELETON — ≤10 lines</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Top 10 <em>Repos by Source Lines</em></h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>repo</th><th class="num">src lines</th><th>tests</th><th>docs</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>cudaclaw</td><td class="num">21,735</td><td>✓</td><td>✓</td></tr>
+          <tr><td>2</td><td>hermit-claw</td><td class="num">8,485</td><td>✓</td><td>✓</td></tr>
+          <tr><td>3</td><td>conservation-spectral-topology-rs</td><td class="num">2,168</td><td>✓</td><td>✓</td></tr>
+          <tr><td>4</td><td>cosmic-web</td><td class="num">1,645</td><td>✓</td><td>✓</td></tr>
+          <tr><td>5</td><td>renormalization-group</td><td class="num">1,621</td><td>✓</td><td>✓</td></tr>
+          <tr><td>6</td><td>spectral-fleet</td><td class="num">1,596</td><td>✗</td><td>✓</td></tr>
+          <tr><td>7</td><td>ternary-compiler</td><td class="num">1,533</td><td>✓</td><td>✓</td></tr>
+          <tr><td>8</td><td>fleet-build</td><td class="num">1,515</td><td>✓</td><td>✓</td></tr>
+          <tr><td>9</td><td>session-miner</td><td class="num">1,475</td><td>✓</td><td>✓</td></tr>
+          <tr><td>10</td><td>hodge-belief-rs</td><td class="num">1,437</td><td>✓</td><td>✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:16px;font-size:.7rem;color:var(--dim)">source: automated quality audit (2026-06-11)</p>
   </section>
 
   <section>

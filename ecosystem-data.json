@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-11T14:08:43-08:00",
+  "generated": "2026-06-11T14:57:00-08:00",
   "repos": {
     "total": 1605,
     "withRemote": 671,
@@ -8,6 +8,16 @@
   "crates": {
     "total": 1494,
     "published": 13
+  },
+  "npm_packages": {
+    "total": 12,
+    "status": "publishing"
+  },
+  "quality": {
+    "total": 1494,
+    "real": 967,
+    "stub": 448,
+    "skeleton": 79
   },
   "categories": {
     "ternary": 362,
@@ -20,11 +30,23 @@
     "config": 8
   },
   "ci": {
-    "configured": 1
+    "configured": 1091
   },
   "buildTest": {
     "wavesRun": 440,
     "passRate": 97.5,
     "totalTested": 1537
-  }
+  },
+  "topRepos": [
+    {"name": "cudaclaw", "srcLines": 21735, "tests": true, "docs": true},
+    {"name": "hermit-claw", "srcLines": 8485, "tests": true, "docs": true},
+    {"name": "conservation-spectral-topology-rs", "srcLines": 2168, "tests": true, "docs": true},
+    {"name": "cosmic-web", "srcLines": 1645, "tests": true, "docs": true},
+    {"name": "renormalization-group", "srcLines": 1621, "tests": true, "docs": true},
+    {"name": "spectral-fleet", "srcLines": 1596, "tests": false, "docs": true},
+    {"name": "ternary-compiler", "srcLines": 1533, "tests": true, "docs": true},
+    {"name": "fleet-build", "srcLines": 1515, "tests": true, "docs": true},
+    {"name": "session-miner", "srcLines": 1475, "tests": true, "docs": true},
+    {"name": "hodge-belief-rs", "srcLines": 1437, "tests": true, "docs": true}
+  ]
 }
