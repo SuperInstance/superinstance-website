@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Ecosystem Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--text:#e0e0e0;--dim:#666;--mono:'JetBrains Mono','Fira Code',monospace;--red:#ff6b6b;--yellow:#ffd93d;--blue:#6bcbff}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.w{max-width:960px;margin:0 auto;padding:0 24px}
+
+header{border-bottom:1px solid #1a1a1a;padding:20px 0}
+header .w{display:flex;justify-content:space-between;align-items:center}
+header h1{font-size:1rem;font-weight:700}
+header h1 em{font-style:normal;color:var(--accent)}
+nav{display:flex;gap:16px;font-size:.75rem}
+nav a{color:var(--dim)}
+nav a:hover{color:var(--accent)}
+
+main{padding:48px 0}
+main h2{font-size:1.2rem;margin-bottom:24px}
+main h2 em{font-style:normal;color:var(--accent)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:48px}
+.card{background:var(--surface);border:1px solid #222;border-radius:8px;padding:24px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent)}
+.card.error::before{background:var(--red)}
+.card.loading::before{background:var(--yellow)}
+.card h3{font-size:.8rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.card .value{font-size:2rem;font-weight:700;color:var(--accent)}
+.card.error .value{color:var(--red)}
+.card .sub{font-size:.7rem;color:var(--dim);margin-top:8px}
+
+.services{margin-bottom:48px}
+.service-row{display:flex;align-items:center;padding:12px 16px;background:var(--surface);border:1px solid #1a1a1a;border-radius:6px;margin-bottom:8px;gap:16px}
+.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.status-dot.ok{background:var(--accent);box-shadow:0 0 8px rgba(0,255,136,.4)}
+.status-dot.err{background:var(--red);box-shadow:0 0 8px rgba(255,107,107,.4)}
+.status-dot.warn{background:var(--yellow);box-shadow:0 0 8px rgba(255,217,61,.4)}
+.status-dot.pending{background:var(--dim);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.service-name{font-size:.85rem;font-weight:600;flex:1}
+.service-url{font-size:.7rem;color:var(--dim);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.service-status{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}
+.service-status.ok{color:var(--accent)}
+.service-status.err{color:var(--red)}
+.service-status.warn{color:var(--yellow)}
+.service-status.pending{color:var(--dim)}
+
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.link-card{display:block;padding:20px;background:var(--surface2);border:1px solid #222;border-radius:6px;transition:border-color .2s}
+.link-card:hover{text-decoration:none;border-color:var(--accent)}
+.link-card h4{font-size:.85rem;margin-bottom:4px}
+.link-card p{font-size:.7rem;color:var(--dim)}
+
+footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.7rem;color:var(--dim);text-align:center}
+footer .ts{color:var(--accent)}
+
+.raw-json{background:var(--surface);border:1px solid #222;border-radius:6px;padding:16px;margin-top:12px;font-size:.7rem;color:var(--dim);white-space:pre-wrap;overflow-x:auto;max-height:300px;overflow-y:auto;display:none}
+.raw-json.visible{display:block}
+.toggle-raw{font-size:.7rem;color:var(--dim);cursor:pointer;background:none;border:1px solid #333;padding:4px 12px;border-radius:4px;margin-top:12px}
+.toggle-raw:hover{color:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="w">
+    <h1><em>⬡</em> Ecosystem Dashboard</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="search.html">Search</a>
+      <a href="browse.html">Browse</a>
+      <a href="stats.html">Stats</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="w">
+    <h2><em>▸</em> Live Ecosystem Health</h2>
+
+    <div class="grid" id="metrics-grid">
+      <div class="card loading" id="card-crates">
+        <h3>Crates Indexed</h3>
+        <div class="value" id="val-crates">—</div>
+        <div class="sub">fleet-vector-api</div>
+      </div>
+      <div class="card loading" id="card-dims">
+        <h3>Vector Dimensions</h3>
+        <div class="value" id="val-dims">—</div>
+        <div class="sub">embedding model</div>
+      </div>
+      <div class="card loading" id="card-metrics">
+        <h3>API Requests</h3>
+        <div class="value" id="val-requests">—</div>
+        <div class="sub">harness-api metrics</div>
+      </div>
+      <div class="card loading" id="card-uptime">
+        <h3>Ecosystem Status</h3>
+        <div class="value" id="val-uptime">—</div>
+        <div class="sub" id="sub-uptime">checking services…</div>
+      </div>
+    </div>
+
+    <h2><em>▸</em> Services</h2>
+    <div class="services" id="services-list">
+      <div class="service-row">
+        <div class="status-dot pending"></div>
+        <div class="service-name">fleet-vector-api</div>
+        <div class="service-url">fleet-vector-api.casey-digennaro.workers.dev</div>
+        <div class="service-status pending">checking</div>
+      </div>
+      <div class="service-row">
+        <div class="status-dot pending"></div>
+        <div class="service-name">harness-api</div>
+        <div class="service-url">harness-api.casey-digennaro.workers.dev</div>
+        <div class="service-status pending">checking</div>
+      </div>
+      <div class="service-row">
+        <div class="status-dot pending"></div>
+        <div class="service-name">fleet-auth</div>
+        <div class="service-url">fleet-auth.casey-digennaro.workers.dev</div>
+        <div class="service-status pending">checking</div>
+      </div>
+      <div class="service-row">
+        <div class="status-dot pending"></div>
+        <div class="service-name">fleet-edge-worker</div>
+        <div class="service-url">fleet-edge-worker.casey-digennaro.workers.dev</div>
+        <div class="service-status pending">checking</div>
+      </div>
+      <div class="service-row">
+        <div class="status-dot pending"></div>
+        <div class="service-name">superinstance-vectorize</div>
+        <div class="service-url">superinstance-vectorize.casey-digennaro.workers.dev</div>
+        <div class="service-status pending">checking</div>
+      </div>
+    </div>
+
+    <h2><em>▸</em> Raw Data</h2>
+    <button class="toggle-raw" onclick="toggleRaw()">Show raw JSON</button>
+    <div class="raw-json" id="raw-json"></div>
+
+    <h2 style="margin-top:48px"><em>▸</em> Quick Links</h2>
+    <div class="links">
+      <a class="link-card" href="search.html">
+        <h4>🔍 Crate Search</h4>
+        <p>Semantic search across indexed Rust crates</p>
+      </a>
+      <a class="link-card" href="browse.html">
+        <h4>📚 Browse Crates</h4>
+        <p>Browse and explore the full catalog</p>
+      </a>
+      <a class="link-card" href="stats.html">
+        <h4>📊 Statistics</h4>
+        <p>Index stats and usage metrics</p>
+      </a>
+      <a class="link-card" href="https://github.com/SuperInstance" target="_blank">
+        <h4>🐙 GitHub</h4>
+        <p>Source code and repositories</p>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="w">
+    SuperInstance Ecosystem · Last updated <span class="ts" id="timestamp">—</span>
+  </div>
+</footer>
+
+<script>
+const API = {
+  fleetVector: 'https://fleet-vector-api.casey-digennaro.workers.dev',
+  harnessApi: 'https://harness-api.casey-digennaro.workers.dev'
+};
+
+const services = [
+  { name: 'fleet-vector-api', url: `${API.fleetVector}/stats`, el: 0 },
+  { name: 'harness-api', url: `${API.harnessApi}/metrics`, el: 1 },
+  { name: 'fleet-auth', url: 'https://fleet-auth.casey-digennaro.workers.dev', el: 2 },
+  { name: 'fleet-edge-worker', url: 'https://fleet-edge-worker.casey-digennaro.workers.dev', el: 3 },
+  { name: 'superinstance-vectorize', url: 'https://superinstance-vectorize.casey-digennaro.workers.dev', el: 4 }
+];
+
+const rawData = {};
+let okCount = 0;
+
+async function checkService(svc) {
+  const rows = document.querySelectorAll('.service-row');
+  const row = rows[svc.el];
+  const dot = row.querySelector('.status-dot');
+  const status = row.querySelector('.service-status');
+  try {
+    const r = await fetch(svc.url, { signal: AbortSignal.timeout(8000) });
+    if (r.ok) {
+      dot.className = 'status-dot ok';
+      status.className = 'service-status ok';
+      status.textContent = 'online';
+      okCount++;
+      return await r.json().catch(() => ({}));
+    }
+    dot.className = 'status-dot warn';
+    status.className = 'service-status warn';
+    status.textContent = `${r.status}`;
+    return {};
+  } catch(e) {
+    dot.className = 'status-dot err';
+    status.className = 'service-status err';
+    status.textContent = 'offline';
+    return null;
+  }
+}
+
+async function init() {
+  document.getElementById('timestamp').textContent = new Date().toISOString();
+
+  const [fleetData, harnessData] = await Promise.all([
+    checkService(services[0]),
+    checkService(services[1])
+  ]);
+
+  // Check remaining services in parallel
+  await Promise.all(services.slice(2).map(s => checkService(s)));
+
+  rawData.fleetVector = fleetData;
+  rawData.harnessApi = harnessData;
+
+  // Update metric cards
+  const cardCrates = document.getElementById('card-crates');
+  const cardDims = document.getElementById('card-dims');
+  const cardMetrics = document.getElementById('card-metrics');
+  const cardUptime = document.getElementById('card-uptime');
+
+  if (fleetData && fleetData.vectorCount !== undefined) {
+    document.getElementById('val-crates').textContent = fleetData.vectorCount?.toLocaleString() ?? fleetData.totalVectors?.toLocaleString() ?? '✓';
+    document.getElementById('val-dims').textContent = fleetData.dimensions ?? '384';
+    cardCrates.className = 'card';
+    cardDims.className = 'card';
+  } else {
+    document.getElementById('val-crates').textContent = '✗';
+    document.getElementById('val-dims').textContent = '—';
+    cardCrates.className = 'card error';
+    cardDims.className = 'card error';
+  }
+
+  if (harnessData) {
+    const req = harnessData.totalRequests ?? harnessData.requests ?? harnessData.metrics?.total ?? '✓';
+    document.getElementById('val-requests').textContent = typeof req === 'number' ? req.toLocaleString() : req;
+    cardMetrics.className = 'card';
+  } else {
+    document.getElementById('val-requests').textContent = '✗';
+    cardMetrics.className = 'card error';
+  }
+
+  const total = services.length;
+  document.getElementById('val-uptime').textContent = `${okCount}/${total}`;
+  document.getElementById('sub-uptime').textContent = okCount === total ? 'all systems operational' : `${total - okCount} service(s) degraded`;
+  cardUptime.className = okCount === total ? 'card' : 'card error';
+
+  document.getElementById('raw-json').textContent = JSON.stringify(rawData, null, 2);
+}
+
+function toggleRaw() {
+  document.getElementById('raw-json').classList.toggle('visible');
+}
+
+init();
+</script>
+</body>
+</html>
