@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuperInstance — Ecosystem Stats</title>
+<title>SuperInstance — Live Stats</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--text:#e0e0e0;--dim:#666;--mono:'JetBrains Mono','Fira Code',monospace}
@@ -12,15 +12,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 ::selection{background:var(--accent);color:var(--bg)}
-.w{max-width:860px;margin:0 auto;padding:0 24px}
+.w{max-width:960px;margin:0 auto;padding:0 24px}
 
 header{padding:40px 0 20px;border-bottom:1px solid #1a1a1a}
 header h1{font-size:1.3rem;margin-bottom:4px}
 header h1 em{font-style:normal;color:var(--accent)}
 header p{font-size:.7rem;color:var(--dim)}
 header .back{font-size:.75rem;color:var(--dim);display:inline-block;margin-bottom:12px}
+nav{display:flex;gap:16px;font-size:.75rem;margin-top:12px}
+nav a{color:var(--dim);padding:4px 0}
+nav a.active{color:var(--accent);border-bottom:1px solid var(--accent)}
 
-.updated{font-size:.65rem;color:var(--dim);text-align:right;margin-top:-16px;margin-bottom:24px}
+.live-dot{display:inline-block;width:6px;height:6px;background:#00ff88;border-radius:50%;margin-right:6px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 section{padding:48px 0}
 section h2{font-size:1.1rem;margin-bottom:24px}
@@ -31,18 +35,23 @@ section h2 em{font-style:normal;color:var(--accent)}
 .metric b{font-size:1.8rem;color:var(--accent);display:block;line-height:1.2}
 .metric span{font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:6px;display:block}
 
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+.chart-box{background:var(--surface);border:1px solid #222;border-radius:4px;padding:24px}
+.chart-box h3{font-size:.8rem;color:var(--accent);margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em}
+.chart-box canvas{width:100%!important;height:auto!important}
+
 .bar-section{margin-top:8px}
 .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .bar-label{font-size:.75rem;color:var(--dim);min-width:80px;text-align:right}
 .bar-track{flex:1;background:var(--surface2);height:20px;border-radius:2px;overflow:hidden;position:relative}
-.bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+.bar-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.bar-count{font-size:.7rem;color:var(--dim);min-width:60px}
 .bar-fill.ternary{background:#00ff88}
 .bar-fill.agent{background:#4ecdc4}
 .bar-fill.fleet{background:#ffd93d}
 .bar-fill.oxide{background:#6bcbff}
 .bar-fill.plato{background:#c084fc}
 .bar-fill.other{background:#555}
-.bar-count{font-size:.7rem;color:var(--dim);min-width:50px}
 
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:.78rem}
@@ -51,7 +60,16 @@ td{padding:10px 12px;border-bottom:1px solid #1a1a1a}
 td:first-child{color:var(--accent)}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
 
+.api-status{background:var(--surface);border:1px solid #222;border-radius:4px;padding:16px 20px;margin-bottom:24px;font-size:.75rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.api-status .label{color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-size:.6rem}
+.api-status .val{color:var(--accent);font-weight:600}
+.api-status .err{color:#ff6b6b}
+
 footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.65rem;color:var(--dim);text-align:center}
+
+@media(max-width:700px){
+  .charts{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -59,80 +77,50 @@ footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.65rem;color:var(--
 <div class="w">
   <header>
     <a href="index.html" class="back">← back</a>
-    <h1>Ecosystem <em>Stats</em></h1>
-    <p>live metrics from the SuperInstance monorepo constellation</p>
+    <h1>Live <em>Stats Dashboard</em></h1>
+    <p><span class="live-dot"></span>real-time metrics from Cloudflare Workers AI + Vectorize</p>
+    <nav>
+      <a href="search.html">🔍 Search</a>
+      <a href="stats.html" class="active">📊 Stats</a>
+      <a href="browse.html">📂 Browse</a>
+    </nav>
   </header>
 
-  <p class="updated">updated 2026-06-11</p>
+  <div id="api-bar" class="api-status">
+    <span><span class="label">API </span><span id="api-status" class="val">connecting...</span></span>
+    <span><span class="label">Index </span><span id="api-index" class="val">—</span></span>
+    <span><span class="label">Model </span><span id="api-model" class="val">—</span></span>
+    <span><span class="label">Dimensions </span><span id="api-dims" class="val">—</span></span>
+    <span><span class="label">Last Ingest </span><span id="api-ingest" class="val">—</span></span>
+  </div>
 
   <section>
-    <h2>Overview <em>Metrics</em></h2>
-    <div class="grid">
-      <div class="metric">
-        <b>1,605</b>
-        <span>total repos</span>
+    <h2>Vector Index <em>Overview</em></h2>
+    <div class="grid" id="live-metrics">
+      <div class="metric"><b id="m-crates">—</b><span>crates indexed</span></div>
+      <div class="metric"><b id="m-dims">—</b><span>dimensions</span></div>
+      <div class="metric"><b id="m-model">—</b><span>embedding model</span></div>
+      <div class="metric"><b id="m-backend">—</b><span>backend</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Quality <em>Pie Chart</em></h2>
+    <div class="charts">
+      <div class="chart-box">
+        <h3>Quality Distribution</h3>
+        <canvas id="pieChart" width="300" height="300"></canvas>
       </div>
-      <div class="metric">
-        <b>1,494</b>
-        <span>crates (Cargo.toml)</span>
-      </div>
-      <div class="metric">
-        <b>1,091</b>
-        <span>with CI</span>
-      </div>
-      <div class="metric">
-        <b>671</b>
-        <span>github repos</span>
-      </div>
-      <div class="metric">
-        <b>97.5%</b>
-        <span>build pass rate</span>
-      </div>
-      <div class="metric">
-        <b>13</b>
-        <span>published to crates.io</span>
-      </div>
-      <div class="metric">
-        <b>12</b>
-        <span>npm packages</span>
+      <div class="chart-box">
+        <h3>Top 10 by Source Lines</h3>
+        <canvas id="barChart" width="400" height="300"></canvas>
       </div>
     </div>
   </section>
 
   <section>
     <h2>Quality <em>Breakdown</em></h2>
-    <p style="font-size:.78rem;color:var(--dim);margin-bottom:20px">Automated audit of all 1,494 crates by source code depth</p>
-    <div class="bar-section">
-      <div class="bar-row">
-        <span class="bar-label" style="color:#00ff88">REAL</span>
-        <div class="bar-track"><div class="bar-fill" style="width:64.7%;background:#00ff88"></div></div>
-        <span class="bar-count">967 <span style="opacity:.6">(64.7%)</span></span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label" style="color:#ffd93d">STUB</span>
-        <div class="bar-track"><div class="bar-fill" style="width:29.9%;background:#ffd93d"></div></div>
-        <span class="bar-count">448 <span style="opacity:.6">(29.9%)</span></span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label" style="color:#ff6b6b">SKELETON</span>
-        <div class="bar-track"><div class="bar-fill" style="width:5.2%;background:#ff6b6b"></div></div>
-        <span class="bar-count">79 <span style="opacity:.6">(5.2%)</span></span>
-      </div>
-    </div>
-    <div class="grid" style="margin-top:24px">
-      <div class="metric">
-        <b>967</b>
-        <span>REAL — src &gt;50 lines + tests</span>
-      </div>
-      <div class="metric">
-        <b>448</b>
-        <span>STUB — 11–50 src lines</span>
-      </div>
-      <div class="metric">
-        <b>79</b>
-        <span>SKELETON — ≤10 lines</span>
-      </div>
-    </div>
+    <div id="quality-bars" class="bar-section"></div>
   </section>
 
   <section>
@@ -140,107 +128,225 @@ footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.65rem;color:var(--
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>repo</th><th class="num">src lines</th><th>tests</th><th>docs</th></tr>
+          <tr><th>#</th><th>repo</th><th class="num">src lines</th><th>tests</th><th>docs</th><th>quality</th></tr>
         </thead>
-        <tbody>
-          <tr><td>1</td><td>cudaclaw</td><td class="num">21,735</td><td>✓</td><td>✓</td></tr>
-          <tr><td>2</td><td>hermit-claw</td><td class="num">8,485</td><td>✓</td><td>✓</td></tr>
-          <tr><td>3</td><td>conservation-spectral-topology-rs</td><td class="num">2,168</td><td>✓</td><td>✓</td></tr>
-          <tr><td>4</td><td>cosmic-web</td><td class="num">1,645</td><td>✓</td><td>✓</td></tr>
-          <tr><td>5</td><td>renormalization-group</td><td class="num">1,621</td><td>✓</td><td>✓</td></tr>
-          <tr><td>6</td><td>spectral-fleet</td><td class="num">1,596</td><td>✗</td><td>✓</td></tr>
-          <tr><td>7</td><td>ternary-compiler</td><td class="num">1,533</td><td>✓</td><td>✓</td></tr>
-          <tr><td>8</td><td>fleet-build</td><td class="num">1,515</td><td>✓</td><td>✓</td></tr>
-          <tr><td>9</td><td>session-miner</td><td class="num">1,475</td><td>✓</td><td>✓</td></tr>
-          <tr><td>10</td><td>hodge-belief-rs</td><td class="num">1,437</td><td>✓</td><td>✓</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="margin-top:16px;font-size:.7rem;color:var(--dim)">source: automated quality audit (2026-06-11)</p>
-  </section>
-
-  <section>
-    <h2>Breakdown by <em>Category</em></h2>
-    <div class="bar-section">
-      <div class="bar-row">
-        <span class="bar-label">ternary-*</span>
-        <div class="bar-track"><div class="bar-fill ternary" style="width:22.8%"></div></div>
-        <span class="bar-count">366</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">agent-*</span>
-        <div class="bar-track"><div class="bar-fill agent" style="width:2.7%"></div></div>
-        <span class="bar-count">43</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">oxide-*</span>
-        <div class="bar-track"><div class="bar-fill oxide" style="width:1.9%"></div></div>
-        <span class="bar-count">30</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">fleet-*</span>
-        <div class="bar-track"><div class="bar-fill fleet" style="width:1.2%"></div></div>
-        <span class="bar-count">20</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">plato-*</span>
-        <div class="bar-track"><div class="bar-fill plato" style="width:1.1%"></div></div>
-        <span class="bar-count">17</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">other</span>
-        <div class="bar-track"><div class="bar-fill other" style="width:70.3%"></div></div>
-        <span class="bar-count">1,129</span>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Category <em>Summary</em></h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>prefix</th><th>count</th><th class="num">% of total</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>ternary-*</td><td class="num">366</td><td class="num">22.8%</td></tr>
-          <tr><td>agent-*</td><td class="num">43</td><td class="num">2.7%</td></tr>
-          <tr><td>oxide-*</td><td class="num">30</td><td class="num">1.9%</td></tr>
-          <tr><td>fleet-*</td><td class="num">20</td><td class="num">1.2%</td></tr>
-          <tr><td>plato-*</td><td class="num">17</td><td class="num">1.1%</td></tr>
-          <tr><td>other</td><td class="num">1,129</td><td class="num">70.3%</td></tr>
-          <tr style="border-top:1px solid #333;font-weight:700"><td>total</td><td class="num">1,605</td><td class="num">100%</td></tr>
-        </tbody>
+        <tbody id="top10-body"></tbody>
       </table>
     </div>
   </section>
 
   <section>
-    <h2>Health <em>Report</em></h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>repo</th><th class="num">passed</th><th class="num">failed</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>lever-runner</td><td class="num">149</td><td class="num">0</td></tr>
-          <tr><td>fastloop-guard</td><td class="num">28</td><td class="num">0</td></tr>
-          <tr><td>conservation-spectral-topology-rs</td><td class="num">55</td><td class="num">0</td></tr>
-          <tr><td>pincherOS</td><td class="num">0</td><td class="num">0</td></tr>
-          <tr><td>zeroclaw-arena</td><td class="num">0</td><td class="num">0</td></tr>
-          <tr><td>metal-lathe</td><td class="num">0</td><td class="num">0</td></tr>
-          <tr><td>agent-template</td><td class="num">0</td><td class="num">0</td></tr>
-          <tr style="border-top:1px solid #333;font-weight:700"><td>total</td><td class="num">232</td><td class="num">0</td></tr>
-        </tbody>
-      </table>
+    <h2>Domain <em>Distribution</em></h2>
+    <div id="domain-bars" class="bar-section"></div>
+  </section>
+
+  <section>
+    <h2>Ecosystem <em>Overview</em></h2>
+    <div class="grid">
+      <div class="metric"><b>1,605</b><span>total repos</span></div>
+      <div class="metric"><b>1,494</b><span>crates (Cargo.toml)</span></div>
+      <div class="metric"><b>1,091</b><span>with CI</span></div>
+      <div class="metric"><b>671</b><span>github repos</span></div>
+      <div class="metric"><b>97.5%</b><span>build pass rate</span></div>
+      <div class="metric"><b>13</b><span>published to crates.io</span></div>
     </div>
-    <p style="margin-top:16px;font-size:.7rem;color:var(--dim)">source: health-report.json (2026-06-04)</p>
   </section>
 
   <footer>
-    superinstance ecosystem · generated 2026-06-11 · <a href="index.html">home</a>
+    superinstance ecosystem · generated <span id="footer-date">—</span> · <a href="index.html">home</a> · <a href="search.html">search</a> · <a href="browse.html">browse</a>
   </footer>
 </div>
 
+<script>
+const API = 'https://fleet-vector-api.casey-digennaro.workers.dev';
+const COLORS = {
+  REAL: '#00ff88',
+  STUB: '#ffd93d',
+  SKELETON: '#ff6b6b',
+  ternary: '#00ff88',
+  agent: '#4ecdc4',
+  fleet: '#ffd93d',
+  oxide: '#6bcbff',
+  plato: '#c084fc',
+  other: '#555'
+};
+
+// ─── Load live API stats ────────────────────────────────────────────────
+async function loadLive() {
+  try {
+    const res = await fetch(API + '/stats');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const d = await res.json();
+    document.getElementById('api-status').textContent = 'online ✓';
+    document.getElementById('api-index').textContent = d.index || 'fleet-crates';
+    document.getElementById('api-model').textContent = d.model || '—';
+    document.getElementById('api-dims').textContent = d.dimensions || '—';
+    document.getElementById('api-ingest').textContent = d.last_ingest || 'never';
+    document.getElementById('m-crates').textContent = d.crate_count?.toLocaleString() || '—';
+    document.getElementById('m-dims').textContent = d.dimensions || '—';
+    document.getElementById('m-model').textContent = (d.model || '—').split('/').pop();
+    document.getElementById('m-backend').textContent = d.backend || '—';
+  } catch (e) {
+    document.getElementById('api-status').innerHTML = '<span class="err">offline ✗</span>';
+    document.getElementById('api-status').className = 'err';
+  }
+}
+
+// ─── Quality pie chart (canvas) ─────────────────────────────────────────
+function drawPie(summary) {
+  const canvas = document.getElementById('pieChart');
+  const ctx = canvas.getContext('2d');
+  const cx = 150, cy = 150, r = 110;
+  const data = [
+    {label:'REAL', val:summary.REAL.count, color:COLORS.REAL},
+    {label:'STUB', val:summary.STUB.count, color:COLORS.STUB},
+    {label:'SKELETON', val:summary.SKELETON.count, color:COLORS.SKELETON},
+  ];
+  const total = data.reduce((s,d) => s + d.val, 0);
+  let angle = -Math.PI / 2;
+
+  data.forEach(d => {
+    const slice = (d.val / total) * 2 * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle + slice);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.fill();
+
+    // Label
+    const mid = angle + slice / 2;
+    const lx = cx + (r * 0.65) * Math.cos(mid);
+    const ly = cy + (r * 0.65) * Math.sin(mid);
+    ctx.fillStyle = '#0a0a0a';
+    ctx.font = 'bold 11px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${d.label}`, lx, ly - 7);
+    ctx.font = '10px monospace';
+    ctx.fillText(`${d.val} (${((d.val/total)*100).toFixed(1)}%)`, lx, ly + 7);
+
+    angle += slice;
+  });
+
+  // Center hole (donut)
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 0.35, 0, Math.PI * 2);
+  ctx.fillStyle = '#111';
+  ctx.fill();
+  ctx.fillStyle = '#e0e0e0';
+  ctx.font = 'bold 14px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(total.toLocaleString(), cx, cy - 6);
+  ctx.fillStyle = '#666';
+  ctx.font = '9px monospace';
+  ctx.fillText('crates', cx, cy + 10);
+}
+
+// ─── Top 10 bar chart (canvas) ──────────────────────────────────────────
+function drawBarChart(top20) {
+  const canvas = document.getElementById('barChart');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.parentElement.clientWidth - 48;
+  const w = canvas.width, h = canvas.height;
+  const top = top20.slice(0, 10);
+  const maxVal = top[0]?.src_lines || 1;
+  const barH = 22, gap = 6, leftPad = 140, rightPad = 60, topPad = 10;
+
+  top.forEach((r, i) => {
+    const y = topPad + i * (barH + gap);
+    const barW = Math.max(2, ((r.src_lines / maxVal) * (w - leftPad - rightPad)));
+
+    // Label
+    ctx.fillStyle = '#e0e0e0';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    const label = r.name.length > 18 ? r.name.slice(0, 16) + '…' : r.name;
+    ctx.fillText(label, leftPad - 10, y + barH / 2);
+
+    // Bar
+    ctx.fillStyle = r.category === 'REAL' ? '#00ff88' : r.category === 'STUB' ? '#ffd93d' : '#ff6b6b';
+    ctx.fillRect(leftPad, y, barW, barH);
+
+    // Value
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'left';
+    ctx.fillText(r.src_lines.toLocaleString(), leftPad + barW + 8, y + barH / 2);
+  });
+}
+
+// ─── Quality bars ───────────────────────────────────────────────────────
+function renderQualityBars(summary) {
+  const el = document.getElementById('quality-bars');
+  const total = summary.REAL.count + summary.STUB.count + summary.SKELETON.count;
+  el.innerHTML = [
+    {label:'REAL', d:summary.REAL, color:'#00ff88'},
+    {label:'STUB', d:summary.STUB, color:'#ffd93d'},
+    {label:'SKELETON', d:summary.SKELETON, color:'#ff6b6b'},
+  ].map(q => `
+    <div class="bar-row">
+      <span class="bar-label" style="color:${q.color}">${q.label}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${q.d.pct}%;background:${q.color}"></div></div>
+      <span class="bar-count">${q.d.count} <span style="opacity:.6">(${q.d.pct}%)</span></span>
+    </div>`).join('');
+}
+
+// ─── Domain distribution ────────────────────────────────────────────────
+function renderDomains(repos) {
+  const prefixes = {};
+  const known = ['ternary','agent','oxide','fleet','plato','tensor','wasm','raft','config','actor'];
+  repos.forEach(r => {
+    const p = r.name.split('-')[0];
+    const key = known.includes(p) ? p : 'other';
+    prefixes[key] = (prefixes[key] || 0) + 1;
+  });
+  const total = repos.length;
+  const sorted = Object.entries(prefixes).sort((a,b) => b[1] - a[1]);
+  const max = sorted[0]?.[1] || 1;
+  document.getElementById('domain-bars').innerHTML = sorted.map(([k,v]) => `
+    <div class="bar-row">
+      <span class="bar-label">${k}-*</span>
+      <div class="bar-track"><div class="bar-fill ${k}" style="width:${(v/max*100).toFixed(1)}%"></div></div>
+      <span class="bar-count">${v} <span style="opacity:.6">(${(v/total*100).toFixed(1)}%)</span></span>
+    </div>`).join('');
+}
+
+// ─── Top 10 table ───────────────────────────────────────────────────────
+function renderTop10(top20) {
+  document.getElementById('top10-body').innerHTML = top20.slice(0,10).map((r,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><a href="https://github.com/casey-digennaro/${r.name}" target="_blank">${r.name}</a></td>
+      <td class="num">${r.src_lines.toLocaleString()}</td>
+      <td>${r.has_tests ? '✓' : '✗'}</td>
+      <td>${r.has_docs ? '✓' : '✗'}</td>
+      <td><span style="color:${r.category==='REAL'?'#00ff88':r.category==='STUB'?'#ffd93d':'#ff6b6b'}">${r.category}</span></td>
+    </tr>`).join('');
+}
+
+// ─── Main ───────────────────────────────────────────────────────────────
+async function main() {
+  loadLive();
+  try {
+    const res = await fetch('quality-report.json');
+    const report = await res.json();
+    document.getElementById('footer-date').textContent = report.generated;
+    drawPie(report.summary);
+    drawBarChart(report.top20);
+    renderQualityBars(report.summary);
+    renderTop10(report.top20);
+    renderDomains(report.repos);
+  } catch(e) {
+    console.error('Failed to load quality-report.json:', e);
+  }
+}
+
+main();
+window.addEventListener('resize', () => {
+  fetch('quality-report.json').then(r=>r.json()).then(d => drawBarChart(d.top20));
+});
+</script>
 </body>
 </html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Crate Search</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--text:#e0e0e0;--dim:#666;--mono:'JetBrains Mono','Fira Code',monospace}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.w{max-width:960px;margin:0 auto;padding:0 24px}
+
+header{padding:40px 0 20px;border-bottom:1px solid #1a1a1a}
+header h1{font-size:1.3rem;margin-bottom:4px}
+header h1 em{font-style:normal;color:var(--accent)}
+header p{font-size:.7rem;color:var(--dim)}
+header .back{font-size:.75rem;color:var(--dim);display:inline-block;margin-bottom:12px}
+nav{display:flex;gap:16px;font-size:.75rem;margin-top:12px}
+nav a{color:var(--dim);padding:4px 0}
+nav a.active{color:var(--accent);border-bottom:1px solid var(--accent)}
+
+.search-box{padding:48px 0 24px}
+.search-input-wrap{display:flex;gap:8px;max-width:600px}
+.search-input-wrap input{flex:1;background:var(--surface2);border:1px solid #333;color:var(--text);padding:12px 16px;font-family:var(--mono);font-size:.9rem;border-radius:2px;outline:none}
+.search-input-wrap input:focus{border-color:var(--accent)}
+.search-input-wrap button{background:var(--accent);color:var(--bg);border:none;padding:12px 24px;font-family:var(--mono);font-size:.8rem;font-weight:700;cursor:pointer;border-radius:2px;letter-spacing:.05em}
+.search-input-wrap button:hover{opacity:.9}
+.search-input-wrap button:disabled{opacity:.4;cursor:not-allowed}
+.search-hint{font-size:.65rem;color:var(--dim);margin-top:8px}
+
+.status{font-size:.75rem;color:var(--dim);margin-bottom:16px}
+.status .spinner{display:inline-block;width:12px;height:12px;border:2px solid var(--dim);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.results{display:grid;grid-template-columns:1fr;gap:12px;padding-bottom:48px}
+.result-card{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;display:grid;grid-template-columns:1fr auto;gap:8px}
+.result-card:hover{border-color:#333}
+.result-card .name{font-size:.95rem;color:var(--accent);font-weight:600;margin-bottom:4px}
+.result-card .name a{color:var(--accent)}
+.result-card .desc{font-size:.78rem;color:var(--dim);line-height:1.6;margin-bottom:8px}
+.result-card .meta{display:flex;flex-wrap:wrap;gap:12px;font-size:.65rem}
+.result-card .meta span{color:var(--dim)}
+.result-card .meta b{color:var(--text)}
+.result-card .score{text-align:right;min-width:60px}
+.result-card .score b{font-size:1.2rem;display:block}
+.result-card .score span{font-size:.6rem;color:var(--dim)}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:.6rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.badge.real{background:#00ff8822;color:#00ff88;border:1px solid #00ff8844}
+.badge.stub{background:#ffd93d22;color:#ffd93d;border:1px solid #ffd93d44}
+.badge.skeleton{background:#66666622;color:#999;border:1px solid #66666644}
+
+.empty{text-align:center;padding:60px 20px;color:var(--dim);font-size:.85rem}
+.empty .icon{font-size:2rem;margin-bottom:16px}
+
+footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.65rem;color:var(--dim);text-align:center}
+</style>
+</head>
+<body>
+
+<div class="w">
+  <header>
+    <a href="index.html" class="back">← back</a>
+    <h1>Semantic <em>Crate Search</em></h1>
+    <p>AI-powered search across 1,012 indexed crates via Cloudflare Workers AI + Vectorize</p>
+    <nav>
+      <a href="search.html" class="active">🔍 Search</a>
+      <a href="stats.html">📊 Stats</a>
+      <a href="browse.html">📂 Browse</a>
+    </nav>
+  </header>
+
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <input type="text" id="q" placeholder="Search crates... (e.g. &quot;ternary neural network&quot;)" autofocus>
+      <button id="btn" onclick="doSearch()">Search</button>
+    </div>
+    <p class="search-hint">Powered by Workers AI (bge-small-en-v1.5) · 384-dim embeddings · cosine similarity</p>
+  </div>
+
+  <div id="status" class="status"></div>
+  <div id="results" class="results"></div>
+
+  <footer>
+    superinstance ecosystem · <a href="index.html">home</a> · <a href="stats.html">stats</a> · <a href="browse.html">browse</a>
+  </footer>
+</div>
+
+<script>
+const API = 'https://fleet-vector-api.casey-digennaro.workers.dev';
+const input = document.getElementById('q');
+const btn = document.getElementById('btn');
+const resultsEl = document.getElementById('results');
+const statusEl = document.getElementById('status');
+
+input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+
+async function doSearch() {
+  const query = input.value.trim();
+  if (!query) return;
+  btn.disabled = true;
+  statusEl.innerHTML = '<span class="spinner"></span> Embedding query & searching...';
+  resultsEl.innerHTML = '';
+
+  try {
+    const res = await fetch(API + '/search', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({query, topK: 20})
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const results = data.results || [];
+    statusEl.textContent = `${results.length} result${results.length !== 1 ? 's' : ''} · model: ${data.model} · query: "${data.query}"`;
+
+    if (!results.length) {
+      resultsEl.innerHTML = '<div class="empty"><div class="icon">🔍</div>No results found. Try a different query.</div>';
+      return;
+    }
+
+    resultsEl.innerHTML = results.map(r => {
+      const score = (r.score * 100).toFixed(1);
+      const scoreColor = r.score > 0.7 ? '#00ff88' : r.score > 0.4 ? '#ffd93d' : '#ff6b6b';
+      const cat = r.category || guessCategory(r);
+      const github = r.github_url || `https://github.com/casey-digennaro/${r.name || r.id}`;
+      const domain = r.domain || (r.name || r.id).split('-')[0];
+      return `
+        <div class="result-card">
+          <div>
+            <div class="name"><a href="${github}" target="_blank">${r.name || r.id}</a>
+              <span class="badge ${cat.toLowerCase()}">${cat}</span>
+            </div>
+            <div class="desc">${r.description || 'No description available'}</div>
+            <div class="meta">
+              <span>domain: <b>${domain}</b></span>
+              <span>tests: <b>${r.tests ?? '—'}</b></span>
+              <span>loc: <b>${r.loc ? r.loc.toLocaleString() : '—'}</b></span>
+              <span>version: <b>${r.version || '—'}</b></span>
+              ${r.keywords?.length ? `<span>tags: <b>${r.keywords.join(', ')}</b></span>` : ''}
+            </div>
+          </div>
+          <div class="score">
+            <b style="color:${scoreColor}">${score}%</b>
+            <span>match</span>
+          </div>
+        </div>`;
+    }).join('');
+  } catch (err) {
+    statusEl.textContent = '';
+    resultsEl.innerHTML = `<div class="empty"><div class="icon">⚠️</div>Search failed: ${err.message}<br><small style="color:var(--dim)">Check that the Vector API is online at ${API}</small></div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function guessCategory(r) {
+  const loc = r.loc || r.src_lines || 0;
+  if (loc > 50) return 'REAL';
+  if (loc > 10) return 'STUB';
+  return 'SKELETON';
+}
+</script>
+</body>
+</html>

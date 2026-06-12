@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Ecosystem Browser</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--text:#e0e0e0;--dim:#666;--mono:'JetBrains Mono','Fira Code',monospace}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.w{max-width:960px;margin:0 auto;padding:0 24px}
+
+header{padding:40px 0 20px;border-bottom:1px solid #1a1a1a}
+header h1{font-size:1.3rem;margin-bottom:4px}
+header h1 em{font-style:normal;color:var(--accent)}
+header p{font-size:.7rem;color:var(--dim)}
+header .back{font-size:.75rem;color:var(--dim);display:inline-block;margin-bottom:12px}
+nav{display:flex;gap:16px;font-size:.75rem;margin-top:12px}
+nav a{color:var(--dim);padding:4px 0}
+nav a.active{color:var(--accent);border-bottom:1px solid var(--accent)}
+
+section{padding:48px 0}
+section h2{font-size:1.1rem;margin-bottom:24px}
+section h2 em{font-style:normal;color:var(--accent)}
+
+.domain-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.domain-tab{background:var(--surface2);border:1px solid #222;color:var(--dim);padding:6px 14px;font-size:.72rem;font-family:var(--mono);cursor:pointer;border-radius:2px}
+.domain-tab:hover{border-color:#444;color:var(--text)}
+.domain-tab.active{border-color:var(--accent);color:var(--accent);background:var(--surface)}
+.domain-tab .count{opacity:.5;margin-left:4px}
+
+.crate-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.crate-item{background:var(--surface);border:1px solid #222;border-radius:2px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.crate-item:hover{border-color:#333}
+.crate-item .name{font-size:.78rem;color:var(--accent)}
+.crate-item .name a{color:var(--accent)}
+.crate-item .info{display:flex;gap:12px;font-size:.65rem;color:var(--dim)}
+.crate-item .info b{color:var(--text)}
+
+.badge{display:inline-block;padding:1px 6px;border-radius:2px;font-size:.55rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-left:6px}
+.badge.real{background:#00ff8822;color:#00ff88;border:1px solid #00ff8844}
+.badge.stub{background:#ffd93d22;color:#ffd93d;border:1px solid #ffd93d44}
+.badge.skeleton{background:#66666622;color:#999;border:1px solid #66666644}
+
+.deps-section{margin-top:48px}
+.deps-section h3{font-size:.85rem;color:var(--accent);margin-bottom:16px}
+
+.dep-graph{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;overflow-x:auto}
+.dep-graph svg{width:100%;height:auto}
+.dep-graph pre{font-size:.7rem;color:var(--dim);white-space:pre}
+
+.dep-table{width:100%;border-collapse:collapse;font-size:.72rem}
+.dep-table th{text-align:left;font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;padding:6px 10px;border-bottom:1px solid #222}
+.dep-table td{padding:8px 10px;border-bottom:1px solid #1a1a1a}
+.dep-table td:first-child{color:var(--accent)}
+.dep-table td:nth-child(2){color:var(--dim);font-size:.65rem}
+.dep-table td:nth-child(3){color:var(--dim);font-size:.65rem}
+
+.count-label{font-size:.65rem;color:var(--dim);margin-bottom:12px}
+
+footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.65rem;color:var(--dim);text-align:center}
+</style>
+</head>
+<body>
+
+<div class="w">
+  <header>
+    <a href="index.html" class="back">← back</a>
+    <h1>Ecosystem <em>Browser</em></h1>
+    <p>browse 1,494 crates by domain prefix · dependency graph · quality overview</p>
+    <nav>
+      <a href="search.html">🔍 Search</a>
+      <a href="stats.html">📊 Stats</a>
+      <a href="browse.html" class="active">📂 Browse</a>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Browse by <em>Domain</em></h2>
+    <div id="domain-tabs" class="domain-tabs"></div>
+    <p id="crate-count" class="count-label"></p>
+    <div id="crate-grid" class="crate-grid"></div>
+  </section>
+
+  <section class="deps-section">
+    <h2>Ternary <em>Dependency Graph</em></h2>
+    <p style="font-size:.75rem;color:var(--dim);margin-bottom:16px">Internal compile-time dependencies between ternary-* crates. 28 edges across 1,596 repos — constellation architecture.</p>
+    <div class="dep-graph">
+      <canvas id="depCanvas" width="800" height="400"></canvas>
+    </div>
+    <div style="margin-top:16px">
+      <table class="dep-table">
+        <thead><tr><th>crate</th><th>depends on</th><th>depended by</th></tr></thead>
+        <tbody id="dep-table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    superinstance ecosystem · <a href="index.html">home</a> · <a href="search.html">search</a> · <a href="stats.html">stats</a>
+  </footer>
+</div>
+
+<script>
+const EDGES = [
+  ["ternary-activation","ternary-types"],["ternary-benchmark","ternary-packed"],
+  ["ternary-checkpoint","ternary-types"],["ternary-conv","ternary-types"],
+  ["ternary-dispatch","ternary-packed"],["ternary-distill","ternary-types"],
+  ["ternary-em","ternary-types"],["ternary-fuse","ternary-types"],
+  ["ternary-graph","ternary-weighted"],["ternary-haar","ternary-valued"],
+  ["ternary-hardware","ternary-to-binary"],["ternary-hmm","ternary-types"],
+  ["ternary-inventory","ternary-valued"],["ternary-knn","ternary-types"],
+  ["ternary-logistic","ternary-types"],["ternary-loss","ternary-types"],
+  ["ternary-matmul","ternary-types"],["ternary-mesh","ternary-weighted"],
+  ["ternary-navigator","ternary-weighted"],["ternary-network","ternary-weighted"],
+  ["ternary-norm","ternary-types"],["ternary-optimizer","ternary-types"],
+  ["ternary-pagerank","ternary-weighted"],["ternary-pool","ternary-types"],
+  ["ternary-prune","ternary-types"],["ternary-regression","ternary-types"],
+  ["ternary-svm","ternary-types"],["ternary-walsh","ternary-valued"],
+];
+
+let allRepos = [];
+let activeDomain = 'all';
+
+// ─── Load quality report ────────────────────────────────────────────────
+async function loadData() {
+  try {
+    const res = await fetch('quality-report.json');
+    const report = await res.json();
+    allRepos = report.repos || [];
+    buildDomainTabs();
+    showDomain('all');
+  } catch(e) {
+    console.error('Failed to load quality-report.json:', e);
+    document.getElementById('crate-grid').innerHTML = '<p style="color:#ff6b6b">Failed to load crate data</p>';
+  }
+}
+
+// ─── Domain tabs ────────────────────────────────────────────────────────
+function buildDomainTabs() {
+  const prefixes = {};
+  const known = ['ternary','agent','oxide','fleet','plato','tensor','wasm','raft','config','actor'];
+  allRepos.forEach(r => {
+    const p = r.name.split('-')[0];
+    const key = known.includes(p) ? p : 'other';
+    prefixes[key] = (prefixes[key] || 0) + 1;
+  });
+  const sorted = Object.entries(prefixes).sort((a,b) => b[1] - a[1]);
+
+  const tabs = document.getElementById('domain-tabs');
+  tabs.innerHTML = `<div class="domain-tab active" onclick="showDomain('all')">all<span class="count">${allRepos.length}</span></div>` +
+    sorted.map(([k,v]) => `<div class="domain-tab" onclick="showDomain('${k}')">${k}<span class="count">${v}</span></div>`).join('');
+}
+
+function showDomain(domain) {
+  activeDomain = domain;
+  // Update tab active state
+  document.querySelectorAll('.domain-tab').forEach(t => {
+    t.classList.toggle('active', t.textContent.trim().startsWith(domain === 'all' ? 'all' : domain));
+  });
+
+  const known = ['ternary','agent','oxide','fleet','plato','tensor','wasm','raft','config','actor'];
+  let filtered = allRepos;
+  if (domain !== 'all') {
+    filtered = allRepos.filter(r => {
+      const p = r.name.split('-')[0];
+      return domain === 'other' ? !known.includes(p) : p === domain;
+    });
+  }
+
+  // Sort by src_lines desc
+  filtered.sort((a,b) => (b.src_lines || 0) - (a.src_lines || 0));
+
+  const count = document.getElementById('crate-count');
+  count.textContent = `showing ${filtered.length} crate${filtered.length !== 1 ? 's' : ''}${domain !== 'all' ? ` in ${domain}-*` : ''}`;
+
+  const grid = document.getElementById('crate-grid');
+  const limit = 200; // Render limit for perf
+  grid.innerHTML = filtered.slice(0, limit).map(r => {
+    const cat = r.category || 'SKELETON';
+    return `<div class="crate-item">
+      <div class="name">
+        <a href="https://github.com/casey-digennaro/${r.name}" target="_blank">${r.name}</a>
+        <span class="badge ${cat.toLowerCase()}">${cat}</span>
+      </div>
+      <div class="info">
+        <span>loc: <b>${(r.src_lines || 0).toLocaleString()}</b></span>
+        <span>tests: <b>${r.has_tests ? '✓' : '✗'}</b></span>
+      </div>
+    </div>`;
+  }).join('') + (filtered.length > limit ? `<div class="crate-item" style="justify-content:center;color:var(--dim);font-size:.7rem">+${filtered.length - limit} more</div>` : '');
+}
+
+// ─── Dependency graph (canvas) ──────────────────────────────────────────
+function drawDepGraph() {
+  const canvas = document.getElementById('depCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // Collect unique nodes
+  const nodes = new Set();
+  EDGES.forEach(([a,b]) => { nodes.add(a); nodes.add(b); });
+  const nodeArr = Array.from(nodes);
+
+  // Simple force-directed-ish layout (circular)
+  const cx = W / 2, cy = H / 2, radius = 150;
+  const pos = {};
+  nodeArr.forEach((n, i) => {
+    const angle = (i / nodeArr.length) * Math.PI * 2 - Math.PI / 2;
+    pos[n] = {x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle)};
+  });
+
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, W, H);
+
+  // Draw edges
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1;
+  EDGES.forEach(([a, b]) => {
+    ctx.beginPath();
+    ctx.moveTo(pos[a].x, pos[a].y);
+    ctx.lineTo(pos[b].x, pos[b].y);
+    ctx.stroke();
+
+    // Arrow
+    const dx = pos[b].x - pos[a].x, dy = pos[b].y - pos[a].y;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    const ux = dx/len, uy = dy/len;
+    const ax = pos[b].x - ux*14, ay = pos[b].y - uy*14;
+    ctx.beginPath();
+    ctx.moveTo(ax - uy*4, ay + ux*4);
+    ctx.lineTo(pos[b].x - ux*6, pos[b].y - uy*6);
+    ctx.lineTo(ax + uy*4, ay - ux*4);
+    ctx.fillStyle = '#444';
+    ctx.fill();
+  });
+
+  // Draw nodes
+  nodeArr.forEach(n => {
+    ctx.beginPath();
+    ctx.arc(pos[n].x, pos[n].y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#00ff88';
+    ctx.fill();
+    ctx.strokeStyle = '#0a0a0a';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Label
+    const isCore = n === 'ternary-types' || n === 'ternary-weighted' || n === 'ternary-valued' || n === 'ternary-packed';
+    ctx.fillStyle = isCore ? '#00ff88' : '#999';
+    ctx.font = `${isCore ? 'bold ' : ''}9px monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(n.replace('ternary-', ''), pos[n].x, pos[n].y - 8);
+  });
+}
+
+// ─── Dependency table ───────────────────────────────────────────────────
+function renderDepTable() {
+  const deps = {};   // what each crate depends on
+  const rdeps = {};  // what depends on each crate
+  EDGES.forEach(([a, b]) => {
+    (deps[a] = deps[a] || []).push(b);
+    (rdeps[b] = rdeps[b] || []).push(a);
+  });
+
+  const allNodes = new Set([...Object.keys(deps), ...Object.keys(rdeps)]);
+  const tbody = document.getElementById('dep-table-body');
+  tbody.innerHTML = Array.from(allNodes).sort().map(n => `
+    <tr>
+      <td>${n}</td>
+      <td>${(deps[n] || []).join(', ') || '—'}</td>
+      <td>${(rdeps[n] || []).join(', ') || '—'}</td>
+    </tr>`).join('');
+}
+
+// ─── Init ───────────────────────────────────────────────────────────────
+loadData();
+drawDepGraph();
+renderDepTable();
+</script>
+</body>
+</html>
