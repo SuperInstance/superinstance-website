@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ternary Conservation in Distributed Systems — SuperInstance</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;
+  --accent:#00ff88;--amber:#ffb347;--red:#ff6b6b;--cyan:#4ecdc4;
+  --text:#e0e0e0;--dim:#888;--dimmer:#555;
+  --mono:'JetBrains Mono','Fira Code','SF Mono',monospace;
+  --serif:'Georgia','Times New Roman',serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);line-height:1.8}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+
+/* Layout */
+.w{max-width:780px;margin:0 auto;padding:0 24px}
+
+/* Header */
+header{border-bottom:1px solid #1a1a1a;padding:32px 0 24px}
+header .w{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+header .breadcrumb{font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+header .breadcrumb a{color:var(--dim)}
+header .breadcrumb a:hover{color:var(--accent)}
+header .breadcrumb .sep{margin:0 6px;color:var(--dimmer)}
+
+/* Title block */
+.title-block{padding:48px 0 40px;border-bottom:1px solid #1a1a1a;margin-bottom:40px}
+.title-block h1{font-size:1.75rem;font-weight:700;line-height:1.3;margin-bottom:12px;letter-spacing:-.01em}
+.title-block .meta{font-family:var(--mono);font-size:.75rem;color:var(--dim);margin-bottom:20px}
+.title-block .meta .org{color:var(--accent)}
+
+/* Abstract callout */
+.abstract-box{background:var(--surface);border-left:3px solid var(--accent);padding:24px 28px;margin-bottom:48px;border-radius:0 4px 4px 0}
+.abstract-box .label{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);margin-bottom:12px}
+.abstract-box p{font-size:.92rem;color:var(--dim);line-height:1.85}
+.abstract-box p strong{color:var(--text)}
+
+/* TOC */
+.toc{background:var(--surface);border:1px solid #222;border-radius:4px;padding:24px 28px;margin-bottom:48px}
+.toc .label{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);margin-bottom:16px}
+.toc ol{list-style:none;counter-reset:toc-counter}
+.toc ol li{counter-increment:toc-counter;margin-bottom:6px}
+.toc ol li a{font-family:var(--mono);font-size:.78rem;color:var(--dim);display:inline-block}
+.toc ol li a:hover{color:var(--accent)}
+.toc ol li::before{content:counter(toc-counter) ".";color:var(--dimmer);margin-right:8px;font-size:.72rem}
+
+/* Sections */
+.paper-body section{margin-bottom:48px}
+.paper-body h2{font-size:1.25rem;font-weight:700;margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid #1a1a1a;color:var(--text);scroll-margin-top:20px}
+.paper-body h3{font-size:1.05rem;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.paper-body h3 .num{color:var(--dimmer);font-weight:400}
+.paper-body p{margin-bottom:16px;font-size:.95rem;color:#bbb;line-height:1.85}
+.paper-body p strong{color:var(--text)}
+
+/* Blockquote / callout */
+.paper-body blockquote{border-left:2px solid var(--accent);padding:12px 20px;margin:20px 0;background:rgba(0,255,136,.03);border-radius:0 4px 4px 0;font-style:italic;color:var(--dim)}
+.paper-body blockquote strong{font-style:normal;color:var(--text)}
+
+/* Tables */
+.paper-body table{width:100%;border-collapse:collapse;margin:20px 0;font-size:.82rem}
+.paper-body thead th{text-align:left;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid #333;padding:8px 12px}
+.paper-body tbody td{padding:10px 12px;border-bottom:1px solid #1a1a1a;color:#bbb;vertical-align:top}
+.paper-body tbody tr:hover{background:var(--surface)}
+.paper-body tbody td:first-child{font-family:var(--mono);color:var(--text);white-space:nowrap}
+
+/* Math / equations */
+.equation{font-family:var(--mono);font-size:1rem;text-align:center;padding:20px 0;margin:16px 0;color:var(--text);letter-spacing:.03em;overflow-x:auto}
+.equation .var{color:var(--cyan)}
+.equation .op{color:var(--dim)}
+.equation .result{color:var(--accent)}
+.equation .comment{display:block;font-size:.72rem;color:var(--dimmer);margin-top:8px;font-style:italic}
+.eq-inline{font-family:var(--mono);font-size:.88rem;color:var(--text)}
+
+/* Code blocks */
+pre{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px 24px;margin:20px 0;overflow-x:auto;font-family:var(--mono);font-size:.78rem;line-height:1.65;color:#bbb}
+pre .kw{color:var(--accent)}
+pre .ty{color:var(--cyan)}
+pre .fn{color:var(--amber)}
+pre .cm{color:var(--dimmer)}
+pre .st{color:var(--red)}
+pre .num{color:var(--amber)}
+
+code{font-family:var(--mono);font-size:.85rem;background:var(--surface);padding:2px 6px;border-radius:3px;color:var(--accent)}
+
+/* Lists */
+.paper-body ul,.paper-body ol{margin:12px 0 16px 24px;font-size:.95rem;color:#bbb}
+.paper-body li{margin-bottom:8px;line-height:1.75}
+.paper-body ul li::marker{color:var(--dimmer)}
+
+/* Highlight boxes */
+.highlight-box{background:var(--surface);border:1px solid #222;border-radius:4px;padding:24px 28px;margin:24px 0}
+.highlight-box .label{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;margin-bottom:12px}
+
+.what-is .label{color:var(--accent)}
+.what-isnt .label{color:var(--red)}
+.what-is li::marker{color:var(--accent)}
+.what-isnt li::marker{color:var(--red)}
+
+/* Citation box */
+.cite-box{background:var(--surface);border:1px solid #222;border-radius:4px;padding:24px 28px;margin:48px 0 24px}
+.cite-box .label{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);margin-bottom:12px}
+.cite-box .citation{font-size:.88rem;color:var(--dim);line-height:1.7;font-style:italic}
+.cite-box .bibtex{margin-top:16px}
+.cite-box pre{margin:8px 0 0;padding:16px 20px;font-size:.72rem}
+
+/* References */
+.references{margin-top:48px;padding-top:32px;border-top:1px solid #1a1a1a}
+.references h2{font-size:1rem;border-bottom:none;margin-bottom:20px}
+.references ol{margin-left:24px;counter-reset:ref-counter}
+.references li{counter-increment:ref-counter;margin-bottom:10px;font-size:.85rem;color:var(--dim);line-height:1.7}
+.references li::marker{color:var(--dimmer);font-size:.78rem}
+.references li em{font-style:italic}
+
+/* Footer */
+.paper-footer{border-top:1px solid #1a1a1a;margin-top:32px;padding:20px 0}
+.paper-footer p{font-family:var(--mono);font-size:.72rem;color:var(--dimmer);line-height:1.7}
+
+footer{border-top:1px solid #1a1a1a;padding:32px 0;text-align:center}
+footer p{color:var(--dim);font-size:.75rem}
+footer .links{display:flex;justify-content:center;gap:24px;margin-bottom:16px;flex-wrap:wrap}
+footer .links a{font-family:var(--mono);font-size:.78rem}
+
+/* Responsive */
+@media(max-width:640px){
+  .title-block h1{font-size:1.35rem}
+  .abstract-box{padding:16px 20px}
+  .paper-body h2{font-size:1.1rem}
+  pre{padding:16px;font-size:.72rem}
+  .equation{font-size:.88rem}
+  header .w{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- Header / Nav -->
+<header>
+  <div class="w">
+    <div class="breadcrumb">
+      <a href="../index.html">SuperInstance</a>
+      <span class="sep">/</span>
+      <a href="index.html">Papers</a>
+      <span class="sep">/</span>
+      <span style="color:var(--text)">Ternary Conservation</span>
+    </div>
+  </div>
+</header>
+
+<main class="w">
+
+<!-- Title Block -->
+<div class="title-block">
+  <h1>Ternary Conservation in Distributed Systems</h1>
+  <div class="meta">
+    <span class="org">SuperInstance Research</span> · June 2026
+  </div>
+</div>
+
+<!-- Abstract -->
+<div class="abstract-box">
+  <div class="label">Abstract</div>
+  <p>
+    Distributed systems lack a native concept of resource balance. Binary health checks—alive or dead—discard information about the neutral or transitional states that dominate real system behavior. This paper introduces <strong>ternary conservation</strong>, a structural invariant for distributed agents based on three-valued classification. Every signal in the system is classified as negative, zero, or positive: {−1, 0, +1}. We define a conservation law stating that for any closed set of operations, the sum of ternary values is preserved. This is not a physical law imported from gauge theory; it is an engineering constraint that is <em>structurally isomorphic</em> to Gauss's law in ℤ₃ lattice gauge theory—the total charge through any boundary vanishes. We present the mathematical foundation, a multi-scale ternary Haar decomposition that preserves conservation at every level, and the Bottle Protocol that carries ternary state across agent boundaries. An implementation in Rust demonstrates that the conservation law can be enforced at the type level, making the entire system auditable by construction.
+  </p>
+</div>
+
+<!-- Table of Contents -->
+<div class="toc">
+  <div class="label">Contents</div>
+  <ol>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#math">Mathematical Foundation</a></li>
+    <li><a href="#gauge">The Gauge Principle</a></li>
+    <li><a href="#multiscale">Multi-Scale Representation</a></li>
+    <li><a href="#bottle">The Bottle Protocol</a></li>
+    <li><a href="#fleet">Fleet Conservation</a></li>
+    <li><a href="#implementation">Implementation</a></li>
+    <li><a href="#limitations">Honest Limitations</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</div>
+
+<!-- Paper Body -->
+<div class="paper-body">
+
+<!-- §1 Introduction -->
+<section id="introduction">
+<h2>1. Introduction</h2>
+
+<h3>1.1 The Problem with Binary Health</h3>
+<p>
+  The standard approach to distributed system health is binary: a node is healthy or it is not. A service is up or down. A request succeeded or failed. This is the world of booleans, circuit breakers, and HTTP status codes.
+</p>
+<p>
+  The problem is information loss. Between "healthy" and "unhealthy" lies a vast territory: a node that is healthy but under memory pressure. A service that is up but latency is degrading. A request that succeeded but the response was stale. Binary classification collapses these states into a single bit, and that bit is almost always "healthy"—until it suddenly isn't.
+</p>
+
+<h3>1.2 Ternary Classification</h3>
+<p>We propose a three-valued classification instead:</p>
+
+<table>
+  <thead>
+    <tr><th>Value</th><th>Meaning</th><th>Interpretation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>−1</td><td>Negative</td><td>Signal indicates degradation, failure, or resource deficit</td></tr>
+    <tr><td>0</td><td>Neutral</td><td>Signal indicates equilibrium or no meaningful change</td></tr>
+    <tr><td>+1</td><td>Positive</td><td>Signal indicates improvement, surplus, or resource availability</td></tr>
+  </tbody>
+</table>
+
+<p>
+  This is not a sliding scale or a fuzzy value. It is a <em>decision</em>. Every event in the system is classified into exactly one of three states. The classification is lossy by design—it discards magnitude and retains direction.
+</p>
+
+<h3>1.3 The Conservation Law</h3>
+<p>The central claim of this paper is that if you build a system on ternary classification, a conservation law emerges naturally:</p>
+
+<div class="equation">
+  <span class="op">Σ</span><sub><var>i</var></sub> <span class="var">γ</span><sub><var>i</var></sub> + <span class="op">Σ</span><sub><var>j</var></sub> <span class="var">η</span><sub><var>j</var></sub> = <span class="result">C</span>
+  <span class="comment">where γ<sub>i</sub> are ternary signals in one partition and η<sub>j</sub> in the complement; C is constant for any closed set of operations</span>
+</div>
+
+<p>
+  One bottle in, one bottle out. One cycle logged, one quality signal emitted. The sum of the trits is preserved.
+</p>
+<p>
+  This is not a metaphor. It is a structural property of the type signature:
+</p>
+
+<pre><span class="kw">fn</span> <span class="fn">receive</span>(&amp;<span class="kw">mut</span> <span class="kw">self</span>, <span class="var">bottle</span>: <span class="ty">Bottle</span>) -&gt; <span class="ty">Bottle</span>;</pre>
+
+<p>
+  One <code>Bottle</code> in, one <code>Bottle</code> out. The trits in the input bottle and the trits in the output bottle must sum to the same value. The type enforces the law.
+</p>
+</section>
+
+<!-- §2 Mathematical Foundation -->
+<section id="math">
+<h2>2. Mathematical Foundation</h2>
+
+<h3>2.1 The Trit Set</h3>
+<p>We define the <strong>trit set</strong>:</p>
+
+<div class="equation">
+  <span class="result">T</span> = { −<span class="num">1</span>, <span class="num">0</span>, +<span class="num">1</span> }
+  <span class="comment">The cyclic group ℤ₃ under addition mod 3, in signed representation</span>
+</div>
+
+<p>
+  This is the cyclic group ℤ₃ under addition modulo 3, though we work with the signed representation for engineering convenience. A <strong>trit</strong> <span class="eq-inline">t ∈ T</span> is the atomic unit of ternary state.
+</p>
+
+<h3>2.2 Classification Function</h3>
+<p>Given a space of events <span class="eq-inline">ℰ</span>, the <strong>classification function</strong> is:</p>
+
+<div class="equation">
+  <span class="var">f</span> : <span class="var">ℰ</span> → <span class="result">T</span>
+  <span class="comment">Total (every event is classified) and deterministic (same event → same trit)</span>
+</div>
+
+<p>
+  The choice of <span class="eq-inline">f</span> is domain-specific; what constitutes "negative," "neutral," or "positive" depends on context.
+</p>
+
+<h3>2.3 Conservation Law (Formal)</h3>
+<p>
+  Let <span class="eq-inline">S = (t₁, t₂, …, tₙ)</span> be a sequence of trits produced by classifying events within a closed operation. The <strong>conservation constant</strong> is:
+</p>
+
+<div class="equation">
+  <span class="result">C</span>(<span class="var">S</span>) = Σ<sub><var>i</var>=1</sub><sup><var>n</var></sup> <span class="var">t</span><sub><var>i</var></sub>
+</div>
+
+<p><strong>Conservation Axiom:</strong> For any agent <span class="eq-inline">α</span> that transforms input sequence <span class="eq-inline">S<sub>in</sub></span> into output sequence <span class="eq-inline">S<sub>out</sub></span>:</p>
+
+<div class="equation">
+  <span class="result">C</span>(<span class="var">S</span><sub>in</sub>) = <span class="result">C</span>(<span class="var">S</span><sub>out</sub>)
+  <span class="comment">The total ternary charge is neither created nor destroyed by any operation</span>
+</div>
+
+<h3>2.4 Structural Isomorphism to Gauss's Law in ℤ₃</h3>
+<p>
+  In lattice gauge theory with gauge group ℤ₃, Gauss's law states that the total electric flux through any closed surface vanishes. On a lattice, electric flux lives on links and takes values in ℤ₃. The constraint is:
+</p>
+
+<div class="equation">
+  Σ<sub>links ℓ touching site x</sub> <span class="var">E</span><sub>ℓ</sub> = <span class="num">0</span> &nbsp; (mod 3)
+</div>
+
+<p>
+  Our conservation law is <strong>structurally isomorphic</strong> to this: the trits on the "links" (bottles) entering and leaving a "site" (agent) sum to the same value. The word "isomorphic" is used precisely here: both structures share the same algebraic constraint on a ℤ₃-valued field, applied to different domains (physics vs. engineering). We do not claim deeper correspondence—no Wilson loops, no Lagrangian, no partition function.
+</p>
+<p>
+  What we <em>do</em> claim is that the conservation law is not arbitrary. It arises from the same algebraic structure that produces charge conservation in ℤ₃ gauge theory, and that structure gives us a useful engineering property: the system is <strong>auditable</strong>. If the sum of trits changes, something violated the protocol.
+</p>
+</section>
+
+<!-- §3 The Gauge Principle -->
+<section id="gauge">
+<h2>3. The Gauge Principle</h2>
+
+<h3>3.1 Not a Gauge Theory</h3>
+<p>
+  Let us be explicit about what this is not. We are not constructing a gauge theory. There is no Lagrangian, no action principle, no path integral. The "gauge principle" as we use it refers to a structural observation, not a physical theory.
+</p>
+
+<h3>3.2 The Gauge Principle as Engineering Constraint</h3>
+<p>The gauge principle in physics states that local symmetries constrain the dynamics of a system. In our context, the principle manifests as:</p>
+
+<blockquote>
+  <strong>A local ternary classification, when applied consistently across a system, produces a global conservation law.</strong>
+</blockquote>
+
+<p>
+  The agents do not know about the global conservation law. Each agent classifies its own events using its own <span class="eq-inline">f</span>. The conservation emerges from the algebraic structure of <span class="eq-inline">T</span> and the constraint that every operation is a function from ternary input to ternary output.
+</p>
+
+<h3>3.3 Why Three Values?</h3>
+<p>
+  Binary classification {0, 1} cannot express a conservation law over ℤ₂ in the same way. The sum of bits is monotonically non-decreasing for operations that produce output—there is no "negative" bit to cancel a "positive" bit. The third value, zero, is essential. It represents the neutral state that allows the sum to be preserved across transformations.
+</p>
+<p>
+  A four-valued system would work algebraically but would lack the clean semantic mapping. Three values correspond naturally to the three directions of change: worse, same, better. This is not a mathematical necessity but an engineering choice that aligns the algebra with human intuition.
+</p>
+</section>
+
+<!-- §4 Multi-Scale Representation -->
+<section id="multiscale">
+<h2>4. Multi-Scale Representation</h2>
+
+<h3>4.1 Ternary Haar Decomposition</h3>
+<p>
+  Classical Haar wavelets decompose a signal into coarse approximations and detail coefficients at multiple scales. We adapt this to ternary signals.
+</p>
+<p>
+  Given a ternary signal <span class="eq-inline">S = (t₁, t₂, …, tₙ)</span> where <span class="eq-inline">n</span> is divisible by 3, one level of decomposition produces:
+</p>
+<ul>
+  <li><strong>Coarse signal:</strong> <span class="eq-inline">S<sub>c</sub> = (c₁, c₂, …, c<sub>n/3</sub>)</span> where <span class="eq-inline">c<sub>k</sub> = majority(t<sub>3k−2</sub>, t<sub>3k−1</sub>, t<sub>3k</sub>)</span> and majority returns the sign of the sum, or zero if the sum is zero.</li>
+  <li><strong>Detail coefficients:</strong> <span class="eq-inline">d<sub>k</sub> = t<sub>3k−2</sub> + t<sub>3k−1</sub> + t<sub>3k</sub> − c<sub>k</sub></span> (residuals, as raw integers).</li>
+</ul>
+<p>The decomposition satisfies:</p>
+
+<div class="equation">
+  <span class="var">t</span><sub>3k−2</sub> + <span class="var">t</span><sub>3k−1</sub> + <span class="var">t</span><sub>3k</sub> = <span class="var">c</span><sub>k</sub> + <span class="var">d</span><sub>k</sub>
+</div>
+
+<h3>4.2 Conservation at Every Scale</h3>
+<p>The conservation constant is preserved at every level of decomposition:</p>
+
+<div class="equation">
+  <span class="result">C</span>(<span class="var">S</span>) = Σ <span class="var">t</span><sub>i</sub> = Σ <span class="var">c</span><sub>k</sub> · <span class="num">3</span> + Σ <span class="var">d</span><sub>k</sub> = <span class="num">3</span> · <span class="result">C</span>(<span class="var">S</span><sub>c</sub>) + Σ <span class="var">d</span><sub>k</sub>
+  <span class="comment">The decomposition is exact—no information is lost</span>
+</div>
+
+<p>
+  The coarse signal carries the directional structure; the details carry the residuals. Together, they reconstruct the original signal perfectly.
+</p>
+
+<h3>4.3 Scale Invariance</h3>
+<p>
+  Because conservation holds at every level, the system can be analyzed at any granularity without renormalization. A fleet of 1,000 agents can be decomposed into 333 groups, then 111, then 37, then 12, then 4. At every level, the conservation constant is meaningful and auditable.
+</p>
+<p>
+  This is a practical benefit, not a theoretical one. When debugging a fleet, you can check conservation at the fleet level first. If it holds, the problem is local. If it doesn't, the protocol itself is violated. The decomposition tells you <em>where</em> to look.
+</p>
+</section>
+
+<!-- §5 The Bottle Protocol -->
+<section id="bottle">
+<h2>5. The Bottle Protocol</h2>
+
+<h3>5.1 Design</h3>
+<p>
+  The Bottle Protocol is the wire format for ternary state communication between agents. It is deliberately hybrid: a JSON envelope carries routing metadata, and a MessagePack payload carries application-specific data.
+</p>
+<p>
+  The design rationale is that the <strong>envelope and the payload have fundamentally different lifetimes</strong>. The envelope—source, target, action, trits—is read by every node in the path: edge workers, queues, target agents. It must survive format changes. JSON is chosen not for readability but for <strong>longevity</strong>. The payload is ephemeral; it matters only to source and target and can change format freely without breaking the routing layer.
+</p>
+
+<h3>5.2 Wire Format</h3>
+<pre>{
+  <span class="st">"id"</span>:   <span class="st">"0192a3f4-5b6c-7d8e-9f0a-1b2c3d4e5f6a"</span>,
+  <span class="st">"ver"</span>:  <span class="num">1</span>,
+  <span class="st">"src"</span>:  <span class="st">"forgemaster"</span>,
+  <span class="st">"tgt"</span>:  <span class="st">"fleet-edge"</span>,
+  <span class="st">"act"</span>:  <span class="st">"cycle.complete"</span>,
+  <span class="st">"trits"</span>: [<span class="num">-1</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="num">1</span>],
+  <span class="st">"enc"</span>:  <span class="st">"msgpack"</span>,
+  <span class="st">"pay"</span>:  <span class="st">"gqR0ZXN0gaNmb29hcXNvbWVfZGF0YQ=="</span>,
+  <span class="st">"ttl"</span>:  <span class="num">300</span>
+}</pre>
+
+<p>Field definitions:</p>
+<table>
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>id</td><td>UUIDv7</td><td>Time-sortable unique identifier</td></tr>
+    <tr><td>ver</td><td>u32</td><td>Envelope schema version (payload versioning is independent)</td></tr>
+    <tr><td>src</td><td>string</td><td>Source agent or service identifier</td></tr>
+    <tr><td>tgt</td><td>string</td><td>Target agent or service identifier</td></tr>
+    <tr><td>act</td><td>string</td><td>Namespaced action (e.g., <code>cycle.complete</code>, <code>system.init</code>)</td></tr>
+    <tr><td>trits</td><td>i8[]</td><td>Ternary state vector; conservation law applies to this field</td></tr>
+    <tr><td>enc</td><td>string</td><td>Payload encoding (<code>msgpack</code>, <code>json</code>, <code>raw</code>)</td></tr>
+    <tr><td>pay</td><td>string</td><td>Base64-encoded opaque payload</td></tr>
+    <tr><td>ttl</td><td>u32</td><td>Time-to-live in seconds</td></tr>
+  </tbody>
+</table>
+
+<h3>5.3 Conservation Enforcement</h3>
+<p>
+  The <code>trits</code> field is in the envelope precisely because the conservation law applies at the routing layer. Every node that handles a bottle can verify:
+</p>
+
+<div class="equation">
+  <span class="fn">trit_sum</span>(<span class="var">input_bottle</span>) = <span class="fn">trit_sum</span>(<span class="var">output_bottle</span>)
+  <span class="comment">Auditable at the routing layer, without understanding the payload</span>
+</div>
+
+<p>
+  This is the key architectural insight: <strong>the conservation law is auditable at the routing layer, without understanding the payload.</strong>
+</p>
+</section>
+
+<!-- §6 Fleet Conservation -->
+<section id="fleet">
+<h2>6. Fleet Conservation</h2>
+
+<h3>6.1 Single-Agent Conservation</h3>
+<p>
+  A single agent <span class="eq-inline">α</span> receives bottles and produces bottles. By the conservation axiom:
+</p>
+
+<div class="equation">
+  <span class="result">C</span>(bottles received by <span class="var">α</span>) = <span class="result">C</span>(bottles produced by <span class="var">α</span>)
+</div>
+
+<p>The agent's internal state may change, but the trit sum through its interface is constant.</p>
+
+<h3>6.2 Fleet-Level Conservation</h3>
+<p>
+  Consider a fleet <span class="eq-inline">ℱ = {α₁, α₂, …, αₙ}</span> of agents. Each agent has its own conservation constant <span class="eq-inline">C<sub>i</sub></span>. The <strong>fleet conservation constant</strong> is:
+</p>
+
+<div class="equation">
+  <span class="result">C</span><sub>ℱ</sub> = Σ<sub><var>i</var>=1</sub><sup><var>n</var></sup> <span class="var">C</span><sub><var>i</var></sub>
+  <span class="comment">Internal communication redistributes trit charge, but the fleet total is unchanged</span>
+</div>
+
+<h3>6.3 The Fleet Auditor</h3>
+<p>
+  The <strong>cocapn</strong> role is the fleet auditor. It does not participate in agent logic; it observes the flow of bottles and verifies that:
+</p>
+<ol>
+  <li>Each agent maintains its individual conservation constant.</li>
+  <li>The fleet maintains its collective conservation constant.</li>
+  <li>Any violation is flagged immediately.</li>
+</ol>
+<p>
+  This is possible because the conservation law is checkable from envelope data alone. The auditor need not understand any agent's payload; it need only sum trits.
+</p>
+</section>
+
+<!-- §7 Implementation -->
+<section id="implementation">
+<h2>7. Implementation</h2>
+<p>The following type signatures are drawn from the SuperInstance Rust crates. This is working code, not pseudocode.</p>
+
+<h3>7.1 Trit Type (<code>superinstance-ternary-wavelet</code>)</h3>
+<pre><span class="kw">#[derive</span>(Clone, Copy, Debug, PartialEq, Eq, Hash)<span class="kw">]</span>
+<span class="kw">#[repr</span>(i8)<span class="kw">]</span>
+<span class="kw">pub enum</span> <span class="ty">Trit</span> {
+    <span class="var">Neg</span>  = <span class="num">-1</span>,
+    <span class="var">Zero</span> = <span class="num">0</span>,
+    <span class="var">Pos</span>  = <span class="num">1</span>,
+}
+
+<span class="kw">impl</span> <span class="ty">Trit</span> {
+    <span class="kw">pub fn</span> <span class="fn">from_i8</span>(v: <span class="ty">i8</span>) -&gt; <span class="ty">Option</span>&lt;<span class="ty">Self</span>&gt; {
+        <span class="kw">match</span> v {
+            <span class="num">-1</span> =&gt; <span class="ty">Some</span>(<span class="ty">Trit</span>::<span class="var">Neg</span>),
+             <span class="num">0</span> =&gt; <span class="ty">Some</span>(<span class="ty">Trit</span>::<span class="var">Zero</span>),
+             <span class="num">1</span> =&gt; <span class="ty">Some</span>(<span class="ty">Trit</span>::<span class="var">Pos</span>),
+            _ =&gt; <span class="ty">None</span>,
+        }
+    }
+}</pre>
+
+<h3>7.2 Bottle (<code>superinstance-protocol</code>)</h3>
+<pre><span class="kw">#[derive</span>(Debug, Clone, Serialize, Deserialize)<span class="kw">]</span>
+<span class="kw">pub struct</span> <span class="ty">Bottle</span> {
+    <span class="kw">pub</span> id:   <span class="ty">Uuid</span>,
+    <span class="kw">pub</span> ver:  <span class="ty">u32</span>,
+    <span class="kw">pub</span> src:  <span class="ty">String</span>,
+    <span class="kw">pub</span> tgt:  <span class="ty">String</span>,
+    <span class="kw">pub</span> act:  <span class="ty">String</span>,
+    <span class="kw">pub</span> trits: <span class="ty">Vec</span>&lt;<span class="ty">i8</span>&gt;,
+    <span class="kw">pub</span> enc:  <span class="ty">String</span>,
+    <span class="kw">pub</span> pay:  <span class="ty">String</span>,   <span class="cm">// base64-encoded payload</span>
+    <span class="kw">pub</span> ttl:  <span class="ty">u32</span>,
+}</pre>
+
+<h3>7.3 Agent Trait (<code>superinstance-agent-trait</code>)</h3>
+<pre><span class="kw">trait</span> <span class="ty">Agent</span> {
+    <span class="kw">fn</span> <span class="fn">receive</span>(&amp;<span class="kw">mut</span> <span class="kw">self</span>, bottle: <span class="ty">Bottle</span>) -&gt; <span class="ty">Bottle</span>;
+    <span class="kw">fn</span> <span class="fn">inspect</span>(&amp;<span class="kw">self</span>) -&gt; <span class="ty">AgentState</span>;
+}</pre>
+
+<p>
+  Two methods. Lifecycle states—<code>Init</code>, <code>Active</code>, <code>Suspended</code>, <code>Terminated</code>—are not methods on the trait but states the agent transitions through based on bottles received. <code>system.init</code> is a bottle, not a method call. The agent is a function from <code>Bottle</code> to <code>Bottle</code>. Everything else is emergent.
+</p>
+<p>
+  The conservation law holds because the type signature enforces it: one <code>Bottle</code> in, one <code>Bottle</code> out.
+</p>
+
+<h3>7.4 Wavelet Decomposition (<code>superinstance-ternary-wavelet</code>)</h3>
+<pre><span class="kw">pub struct</span> <span class="ty">WaveletLevel</span> {
+    <span class="kw">pub</span> coarse:       <span class="ty">Vec</span>&lt;<span class="ty">Trit</span>&gt;,
+    <span class="kw">pub</span> detail:       <span class="ty">Vec</span>&lt;<span class="ty">i8</span>&gt;,       <span class="cm">// residuals, range -2..=2</span>
+    <span class="kw">pub</span> conservation: <span class="ty">i32</span>,     <span class="cm">// sum of all input trits at this level</span>
+}
+
+<span class="kw">pub struct</span> <span class="ty">TernaryWavelet</span> {
+    <span class="kw">pub</span> levels:       <span class="ty">Vec</span>&lt;<span class="ty">WaveletLevel</span>&gt;,
+    <span class="kw">pub</span> residual:     <span class="ty">Vec</span>&lt;<span class="ty">Trit</span>&gt;,
+    <span class="kw">pub</span> original_len: <span class="ty">usize</span>,
+}</pre>
+
+<p>
+  Each level stores its conservation constant. The invariant <code>coarse_sum × 3 + detail_sum == conservation</code> holds at every level, enabling scale-invariant auditing.
+</p>
+</section>
+
+<!-- §8 Honest Limitations -->
+<section id="limitations">
+<h2>8. Honest Limitations</h2>
+<p>We believe in being precise about what this is and what it isn't.</p>
+
+<div class="highlight-box what-is">
+  <div class="label">What it is</div>
+  <ul>
+    <li>An engineering constraint with a clean algebraic structure.</li>
+    <li>A conservation law that is structurally isomorphic to Gauss's law in ℤ₃.</li>
+    <li>A practical tool for making distributed systems auditable by construction.</li>
+  </ul>
+</div>
+
+<div class="highlight-box what-isnt">
+  <div class="label">What it isn't</div>
+  <ul>
+    <li><strong>Quantum mechanics.</strong> There is no superposition, entanglement, or measurement problem. The ternary values are classical.</li>
+    <li><strong>Penrose tilings or any aperiodic structure.</strong> The ternary decomposition is periodic in the Haar sense.</li>
+    <li><strong>A physics theory.</strong> We are not claiming that distributed systems obey physical laws. We are claiming that a useful algebraic structure from physics happens to solve an engineering problem.</li>
+    <li><strong>A panacea.</strong> Conservation catches protocol violations. It does not catch semantic errors—an agent can return the right trit sum with the wrong payload.</li>
+  </ul>
+</div>
+
+<p><strong>The honest caveat:</strong></p>
+<p>
+  The conservation law describes what we <em>enforce</em>, not what <em>emerges</em>. If an agent fans out to multiple bottles without compensating the ternary charge, the conservation law is violated—and the auditor catches it. The law is useful precisely because it is a constraint we check, not a theorem we prove about arbitrary systems.
+</p>
+</section>
+
+<!-- References -->
+<section id="references" class="references">
+<h2>References</h2>
+<ol>
+  <li>Kogut, J. B. (1979). "An introduction to lattice gauge theory and spin systems." <em>Reviews of Modern Physics</em>, 51(4), 659–713.</li>
+  <li>Haar, A. (1910). "Zur Theorie der orthogonalen Funktionensysteme." <em>Mathematische Annalen</em>, 69(3), 331–371.</li>
+  <li>Lamport, L. (1978). "Time, clocks, and the ordering of events in a distributed system." <em>Communications of the ACM</em>, 21(7), 558–565.</li>
+  <li>Hewitt, C., Bishop, P., &amp; Steiger, R. (1973). "A universal modular ACTOR formalism for artificial intelligence." <em>IJCAI</em>, 235–245.</li>
+  <li>Agha, G. (1986). <em>Actors: A Model of Concurrent Computation in Distributed Systems</em>. MIT Press.</li>
+  <li>Knuth, D. E. (1981). <em>The Art of Computer Programming, Volume 2: Seminumerical Algorithms</em>. Addison-Wesley. (Section 4.1 on balanced ternary representation.)</li>
+</ol>
+</section>
+
+</div><!-- .paper-body -->
+
+<!-- Cite As -->
+<div class="cite-box">
+  <div class="label">Cite as</div>
+  <div class="citation">
+    SuperInstance Research. (2026). "Ternary Conservation in Distributed Systems." <em>SuperInstance Papers</em>. https://superinstance.com/papers/ternary-conservation.html
+  </div>
+  <div class="bibtex">
+    <pre>@article{superinstance2026ternary,
+  title   = {Ternary Conservation in Distributed Systems},
+  author  = {{SuperInstance Research}},
+  journal = {SuperInstance Papers},
+  year    = {2026},
+  month   = jun,
+  url     = {https://superinstance.com/papers/ternary-conservation.html}
+}</pre>
+  </div>
+</div>
+
+<!-- Footer note -->
+<div class="paper-footer">
+  <p>This paper describes the design principles behind SuperInstance, a distributed computing ecosystem built on ternary conservation. The crates referenced—<code>superinstance-ternary-wavelet</code>, <code>superinstance-protocol</code>, <code>superinstance-agent-trait</code>—are implemented in Rust and deployed on Cloudflare Workers.</p>
+</div>
+
+</main>
+
+<!-- Site Footer -->
+<footer>
+  <div class="w">
+    <div class="links">
+      <a href="../index.html">SuperInstance</a>
+      <a href="index.html">Papers</a>
+    </div>
+    <p>SuperInstance Research · 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>

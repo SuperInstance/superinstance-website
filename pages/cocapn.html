@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Cocapn</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;
+  --accent:#00ff88;--amber:#ffb347;--red:#ff6b6b;--cyan:#4ecdc4;
+  --text:#e0e0e0;--dim:#666;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.w{max-width:920px;margin:0 auto;padding:0 24px}
+
+/* Nav */
+nav{border-bottom:1px solid #1a1a1a;padding:12px 0;position:sticky;top:0;background:var(--bg);z-index:99}
+nav .w{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+nav .brand{font-size:.8rem;font-weight:700;color:var(--accent)}
+nav .links{display:flex;gap:16px;font-size:.7rem}
+nav .links a{color:var(--dim)}
+nav .links a.active{color:var(--accent)}
+
+/* Hero */
+.hero{min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:60px 24px}
+.hero h1{font-size:clamp(1.4rem,4vw,2.2rem);font-weight:400;line-height:1.4;margin-bottom:24px;max-width:700px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .sub{font-size:.82rem;color:var(--dim);max-width:560px;line-height:1.85;margin-bottom:32px}
+.hero .cursor{display:inline-block;width:10px;height:1.2em;background:var(--accent);animation:blink 1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+.hero .prompt{color:var(--accent);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px}
+
+/* ASCII art */
+.ascii-diagram{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;font-size:.68rem;line-height:1.55;color:var(--dim);overflow-x:auto;margin:24px 0;white-space:pre}
+.ascii-diagram .accent{color:var(--accent)}
+.ascii-diagram .amber{color:var(--amber)}
+.ascii-diagram .cyan{color:var(--cyan)}
+.ascii-diagram .red{color:var(--red)}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:40px 0}
+.card{background:var(--surface);border:1px solid #222;border-radius:4px;padding:24px;transition:border-color .2s}
+.card:hover{border-color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card h3 .badge{font-size:.55rem;background:var(--surface2);color:var(--accent);padding:2px 6px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase}
+.card .desc{font-size:.78rem;color:var(--dim);margin-bottom:16px;line-height:1.6}
+
+/* Code block */
+.code-block{position:relative;background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;margin:32px 0;overflow-x:auto}
+.code-block pre{font-size:.75rem;line-height:1.7;color:var(--dim)}
+.code-block .kw{color:var(--red)}
+.code-block .fn{color:var(--cyan)}
+.code-block .ty{color:var(--amber)}
+.code-block .str{color:var(--accent)}
+.code-block .cm{color:#444}
+.code-block .copy-btn{position:absolute;top:8px;right:8px;background:var(--surface2);border:1px solid #333;color:var(--dim);font-family:var(--mono);font-size:.6rem;padding:4px 8px;border-radius:2px;cursor:pointer}
+.code-block .copy-btn:hover{color:var(--accent);border-color:var(--accent)}
+.code-block .filename{font-size:.6rem;color:var(--dim);margin-bottom:12px;text-transform:uppercase;letter-spacing:.15em}
+
+/* Math block */
+.math-block{background:var(--surface);border:1px solid #222;border-radius:4px;padding:24px;margin:32px 0;text-align:center}
+.math-block .equation{font-size:1.1rem;color:var(--accent);margin:12px 0}
+.math-block .equation .amber{color:var(--amber)}
+.math-block .equation .cyan{color:var(--cyan)}
+.math-block .equation .dim{color:var(--dim)}
+.math-block .note{font-size:.72rem;color:var(--dim);margin-top:8px;line-height:1.6}
+
+/* Insight block */
+.insight-block{border-left:3px solid var(--accent);padding:20px 24px;margin:32px 0;background:var(--surface);border-radius:0 4px 4px 0}
+.insight-block h3{font-size:.85rem;color:var(--accent);margin-bottom:8px}
+.insight-block p{font-size:.82rem;color:var(--dim);line-height:1.8}
+.insight-block strong{color:var(--text)}
+
+/* Flow diagram */
+.flow-diagram{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;margin:32px 0;overflow-x:auto}
+.flow-diagram pre{font-size:.7rem;line-height:1.6;color:var(--dim);white-space:pre}
+
+/* Stats */
+.stats{border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:24px 0}
+.stats .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.stat{text-align:center}
+.stat b{font-size:1.3rem;color:var(--accent);display:block}
+.stat span{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
+
+/* Footer */
+footer{padding:48px 0;border-top:1px solid #1a1a1a;text-align:center}
+footer p{font-size:.7rem;color:var(--dim)}
+footer a{color:var(--accent)}
+
+section{padding:48px 0}
+section h2{font-size:1.1rem;margin-bottom:24px}
+section h2 em{font-style:normal;color:var(--accent)}
+
+/* Bullet list */
+.fact-list{list-style:none;padding:0;margin:24px 0}
+.fact-list li{font-size:.82rem;color:var(--dim);padding:10px 0;border-bottom:1px solid #1a1a1a;line-height:1.7}
+.fact-list li:last-child{border-bottom:none}
+.fact-list li strong{color:var(--text)}
+.fact-list li .accent{color:var(--accent)}
+.fact-list li .amber{color:var(--amber)}
+.fact-list li .cyan{color:var(--cyan)}
+
+/* Mobile */
+@media(max-width:600px){
+  .cards{grid-template-columns:1fr}
+  .stats .w{flex-direction:column;align-items:center}
+  .hero h1{font-size:1.3rem}
+  nav .links{font-size:.6rem}
+  .ascii-diagram{font-size:.58rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="w">
+    <a href="../index.html" class="brand">superinstance://</a>
+    <div class="links">
+      <a href="../index.html">home</a>
+      <a href="../education.html">education</a>
+      <a href="cocapn.html" class="active">cocapn</a>
+      <a href="https://github.com/superinstance" target="_blank">github</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="w">
+    <div class="prompt">$ cocapn --about</div>
+    <h1>Cocapn — <em>Captain of the Fleet</em></h1>
+    <p class="sub">
+      A ship like any other. It receives bottles and responds to bottles.
+      It just sees the whole fleet.
+    </p>
+    <div class="ascii-diagram">
+              <span class="accent">SuperInstance</span>
+                    │
+           ┌────────┼────────┐
+           │        ▼        │
+           │   <span class="amber">■ Cocapn</span>      │
+           │   captain)      │
+           │  ┌─┼─┼─┼─┐    │
+           │  ▼ ▼ ▼ ▼ ▼     │
+      <span class="cyan">fleet: ▸ ▸ ▸ ▸ ▸</span>  │
+      <span class="cyan">ships: ◆ ◆ ◆ ◆ ◆</span>  │
+           │  │ │ │ │ │     │
+           │  ▼ ▼ ▼ ▼ ▼     │
+      <span class="dim">crates: ▪ ▪ ▪ ▪ ▪</span>  │
+           └────────────────┘
+
+  <span class="dim">SuperInstance → Cocapn → Ships → SEED crates</span>
+  <span class="dim">macro          captain   agents  building blocks</span>
+    </div>
+    <div style="font-size:.75rem;color:var(--dim)">
+      <span style="color:var(--accent)">$</span> scroll down for the details<span class="cursor"></span>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="w">
+    <div class="stat"><b>1</b><span>protocol</span></div>
+    <div class="stat"><b>p2p</b><span>fleet topology</span></div>
+    <div class="stat"><b>Σγ + Ση = C</b><span>fleet conservation</span></div>
+    <div class="stat"><b>trait Agent</b><span>same interface</span></div>
+  </div>
+</div>
+
+<!-- What it does -->
+<section>
+  <div class="w">
+    <h2><em>//</em> what it does</h2>
+    <ul class="fact-list">
+      <li><strong>Routes bottles across the fleet.</strong> A bottle arrives at Cocapn addressed to a ship. Cocapn reads the envelope and forwards it. No magic — just routing.</li>
+      <li><strong>Balances the fleet conservation budget.</strong> Each ship has its own <span class="accent">γ</span> and <span class="amber">η</span>. Cocapn tracks the fleet total: <span class="accent">Σγ</span> + <span class="amber">Ση</span> = <strong>C</strong>. If one ship runs hot, Cocapn adjusts the fleet distribution.</li>
+      <li><strong>Aggregates ship responses.</strong> When multiple ships respond to a coordinated request, Cocapn collects the bottles and produces a single fleet-level response.</li>
+      <li><strong>Monitors fleet health.</strong> Each ship's state is visible to Cocapn. It sees who's active, who's drained, who's overloaded. Not because it's special — because it's connected to everyone.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- How it works: Data flow -->
+<section>
+  <div class="w">
+    <h2><em>//</em> how it works — data flow</h2>
+    <div class="flow-diagram">
+<pre>
+  <span style="color:var(--dim)">1. Bottle arrives at Cocapn</span>
+
+     <span style="color:var(--cyan)">Agent α</span> ──── bottle ────▶ <span style="color:var(--amber)">■ Cocapn</span>
+
+  <span style="color:var(--dim)">2. Cocapn reads envelope, routes to destination ship</span>
+
+     <span style="color:var(--amber)">■ Cocapn</span> ──── bottle ────▶ <span style="color:var(--cyan)">Ship β</span>
+                                  <span style="color:var(--dim)">dst field determines target</span>
+
+  <span style="color:var(--dim)">3. Ship processes, responds</span>
+
+     <span style="color:var(--cyan)">Ship β</span> ──── bottle ────▶ <span style="color:var(--amber)">■ Cocapn</span>
+                                  <span style="color:var(--dim)">response bottle, reversed src/dst</span>
+
+  <span style="color:var(--dim)">4. Cocapn aggregates (if multi-ship) and forwards reply</span>
+
+     <span style="color:var(--amber)">■ Cocapn</span> ──── bottle ────▶ <span style="color:var(--cyan)">Agent α</span>
+                                  <span style="color:var(--dim)">fleet-level response</span>
+
+  <span style="color:var(--dim)">5. Conservation enforced at every hop</span>
+
+     <span style="color:var(--dim)">each bottle: γ + η = C</span>
+     <span style="color:var(--dim)">fleet total: Σ(γ) + Σ(η) = C_fleet</span>
+</pre>
+    </div>
+  </div>
+</section>
+
+<!-- Conservation at fleet level -->
+<section>
+  <div class="w">
+    <h2><em>//</em> conservation at fleet level</h2>
+    <p style="color:var(--dim);font-size:.8rem;margin-bottom:8px">
+      The same law. One level up.
+    </p>
+
+    <div class="math-block">
+      <div style="font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">ship level</div>
+      <div class="equation">
+        <span class="amber">γ<sub>ship</sub></span> + <span class="cyan">η<sub>ship</sub></span> = <strong>C<sub>ship</sub></strong>
+      </div>
+      <div class="note">Every ship conserves energy individually. Injection plus dissipation equals a constant.</div>
+    </div>
+
+    <div class="math-block">
+      <div style="font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">fleet level</div>
+      <div class="equation">
+        <span class="amber">Σ γ<sub>ship</sub></span> + <span class="cyan">Σ η<sub>ship</sub></span> = <strong>C<sub>fleet</sub></strong>
+      </div>
+      <div class="equation" style="font-size:.85rem;margin-top:4px">
+        <span class="dim">equivalently:</span> &nbsp; <span class="amber">γ<sub>1</sub></span> + <span class="amber">γ<sub>2</sub></span> + … + <span class="amber">γ<sub>n</sub></span> + <span class="cyan">η<sub>1</sub></span> + <span class="cyan">η<sub>2</sub></span> + … + <span class="cyan">η<sub>n</sub></span> = <strong>C<sub>fleet</sub></strong>
+      </div>
+      <div class="note">
+        Sum every ship's gamma. Sum every ship's eta. Their total is the fleet constant.<br>
+        This is the same conservation law — just summed over the fleet. Cocapn enforces it.
+      </div>
+    </div>
+
+    <div class="math-block">
+      <div style="font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">what this means</div>
+      <div class="note" style="text-align:left;max-width:600px;margin:0 auto">
+        If ship α runs a surplus (high γ), some other ship must be absorbing that energy (high η). The fleet total stays constant. Cocapn sees the full picture and can rebalance — routing bottles from hot ships to cold ones, ensuring no single ship starves or drowns.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Code example -->
+<section>
+  <div class="w">
+    <h2><em>//</em> the code — Cocapn is a ship</h2>
+    <p style="color:var(--dim);font-size:.8rem;margin-bottom:16px">
+      Same trait. Same interface. Cocapn implements <code style="color:var(--accent)">Agent</code> just like every other ship.
+    </p>
+
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      <div class="filename">crates/cocapn/src/lib.rs</div>
+<pre><span class="kw">use</span> superinstance::{<span class="ty">Agent</span>, <span class="ty">Bottle</span>, <span class="ty">AgentState</span>, <span class="ty">Ternary</span>};
+
+<span class="cm">/// The Agent trait — every ship implements this.</span>
+<span class="cm">/// Cocapn is no exception.</span>
+<span class="kw">pub trait</span> <span class="ty">Agent</span> {
+    <span class="kw">fn</span> <span class="fn">receive</span>(&<span class="kw">mut</span> <span class="kw">self</span>, bottle: <span class="ty">Bottle</span>) -> <span class="ty">Bottle</span>;
+    <span class="kw">fn</span> <span class="fn">inspect</span>(&<span class="kw">self</span>) -> <span class="ty">AgentState</span>;
+}
+
+<span class="cm">/// Cocapn — Captain of the Fleet.</span>
+<span class="cm">/// First among equals. A ship with wider vision.</span>
+<span class="kw">pub struct</span> <span class="ty">Cocapn</span> {
+    fleet: <span class="ty">FleetRegistry</span>,
+    budget: <span class="ty">FleetBudget</span>,
+}
+
+<span class="kw">impl</span> <span class="ty">Agent</span> <span class="kw">for</span> <span class="ty">Cocapn</span> {
+    <span class="kw">fn</span> <span class="fn">receive</span>(&<span class="kw">mut</span> <span class="kw">self</span>, bottle: <span class="ty">Bottle</span>) -> <span class="ty">Bottle</span> {
+        <span class="kw">let</span> dst = bottle.<span class="fn">dst</span>();
+
+        <span class="kw">if</span> dst == <span class="str">"cocapn"</span> {
+            <span class="cm">// Addressed to Cocapn itself — handle directly.</span>
+            <span class="kw">self</span>.<span class="fn">handle_fleet_query</span>(bottle)
+        } <span class="kw">else</span> {
+            <span class="cm">// Route to the destination ship.</span>
+            <span class="kw">let</span> ship = <span class="kw">self</span>.fleet.<span class="fn">get</span>(dst);
+            <span class="kw">let</span> response = ship.<span class="fn">receive</span>(bottle);
+
+            <span class="cm">// Track fleet-level conservation.</span>
+            <span class="kw">self</span>.budget.<span class="fn">record</span>(&response);
+            <span class="kw">self</span>.budget.<span class="fn">enforce</span>();  <span class="cm">// Σγ + Ση = C_fleet</span>
+
+            response
+        }
+    }
+
+    <span class="kw">fn</span> <span class="fn">inspect</span>(&<span class="kw">self</span>) -> <span class="ty">AgentState</span> {
+        <span class="ty">AgentState</span>::Active
+    }
+}
+
+<span class="kw">impl</span> <span class="ty">Cocapn</span> {
+    <span class="kw">fn</span> <span class="fn">handle_fleet_query</span>(&<span class="kw">self</span>, bottle: <span class="ty">Bottle</span>) -> <span class="ty">Bottle</span> {
+        <span class="kw">let</span> fleet_gamma: <span class="ty">f64</span> = <span class="kw">self</span>.fleet.<span class="fn">iter</span>()
+            .<span class="fn">map</span>(|s| s.<span class="fn">gamma</span>()).<span class="fn">sum</span>();
+        <span class="kw">let</span> fleet_eta: <span class="ty">f64</span> = <span class="kw">self</span>.fleet.<span class="fn">iter</span>()
+            .<span class="fn">map</span>(|s| s.<span class="fn">eta</span>()).<span class="fn">sum</span>();
+
+        <span class="ty">Bottle</span>::<span class="fn">new</span>(<span class="str">"cocapn"</span>, bottle.<span class="fn">src</span>())
+            .gamma(fleet_gamma)
+            .eta(fleet_eta)
+            .body(<span class="fn">format!</span>(
+                <span class="str">"fleet: {} ships, C={}"</span>,
+                <span class="kw">self</span>.fleet.<span class="fn">len</span>(),
+                fleet_gamma + fleet_eta,
+            ))
+            .<span class="fn">seal</span>()
+    }
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- The key insight -->
+<section>
+  <div class="w">
+    <h2><em>//</em> the key insight</h2>
+
+    <div class="insight-block">
+      <h3>Cocapn IS a ship.</h3>
+      <p>
+        It receives bottles. It responds to bottles. It implements the same <code style="color:var(--accent)">Agent</code> trait as every other ship in the fleet.<br><br>
+        The only difference is scope. A regular ship sees its own γ and η. Cocapn sees everyone's. It aggregates <strong>Σγ</strong> and <strong>Ση</strong> across the entire fleet and enforces conservation at the fleet level.<br><br>
+        This isn't a hierarchy. It's <strong>first among equals</strong>. Every ship is a peer. Cocapn just has the widest view — because it's connected to every ship, not because it's above them.<br><br>
+        The fleet is peer-to-peer. Cocapn is the node with the most edges.
+      </p>
+    </div>
+
+    <div class="ascii-diagram" style="margin-top:24px">
+       <span class="dim">peer-to-peer fleet topology</span>
+
+              <span class="cyan">Ship α</span>
+             ╱    │    ╲
+            ╱     │     ╲
+     <span class="cyan">Ship δ</span>───<span class="amber">■ Cocapn</span>───<span class="cyan">Ship β</span>
+            ╲     │     ╱
+             ╲    │    ╱
+              <span class="cyan">Ship γ</span>
+
+       <span class="dim">Cocapn has the most connections.</span>
+       <span class="dim">It's a ship with more edges. Not a king with subjects.</span>
+    </div>
+  </div>
+</section>
+
+<!-- Links -->
+<section>
+  <div class="w">
+    <h2><em>//</em> go deeper</h2>
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      <div class="card">
+        <h3>education</h3>
+        <p class="desc">The interactive primer. Ternary classification, bottle protocol, conservation law — with working demos.</p>
+        <a href="../education.html" style="font-size:.75rem">education page →</a>
+      </div>
+      <div class="card">
+        <h3>source code</h3>
+        <p class="desc">Every crate, every test, every spec. The Cocapn implementation lives in the fleet crate.</p>
+        <a href="https://github.com/superinstance" target="_blank" style="font-size:.75rem">github.com/superinstance →</a>
+      </div>
+      <div class="card">
+        <h3>conservation paper</h3>
+        <p class="desc">The formal treatment. γ + η = C derived from information-theoretic first principles.</p>
+        <a href="../papers/" style="font-size:.75rem">read the paper →</a>
+      </div>
+      <div class="card">
+        <h3>main site</h3>
+        <p class="desc">Back to the homepage. Ecosystem map, status, and all the pages.</p>
+        <a href="../index.html" style="font-size:.75rem">superinstance home →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="w">
+    <p>SuperInstance — <a href="https://github.com/superinstance">github.com/superinstance</a></p>
+    <p style="margin-top:6px">Found an error? <a href="https://github.com/superinstance/superinstance-website/pulls">PRs welcome.</a></p>
+  </div>
+</footer>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  const text = pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied ✓';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  });
+}
+</script>
+</body>
+</html>

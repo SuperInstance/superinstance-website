@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Ecosystem Topology</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --border-hi: #3a3a3a;
+    --text: #d4d4d4;
+    --text-dim: #737373;
+    --pos: #00ff88;
+    --neutral: #facc15;
+    --neg: #ef4444;
+    --mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+  }
+  nav .inner {
+    max-width: 72rem; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 3.5rem;
+  }
+  nav .logo {
+    font-family: var(--mono); font-weight: 700; font-size: 1rem;
+    color: var(--pos); text-decoration: none; letter-spacing: -0.02em;
+  }
+  nav .links { display: flex; gap: 1.5rem; }
+  nav .links a {
+    color: var(--text-dim); text-decoration: none;
+    font-size: 0.875rem; font-family: var(--mono); transition: color 0.15s;
+  }
+  nav .links a:hover, nav .links a.active { color: var(--pos); }
+
+  main { max-width: 72rem; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Hero */
+  .hero {
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .hero h1 {
+    font-family: var(--mono); font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+    font-weight: 800; color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .hero p {
+    color: var(--text-dim); font-size: 1.05rem; max-width: 42rem;
+  }
+  .hero .hint {
+    margin-top: 0.75rem; font-family: var(--mono); font-size: 0.8rem;
+    color: var(--pos); opacity: 0.7;
+  }
+
+  /* Diagram container */
+  .diagram-wrap {
+    position: relative;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
+
+  /* Layers */
+  .layer {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 0;
+    position: relative;
+  }
+  .layer-label {
+    width: 180px; min-width: 180px;
+    display: flex; align-items: center;
+    padding: 0 1rem;
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .layer-label .num {
+    color: var(--pos); margin-right: 0.5rem; font-weight: 700;
+  }
+  .layer-nodes {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    flex: 1;
+    min-height: 80px;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Dependency connector zone between layers */
+  .dep-zone {
+    position: relative;
+    height: 48px;
+    margin-left: 180px;
+    border-left: 1px solid var(--border);
+  }
+  .dep-zone svg {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .dep-zone line {
+    stroke: var(--border-hi); stroke-width: 1.2;
+    stroke-dasharray: 4 3;
+  }
+
+  /* Node boxes */
+  .node {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.15s;
+    min-width: 130px;
+    text-align: center;
+  }
+  .node:hover {
+    border-color: var(--pos);
+    background: var(--surface2);
+    box-shadow: 0 0 20px rgba(0,255,136,0.08);
+    transform: translateY(-1px);
+    z-index: 10;
+  }
+  .node.highlighted {
+    border-color: var(--pos);
+    box-shadow: 0 0 24px rgba(0,255,136,0.15);
+  }
+  .node.dep-active {
+    border-color: var(--neutral);
+    box-shadow: 0 0 16px rgba(250,204,21,0.12);
+  }
+  .node.depended-by-active {
+    border-color: #818cf8;
+    box-shadow: 0 0 16px rgba(129,140,248,0.12);
+  }
+  .node .name {
+    font-family: var(--mono); font-size: 0.85rem; font-weight: 600;
+    color: var(--text); white-space: nowrap;
+  }
+  .node .sub {
+    font-family: var(--mono); font-size: 0.65rem;
+    color: var(--text-dim); margin-top: 2px;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    display: none;
+    position: fixed;
+    z-index: 200;
+    background: var(--surface2);
+    border: 1px solid var(--border-hi);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    max-width: 320px;
+    font-size: 0.8rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+  .tooltip.show { display: block; }
+  .tooltip .tt-title {
+    font-family: var(--mono); font-weight: 700;
+    color: var(--pos); margin-bottom: 0.35rem; font-size: 0.85rem;
+  }
+  .tooltip .tt-section {
+    margin-bottom: 0.3rem;
+  }
+  .tooltip .tt-label {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .tooltip .tt-items {
+    color: var(--text); padding-left: 0.5rem;
+  }
+  .tooltip .tt-items span {
+    display: inline-block;
+    margin-right: 0.4rem;
+    padding: 1px 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+  }
+  .tooltip .tt-items span.dep { color: var(--neutral); border: 1px solid rgba(250,204,21,0.25); }
+  .tooltip .tt-items span.by { color: #818cf8; border: 1px solid rgba(129,140,248,0.25); }
+
+  /* Detail panel */
+  .detail-panel {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    margin-top: 2rem;
+    animation: fadeIn 0.25s ease;
+  }
+  .detail-panel.show { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .detail-panel h3 {
+    font-family: var(--mono); font-size: 1.1rem; font-weight: 700;
+    color: var(--pos); margin-bottom: 0.25rem;
+  }
+  .detail-panel .detail-layer {
+    font-family: var(--mono); font-size: 0.75rem;
+    color: var(--text-dim); margin-bottom: 0.75rem;
+  }
+  .detail-panel p {
+    color: var(--text); max-width: 48rem; margin-bottom: 1rem; line-height: 1.7;
+  }
+  .detail-panel .deps-row {
+    display: flex; gap: 2rem; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 0.8rem;
+  }
+  .detail-panel .deps-col .deps-label {
+    color: var(--text-dim); font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem;
+  }
+  .detail-panel .deps-col ul { list-style: none; }
+  .detail-panel .deps-col li {
+    color: var(--text); padding: 2px 0;
+  }
+  .detail-panel .deps-col li::before {
+    content: '→'; margin-right: 0.4rem; color: var(--text-dim);
+  }
+  .detail-panel .close-btn {
+    float: right;
+    background: none; border: 1px solid var(--border);
+    color: var(--text-dim); border-radius: 4px;
+    padding: 0.2rem 0.6rem; cursor: pointer;
+    font-family: var(--mono); font-size: 0.75rem;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .detail-panel .close-btn:hover { color: var(--text); border-color: var(--text-dim); }
+
+  /* Legend */
+  .legend {
+    margin-top: 2rem; padding: 1rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border); border-radius: 6px;
+    display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;
+    font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+  .legend-swatch {
+    width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 4rem; padding: 2rem 0;
+    border-top: 1px solid var(--border);
+    text-align: center; font-family: var(--mono);
+    font-size: 0.75rem; color: var(--text-dim);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .layer-label { width: 100px; min-width: 100px; font-size: 0.6rem; }
+    .dep-zone { margin-left: 100px; }
+    .node { min-width: 100px; padding: 0.5rem 0.75rem; }
+    .node .name { font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="education.html" class="logo">⟨SI⟩</a>
+    <div class="links">
+      <a href="education.html">education</a>
+      <a href="topology.html" class="active">topology</a>
+      <a href="cocapn.html">cocapn</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <h1>Ecosystem Topology</h1>
+    <p>
+      Every crate in SuperInstance exists because something below it needed it.
+      Read bottom-to-top: the ternary foundation is the bedrock; the wavelet layer
+      is the observatory. Hover to trace dependencies. Click to dig in.
+    </p>
+    <div class="hint">↑ hover · click for details · read bottom-to-top ↑</div>
+  </div>
+
+  <div class="diagram-wrap" id="diagram">
+    <!-- Layer 1: Ternary Foundation -->
+    <div class="layer" data-layer="ternary">
+      <div class="layer-label"><span class="num">01</span>Ternary Foundation</div>
+      <div class="layer-nodes">
+        <div class="node" data-id="trit">
+          <div class="name">Trit</div>
+          <div class="sub">enum { Neg, Zero, Pos }</div>
+        </div>
+        <div class="node" data-id="conservation">
+          <div class="name">Conservation</div>
+          <div class="sub">γ + η = C</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-zone"><svg></svg></div>
+
+    <!-- Layer 2: Wire Protocol -->
+    <div class="layer" data-layer="wire">
+      <div class="layer-label"><span class="num">02</span>Wire Protocol</div>
+      <div class="layer-nodes">
+        <div class="node" data-id="bottle">
+          <div class="name">Bottle</div>
+          <div class="sub">typed message container</div>
+        </div>
+        <div class="node" data-id="envelope">
+          <div class="name">Envelope</div>
+          <div class="sub">JSON + msgpack payload</div>
+        </div>
+        <div class="node" data-id="audit">
+          <div class="name">Audit</div>
+          <div class="sub">trit-sum verification</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-zone"><svg></svg></div>
+
+    <!-- Layer 3: Agent Trait -->
+    <div class="layer" data-layer="agent">
+      <div class="layer-label"><span class="num">03</span>Agent Trait</div>
+      <div class="layer-nodes">
+        <div class="node" data-id="agent-trait">
+          <div class="name">Agent Trait</div>
+          <div class="sub">receive + inspect</div>
+        </div>
+        <div class="node" data-id="forgemaster">
+          <div class="name">Forgemaster</div>
+          <div class="sub">agent orchestrator</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-zone"><svg></svg></div>
+
+    <!-- Layer 4: SEED Crates -->
+    <div class="layer" data-layer="seed">
+      <div class="layer-label"><span class="num">04</span>SEED Crates</div>
+      <div class="layer-nodes">
+        <div class="node" data-id="circuit-breaker">
+          <div class="name">circuit-breaker</div>
+          <div class="sub">failure isolation</div>
+        </div>
+        <div class="node" data-id="rate-limiter">
+          <div class="name">rate-limiter</div>
+          <div class="sub">traffic shaping</div>
+        </div>
+        <div class="node" data-id="health-check">
+          <div class="name">health-check</div>
+          <div class="sub">liveness probes</div>
+        </div>
+        <div class="node" data-id="retry-backoff">
+          <div class="name">retry-backoff</div>
+          <div class="sub">exponential retry</div>
+        </div>
+        <div class="node" data-id="load-balancer">
+          <div class="name">load-balancer</div>
+          <div class="sub">distribution</div>
+        </div>
+        <div class="node" data-id="config-center">
+          <div class="name">config-center</div>
+          <div class="sub">dynamic config</div>
+        </div>
+        <div class="node" data-id="feature-flag">
+          <div class="name">feature-flag</div>
+          <div class="sub">toggle rollout</div>
+        </div>
+        <div class="node" data-id="service-discovery">
+          <div class="name">service-discovery</div>
+          <div class="sub">peer resolution</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-zone"><svg></svg></div>
+
+    <!-- Layer 5: Composition -->
+    <div class="layer" data-layer="composition">
+      <div class="layer-label"><span class="num">05</span>Composition</div>
+      <div class="layer-nodes">
+        <div class="node" data-id="resilience">
+          <div class="name">Resilience</div>
+          <div class="sub">breaker + retry + health</div>
+        </div>
+        <div class="node" data-id="traffic-control">
+          <div class="name">Traffic Control</div>
+          <div class="sub">rate-limit + load-balance</div>
+        </div>
+        <div class="node" data-id="service-mesh">
+          <div class="name">Service Mesh</div>
+          <div class="sub">discovery + config + flags</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-zone"><svg></svg></div>
+
+    <!-- Layer 6: Fleet -->
+    <div class="layer" data-layer="fleet">
+      <div class="layer-label"><span class="num">06</span>Fleet</div>
+      <div class="layer-nodes">
+        <div class="node" data-id="cocapn">
+          <div class="name">Cocapn</div>
+          <div class="sub">fleet captain</div>
+        </div>
+        <div class="node" data-id="fleet-routing">
+          <div class="name">Fleet Routing</div>
+          <div class="sub">request dispatch</div>
+        </div>
+        <div class="node" data-id="fleet-conservation">
+          <div class="name">Fleet Conservation</div>
+          <div class="sub">cross-node γ + η = C</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-zone"><svg></svg></div>
+
+    <!-- Layer 7: Wavelet -->
+    <div class="layer" data-layer="wavelet">
+      <div class="layer-label"><span class="num">07</span>Wavelet</div>
+      <div class="layer-nodes">
+        <div class="node" data-id="wavelet">
+          <div class="name">Wavelet</div>
+          <div class="sub">multi-scale trits</div>
+        </div>
+        <div class="node" data-id="scale-audit">
+          <div class="name">Scale-Invariant Audit</div>
+          <div class="sub">observability at all scales</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip">
+    <div class="tt-title" id="tt-title"></div>
+    <div class="tt-section">
+      <div class="tt-label">Depends on</div>
+      <div class="tt-items" id="tt-deps"></div>
+    </div>
+    <div class="tt-section">
+      <div class="tt-label">Depended by</div>
+      <div class="tt-items" id="tt-by"></div>
+    </div>
+  </div>
+
+  <!-- Detail Panel -->
+  <div class="detail-panel" id="detail-panel">
+    <button class="close-btn" onclick="closeDetail()">×</button>
+    <h3 id="detail-title"></h3>
+    <div class="detail-layer" id="detail-layer"></div>
+    <p id="detail-desc"></p>
+    <div class="deps-row">
+      <div class="deps-col">
+        <div class="deps-label">Depends on</div>
+        <ul id="detail-deps"></ul>
+      </div>
+      <div class="deps-col">
+        <div class="deps-label">Depended by</div>
+        <ul id="detail-by"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-swatch" style="border-color: var(--pos); background: rgba(0,255,136,0.08);"></div>
+      Focused node
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="border-color: var(--neutral); background: rgba(250,204,21,0.06);"></div>
+      Dependency (it uses)
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="border-color: #818cf8; background: rgba(129,140,248,0.06);"></div>
+      Depended-by (it feeds)
+    </div>
+  </div>
+</main>
+
+<footer>
+  SuperInstance · ternary infrastructure for self-improving agents · 2025–2026
+</footer>
+
+<script>
+// ── Dependency Graph ──────────────────────────────────────────────────────────
+const graph = {
+  trit: {
+    layer: '01 · Ternary Foundation',
+    deps: [],
+    by: ['conservation', 'bottle', 'envelope', 'audit', 'agent-trait', 'forgemaster', 'cocapn', 'fleet-routing', 'fleet-conservation', 'wavelet', 'scale-audit'],
+    desc: 'The fundamental unit of information in SuperInstance. A ternary digit with three states: Neg (−1), Zero (0), and Pos (+1). Every message, state transition, and conservation law is expressed in trits — not bits. The majority(a, b, c) function provides noise-resistant consensus at the base level.'
+  },
+  conservation: {
+    layer: '01 · Ternary Foundation',
+    deps: ['trit'],
+    by: ['bottle', 'audit', 'agent-trait', 'fleet-conservation', 'wavelet'],
+    desc: 'The structural invariant: γ + η = C. The sum of all trits in a system is a constant. This isn\'t a metaphor — it\'s enforced at the type level. Every transformation preserves the total. Breaking conservation is a compile-time error, not a runtime surprise.'
+  },
+  bottle: {
+    layer: '02 · Wire Protocol',
+    deps: ['trit', 'conservation'],
+    by: ['envelope', 'agent-trait', 'forgemaster', 'cocapn', 'fleet-routing'],
+    desc: 'A typed message container that flows between agents. Bottles carry trit payloads and enforce conservation across every send/receive. The unit of currency in the agent economy — one bottle in, one bottle out. No orphans.'
+  },
+  envelope: {
+    layer: '02 · Wire Protocol',
+    deps: ['trit', 'bottle'],
+    by: ['agent-trait', 'cocapn', 'fleet-routing'],
+    desc: 'The wire format: a JSON envelope with an opaque msgpack payload. The envelope is the contract (routing, type tags, metadata); the payload is an implementation detail. This separation means the wire format is auditable without knowing the internals.'
+  },
+  audit: {
+    layer: '02 · Wire Protocol',
+    deps: ['trit', 'conservation'],
+    by: ['agent-trait', 'scale-audit'],
+    desc: 'Trit-sum verification at the protocol level. Every bottle that crosses the wire has its trit sum checked. Strict mode rejects non-conserving messages. Relaxed mode logs violations but lets them through. The audit trail is immutable.'
+  },
+  'agent-trait': {
+    layer: '03 · Agent Trait',
+    deps: ['trit', 'conservation', 'bottle', 'envelope', 'audit'],
+    by: ['forgemaster', 'circuit-breaker', 'rate-limiter', 'health-check', 'retry-backoff', 'load-balancer', 'config-center', 'feature-flag', 'service-discovery', 'cocapn'],
+    desc: 'The core interface: an agent is a function from Bottle → Bottle. Two methods — receive (process a bottle) and inspect (report state). Lifecycle states (Init, Active, Suspended, Terminated) emerge from bottles received, not methods called. Re-exports wire types from protocol for convenience.'
+  },
+  forgemaster: {
+    layer: '03 · Agent Trait',
+    deps: ['trit', 'bottle', 'agent-trait'],
+    by: ['cocapn'],
+    desc: 'The agent orchestrator. Manages the lifecycle of multiple agents, routes bottles between them, and enforces that every bottle finds a handler. If a bottle goes unhandled, that\'s a conservation violation — the Forgemaster won\'t let it happen silently.'
+  },
+  'circuit-breaker': {
+    layer: '04 · SEED Crates',
+    deps: ['agent-trait'],
+    by: ['resilience'],
+    desc: 'Failure isolation for agents. When an agent starts failing, the circuit breaker opens — no more bottles are sent to it until it recovers. States: Closed (healthy) → Open (failing) → Half-Open (testing recovery). Prevents cascade failures across the fleet.'
+  },
+  'rate-limiter': {
+    layer: '04 · SEED Crates',
+    deps: ['agent-trait'],
+    by: ['traffic-control'],
+    desc: 'Traffic shaping per agent. Token-bucket or sliding-window algorithms wrapped in the agent trait. Ensures no single consumer can overwhelm an agent. Backpressure is expressed as a returned bottle with a "slow down" signal — conservation is maintained.'
+  },
+  'health-check': {
+    layer: '04 · SEED Crates',
+    deps: ['agent-trait'],
+    by: ['resilience', 'cocapn'],
+    desc: 'Liveness probes for agents. Periodically sends inspection bottles and checks responses. An agent that doesn\'t respond within bounds is marked unhealthy. Health state is a trit: Neg (down), Zero (degraded), Pos (healthy).'
+  },
+  'retry-backoff': {
+    layer: '04 · SEED Crates',
+    deps: ['agent-trait'],
+    by: ['resilience'],
+    desc: 'Exponential backoff with jitter for failed bottle deliveries. Respects conservation — each retry is a new bottle, and the final outcome (success or exhaustion) produces exactly one response. No duplication, no lost bottles.'
+  },
+  'load-balancer': {
+    layer: '04 · SEED Crates',
+    deps: ['agent-trait'],
+    by: ['traffic-control', 'fleet-routing'],
+    desc: 'Distributes bottles across multiple agent instances. Strategies: round-robin, least-loaded, random. Respects conservation — a bottle routed to agent A is tracked so duplicates don\'t escape. The load state is auditable via inspect.'
+  },
+  'config-center': {
+    layer: '04 · SEED Crates',
+    deps: ['agent-trait'],
+    by: ['service-mesh'],
+    desc: 'Dynamic configuration distributed as bottles. Change a setting → every subscribed agent receives a config bottle. No restarts needed. Configuration history is an audit trail of bottles — fully traceable.'
+  },
+  'feature-flag': {
+    layer: '04 · SEED Crates',
+    deps: ['agent-trait'],
+    by: ['service-mesh'],
+    desc: 'Feature toggles evaluated at bottle-processing time. Flags are trit-valued: Neg (off), Zero (canary), Pos (on). Canary deployments happen at Zero — a fraction of bottles see the new path. Full rollout at Pos.'
+  },
+  'service-discovery': {
+    layer: '04 · SEED Crates',
+    deps: ['agent-trait'],
+    by: ['service-mesh', 'fleet-routing'],
+    desc: 'Peer resolution for agents. "Who handles bottle type X?" → returns a set of agent addresses. Registration and deregistration are bottles. The discovery index is eventually consistent and trit-conserved.'
+  },
+  resilience: {
+    layer: '05 · Composition',
+    deps: ['circuit-breaker', 'health-check', 'retry-backoff'],
+    by: ['cocapn', 'fleet-conservation'],
+    desc: 'Composes circuit-breaker + health-check + retry-backoff into a single resilience policy. An agent wrapped in resilience can fail, recover, and retry without the caller knowing. The composition is itself an agent — it receives bottles, applies policy, and returns results.'
+  },
+  'traffic-control': {
+    layer: '05 · Composition',
+    deps: ['rate-limiter', 'load-balancer'],
+    by: ['cocapn', 'fleet-routing'],
+    desc: 'Composes rate-limiting + load-balancing into a traffic management layer. Incoming bottles are rate-limited first, then distributed across backends. The composition preserves conservation — bottles in equals bottles out (or bottles rejected with backpressure).'
+  },
+  'service-mesh': {
+    layer: '05 · Composition',
+    deps: ['service-discovery', 'config-center', 'feature-flag'],
+    by: ['cocapn', 'fleet-routing'],
+    desc: 'Composes discovery + config + feature flags into a service mesh. Every bottle that enters the mesh is routed based on discovery, filtered by feature flags, and configured by the config center. The mesh is transparent to the agents inside it.'
+  },
+  cocapn: {
+    layer: '06 · Fleet',
+    deps: ['agent-trait', 'bottle', 'envelope', 'forgemaster', 'health-check', 'load-balancer', 'resilience', 'traffic-control', 'service-mesh'],
+    by: ['wavelet', 'scale-audit'],
+    desc: 'The fleet captain. Cocapn orchestrates multiple ships (agents) into a coordinated fleet. It composes resilience, traffic control, and service mesh patterns, then adds fleet-level conservation — the sum of trits across all ships is constant. The captain\'s job: route bottles, maintain conservation, keep the fleet healthy.'
+  },
+  'fleet-routing': {
+    layer: '06 · Fleet',
+    deps: ['trit', 'bottle', 'envelope', 'load-balancer', 'service-discovery', 'traffic-control', 'service-mesh'],
+    by: ['cocapn', 'fleet-conservation'],
+    desc: 'Request dispatch across the fleet. Takes a bottle and determines which ship should handle it. Uses service-discovery for candidates, load-balancer for selection, and traffic-control for throttling. Every routing decision is logged as an audit event.'
+  },
+  'fleet-conservation': {
+    layer: '06 · Fleet',
+    deps: ['trit', 'conservation', 'resilience'],
+    by: ['cocapn', 'wavelet'],
+    desc: 'Extends γ + η = C across nodes. The trit sum is conserved not just within a single agent, but across the entire fleet. Ships can exchange trits — a Pos here balanced by a Neg there — but the total never changes. This is what makes fleet behavior auditable and predictable.'
+  },
+  wavelet: {
+    layer: '07 · Wavelet',
+    deps: ['trit', 'conservation', 'fleet-conservation', 'cocapn'],
+    by: ['scale-audit'],
+    desc: 'Multi-scale representation of ternary state. The wavelet transform decomposes trit streams into coarse (trend) and fine (detail) components — like a Fourier transform for ternary data. This lets you see fleet behavior at any zoom level: seconds to months.'
+  },
+  'scale-audit': {
+    layer: '07 · Wavelet',
+    deps: ['audit', 'wavelet'],
+    by: [],
+    desc: 'Scale-invariant auditing. Uses the wavelet transform to verify conservation at every scale simultaneously. If trit sums drift at any resolution — fine-grained microsecond noise or coarse hourly trends — the audit catches it. The system is correct at every zoom level.'
+  }
+};
+
+// ── Rendering ─────────────────────────────────────────────────────────────────
+
+const nodes = document.querySelectorAll('.node');
+const tooltip = document.getElementById('tooltip');
+const ttTitle = document.getElementById('tt-title');
+const ttDeps = document.getElementById('tt-deps');
+const ttBy = document.getElementById('tt-by');
+
+function clearHighlights() {
+  nodes.forEach(n => {
+    n.classList.remove('highlighted', 'dep-active', 'depended-by-active');
+  });
+}
+
+function showTooltip(nodeId, e) {
+  const info = graph[nodeId];
+  if (!info) return;
+  ttTitle.textContent = nodeId;
+
+  ttDeps.innerHTML = info.deps.length
+    ? info.deps.map(d => `<span class="dep">${d}</span>`).join('')
+    : '<span style="color:var(--text-dim)">nothing (foundational)</span>';
+
+  ttBy.innerHTML = info.by.length
+    ? info.by.map(d => `<span class="by">${d}</span>`).join('')
+    : '<span style="color:var(--text-dim)">top-level consumer</span>';
+
+  tooltip.classList.add('show');
+  positionTooltip(e);
+}
+
+function positionTooltip(e) {
+  const pad = 12;
+  let x = e.clientX + pad;
+  let y = e.clientY + pad;
+  const rect = tooltip.getBoundingClientRect();
+  if (x + rect.width > window.innerWidth - pad) x = e.clientX - rect.width - pad;
+  if (y + rect.height > window.innerHeight - pad) y = e.clientY - rect.height - pad;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+
+function hideTooltip() {
+  tooltip.classList.remove('show');
+}
+
+nodes.forEach(node => {
+  const id = node.dataset.id;
+
+  node.addEventListener('mouseenter', (e) => {
+    clearHighlights();
+    node.classList.add('highlighted');
+    const info = graph[id];
+    if (info) {
+      info.deps.forEach(depId => {
+        const depNode = document.querySelector(`.node[data-id="${depId}"]`);
+        if (depNode) depNode.classList.add('dep-active');
+      });
+      info.by.forEach(byId => {
+        const byNode = document.querySelector(`.node[data-id="${byId}"]`);
+        if (byNode) byNode.classList.add('depended-by-active');
+      });
+    }
+    showTooltip(id, e);
+  });
+
+  node.addEventListener('mousemove', positionTooltip);
+
+  node.addEventListener('mouseleave', () => {
+    clearHighlights();
+    hideTooltip();
+  });
+
+  node.addEventListener('click', () => {
+    showDetail(id);
+  });
+});
+
+// ── Detail Panel ──────────────────────────────────────────────────────────────
+
+function showDetail(id) {
+  const info = graph[id];
+  if (!info) return;
+
+  document.getElementById('detail-title').textContent = id;
+  document.getElementById('detail-layer').textContent = info.layer;
+  document.getElementById('detail-desc').textContent = info.desc;
+
+  const depsList = document.getElementById('detail-deps');
+  const byList = document.getElementById('detail-by');
+  depsList.innerHTML = info.deps.length
+    ? info.deps.map(d => `<li>${d}</li>`).join('')
+    : '<li style="color:var(--text-dim)">foundational — nothing below</li>';
+  byList.innerHTML = info.by.length
+    ? info.by.map(d => `<li>${d}</li>`).join('')
+    : '<li style="color:var(--text-dim)">top-level — nothing above</li>';
+
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('show');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('show');
+}
+
+// ── Draw dependency lines in dep-zones ────────────────────────────────────────
+
+function drawLines() {
+  const zones = document.querySelectorAll('.dep-zone svg');
+  zones.forEach(svg => {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+  });
+
+  // For each dep-zone, find the layer above and below, draw lines between deps
+  const layers = document.querySelectorAll('.layer');
+  const layerData = [];
+  layers.forEach((layer, i) => {
+    const layerNodes = layer.querySelectorAll('.node');
+    const nodeInfo = [];
+    layerNodes.forEach(n => {
+      const r = n.getBoundingClientRect();
+      const svgR = n.closest('.diagram-wrap').getBoundingClientRect();
+      nodeInfo.push({
+        id: n.dataset.id,
+        cx: r.left + r.width / 2 - svgR.left + layer.closest('.diagram-wrap').scrollLeft,
+        top: r.top - svgR.top,
+        bottom: r.bottom - svgR.top
+      });
+    });
+    layerData.push({ el: layer, nodes: nodeInfo });
+  });
+
+  for (let i = 1; i < layerData.length; i++) {
+    const zone = layers[i].previousElementSibling;
+    if (!zone || !zone.classList.contains('dep-zone')) continue;
+    const svg = zone.querySelector('svg');
+    const zoneRect = zone.getBoundingClientRect();
+    const svgRect = svg.closest('.diagram-wrap').getBoundingClientRect();
+
+    const below = layerData[i - 1].nodes;
+    const above = layerData[i].nodes;
+
+    above.forEach(upper => {
+      const info = graph[upper.id];
+      if (!info) return;
+      info.deps.forEach(depId => {
+        const lower = below.find(n => n.id === depId);
+        if (!lower) return;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', lower.cx);
+        line.setAttribute('y1', '0');
+        line.setAttribute('x2', upper.cx);
+        line.setAttribute('y2', zone.offsetHeight.toString());
+        line.setAttribute('data-from', depId);
+        line.setAttribute('data-to', upper.id);
+        svg.appendChild(line);
+      });
+    });
+  }
+}
+
+drawLines();
+window.addEventListener('resize', drawLines);
+</script>
+</body>
+</html>

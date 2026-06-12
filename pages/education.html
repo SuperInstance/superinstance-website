@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Ternary Infrastructure for Self-Improving Agents</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #d4d4d4;
+    --text-dim: #737373;
+    --pos: #00ff88;
+    --neutral: #facc15;
+    --neg: #ef4444;
+    --mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+  }
+  nav .inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.5rem;
+  }
+  nav .logo {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--pos);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  nav .links { display: flex; gap: 1.5rem; }
+  nav .links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-family: var(--mono);
+    transition: color 0.15s;
+  }
+  nav .links a:hover { color: var(--text); }
+
+  /* Layout */
+  main { max-width: 72rem; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Hero */
+  .hero {
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .hero h1 {
+    font-family: var(--mono);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  .hero h1 .gamma { color: var(--pos); }
+  .hero h1 .eta { color: var(--neg); }
+  .hero h1 .C { color: var(--neutral); }
+  .hero .tagline {
+    font-size: 1.125rem;
+    color: var(--text-dim);
+    max-width: 38rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Equation block */
+  .equation-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    font-family: var(--mono);
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    display: inline-block;
+  }
+  .equation-block .eq-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Stats row */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .stat .value {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat .label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 3.5rem;
+  }
+  .section h2 {
+    font-family: var(--mono);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section h2::before {
+    content: '//';
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  /* Concept cards */
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.15s;
+    display: block;
+  }
+  .concept-card:hover {
+    border-color: var(--pos);
+    transform: translateY(-2px);
+  }
+  .concept-card .card-title {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .concept-card .card-desc {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+  .concept-card .card-link {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--pos);
+  }
+
+  /* Code block */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  .code-block .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+  .code-block pre {
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .code-block .copy-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .code-block .copy-btn:hover {
+    color: var(--text);
+    border-color: var(--text-dim);
+  }
+
+  /* Syntax colors */
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .ty { color: #ffcb6b; }
+  .str { color: #c3e88d; }
+  .cm { color: #546e7a; }
+  .num { color: #f78c6c; }
+
+  /* Live demo area */
+  .demo-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  .demo-box .demo-label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  .demo-controls {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .demo-controls button {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .demo-controls button:hover { border-color: var(--pos); }
+  .demo-controls button:active { transform: scale(0.97); }
+  .demo-output {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    min-height: 6rem;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    overflow-x: auto;
+  }
+  .demo-output .pos { color: var(--pos); }
+  .demo-output .neu { color: var(--neutral); }
+  .demo-output .neg { color: var(--neg); }
+  .demo-output .dim { color: var(--text-dim); }
+
+  /* CTA / buttons */
+  .cta-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.625rem 1.25rem;
+    border-radius: 6px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--pos);
+    color: #000;
+  }
+  .btn-primary:hover { box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-secondary:hover { border-color: var(--text-dim); }
+
+  /* What this is */
+  .what-list {
+    list-style: none;
+    counter-reset: what;
+  }
+  .what-list li {
+    counter-increment: what;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+  .what-list li::before {
+    content: counter(what) '.';
+    font-family: var(--mono);
+    color: var(--pos);
+    font-weight: 700;
+    min-width: 1.5rem;
+  }
+  .what-list li:last-child { border-bottom: none; }
+
+  /* Ternary badges */
+  .ternary-badges {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  .ternary-badge {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .ternary-badge.pos { background: rgba(0,255,136,0.12); color: var(--pos); border: 1px solid rgba(0,255,136,0.3); }
+  .ternary-badge.neu { background: rgba(250,204,21,0.12); color: var(--neutral); border: 1px solid rgba(250,204,21,0.3); }
+  .ternary-badge.neg { background: rgba(239,68,68,0.12); color: var(--neg); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+    padding: 2rem 0;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  footer .inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .hero { padding: 2rem 0 1.5rem; }
+    .hero h1 { font-size: 1.5rem; }
+    .concepts-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .cta-row { flex-direction: column; }
+    nav .links { gap: 1rem; }
+    nav .links a { font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="/" class="logo">SI</a>
+    <div class="links">
+      <a href="/concepts/">Concepts</a>
+      <a href="/crates/">Crates</a>
+      <a href="/build/">Build</a>
+      <a href="/playground/">Play</a>
+      <a href="https://github.com/superinstance">Repo</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="ternary-badges">
+      <span class="ternary-badge pos">+1</span>
+      <span class="ternary-badge neu">0</span>
+      <span class="ternary-badge neg">-1</span>
+    </div>
+    <h1>
+      <span class="gamma">γ</span> + <span class="eta">η</span> = <span class="C">C</span>
+    </h1>
+    <p class="tagline">
+      Ternary infrastructure for self-improving agents. Agents exchange bottles. Bottles conserve. The math holds.
+    </p>
+
+    <div class="equation-block">
+      <span class="eq-label">Conservation Law</span>
+      γ(active) + η(latent) = C(constant) &nbsp;∈ Z₃
+    </div>
+
+    <div class="cta-row">
+      <a href="/build/" class="btn btn-primary">Build your first agent →</a>
+      <a href="/concepts/" class="btn btn-secondary">Read the concepts</a>
+      <a href="/playground/" class="btn btn-secondary">Open playground</a>
+    </div>
+  </section>
+
+  <!-- What this is -->
+  <section class="section">
+    <h2>What this is</h2>
+    <ol class="what-list">
+      <li>A framework where agents communicate via <strong>bottles</strong> — JSON envelope + msgpack payload</li>
+      <li>8 infrastructure primitives (<strong>SEED crates</strong>) that compose via bottle passing</li>
+      <li>A conservation invariant derived from ternary arithmetic: <strong>γ + η = C</strong></li>
+    </ol>
+  </section>
+
+  <!-- Stats -->
+  <section class="section">
+    <h2>Current state</h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="value">8</div>
+        <div class="label">SEED Crates</div>
+      </div>
+      <div class="stat">
+        <div class="value">2</div>
+        <div class="label">Agent Methods</div>
+      </div>
+      <div class="stat">
+        <div class="value">3</div>
+        <div class="label">State Space (ternary)</div>
+      </div>
+      <div class="stat">
+        <div class="value">v0.1</div>
+        <div class="label">Spec Version</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick start -->
+  <section class="section">
+    <h2>Quick start</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span>Rust</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+<pre><span class="kw">trait</span> <span class="ty">Agent</span> {
+    <span class="kw">fn</span> <span class="fn">receive</span>(&<span class="kw">mut</span> <span class="kw">self</span>, bottle: <span class="ty">Bottle</span>) -> <span class="ty">Bottle</span>;
+    <span class="kw">fn</span> <span class="fn">inspect</span>(&<span class="kw">self</span>) -> <span class="ty">AgentState</span>;
+}
+
+<span class="cm">// That's it. Two methods. Everything else is bottles.</span></pre>
+    </div>
+  </section>
+
+  <!-- Live demo -->
+  <section class="section">
+    <h2>Live demo</h2>
+    <div class="demo-box">
+      <div class="demo-label">Agent receives a bottle — watch γ and η decompose</div>
+      <div class="demo-controls">
+        <button onclick="sendBottle('ping')">Send ping</button>
+        <button onclick="sendBottle('config')">Send config update</button>
+        <button onclick="sendBottle('failure')">Inject failure</button>
+        <button onclick="clearDemo()">Clear</button>
+      </div>
+      <div class="demo-output" id="demo-output">
+<span class="dim">// Click a button to send a bottle to the agent</span></div>
+    </div>
+  </section>
+
+  <!-- Concepts overview -->
+  <section class="section">
+    <h2>Core concepts</h2>
+    <div class="concepts-grid">
+      <a href="/concepts/ternary-conservation/" class="concept-card">
+        <div class="card-title">Ternary Conservation</div>
+        <div class="card-desc">γ + η = C. Every agent state decomposes into active and latent components. The sum is invariant.</div>
+        <div class="card-link">Explore →</div>
+      </a>
+      <a href="/concepts/bottle-protocol/" class="concept-card">
+        <div class="card-title">Bottle Protocol</div>
+        <div class="card-desc">JSON envelope for routing, msgpack payload for data. Routers never decode the payload.</div>
+        <div class="card-link">Explore →</div>
+      </a>
+      <a href="/concepts/agent-lifecycle/" class="concept-card">
+        <div class="card-title">Agent Lifecycle</div>
+        <div class="card-desc">Two methods: receive and inspect. Lifecycle transitions are bottles. Agents compose by passing bottles.</div>
+        <div class="card-link">Explore →</div>
+      </a>
+      <a href="/crates/" class="concept-card">
+        <div class="card-title">SEED Crates</div>
+        <div class="card-desc">8 infrastructure primitives: circuit-breaker, rate-limiter, health-check, retry-backoff, load-balancer, config-center, feature-flag, service-discovery.</div>
+        <div class="card-link">Browse crates →</div>
+      </a>
+      <a href="/concepts/harness/" class="concept-card">
+        <div class="card-title">Self-Improving Harness</div>
+        <div class="card-desc">Build → fail → extract pattern → vectorize → feedback. The system learns from its own failures.</div>
+        <div class="card-link">Explore →</div>
+      </a>
+      <a href="/concepts/conservation-law/" class="concept-card">
+        <div class="card-title">Conservation Law</div>
+        <div class="card-desc">Structural isomorphism to Gauss's law in Z₃. Flux through a surface equals divergence within.</div>
+        <div class="card-link">Explore →</div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="inner">
+    <span>SuperInstance — educate don't sell</span>
+    <div>
+      <a href="https://github.com/superinstance">GitHub</a> ·
+      <a href="/concepts/">Spec</a> ·
+      <a href="https://github.com/superinstance/superinstance/blob/main/LICENSE">License</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    btn.textContent = 'copied';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  });
+}
+
+// Demo state
+const demoEl = document.getElementById('demo-output');
+let gamma = 0, eta = 0, C = 1;
+
+function classify(g) {
+  if (g > 0) return { text: '+1 (positive)', cls: 'pos' };
+  if (g < 0) return { text: '-1 (negative)', cls: 'neg' };
+  return { text: ' 0 (neutral)', cls: 'neu' };
+}
+
+function appendLine(text, cls) {
+  const span = document.createElement('span');
+  if (cls) span.className = cls;
+  span.textContent = text + '\n';
+  demoEl.appendChild(span);
+}
+
+function sendBottle(type) {
+  const now = new Date().toLocaleTimeString('en-US', { hour12: false });
+  appendLine(`\n[${now}] ← bottle arrived: ${type}`, 'dim');
+
+  if (type === 'ping') {
+    gamma = 1; eta = 0;
+    appendLine('  agent.receive(ping)', '');
+  } else if (type === 'config') {
+    gamma = 0; eta = 1;
+    appendLine('  agent.receive(config_update)', '');
+  } else if (type === 'failure') {
+    gamma = -1; eta = 2;
+    appendLine('  agent.receive(failure_signal)', '');
+  }
+
+  // Enforce conservation
+  const actual = gamma + eta;
+  const ternary = classify(gamma);
+  appendLine(`  γ = ${gamma}  η = ${eta}  C = ${actual}`, 'dim');
+  appendLine(`  classification: `, '');
+  const clsSpan = document.createElement('span');
+  clsSpan.className = ternary.cls;
+  clsSpan.textContent = ternary.text + '\n';
+  demoEl.appendChild(clsSpan);
+
+  if (actual === C) {
+    appendLine('  ✓ conservation holds', 'pos');
+  } else {
+    appendLine(`  ✗ conservation violated: ${actual} ≠ ${C}`, 'neg');
+    appendLine('  → harness extracting pattern...', 'dim');
+  }
+
+  // Response
+  appendLine(`  → bottle returned: ack(${type})`, 'dim');
+
+  demoEl.scrollTop = demoEl.scrollHeight;
+}
+
+function clearDemo() {
+  demoEl.innerHTML = '<span class="dim">// Click a button to send a bottle to the agent</span>';
+  gamma = 0; eta = 0;
+}
+</script>
+
+</body>
+</html>

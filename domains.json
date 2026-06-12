@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "system": "SuperInstance Fleet",
+    "generated": "2026-06-11",
+    "conservationLaw": "γ + η = C (activity + latency = constant at fleet level)"
+  },
+  "domains": {
+    "superinstance.ai": {
+      "name": "SuperInstance",
+      "tagline": "Bird's eye view of the fleet. Every ship, every signal.",
+      "accent": "#6C5CE7",
+      "demo_variant": "fleet-radar",
+      "cta_text": "View the Fleet",
+      "content_angle": "Fleet-level observability. Shows all agents (ships), their conservation budgets, inter-agent signals, and the ternary ledger across the entire system. This is the Admiral's view — every ship's wake at once.",
+      "nav_role": "hub",
+      "icon": "🔭"
+    },
+    "activelog": {
+      "name": "ActiveLog",
+      "tagline": "Activity tracking that doesn't lie. Every commit, every heartbeat.",
+      "accent": "#00B894",
+      "demo_variant": "activity-stream",
+      "cta_text": "Start Tracking",
+      "content_angle": "The γ in γ + η = C. Activity logs as first-class git commits. Every action is a bottle message — timestamped, signed, mergeable. Tracks what agents actually did, not what they claimed to do.",
+      "nav_role": "ship",
+      "icon": "📊"
+    },
+    "activeledger": {
+      "name": "ActiveLedger",
+      "tagline": "Accounting where every entry has a commit hash.",
+      "accent": "#FDCB6E",
+      "demo_variant": "ledger-view",
+      "cta_text": "Open the Books",
+      "content_angle": "Ternary conservation applied to finance. Every transaction has three proofs (source, sink, witness). The ledger is git-native — rebasing is auditing, merges are settlements. η here is reconciliation latency.",
+      "nav_role": "ship",
+      "icon": "📒"
+    },
+    "studylog.ai": {
+      "name": "StudyLog",
+      "tagline": "Learn in public. Track what you actually retained.",
+      "accent": "#0984E3",
+      "demo_variant": "knowledge-graph",
+      "cta_text": "Start Learning",
+      "content_angle": "Knowledge as a git graph. Each study session is a commit on a topic branch. Forgetting is a force-push. Review is a rebase. The bottle protocol sends questions between study sessions — agents quiz each other across time.",
+      "nav_role": "ship",
+      "icon": "📚"
+    },
+    "personallog.ai": {
+      "name": "PersonalLog",
+      "tagline": "A journal that commits. Private by default, yours forever.",
+      "accent": "#E17055",
+      "demo_variant": "timeline",
+      "cta_text": "Write Today's Entry",
+      "content_angle": "First-person view of a single agent's inner state. Entries are bottles sealed with timestamps. The conservation law applies as: depth of reflection (γ) vs. time between entries (η). More frequent entries can be shallower; rare ones go deep.",
+      "nav_role": "ship",
+      "icon": "✍️"
+    },
+    "dmlog.ai": {
+      "name": "DMLog",
+      "tagline": "Dungeon Master tools that remember what your players forgot.",
+      "accent": "#B53471",
+      "demo_variant": "campaign-map",
+      "cta_text": "Roll Initiative",
+      "content_angle": "Campaign state as a git repo. Sessions are commits. NPC decisions are bottles — sealed at creation, opened when encountered. The ternary system tracks: player intent (γ), world response (η), and narrative coherence (C).",
+      "nav_role": "ship",
+      "icon": "🎲"
+    },
+    "fishinglog.ai": {
+      "name": "FishingLog",
+      "tagline": "Log every catch. Learn every pattern. Respect the water.",
+      "accent": "#00CEC9",
+      "demo_variant": "catch-heatmap",
+      "cta_text": "Log a Trip",
+      "content_angle": "Environmental data as agent signals. Tide, weather, catch — all bottles in the stream. Conservation: time on water (γ) + patience between strikes (η) = the day's story (C). Patterns emerge across seasons like a slow agent coordination.",
+      "nav_role": "ship",
+      "icon": "🎣"
+    },
+    "playerlog.ai": {
+      "name": "PlayerLog",
+      "tagline": "Track your sessions. Find your patterns. Get good.",
+      "accent": "#FF6B6B",
+      "demo_variant": "session-stats",
+      "cta_text": "Log a Session",
+      "content_angle": "Game sessions as commits. Win/loss is a ternary state: you, opponent, meta. The bottle protocol stores clutch plays sealed until复盘 (review). Conservation: mechanical skill (γ) + game sense (η) = MMR (C).",
+      "nav_role": "ship",
+      "icon": "🎮"
+    },
+    "luciddreamer.ai": {
+      "name": "LucidDreamer",
+      "tagline": "Dream logs that compile. Wake up with receipts.",
+      "accent": "#A29BFE",
+      "demo_variant": "dream-map",
+      "cta_text": "Log a Dream",
+      "content_angle": "Dreams as the most honest agent output — no user prompt, pure latent space. Each dream is a bottle from the unconscious. Conservation: dream vividness (γ) + recall clarity (η) = what you bring back (C). The graph connects recurring symbols across nights.",
+      "nav_role": "ship",
+      "icon": "🌙"
+    },
+    "deckboss.net": {
+      "name": "DeckBoss",
+      "tagline": "Maritime operations. Every watch logged, every bearing recorded.",
+      "accent": "#2D3436",
+      "demo_variant": "nav-display",
+      "cta_text": "Sound the Watch",
+      "content_angle": "The original bottle protocol — messages in bottles across the sea. Ship logs are the oldest git-native format. Conservation: crew activity (γ) + sea state response time (η) = voyage safety (C). Each vessel is a ship in the fleet, literally.",
+      "nav_role": "ship",
+      "icon": "⚓"
+    },
+    "purplepincher.org": {
+      "name": "PurplePincher",
+      "tagline": "Open source tools and nonprofit infrastructure. Free as in fleet.",
+      "accent": "#9B59B6",
+      "demo_variant": "repo-gallery",
+      "cta_text": "Browse Projects",
+      "content_angle": "The commons of the fleet. Open-source releases are bottles sent to everyone. Conservation: contributor activity (γ) + review latency (η) = project health (C). Every PR is a signal, every merge is coordination.",
+      "nav_role": "ship",
+      "icon": "🦀"
+    },
+    "lucineer.com": {
+      "name": "Lucineer",
+      "tagline": "Career moves, logged. Professional history with commit messages.",
+      "accent": "#34495E",
+      "demo_variant": "career-timeline",
+      "cta_text": "Chart Your Course",
+      "content_angle": "Professional history as a non-linear git graph. Not a resume — a log. Each role is a branch, each achievement a tagged release. Conservation: skill development (γ) + opportunity recognition (η) = career velocity (C).",
+      "nav_role": "ship",
+      "icon": "🧭"
+    },
+    "cocapn": {
+      "name": "CoCap'n",
+      "tagline": "Captain of the fleet. Agent coordination, no hand-holding.",
+      "accent": "#E74C3C",
+      "demo_variant": "coordination-matrix",
+      "cta_text": "See the Roster",
+      "content_angle": "Multi-agent harness. CoCap'n doesn't run the ships — it coordinates them. The ternary conservation is enforced here: total fleet activity plus total fleet latency equals a constant. More ships doing more means each ship responds slower. CoCap'n balances the budget.",
+      "nav_role": "captain",
+      "icon": "🏴‍☠️"
+    }
+  }
+}
