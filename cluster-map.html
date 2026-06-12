@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance · Cluster Map</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--text:#e0e0e0;--dim:#666;--mono:'JetBrains Mono','Fira Code',monospace}
+html{font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7;overflow:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);border-bottom:1px solid #1a1a1a;padding:10px 24px;display:flex;align-items:center;gap:20px;font-size:.75rem}
+nav .brand{color:var(--accent);font-weight:700;margin-right:auto}
+nav a{color:var(--dim);font-size:.72rem}
+nav a:hover{color:var(--accent)}
+
+#tooltip{position:fixed;display:none;background:var(--surface);border:1px solid #333;padding:12px 16px;border-radius:4px;max-width:320px;pointer-events:none;z-index:200;font-size:.78rem;line-height:1.6}
+#tooltip h3{color:var(--accent);font-size:.82rem;margin-bottom:4px}
+#tooltip p{color:var(--dim);font-size:.7rem}
+
+#legend{position:fixed;bottom:20px;left:20px;background:rgba(17,17,17,.9);border:1px solid #222;border-radius:4px;padding:12px 16px;font-size:.65rem;z-index:100;max-height:50vh;overflow-y:auto}
+#legend h4{color:var(--accent);margin-bottom:8px;font-size:.7rem}
+.legend-item{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:var(--dim)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+#info{position:fixed;bottom:20px;right:20px;background:rgba(17,17,17,.9);border:1px solid #222;border-radius:4px;padding:12px 16px;font-size:.65rem;z-index:100;color:var(--dim);text-align:right}
+#info b{color:var(--accent)}
+
+#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:300;background:var(--bg)}
+#loading .spinner{width:40px;height:40px;border:2px solid #222;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{color:var(--dim);font-size:.75rem;margin-top:16px}
+
+svg text{font-family:var(--mono);fill:var(--dim)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand">SuperInstance</a>
+  <a href="index.html">home</a>
+  <a href="search.html">search</a>
+  <a href="stats.html">stats</a>
+  <a href="browse.html">browse</a>
+  <a href="cluster-map.html" style="color:var(--accent)">cluster map</a>
+</nav>
+
+<div id="loading">
+  <div style="text-align:center">
+    <div class="spinner"></div>
+    <p>Loading cluster data…</p>
+  </div>
+</div>
+
+<div id="tooltip"><h3></h3><p></p></div>
+<div id="legend"></div>
+<div id="info"></div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+const API = 'https://fleet-vector-api.casey-digennaro.workers.dev';
+const SIMILARITY_THRESHOLD = 0.7;
+const MAX_NODES = 250;
+const SAMPLE_PER_CLUSTER = 30;
+
+// Cluster color palette — dark theme friendly
+const PALETTE = [
+  '#00ff88','#ff6b6b','#4ecdc4','#ffd93d','#c084fc',
+  '#6bcbff','#ff9f43','#a29bfe','#fd79a8','#55efc4',
+  '#fab1a0','#81ecec','#dfe6e9','#74b9ff','#00cec9',
+  '#e17055','#636e72','#b2bec3','#fdcb6e','#e84393'
+];
+
+function getCategory(name) {
+  if (name.startsWith('ternary-')) return 'ternary';
+  if (name.startsWith('agent-')) return 'agent';
+  if (name.startsWith('oxide-')) return 'oxide';
+  if (name.startsWith('fleet-')) return 'fleet';
+  if (name.startsWith('actor-')) return 'actor';
+  if (name.startsWith('wasm-')) return 'wasm';
+  if (name.startsWith('tensor-')) return 'tensor';
+  if (name.startsWith('raft-')) return 'raft';
+  if (name.startsWith('cache-')) return 'cache';
+  if (name.startsWith('grpc-')) return 'grpc';
+  if (name.startsWith('graph-')) return 'graph';
+  if (name.startsWith('crdt-')) return 'crdt';
+  if (name.startsWith('bpf-')) return 'bpf';
+  if (name.startsWith('tls-')) return 'tls';
+  if (name.startsWith('dns-')) return 'dns';
+  if (name.startsWith('noise-')) return 'noise';
+  if (name.startsWith('config-')) return 'config';
+  if (name.startsWith('channel-')) return 'channel';
+  if (name.startsWith('scheduler-')) return 'scheduler';
+  if (name.startsWith('mempool-')) return 'mempool';
+  if (name.startsWith('conservation-')) return 'conservation';
+  if (name.startsWith('plato-')) return 'plato';
+  if (name.startsWith('superinstance-')) return 'superinstance';
+  if (name.startsWith('regex-')) return 'regex';
+  if (name.startsWith('diff-')) return 'diff';
+  // mathematical concepts
+  if (/^(spectral|laplacian|fourier|cohomology|homology|topology|manifold|bundle|chern|betti|homotopy|vector-|tangent|lie-|hodge|morse|de-rham|sheaf|algebraic|category|fiber|characteristic|cobordism|mayer|vietoris|cech|cochain|chain-)/.test(name)) return 'math-topology';
+  if (/^(bayesian|markov|gaussian|poisson|wiener|brownian|monte|stochastic|bernoulli|chi-|anova|cauchy|beta-|dirichlet|zipf|pareto|weibull)/.test(name)) return 'math-stats';
+  if (/^(avl|b-|bplus|red-|splay|trie|suffix|segment|fenwick|binary-indexed|van-emde|bsp-|kd-|r-)/.test(name)) return 'data-structure';
+  if (/^(dijkstra|bellman|astar|floyd|kruskal|prim|topological|bfs|dfs|ford)/.test(name)) return 'graph-algo';
+  if (/^(aes|chacha|blake|argon|x25519|x509|ed25519|rsa|sha|hmac|bch-|reed|hamming|galois)/.test(name)) return 'crypto';
+  if (/^(bloom|hyperloglog|count-|sketch|cuckoo|ring-)/.test(name)) return 'probabilistic';
+  return 'other';
+}
+
+async function fetchJSON(url) {
+  const r = await fetch(url);
+  return r.json();
+}
+
+async function searchSimilar(query, topK = 8) {
+  try {
+    const r = await fetch(`${API}/search`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({query, topK})
+    });
+    return (await r.json()).results || [];
+  } catch { return []; }
+}
+
+function sampleArray(arr, n) {
+  if (arr.length <= n) return arr;
+  const shuffled = [...arr].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
+
+async function buildGraph(allCrates) {
+  // Group by category
+  const groups = {};
+  allCrates.forEach(name => {
+    const cat = getCategory(name);
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(name);
+  });
+
+  // Sort groups by size, pick top clusters
+  const sortedGroups = Object.entries(groups)
+    .sort((a,b) => b[1].length - a[1].length)
+    .filter(([_, v]) => v.length >= 3);
+
+  // Sample nodes
+  let nodes = [];
+  let budget = MAX_NODES;
+  const categoryMap = {};
+  const clusterIndex = {};
+
+  for (const [cat, crates] of sortedGroups) {
+    if (budget <= 0) break;
+    const take = Math.min(crates.length, SAMPLE_PER_CLUSTER, budget);
+    const sampled = sampleArray(crates, take);
+    const ci = sortedGroups.findIndex(([c]) => c === cat);
+    sampled.forEach(name => {
+      categoryMap[name] = cat;
+      clusterIndex[name] = ci;
+    });
+    nodes.push(...sampled);
+    budget -= take;
+  }
+
+  // Deduplicate
+  nodes = [...new Set(nodes)];
+
+  // Build edges via search API — query representative terms per category
+  const edges = [];
+  const edgeSet = new Set();
+  const catNames = [...new Set(nodes.map(n => categoryMap[n]))];
+
+  // For each category, search and connect
+  const searchPromises = catNames.map(async cat => {
+    const catNodes = nodes.filter(n => categoryMap[n] === cat);
+    // Use first 3 as queries
+    const queries = catNodes.slice(0, 3);
+    for (const q of queries) {
+      const results = await searchSimilar(q.replace(/-/g, ' '), 10);
+      for (const r of results) {
+        const target = r.name;
+        if (nodes.includes(target) && target !== q) {
+          const key = [q, target].sort().join('|');
+          if (r.score >= SIMILARITY_THRESHOLD && !edgeSet.has(key)) {
+            edgeSet.add(key);
+            edges.push({source: q, target, weight: r.score});
+          }
+        }
+      }
+    }
+  });
+
+  await Promise.all(searchPromises);
+
+  // Also add intra-cluster edges for adjacent categories
+  // Connect clusters that share similar names
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i+1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      if (categoryMap[a] === categoryMap[b]) {
+        // Same cluster — add weak edge based on name similarity (shared prefix depth)
+        const aParts = a.split('-'), bParts = b.split('-');
+        const shared = aParts.filter((p, idx) => p === bParts[idx]).length;
+        if (shared >= 2) {
+          const key = [a,b].sort().join('|');
+          if (!edgeSet.has(key)) {
+            edgeSet.add(key);
+            edges.push({source: a, target: b, weight: 0.65 + shared * 0.05});
+          }
+        }
+      }
+    }
+  }
+
+  return {nodes, edges, categoryMap, sortedGroups};
+}
+
+function renderGraph(data) {
+  const {nodes, edges, categoryMap, sortedGroups} = data;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  const svg = d3.select('body').append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .style('position','fixed')
+    .style('top',0).style('left',0)
+    .style('z-index', 1);
+
+  // Zoom
+  const g = svg.append('g');
+  svg.call(d3.zoom().scaleExtent([0.2, 5]).on('zoom', e => g.attr('transform', e.transform)));
+
+  // Color scale
+  const colorMap = {};
+  sortedGroups.forEach(([cat], i) => { colorMap[cat] = PALETTE[i % PALETTE.length]; });
+
+  // Build simulation nodes
+  const simNodes = nodes.map(name => ({
+    id: name,
+    cat: categoryMap[name],
+    color: colorMap[categoryMap[name]] || '#555'
+  }));
+
+  const nodeMap = {};
+  simNodes.forEach(n => nodeMap[n.id] = n);
+
+  const simLinks = edges
+    .filter(e => nodeMap[e.source] && nodeMap[e.target])
+    .map(e => ({
+      source: e.source,
+      target: e.target,
+      weight: e.weight
+    }));
+
+  // Center force per cluster
+  const clusterCenters = {};
+  const cats = [...new Set(simNodes.map(n => n.cat))];
+  cats.forEach((cat, i) => {
+    const angle = (2 * Math.PI * i) / cats.length;
+    const r = Math.min(width, height) * 0.25;
+    clusterCenters[cat] = {x: width/2 + r * Math.cos(angle), y: height/2 + r * Math.sin(angle)};
+  });
+
+  const simulation = d3.forceSimulation(simNodes)
+    .force('link', d3.forceLink(simLinks).id(d => d.id).distance(40).strength(d => d.weight * 0.3))
+    .force('charge', d3.forceManyBody().strength(-60))
+    .force('center', d3.forceCenter(width/2, height/2))
+    .force('cluster', alpha => {
+      simNodes.forEach(n => {
+        const c = clusterCenters[n.cat];
+        if (c) {
+          n.vx += (c.x - n.x) * 0.01 * alpha;
+          n.vy += (c.y - n.y) * 0.01 * alpha;
+        }
+      });
+    })
+    .force('collision', d3.forceCollide().radius(6));
+
+  // Links
+  const link = g.append('g').selectAll('line')
+    .data(simLinks).enter().append('line')
+    .attr('stroke', '#222')
+    .attr('stroke-width', d => Math.max(0.5, (d.weight - 0.6) * 5))
+    .attr('stroke-opacity', d => Math.min(0.6, (d.weight - 0.5) * 2));
+
+  // Nodes
+  const node = g.append('g').selectAll('circle')
+    .data(simNodes).enter().append('circle')
+    .attr('r', 4)
+    .attr('fill', d => d.color)
+    .attr('stroke', d => d.color)
+    .attr('stroke-opacity', 0.3)
+    .attr('stroke-width', 3)
+    .style('cursor', 'pointer')
+    .call(d3.drag()
+      .on('start', (e, d) => { if(!e.active) simulation.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+      .on('drag', (e, d) => { d.fx=e.x; d.fy=e.y; })
+      .on('end', (e, d) => { if(!e.active) simulation.alphaTarget(0); d.fx=null; d.fy=null; })
+    );
+
+  // Tooltip
+  const tooltip = document.getElementById('tooltip');
+  node.on('mouseenter', (e, d) => {
+    tooltip.style.display = 'block';
+    tooltip.querySelector('h3').textContent = d.id;
+    tooltip.querySelector('p').textContent = `Cluster: ${d.cat}`;
+    // Fetch description
+    searchSimilar(d.id.replace(/-/g,' '), 1).then(r => {
+      if (r[0]?.description) tooltip.querySelector('p').textContent = `${d.cat} — ${r[0].description}`;
+    });
+  })
+  .on('mousemove', e => {
+    tooltip.style.left = (e.pageX + 16) + 'px';
+    tooltip.style.top = (e.pageY - 10) + 'px';
+  })
+  .on('mouseleave', () => { tooltip.style.display = 'none'; })
+  .on('click', (e, d) => {
+    window.open(`https://github.com/superinstance/${d.id}`, '_blank');
+  });
+
+  simulation.on('tick', () => {
+    link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+    node.attr('cx', d => d.x).attr('cy', d => d.y);
+  });
+
+  // Legend
+  const legend = document.getElementById('legend');
+  legend.innerHTML = '<h4>Clusters</h4>' + sortedGroups.map(([cat, crates]) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${colorMap[cat]}"></div>${cat} (${crates.length})</div>`
+  ).join('');
+
+  // Info
+  document.getElementById('info').innerHTML =
+    `<b>${nodes.length}</b> nodes · <b>${edges.length}</b> edges<br><b>${cats.length}</b> clusters`;
+}
+
+async function init() {
+  try {
+    const [clusterData, statsData] = await Promise.all([
+      fetchJSON(`${API}/clusters`),
+      fetchJSON(`${API}/stats`)
+    ]);
+
+    let allCrates = [];
+    clusterData.clusters.forEach(c => allCrates.push(...c.crates));
+
+    if (allCrates.length === 0) {
+      document.getElementById('loading').innerHTML = '<p style="color:var(--accent)">No crates found</p>';
+      return;
+    }
+
+    const graphData = await buildGraph(allCrates);
+    document.getElementById('loading').style.display = 'none';
+    renderGraph(graphData);
+  } catch (err) {
+    document.getElementById('loading').innerHTML =
+      `<p style="color:#ff6b6b">Error: ${err.message}</p>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

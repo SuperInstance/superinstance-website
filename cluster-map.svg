@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#111"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    text{font-family:'JetBrains Mono','Fira Code',monospace}
+    .title{font-size:22px;font-weight:700;fill:#00ff88}
+    .sub{font-size:11px;fill:#666}
+    .cluster-label{font-size:11px;fill:#e0e0e0;font-weight:600}
+    .cluster-count{font-size:9px;fill:#666}
+    .crates{font-size:7.5px;fill:#555}
+  </style>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bg)"/>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" class="title">SuperInstance · Cluster Map</text>
+  <text x="600" y="58" text-anchor="middle" class="sub">1,514 crates across 25+ semantic clusters</text>
+
+  <!-- Cluster bubbles — positions arranged in organic layout -->
+  <!-- ternary (349) — largest, center -->
+  <circle cx="600" cy="400" r="140" fill="none" stroke="#00ff88" stroke-width="2" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="600" cy="400" r="130" fill="#00ff88" fill-opacity="0.04"/>
+  <text x="600" y="370" text-anchor="middle" class="cluster-label" fill="#00ff88">ternary</text>
+  <text x="600" y="385" text-anchor="middle" class="cluster-count">349 crates</text>
+  <text x="600" y="400" text-anchor="middle" class="crates">ternary-core · ternary-lattice · ternary-hardware</text>
+  <text x="600" y="412" text-anchor="middle" class="crates">ternary-sort · ternary-blockchain · ternary-vm</text>
+  <text x="600" y="424" text-anchor="middle" class="crates">ternary-compiler · ternary-algebra · ternary-circuit</text>
+
+  <!-- agent (41) — top right -->
+  <circle cx="860" cy="220" r="65" fill="none" stroke="#ff6b6b" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="860" cy="220" r="58" fill="#ff6b6b" fill-opacity="0.04"/>
+  <text x="860" y="205" text-anchor="middle" class="cluster-label" fill="#ff6b6b">agent</text>
+  <text x="860" y="218" text-anchor="middle" class="cluster-count">41 crates</text>
+  <text x="860" y="232" text-anchor="middle" class="crates">agent-memory · agent-ensemble</text>
+  <text x="860" y="244" text-anchor="middle" class="crates">agent-riff · agent-motif</text>
+
+  <!-- oxide (30) — left -->
+  <circle cx="340" cy="340" r="55" fill="none" stroke="#4ecdc4" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="340" cy="340" r="48" fill="#4ecdc4" fill-opacity="0.04"/>
+  <text x="340" y="325" text-anchor="middle" class="cluster-label" fill="#4ecdc4">oxide</text>
+  <text x="340" y="338" text-anchor="middle" class="cluster-count">30 crates</text>
+  <text x="340" y="352" text-anchor="middle" class="crates">oxide-render · oxide-ui</text>
+
+  <!-- fleet (16) — bottom left -->
+  <circle cx="360" cy="560" r="42" fill="none" stroke="#ffd93d" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="360" cy="560" r="36" fill="#ffd93d" fill-opacity="0.04"/>
+  <text x="360" y="548" text-anchor="middle" class="cluster-label" fill="#ffd93d">fleet</text>
+  <text x="360" y="561" text-anchor="middle" class="cluster-count">16 crates</text>
+  <text x="360" y="574" text-anchor="middle" class="crates">fleet-edge · fleet-auth</text>
+
+  <!-- math-topology — top center -->
+  <circle cx="500" cy="190" r="60" fill="none" stroke="#c084fc" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="500" cy="190" r="53" fill="#c084fc" fill-opacity="0.04"/>
+  <text x="500" y="175" text-anchor="middle" class="cluster-label" fill="#c084fc">math-topology</text>
+  <text x="500" y="188" text-anchor="middle" class="cluster-count">~60 crates</text>
+  <text x="500" y="202" text-anchor="middle" class="crates">cohomology · chern-class · hodge</text>
+  <text x="500" y="214" text-anchor="middle" class="crates">spectral · laplacian · homotopy</text>
+
+  <!-- math-stats — top left -->
+  <circle cx="280" cy="200" r="48" fill="none" stroke="#6bcbff" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="280" cy="200" r="42" fill="#6bcbff" fill-opacity="0.04"/>
+  <text x="280" y="188" text-anchor="middle" class="cluster-label" fill="#6bcbff">math-stats</text>
+  <text x="280" y="201" text-anchor="middle" class="cluster-count">~25 crates</text>
+  <text x="280" y="214" text-anchor="middle" class="crates">bayesian · markov · gaussian</text>
+
+  <!-- crypto — bottom right -->
+  <circle cx="880" cy="520" r="48" fill="none" stroke="#ff9f43" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="880" cy="520" r="42" fill="#ff9f43" fill-opacity="0.04"/>
+  <text x="880" y="508" text-anchor="middle" class="cluster-label" fill="#ff9f43">crypto</text>
+  <text x="880" y="521" text-anchor="middle" class="cluster-count">~25 crates</text>
+  <text x="880" y="534" text-anchor="middle" class="crates">aes-gcm · chacha · blake3</text>
+
+  <!-- data-structure — left -->
+  <circle cx="250" cy="460" r="50" fill="none" stroke="#a29bfe" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="250" cy="460" r="44" fill="#a29bfe" fill-opacity="0.04"/>
+  <text x="250" y="448" text-anchor="middle" class="cluster-label" fill="#a29bfe">data-structure</text>
+  <text x="250" y="461" text-anchor="middle" class="cluster-count">~20 crates</text>
+  <text x="250" y="474" text-anchor="middle" class="crates">avl-tree · bplus-tree · trie</text>
+
+  <!-- wasm — bottom center -->
+  <circle cx="640" cy="600" r="38" fill="none" stroke="#fd79a8" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="640" cy="600" r="32" fill="#fd79a8" fill-opacity="0.04"/>
+  <text x="640" y="590" text-anchor="middle" class="cluster-label" fill="#fd79a8">wasm</text>
+  <text x="640" y="603" text-anchor="middle" class="cluster-count">8 crates</text>
+  <text x="640" y="616" text-anchor="middle" class="crates">wasm-runtime · wasm-compiler</text>
+
+  <!-- actor — right -->
+  <circle cx="920" cy="380" r="35" fill="none" stroke="#55efc4" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="920" cy="380" r="30" fill="#55efc4" fill-opacity="0.04"/>
+  <text x="920" y="370" text-anchor="middle" class="cluster-label" fill="#55efc4">actor</text>
+  <text x="920" y="383" text-anchor="middle" class="cluster-count">8 crates</text>
+  <text x="920" y="396" text-anchor="middle" class="crates">actor-system · actor-mailbox</text>
+
+  <!-- raft — bottom -->
+  <circle cx="520" cy="620" r="32" fill="none" stroke="#fab1a0" stroke-width="1.5" stroke-opacity="0.4" filter="url(#glow)"/>
+  <circle cx="520" cy="620" r="27" fill="#fab1a0" fill-opacity="0.04"/>
+  <text x="520" y="610" text-anchor="middle" class="cluster-label" fill="#fab1a0">raft</text>
+  <text x="520" y="623" text-anchor="middle" class="cluster-count">8 crates</text>
+
+  <!-- Inter-cluster connections (subtle lines) -->
+  <line x1="680" y1="340" x2="810" y2="240" stroke="#333" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="500" y1="340" x2="400" y2="340" stroke="#333" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="560" y1="480" x2="400" y2="530" stroke="#333" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="660" y1="460" x2="840" y2="500" stroke="#333" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="530" y1="240" x2="320" y2="210" stroke="#333" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="310" y1="390" x2="290" y2="430" stroke="#333" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="700" y1="480" x2="870" y2="500" stroke="#333" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="830" y1="270" x2="890" y2="360" stroke="#333" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+  <!-- Footer -->
+  <text x="600" y="750" text-anchor="middle" class="sub">superinstance · {−1, 0, +1} ecosystem</text>
+  <text x="600" y="770" text-anchor="middle" style="font-size:8px;fill:#444">Interactive version: cluster-map.html</text>
+</svg>
