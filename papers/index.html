@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Papers</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;
+  --accent:#00ff88;--amber:#ffb347;--red:#ff6b6b;--cyan:#4ecdc4;
+  --text:#e0e0e0;--dim:#666;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.w{max-width:860px;margin:0 auto;padding:0 24px}
+
+header{border-bottom:1px solid #1a1a1a;padding:40px 0 32px}
+header h1{font-size:1.5rem;margin-bottom:4px}
+header .tagline{color:var(--dim);font-size:.78rem}
+header .back{font-size:.72rem;color:var(--dim);margin-top:12px;display:inline-block}
+
+.paper-list{padding:48px 0}
+.paper-entry{background:var(--surface);border:1px solid #222;border-radius:4px;padding:28px 24px;margin-bottom:16px}
+.paper-entry .meta{font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:12px}
+.paper-entry h2{font-size:1.05rem;margin-bottom:12px}
+.paper-entry .abstract{color:var(--dim);font-size:.82rem;line-height:1.8;margin-bottom:16px;max-width:700px}
+.paper-entry .read-link{font-size:.78rem}
+
+footer{border-top:1px solid #1a1a1a;padding:32px 0;text-align:center}
+footer p{color:var(--dim);font-size:.75rem}
+footer .links{display:flex;justify-content:center;gap:24px;margin-bottom:16px;flex-wrap:wrap}
+footer .links a{font-size:.8rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="w">
+    <h1>Papers</h1>
+    <p class="tagline">Technical foundations of the SuperInstance ecosystem</p>
+    <a class="back" href="../index.html">← back to superinstance</a>
+  </div>
+</header>
+
+<main class="paper-list">
+  <div class="w">
+
+    <div class="paper-entry">
+      <div class="meta">June 2026 · SuperInstance Research</div>
+      <h2>Ternary Conservation in Distributed Systems</h2>
+      <p class="abstract">
+        Distributed systems lack a native concept of resource balance. Binary health checks—alive or dead—discard information about the neutral or transitional states that dominate real system behavior. This paper introduces ternary conservation, a structural invariant for distributed agents based on three-valued classification. Every signal is classified as {−1, 0, +1}, and a conservation law requires the sum of ternary values to be preserved across any closed set of operations. The invariant is structurally isomorphic to Gauss's law in Z₃ lattice gauge theory. We present the mathematical foundation, a multi-scale ternary Haar decomposition, the Bottle Protocol for cross-boundary ternary state, and a Rust implementation that enforces conservation at the type level.
+      </p>
+      <a class="read-link" href="ternary-conservation.md">Read full paper →</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="w">
+    <div class="links">
+      <a href="../index.html">home</a>
+      <a href="../education.html">education</a>
+      <a href="https://github.com/casey-digennaro">github</a>
+    </div>
+    <p>SuperInstance · γ + η = C · {−1, 0, +1}</p>
+  </div>
+</footer>
+
+</body>
+</html>

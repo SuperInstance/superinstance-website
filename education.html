@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Education</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;
+  --accent:#00ff88;--amber:#ffb347;--red:#ff6b6b;--cyan:#4ecdc4;
+  --text:#e0e0e0;--dim:#666;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.w{max-width:920px;margin:0 auto;padding:0 24px}
+
+/* Nav */
+nav{border-bottom:1px solid #1a1a1a;padding:12px 0;position:sticky;top:0;background:var(--bg);z-index:99}
+nav .w{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+nav .brand{font-size:.8rem;font-weight:700;color:var(--accent)}
+nav .links{display:flex;gap:16px;font-size:.7rem}
+nav .links a{color:var(--dim)}
+nav .links a.active{color:var(--accent)}
+
+/* Hero */
+.hero{min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:60px 24px}
+.hero h1{font-size:clamp(1.4rem,4vw,2.2rem);font-weight:400;line-height:1.4;margin-bottom:24px;max-width:700px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .sub{font-size:.82rem;color:var(--dim);max-width:560px;line-height:1.85;margin-bottom:32px}
+.hero .cursor{display:inline-block;width:10px;height:1.2em;background:var(--accent);animation:blink 1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+.hero .prompt{color:var(--accent);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:40px 0}
+.card{background:var(--surface);border:1px solid #222;border-radius:4px;padding:24px;transition:border-color .2s}
+.card:hover{border-color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card h3 .badge{font-size:.55rem;background:var(--surface2);color:var(--accent);padding:2px 6px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase}
+.card .desc{font-size:.78rem;color:var(--dim);margin-bottom:16px;line-height:1.6}
+
+/* Demo areas */
+.demo{background:var(--bg);border:1px solid #222;border-radius:3px;padding:16px;font-size:.75rem;margin-top:12px;min-height:120px;position:relative}
+.demo-label{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.15em;margin-bottom:8px}
+.demo button{background:var(--surface2);border:1px solid #333;color:var(--text);font-family:var(--mono);font-size:.72rem;padding:4px 10px;border-radius:2px;cursor:pointer;margin:2px;transition:all .15s}
+.demo button:hover{border-color:var(--accent);color:var(--accent)}
+.demo button:active{background:var(--accent);color:var(--bg)}
+.demo .output{color:var(--accent);margin-top:10px;white-space:pre-wrap;line-height:1.5}
+.demo .output .red{color:var(--red)}
+.demo .output .amber{color:var(--amber)}
+.demo .output .cyan{color:var(--cyan)}
+.demo .output .dim{color:var(--dim)}
+
+/* Ternary buttons */
+.ternary-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.ternary-btns button.neg{border-color:var(--red);color:var(--red)}
+.ternary-btns button.neg:hover{background:var(--red);color:var(--bg)}
+.ternary-btns button.zero{border-color:var(--amber);color:var(--amber)}
+.ternary-btns button.zero:hover{background:var(--amber);color:var(--bg)}
+.ternary-btns button.pos{border-color:var(--accent);color:var(--accent)}
+.ternary-btns button.pos:hover{background:var(--accent);color:var(--bg)}
+.balance-bar{height:4px;background:var(--surface2);border-radius:2px;margin-top:8px;overflow:hidden}
+.balance-fill{height:100%;background:var(--accent);transition:width .3s;border-radius:2px}
+
+/* Bottle demo */
+.bottle-envelope{font-size:.7rem;line-height:1.6}
+.bottle-envelope .key{color:var(--cyan)}
+.bottle-envelope .str{color:var(--accent)}
+.bottle-envelope .num{color:var(--amber)}
+.bottle-status{margin-top:8px;font-size:.7rem;color:var(--dim);min-height:1.5em}
+
+/* Sliders */
+.slider-group{margin-bottom:10px}
+.slider-group label{font-size:.68rem;color:var(--dim);display:flex;justify-content:space-between;margin-bottom:4px}
+.slider-group label span{color:var(--text)}
+.slider-group input[type=range]{width:100%;background:var(--surface2);height:4px;-webkit-appearance:none;appearance:none;border-radius:2px;outline:none}
+.slider-group input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--accent);border-radius:50%;cursor:pointer}
+.slider-group input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--accent);border-radius:50%;cursor:pointer;border:none}
+.conservation-result{text-align:center;font-size:1.1rem;margin-top:12px;padding:12px;border-radius:3px;border:1px solid #222;transition:all .3s}
+.conservation-result.valid{border-color:var(--accent);color:var(--accent)}
+.conservation-result.invalid{border-color:var(--red);color:var(--red)}
+
+/* Code block */
+.code-block{position:relative;background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;margin:32px 0;overflow-x:auto}
+.code-block pre{font-size:.75rem;line-height:1.7;color:var(--dim)}
+.code-block .kw{color:var(--red)}
+.code-block .fn{color:var(--cyan)}
+.code-block .ty{color:var(--amber)}
+.code-block .str{color:var(--accent)}
+.code-block .cm{color:#444}
+.code-block .copy-btn{position:absolute;top:8px;right:8px;background:var(--surface2);border:1px solid #333;color:var(--dim);font-family:var(--mono);font-size:.6rem;padding:4px 8px;border-radius:2px;cursor:pointer}
+.code-block .copy-btn:hover{color:var(--accent);border-color:var(--accent)}
+.code-block .filename{font-size:.6rem;color:var(--dim);margin-bottom:12px;text-transform:uppercase;letter-spacing:.15em}
+
+/* Stats */
+.stats{border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:24px 0}
+.stats .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.stat{text-align:center}
+.stat b{font-size:1.3rem;color:var(--accent);display:block}
+.stat span{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
+
+/* Footer */
+footer{padding:48px 0;border-top:1px solid #1a1a1a;text-align:center}
+footer p{font-size:.7rem;color:var(--dim)}
+footer a{color:var(--accent)}
+
+section{padding:48px 0}
+section h2{font-size:1.1rem;margin-bottom:24px}
+section h2 em{font-style:normal;color:var(--accent)}
+
+/* Mobile */
+@media(max-width:600px){
+  .cards{grid-template-columns:1fr}
+  .stats .w{flex-direction:column;align-items:center}
+  .hero h1{font-size:1.3rem}
+  nav .links{font-size:.6rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="w">
+    <a href="index.html" class="brand">superinstance://</a>
+    <div class="links">
+      <a href="index.html">home</a>
+      <a href="education.html" class="active">education</a>
+      <a href="papers/">papers</a>
+      <a href="https://github.com/superinstance" target="_blank">github</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="w">
+    <div class="prompt">$ cat /why.txt</div>
+    <h1>Build agents that <em>conserve energy</em>. Literally.</h1>
+    <p class="sub">
+      Three-valued logic. Message-passing bottles. A conservation law you can prove at the type level.
+      No frameworks. No buzzwords. Just math that compiles.
+    </p>
+    <div style="font-size:.75rem;color:var(--dim)">
+      <span style="color:var(--accent)">$</span> scroll down to run the demos<span class="cursor"></span>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="w">
+    <div class="stat"><b>53</b><span>crates</span></div>
+    <div class="stat"><b>155+</b><span>repos</span></div>
+    <div class="stat"><b>68</b><span>tests in SEEDs</span></div>
+    <div class="stat"><b>γ + η = C</b><span>conservation enforced</span></div>
+  </div>
+</div>
+
+<!-- Concept Cards -->
+<section>
+  <div class="w">
+    <h2><em>//</em> core concepts — interactive</h2>
+    <div class="cards">
+
+      <!-- Card 1: Ternary Classification -->
+      <div class="card">
+        <h3>Ternary Classification <span class="badge">{-1, 0, +1}</span></h3>
+        <p class="desc">Every agent event resolves to one of three states. Negative, neutral, positive. No maybes. Click events below and watch the conservation balance.</p>
+        <div class="demo">
+          <div class="demo-label">classify events</div>
+          <div class="ternary-btns">
+            <button class="neg" onclick="ternary(-1)">−1 drain</button>
+            <button class="zero" onclick="ternary(0)">0 neutral</button>
+            <button class="pos" onclick="ternary(1)">+1 inject</button>
+            <button onclick="ternaryReset()" style="border-color:#555;color:var(--dim)">reset</button>
+          </div>
+          <div id="ternary-output" class="output dim">// click events to classify</div>
+          <div class="demo-label" style="margin-top:10px">balance</div>
+          <div class="balance-bar"><div id="ternary-bar" class="balance-fill" style="width:50%"></div></div>
+          <div id="ternary-balance" style="font-size:.65rem;color:var(--dim);margin-top:4px">Σ = 0</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Bottle Protocol -->
+      <div class="card">
+        <h3>Bottle Protocol <span class="badge">json+msgpack</span></h3>
+        <p class="desc">JSON envelope for routing. msgpack for payload. Routers read the envelope without ever decoding the body. Click send and watch it round-trip.</p>
+        <div class="demo">
+          <div class="demo-label">bottle wire format</div>
+          <div class="bottle-envelope">
+{ <span class="key">"src"</span>: <span class="str">"agent://alpha"</span>,
+  <span class="key">"dst"</span>: <span class="str">"agent://bravo"</span>,
+  <span class="key">"γ"</span>: <span class="num">1</span>,
+  <span class="key">"η"</span>: <span class="num">-1</span>,
+  <span class="key">"payload"</span>: <span class="str">"0x82a3666f6f..."</span> }
+          </div>
+          <div style="margin-top:10px;display:flex;gap:6px;align-items:center">
+            <button onclick="sendBottle()">send bottle →</button>
+            <div id="bottle-status" class="bottle-status"></div>
+          </div>
+          <div id="bottle-output" class="output dim" style="margin-top:8px">// waiting for send</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Conservation Law -->
+      <div class="card">
+        <h3>Conservation Law <span class="badge">γ + η = C</span></h3>
+        <p class="desc">Gamma is energy injected. Eta is energy dissipated. Their sum is constant — like Gauss's law, but for agent networks. Adjust the sliders.</p>
+        <div class="demo">
+          <div class="demo-label">adjust parameters</div>
+          <div class="slider-group">
+            <label>γ (injection) <span id="gamma-val">0.50</span></label>
+            <input type="range" id="gamma-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateConservation()">
+          </div>
+          <div class="slider-group">
+            <label>η (dissipation) <span id="eta-val">0.50</span></label>
+            <input type="range" id="eta-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateConservation()">
+          </div>
+          <div id="conservation-result" class="conservation-result valid">C = 1.00 ✓</div>
+          <div id="conservation-note" style="font-size:.6rem;color:var(--dim);margin-top:6px;text-align:center">drag a slider — the other auto-adjusts to conserve</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Hello World -->
+<section>
+  <div class="w">
+    <h2><em>//</em> hello world — 43 lines of Rust</h2>
+    <p style="color:var(--dim);font-size:.8rem;margin-bottom:16px">This compiles. This runs. This is the entire trait.</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      <div class="filename">src/main.rs</div>
+<pre><span class="kw">use</span> superinstance::{<span class="ty">Agent</span>, <span class="ty">Bottle</span>, <span class="ty">Ternary</span>};
+
+<span class="cm">/// Minimal agent: receive a bottle, respond with balance.</span>
+<span class="kw">struct</span> <span class="ty">Balancer</span>;
+
+<span class="kw">impl</span> <span class="ty">Agent</span> <span class="kw">for</span> <span class="ty">Balancer</span> {
+    <span class="kw">fn</span> <span class="fn">receive</span>(&<span class="kw">mut</span> <span class="kw">self</span>, bottle: <span class="ty">Bottle</span>) -> <span class="ty">Bottle</span> {
+        <span class="kw">let</span> gamma = bottle.<span class="fn">gamma</span>();
+        <span class="kw">let</span> eta   = bottle.<span class="fn">eta</span>();
+        <span class="kw">let</span> c     = gamma + eta;          <span class="cm">// conservation invariant</span>
+        <span class="kw">let</span> state = <span class="kw">match</span> c.<span class="fn">classify</span>() {
+            <span class="ty">Ternary</span>::Positive  => <span class="str">"energy surplus"</span>,
+            <span class="ty">Ternary</span>::Neutral   => <span class="str">"balanced"</span>,
+            <span class="ty">Ternary</span>::Negative  => <span class="str">"energy deficit"</span>,
+        };
+        <span class="ty">Bottle</span>::<span class="fn">new</span>(<span class="str">"balancer"</span>, bottle.src())
+            .gamma(-eta)
+            .eta(-gamma)
+            .body(state)
+            .<span class="fn">seal</span>()
+    }
+
+    <span class="kw">fn</span> <span class="fn">inspect</span>(&<span class="kw">self</span>) -> <span class="ty">AgentState</span> {
+        <span class="ty">AgentState</span>::Active
+    }
+}
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="kw">let</span> <span class="kw">mut</span> agent = <span class="ty">Balancer</span>;
+    <span class="kw">let</span> msg = <span class="ty">Bottle</span>::<span class="fn">new</span>(<span class="str">"you"</span>, <span class="str">"balancer"</span>)
+        .gamma(<span class="num">1</span>).eta(<span class="num">-1</span>)
+        .body(<span class="str">"ping"</span>).<span class="fn">seal</span>();
+    <span class="kw">let</span> reply = agent.<span class="fn">receive</span>(msg);
+    <span class="fn">println!</span>(<span class="str">"{}"</span>, reply.<span class="fn">body</span>());
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- Links -->
+<section>
+  <div class="w">
+    <h2><em>//</em> go deeper</h2>
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      <div class="card">
+        <h3>hello world tutorial</h3>
+        <p class="desc">Build your first conservation agent in 50 lines. Trits, bottles, and the conservation law — hands on.</p>
+        <a href="tutorials/hello-world.md" style="font-size:.75rem">read tutorial →</a>
+      </div>
+      <div class="card">
+        <h3>source code</h3>
+        <p class="desc">Every crate, every test, every spec document. Read the code, not the docs.</p>
+        <a href="https://github.com/superinstance" target="_blank" style="font-size:.75rem">github.com/superinstance →</a>
+      </div>
+      <div class="card">
+        <h3>SEED primitives</h3>
+        <p class="desc">8 infrastructure crates. Circuit breakers, rate limiters, load balancers — all bottle-native.</p>
+        <a href="https://github.com/superinstance?tab=repositories&q=seed" target="_blank" style="font-size:.75rem">browse crates →</a>
+      </div>
+      <div class="card">
+        <h3>spec documents</h3>
+        <p class="desc">The math is formalized. Ternary conservation, bottle protocol, agent lifecycle — all specified.</p>
+        <a href="https://github.com/superinstance/superinstance/tree/main/docs" target="_blank" style="font-size:.75rem">read specs →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="w">
+    <p>SuperInstance — <a href="https://github.com/superinstance">github.com/superinstance</a></p>
+    <p style="margin-top:6px">Found an error? <a href="https://github.com/superinstance/superinstance-website/pulls">PRs welcome.</a></p>
+  </div>
+</footer>
+
+<script>
+// === Ternary Classification Demo ===
+let ternaryLog = [];
+let ternarySum = 0;
+
+function ternary(val) {
+  const labels = {'-1': 'DRAIN', '0': 'NEUTRAL', '1': 'INJECT'};
+  const cls = val === -1 ? 'red' : val === 0 ? 'amber' : '';
+  ternarySum += val;
+  ternaryLog.push({val, time: new Date().toLocaleTimeString()});
+  const out = document.getElementById('ternary-output');
+  const last5 = ternaryLog.slice(-5);
+  out.innerHTML = last5.map(e => {
+    const c = e.val === -1 ? 'red' : e.val === 0 ? 'amber' : '';
+    return `<span class="${c}">[${e.time}] ${e.val > 0 ? '+' : ''}${e.val} ${labels[e.val]}</span>`;
+  }).join('\n');
+  const bar = document.getElementById('ternary-bar');
+  const balance = document.getElementById('ternary-balance');
+  const pct = Math.max(5, Math.min(95, 50 + ternarySum * 10));
+  bar.style.width = pct + '%';
+  bar.style.background = ternarySum === 0 ? 'var(--accent)' : ternarySum > 0 ? 'var(--cyan)' : 'var(--red)';
+  balance.textContent = `Σ = ${ternarySum > 0 ? '+' : ''}${ternarySum} ${ternarySum === 0 ? '— balanced' : ''}`;
+  balance.style.color = ternarySum === 0 ? 'var(--accent)' : 'var(--dim)';
+}
+
+function ternaryReset() {
+  ternaryLog = [];
+  ternarySum = 0;
+  document.getElementById('ternary-output').innerHTML = '<span class="dim">// click events to classify</span>';
+  document.getElementById('ternary-bar').style.width = '50%';
+  document.getElementById('ternary-bar').style.background = 'var(--accent)';
+  document.getElementById('ternary-balance').textContent = 'Σ = 0';
+  document.getElementById('ternary-balance').style.color = 'var(--dim)';
+}
+
+// === Bottle Protocol Demo ===
+let bottleSending = false;
+function sendBottle() {
+  if (bottleSending) return;
+  bottleSending = true;
+  const status = document.getElementById('bottle-status');
+  const out = document.getElementById('bottle-output');
+  status.textContent = '';
+  out.innerHTML = '<span class="cyan">→ routing via envelope...</span>';
+  setTimeout(() => {
+    status.textContent = '▸ router: dst=agent://bravo';
+    out.innerHTML += '\n<span class="amber">▸ payload decoded (msgpack → 2 fields)</span>';
+  }, 500);
+  setTimeout(() => {
+    out.innerHTML += '\n<span class="dim">▸ bravo received bottle</span>';
+  }, 1000);
+  setTimeout(() => {
+    out.innerHTML += '\n<span style="color:var(--accent)">← response: { γ: 1, η: -1, body: "ack" }</span>';
+    status.textContent = '✓ round-trip complete';
+    bottleSending = false;
+  }, 1500);
+}
+
+// === Conservation Law Demo ===
+let lastChanged = 'gamma';
+const C = 1.0;
+
+function updateConservation() {
+  const gSlider = document.getElementById('gamma-slider');
+  const eSlider = document.getElementById('eta-slider');
+
+  if (lastChanged === 'gamma') {
+    const g = parseFloat(gSlider.value);
+    const e = C - g;
+    eSlider.value = Math.max(0, Math.min(1, e));
+  } else {
+    const e = parseFloat(eSlider.value);
+    const g = C - e;
+    gSlider.value = Math.max(0, Math.min(1, g));
+  }
+
+  const g = parseFloat(gSlider.value);
+  const e = parseFloat(eSlider.value);
+  document.getElementById('gamma-val').textContent = g.toFixed(2);
+  document.getElementById('eta-val').textContent = e.toFixed(2);
+
+  const total = g + e;
+  const res = document.getElementById('conservation-result');
+  if (Math.abs(total - C) < 0.02) {
+    res.textContent = `C = ${total.toFixed(2)} ✓`;
+    res.className = 'conservation-result valid';
+  } else {
+    res.textContent = `C = ${total.toFixed(2)} ✗ violation`;
+    res.className = 'conservation-result invalid';
+  }
+}
+
+document.getElementById('gamma-slider').addEventListener('mousedown', () => lastChanged = 'gamma');
+document.getElementById('gamma-slider').addEventListener('touchstart', () => lastChanged = 'gamma');
+document.getElementById('eta-slider').addEventListener('mousedown', () => lastChanged = 'eta');
+document.getElementById('eta-slider').addEventListener('touchstart', () => lastChanged = 'eta');
+
+// === Copy Code ===
+function copyCode(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  const text = pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied ✓';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  });
+}
+</script>
+</body>
+</html>
