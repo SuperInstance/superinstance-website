@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Conservation Playground</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #d4d4d4;
+    --text-dim: #737373;
+    --pos: #00ff88;
+    --neutral: #facc15;
+    --neg: #ef4444;
+    --pos-bg: rgba(0,255,136,0.1);
+    --neg-bg: rgba(239,68,68,0.1);
+    --neutral-bg: rgba(250,204,21,0.1);
+    --mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+  }
+  nav .inner {
+    max-width: 72rem; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 3.5rem;
+  }
+  nav .logo {
+    font-family: var(--mono); font-weight: 700; font-size: 1rem;
+    color: var(--pos); text-decoration: none; letter-spacing: -0.02em;
+  }
+  nav .links { display: flex; gap: 1.5rem; }
+  nav .links a {
+    color: var(--text-dim); text-decoration: none;
+    font-size: 0.875rem; font-family: var(--mono); transition: color 0.15s;
+  }
+  nav .links a:hover { color: var(--text); }
+
+  main { max-width: 72rem; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Hero */
+  .hero {
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+  .hero h1 {
+    font-family: var(--mono);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 800; letter-spacing: -0.03em;
+    margin-bottom: 0.75rem; line-height: 1.2;
+  }
+  .hero h1 .pos { color: var(--pos); }
+  .hero h1 .neg { color: var(--neg); }
+  .hero h1 .C { color: var(--neutral); }
+  .hero .tagline {
+    font-size: 1rem; color: var(--text-dim); max-width: 40rem;
+  }
+
+  /* Section */
+  .demo-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  .demo-section h2 {
+    font-family: var(--mono);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--text);
+  }
+  .demo-section .desc {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Tooltip */
+  .tip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    border-bottom: 1px dashed var(--text-dim);
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    font-family: var(--mono);
+  }
+  .tip .tiptext {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 50;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text);
+    width: max-content;
+    max-width: 300px;
+    line-height: 1.5;
+    transition: opacity 0.2s, visibility 0.2s;
+    font-family: var(--sans);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .tip:hover .tiptext { visibility: visible; opacity: 1; }
+
+  /* Buttons */
+  .btn {
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .btn:hover { border-color: var(--text-dim); }
+  .btn:active { transform: scale(0.97); }
+  .btn-pos { border-color: var(--pos); color: var(--pos); }
+  .btn-pos:hover { background: var(--pos-bg); }
+  .btn-neg { border-color: var(--neg); color: var(--neg); }
+  .btn-neg:hover { background: var(--neg-bg); }
+  .btn-neutral { border-color: var(--neutral); color: var(--neutral); }
+  .btn-neutral:hover { background: var(--neutral-bg); }
+  .btn-sm { padding: 0.35rem 0.85rem; font-size: 0.8rem; }
+  .btn-danger { border-color: var(--neg); color: var(--neg); }
+  .btn-danger:hover { background: var(--neg-bg); }
+
+  /* Bar chart */
+  .bar-chart {
+    display: flex; align-items: flex-end; gap: 1rem;
+    height: 120px; padding: 0.5rem 0; margin: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .bar-col {
+    display: flex; flex-direction: column; align-items: center;
+    flex: 1; max-width: 80px;
+  }
+  .bar-col .bar {
+    width: 100%; border-radius: 4px 4px 0 0;
+    transition: height 0.3s ease;
+    min-height: 2px;
+  }
+  .bar-col .bar-label {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--text-dim); margin-top: 0.4rem;
+  }
+  .bar-col .bar-value {
+    font-family: var(--mono); font-size: 0.8rem;
+    font-weight: 700; margin-bottom: 0.25rem;
+  }
+
+  /* Trit sequence display */
+  .trit-seq {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    padding: 0.75rem 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    min-height: 2.75rem;
+    margin-bottom: 1rem;
+    word-break: break-all;
+    line-height: 1.8;
+  }
+  .trit-seq .t-pos { color: var(--pos); }
+  .trit-seq .t-neg { color: var(--neg); }
+  .trit-seq .t-zero { color: var(--text-dim); }
+
+  /* Stats row */
+  .stats-row {
+    display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0;
+  }
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1.25rem;
+    font-family: var(--mono);
+    text-align: center;
+    min-width: 90px;
+  }
+  .stat-card .label {
+    font-size: 0.7rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+  }
+  .stat-card .value { font-size: 1.5rem; font-weight: 800; }
+
+  /* Input */
+  .input-row {
+    display: flex; gap: 0.75rem; align-items: stretch;
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .input-row input, .input-row select {
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    color: var(--text);
+    flex: 1;
+    min-width: 0;
+  }
+  .input-row input:focus, .input-row select:focus {
+    outline: none;
+    border-color: var(--pos);
+  }
+  .input-row input::placeholder { color: var(--text-dim); }
+
+  /* Conservation indicator */
+  .indicator {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 1rem; border-radius: 6px;
+    font-family: var(--mono); font-size: 0.875rem; font-weight: 700;
+  }
+  .indicator.ok { background: var(--pos-bg); color: var(--pos); border: 1px solid rgba(0,255,136,0.3); }
+  .indicator.fail { background: var(--neg-bg); color: var(--neg); border: 1px solid rgba(239,68,68,0.3); }
+  .indicator .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .indicator.ok .dot { background: var(--pos); }
+  .indicator.fail .dot { background: var(--neg); }
+
+  /* Split groups */
+  .split-groups {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    margin: 1rem 0;
+  }
+  @media (max-width: 500px) { .split-groups { grid-template-columns: 1fr; } }
+  .group-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+  .group-box .gtitle {
+    font-weight: 700; font-size: 0.75rem;
+    color: var(--text-dim); margin-bottom: 0.5rem;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  /* Fleet */
+  .fleet-ships {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .ship-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    min-width: 140px;
+    position: relative;
+  }
+  .ship-card .ship-name {
+    font-weight: 700; font-size: 0.75rem;
+    color: var(--pos); margin-bottom: 0.4rem;
+  }
+  .ship-card .ship-stat { margin: 0.15rem 0; }
+  .ship-card .mini-bar {
+    height: 4px; border-radius: 2px; margin-top: 0.35rem;
+  }
+  .ship-card .remove-btn {
+    position: absolute; top: 4px; right: 6px;
+    background: none; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 0.9rem; line-height: 1;
+  }
+  .ship-card .remove-btn:hover { color: var(--neg); }
+
+  .fleet-total {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    font-family: var(--mono);
+    display: flex; align-items: center; gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .fleet-total .ft-label {
+    font-size: 0.75rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .fleet-total .ft-value {
+    font-size: 1.25rem; font-weight: 800;
+  }
+
+  /* Wavelet */
+  .wavelet-levels {
+    display: flex; flex-direction: column; gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .wlevel {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+  .wlevel .wl-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.4rem;
+  }
+  .wlevel .wl-name { font-weight: 700; color: var(--neutral); }
+  .wlevel .wl-data { word-break: break-all; line-height: 1.6; }
+  .wlevel .wl-data .t-pos { color: var(--pos); }
+  .wlevel .wl-data .t-neg { color: var(--neg); }
+  .wlevel .wl-data .t-zero { color: var(--text-dim); }
+
+  /* Button group */
+  .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+
+  /* Scroll to top */
+  .scroll-top {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.5rem 0.75rem;
+    color: var(--text-dim); font-family: var(--mono); font-size: 0.8rem;
+    cursor: pointer; z-index: 50; transition: all 0.2s;
+    text-decoration: none;
+  }
+  .scroll-top:hover { color: var(--text); border-color: var(--text-dim); }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-family: var(--mono);
+    margin-top: 2rem;
+  }
+  footer a { color: var(--pos); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="../index.html" class="logo">superinstance_</a>
+    <div class="links">
+      <a href="education.html">theory</a>
+      <a href="playground.html">playground</a>
+      <a href="topology.html">topology</a>
+      <a href="cocapn.html">cocapn</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <h1><span class="pos">Conservation</span> Playground</h1>
+    <p class="tagline">Interactive experiments with ternary conservation. Build trit sequences, check invariants, simulate fleets, and decompose wavelets — all in the browser.</p>
+  </div>
+
+  <!-- ===== 1. TRIT VISUALIZER ===== -->
+  <div class="demo-section" id="trit-viz">
+    <h2>1. Trit Visualizer
+      <span class="tip">?<span class="tiptext">A <strong>trit</strong> takes value −1, 0, or +1. γ (gamma) counts +1s, η (eta) counts −1s. Conservation means C = γ + η is invariant under certain operations.</span></span>
+    </h2>
+    <p class="desc">Click to build a trit sequence. Watch γ, η, and C update in real time.</p>
+
+    <div class="btn-group">
+      <button class="btn btn-neg" onclick="addTrit(-1)">−1</button>
+      <button class="btn btn-neutral" onclick="addTrit(0)">0</button>
+      <button class="btn btn-pos" onclick="addTrit(1)">+1</button>
+      <button class="btn btn-sm" onclick="resetTrits()">reset</button>
+    </div>
+
+    <div class="trit-seq" id="trit-seq-display"><span style="color:var(--text-dim)">click a trit to begin</span></div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="label">γ (count +1)</div>
+        <div class="value" id="tv-gamma" style="color:var(--pos)">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">η (count −1)</div>
+        <div class="value" id="tv-eta" style="color:var(--neg)">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">C = γ + η</div>
+        <div class="value" id="tv-C" style="color:var(--neutral)">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Length</div>
+        <div class="value" id="tv-len" style="color:var(--text-dim)">0</div>
+      </div>
+    </div>
+
+    <div class="bar-chart" id="tv-chart">
+      <div class="bar-col">
+        <div class="bar-value" style="color:var(--neg)" id="tv-bar-v-neg">0</div>
+        <div class="bar" id="tv-bar-neg" style="background:var(--neg);height:2px;"></div>
+        <div class="bar-label">−1</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-value" style="color:var(--text-dim)" id="tv-bar-v-zero">0</div>
+        <div class="bar" id="tv-bar-zero" style="background:var(--text-dim);height:2px;"></div>
+        <div class="bar-label">0</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-value" style="color:var(--pos)" id="tv-bar-v-pos">0</div>
+        <div class="bar" id="tv-bar-pos" style="background:var(--pos);height:2px;"></div>
+        <div class="bar-label">+1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 2. CONSERVATION CHECKER ===== -->
+  <div class="demo-section" id="conservation-checker">
+    <h2>2. Conservation Checker
+      <span class="tip">?<span class="tiptext">A sequence <strong>conserves</strong> if splitting it into any two groups preserves C. Formally: C(A ∪ B) = C(A) + C(B) − overlap. For trit sequences, C = count(+1) + count(−1) is always additive.</span></span>
+    </h2>
+    <p class="desc">Enter a trit sequence (e.g. <code style="color:var(--pos)">1 -1 0 1 1 -1</code>). Check whether conservation holds when split into two groups.</p>
+
+    <div class="input-row">
+      <input type="text" id="cc-input" placeholder="e.g. 1 -1 0 1 1 -1  (space-separated)" />
+      <button class="btn" onclick="checkConservation()">Check</button>
+    </div>
+
+    <div id="cc-result" style="margin-top:1rem;"></div>
+
+    <div class="split-groups" id="cc-split" style="display:none;">
+      <div class="group-box" id="cc-group-a">
+        <div class="gtitle">Group A</div>
+        <div id="cc-ga-data"></div>
+      </div>
+      <div class="group-box" id="cc-group-b">
+        <div class="gtitle">Group B</div>
+        <div id="cc-gb-data"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 3. FLEET SIMULATOR ===== -->
+  <div class="demo-section" id="fleet-sim">
+    <h2>3. Fleet Simulator
+      <span class="tip">?<span class="tiptext">Each "ship" is an agent with its own γ and η. The <strong>fleet total C</strong> equals the sum of all ships' C values — conservation is compositional. Adding or removing ships that individually conserve keeps the fleet total consistent.</span></span>
+    </h2>
+    <p class="desc">Add ships with custom γ and η. The fleet's total C is always the sum of individual C values.</p>
+
+    <div class="input-row">
+      <input type="text" id="fs-name" placeholder="Ship name" style="max-width:160px;" />
+      <input type="number" id="fs-gamma" placeholder="γ" min="0" style="max-width:80px;" />
+      <input type="number" id="fs-eta" placeholder="η" min="0" style="max-width:80px;" />
+      <button class="btn" onclick="addShip()">Add Ship</button>
+    </div>
+
+    <div class="fleet-ships" id="fs-ships"></div>
+
+    <div class="fleet-total" id="fs-total" style="display:none;">
+      <div>
+        <div class="ft-label">Fleet γ</div>
+        <div class="ft-value" id="fs-fgamma" style="color:var(--pos)">0</div>
+      </div>
+      <div>
+        <div class="ft-label">Fleet η</div>
+        <div class="ft-value" id="fs-feta" style="color:var(--neg)">0</div>
+      </div>
+      <div>
+        <div class="ft-label">Fleet C</div>
+        <div class="ft-value" id="fs-fC" style="color:var(--neutral)">0</div>
+      </div>
+      <div>
+        <div class="ft-label">Ships</div>
+        <div class="ft-value" id="fs-fcount" style="color:var(--text-dim)">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 4. WAVELET DECOMPOSER ===== -->
+  <div class="demo-section" id="wavelet-decomp">
+    <h2>4. Wavelet Decomposer
+      <span class="tip">?<span class="tiptext"><strong>Ternary Haar wavelet</strong>: at each level, pair adjacent values → coarse (average direction) and detail (difference). Conservation is preserved: C at level N equals C at level 0.</span></span>
+    </h2>
+    <p class="desc">Enter a trit sequence. Step through ternary Haar decomposition levels and verify conservation holds at each level.</p>
+
+    <div class="input-row">
+      <input type="text" id="wd-input" placeholder="e.g. 1 -1 0 1 -1 1 0 -1  (even length)" />
+      <button class="btn" onclick="decomposeWavelet()">Decompose</button>
+    </div>
+
+    <div class="wavelet-levels" id="wd-levels"></div>
+  </div>
+</main>
+
+<footer>
+  <a href="education.html">← back to theory</a> · <a href="../index.html">home</a>
+  <br>superinstance_ — ternary infrastructure for self-improving agents
+</footer>
+
+<a href="#trit-viz" class="scroll-top">↑ top</a>
+
+<script>
+// =====================
+// 1. TRIT VISUALIZER
+// =====================
+let trits = [];
+
+function addTrit(v) {
+  trits.push(v);
+  renderTrits();
+}
+
+function resetTrits() {
+  trits = [];
+  renderTrits();
+}
+
+function renderTrits() {
+  const display = document.getElementById('trit-seq-display');
+  if (trits.length === 0) {
+    display.innerHTML = '<span style="color:var(--text-dim)">click a trit to begin</span>';
+  } else {
+    display.innerHTML = trits.map(t => {
+      if (t === 1) return '<span class="t-pos">+1</span>';
+      if (t === -1) return '<span class="t-neg">−1</span>';
+      return '<span class="t-zero">0</span>';
+    }).join(' ');
+  }
+
+  const gamma = trits.filter(t => t === 1).length;
+  const eta = trits.filter(t => t === -1).length;
+  const zeros = trits.filter(t => t === 0).length;
+  const C = gamma + eta;
+
+  document.getElementById('tv-gamma').textContent = gamma;
+  document.getElementById('tv-eta').textContent = eta;
+  document.getElementById('tv-C').textContent = C;
+  document.getElementById('tv-len').textContent = trits.length;
+
+  const maxH = 100;
+  const maxVal = Math.max(gamma, eta, zeros, 1);
+  document.getElementById('tv-bar-pos').style.height = Math.max(2, (gamma / maxVal) * maxH) + 'px';
+  document.getElementById('tv-bar-neg').style.height = Math.max(2, (eta / maxVal) * maxH) + 'px';
+  document.getElementById('tv-bar-zero').style.height = Math.max(2, (zeros / maxVal) * maxH) + 'px';
+  document.getElementById('tv-bar-v-pos').textContent = gamma;
+  document.getElementById('tv-bar-v-neg').textContent = eta;
+  document.getElementById('tv-bar-v-zero').textContent = zeros;
+}
+
+// =====================
+// 2. CONSERVATION CHECKER
+// =====================
+function parseTrits(str) {
+  return str.trim().split(/[\s,]+/).map(s => {
+    const n = parseInt(s, 10);
+    if (isNaN(n) || ![-1, 0, 1].includes(n)) return null;
+    return n;
+  });
+}
+
+function tritSpan(t) {
+  if (t === 1) return '<span class="t-pos">+1</span>';
+  if (t === -1) return '<span class="t-neg">−1</span>';
+  return '<span class="t-zero">0</span>';
+}
+
+function computeC(seq) {
+  return seq.filter(t => t === 1).length + seq.filter(t => t === -1).length;
+}
+
+function checkConservation() {
+  const input = document.getElementById('cc-input').value;
+  const seq = parseTrits(input);
+  const resultDiv = document.getElementById('cc-result');
+  const splitDiv = document.getElementById('cc-split');
+
+  if (!seq || seq.length === 0 || seq.includes(null)) {
+    resultDiv.innerHTML = '<span style="color:var(--neg);font-family:var(--mono)">Invalid input. Use space-separated −1, 0, or +1.</span>';
+    splitDiv.style.display = 'none';
+    return;
+  }
+
+  const gamma = seq.filter(t => t === 1).length;
+  const eta = seq.filter(t => t === -1).length;
+  const C = gamma + eta;
+
+  // Split into two groups
+  const mid = Math.ceil(seq.length / 2);
+  const groupA = seq.slice(0, mid);
+  const groupB = seq.slice(mid);
+
+  const Ca = computeC(groupA);
+  const Cb = computeC(groupB);
+  const conserved = (Ca + Cb === C);
+
+  resultDiv.innerHTML = `
+    <div class="stats-row">
+      <div class="stat-card"><div class="label">γ</div><div class="value" style="color:var(--pos)">${gamma}</div></div>
+      <div class="stat-card"><div class="label">η</div><div class="value" style="color:var(--neg)">${eta}</div></div>
+      <div class="stat-card"><div class="label">C total</div><div class="value" style="color:var(--neutral)">${C}</div></div>
+      <div class="stat-card"><div class="label">C(A)</div><div class="value" style="color:var(--pos)">${Ca}</div></div>
+      <div class="stat-card"><div class="label">C(B)</div><div class="value" style="color:var(--neg)">${Cb}</div></div>
+    </div>
+    <div style="margin:0.75rem 0;">
+      <div class="indicator ${conserved ? 'ok' : 'fail'}">
+        <span class="dot"></span>
+        ${conserved ? 'Conservation is preserved! C(A) + C(B) = C total' : 'Violation detected! C(A) + C(B) ≠ C total'}
+      </div>
+    </div>
+  `;
+
+  splitDiv.style.display = '';
+  document.getElementById('cc-ga-data').innerHTML = `
+    ${groupA.map(tritSpan).join(' ')}<br>
+    <span style="color:var(--pos)">γ=${groupA.filter(t=>t===1).length}</span>
+    <span style="color:var(--neg)">η=${groupA.filter(t=>t===-1).length}</span>
+    <span style="color:var(--neutral)">C=${Ca}</span>
+  `;
+  document.getElementById('cc-gb-data').innerHTML = `
+    ${groupB.map(tritSpan).join(' ')}<br>
+    <span style="color:var(--pos)">γ=${groupB.filter(t=>t===1).length}</span>
+    <span style="color:var(--neg)">η=${groupB.filter(t=>t===-1).length}</span>
+    <span style="color:var(--neutral)">C=${Cb}</span>
+  `;
+}
+
+// =====================
+// 3. FLEET SIMULATOR
+// =====================
+let ships = [];
+let shipId = 0;
+
+function addShip() {
+  const nameEl = document.getElementById('fs-name');
+  const gammaEl = document.getElementById('fs-gamma');
+  const etaEl = document.getElementById('fs-eta');
+
+  const name = nameEl.value.trim() || ('Ship ' + (ships.length + 1));
+  const gamma = parseInt(gammaEl.value, 10);
+  const eta = parseInt(etaEl.value, 10);
+
+  if (isNaN(gamma) || gamma < 0 || isNaN(eta) || eta < 0) {
+    // just flash the border
+    gammaEl.style.borderColor = gammaEl.value && isNaN(parseInt(gammaEl.value,10)) ? 'var(--neg)' : '';
+    etaEl.style.borderColor = etaEl.value && isNaN(parseInt(etaEl.value,10)) ? 'var(--neg)' : '';
+    return;
+  }
+
+  ships.push({ id: shipId++, name, gamma, eta, C: gamma + eta });
+  nameEl.value = ''; gammaEl.value = ''; etaEl.value = '';
+  gammaEl.style.borderColor = ''; etaEl.style.borderColor = '';
+  renderFleet();
+}
+
+function removeShip(id) {
+  ships = ships.filter(s => s.id !== id);
+  renderFleet();
+}
+
+function renderFleet() {
+  const container = document.getElementById('fs-ships');
+  const totalDiv = document.getElementById('fs-total');
+
+  if (ships.length === 0) {
+    container.innerHTML = '<span style="color:var(--text-dim);font-family:var(--mono);font-size:0.8rem;">no ships yet — add one above</span>';
+    totalDiv.style.display = 'none';
+    return;
+  }
+
+  const maxC = Math.max(...ships.map(s => s.C), 1);
+
+  container.innerHTML = ships.map(s => {
+    const barW = Math.max(4, (s.C / maxC) * 100);
+    return `
+      <div class="ship-card">
+        <button class="remove-btn" onclick="removeShip(${s.id})" title="Remove">×</button>
+        <div class="ship-name">${esc(s.name)}</div>
+        <div class="ship-stat"><span style="color:var(--pos)">γ=${s.gamma}</span></div>
+        <div class="ship-stat"><span style="color:var(--neg)">η=${s.eta}</span></div>
+        <div class="ship-stat"><span style="color:var(--neutral)">C=${s.C}</span></div>
+        <div class="mini-bar" style="width:${barW}%;background:var(--neutral);"></div>
+      </div>
+    `;
+  }).join('');
+
+  const fGamma = ships.reduce((a, s) => a + s.gamma, 0);
+  const fEta = ships.reduce((a, s) => a + s.eta, 0);
+  const fC = ships.reduce((a, s) => a + s.C, 0);
+
+  totalDiv.style.display = 'flex';
+  document.getElementById('fs-fgamma').textContent = fGamma;
+  document.getElementById('fs-feta').textContent = fEta;
+  document.getElementById('fs-fC').textContent = fC;
+  document.getElementById('fs-fcount').textContent = ships.length;
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// =====================
+// 4. WAVELET DECOMPOSER
+// =====================
+function decomposeWavelet() {
+  const input = document.getElementById('wd-input').value;
+  const seq = parseTrits(input);
+  const container = document.getElementById('wd-levels');
+
+  if (!seq || seq.length === 0 || seq.includes(null)) {
+    container.innerHTML = '<span style="color:var(--neg);font-family:var(--mono)">Invalid input. Use space-separated −1, 0, or +1.</span>';
+    return;
+  }
+
+  if (seq.length < 2) {
+    container.innerHTML = '<span style="color:var(--neg);font-family:var(--mono)">Need at least 2 trits for decomposition.</span>';
+    return;
+  }
+
+  // Pad to nearest power of 2 with zeros
+  let len = 1;
+  while (len < seq.length) len *= 2;
+  const padded = [...seq];
+  while (padded.length < len) padded.push(0);
+
+  const levels = [];
+  let current = padded;
+  const C0 = computeC(current);
+
+  levels.push({
+    name: 'Level 0 (raw)',
+    coarse: current,
+    detail: null,
+    C: C0
+  });
+
+  while (current.length >= 2) {
+    const coarse = [];
+    const detail = [];
+    for (let i = 0; i < current.length; i += 2) {
+      const a = current[i], b = current[i + 1];
+      // Ternary Haar: coarse = sign(a+b) clamped, detail = sign(a-b) clamped
+      const sum = a + b;
+      const diff = a - b;
+      const c = Math.max(-1, Math.min(1, Math.sign(sum)));
+      const d = Math.max(-1, Math.min(1, Math.sign(diff)));
+      coarse.push(c);
+      detail.push(d);
+    }
+    const levelC = computeC(coarse);
+    levels.push({
+      name: `Level ${levels.length}`,
+      coarse,
+      detail,
+      C: levelC
+    });
+    current = coarse;
+  }
+
+  container.innerHTML = levels.map((lv, i) => {
+    const conserved = lv.C === C0;
+    const coarseHtml = lv.coarse.map(tritSpan).join(' ');
+    const detailHtml = lv.detail ? lv.detail.map(tritSpan).join(' ') : null;
+    return `
+      <div class="wlevel">
+        <div class="wl-header">
+          <span class="wl-name">${lv.name}</span>
+          <span style="font-size:0.75rem;">
+            C = <span style="color:var(--neutral)">${lv.C}</span>
+            ${i > 0 ? `<span class="indicator ${conserved ? 'ok' : 'fail'}" style="margin-left:0.5rem;font-size:0.7rem;padding:0.2rem 0.5rem;">
+              <span class="dot"></span>${conserved ? 'conserved' : 'changed'}
+            </span>` : ''}
+          </span>
+        </div>
+        <div class="wl-data">
+          <span style="color:var(--text-dim);font-size:0.7rem;">coarse:</span> ${coarseHtml}
+          ${detailHtml ? `<br><span style="color:var(--text-dim);font-size:0.7rem;">detail:</span> ${detailHtml}` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Init fleet placeholder
+renderFleet();
+</script>
+</body>
+</html>
