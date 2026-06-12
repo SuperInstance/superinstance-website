@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — System Status</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--text:#e0e0e0;--dim:#666;--red:#ff6b6b;--yellow:#ffd93d;--blue:#6bcbff;--mono:'JetBrains Mono','Fira Code',monospace}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent);color:var(--bg)}
+.w{max-width:960px;margin:0 auto;padding:0 24px}
+
+header{padding:40px 0 20px;border-bottom:1px solid #1a1a1a}
+header h1{font-size:1.3rem;margin-bottom:4px}
+header h1 em{font-style:normal;color:var(--accent)}
+header p{font-size:.7rem;color:var(--dim)}
+header .back{font-size:.75rem;color:var(--dim);display:inline-block;margin-bottom:12px}
+nav{display:flex;gap:16px;font-size:.75rem;margin-top:12px}
+nav a{color:var(--dim);padding:4px 0}
+nav a.active{color:var(--accent);border-bottom:1px solid var(--accent)}
+
+.live-dot{display:inline-block;width:6px;height:6px;background:#00ff88;border-radius:50%;margin-right:6px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+section{padding:40px 0}
+section h2{font-size:1.1rem;margin-bottom:20px}
+section h2 em{font-style:normal;color:var(--accent)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.metric{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;text-align:center}
+.metric b{font-size:1.8rem;color:var(--accent);display:block;line-height:1.2}
+.metric span{font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:6px;display:block}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th{text-align:left;font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;padding:8px 12px;border-bottom:1px solid #222}
+td{padding:10px 12px;border-bottom:1px solid #1a1a1a}
+td:first-child{color:var(--accent)}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+
+.status-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:.7rem;font-weight:600;letter-spacing:.04em}
+.status-badge.up{background:#00ff8822;color:#00ff88;border:1px solid #00ff8844}
+.status-badge.down{background:#ff6b6b22;color:#ff6b6b;border:1px solid #ff6b6b44}
+.status-badge.checking{background:#ffd93d22;color:#ffd93d;border:1px solid #ffd93d44}
+
+.response-preview{font-size:.68rem;color:var(--dim);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.response-preview:hover{white-space:normal;word-break:break-all}
+
+.service-row{background:var(--surface);border:1px solid #222;border-radius:4px;padding:16px 20px;margin-bottom:8px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.service-row .svc-name{font-weight:600;min-width:200px;font-size:.82rem}
+.service-row .svc-url{font-size:.68rem;color:var(--dim);min-width:260px}
+.service-row .svc-meta{font-size:.68rem;color:var(--dim);flex:1}
+
+.harness-card{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px;margin-bottom:12px}
+.harness-card h3{font-size:.8rem;color:var(--blue);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em}
+.harness-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.harness-metric b{font-size:1.3rem;color:var(--blue);display:block}
+.harness-metric span{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+
+.activity-feed{max-height:400px;overflow-y:auto}
+.activity-item{padding:10px 14px;border-bottom:1px solid #1a1a1a;font-size:.75rem;display:flex;gap:12px;align-items:flex-start}
+.activity-item .ts{color:var(--dim);min-width:140px;font-size:.68rem}
+.activity-item .msg{flex:1}
+
+.refresh-bar{background:var(--surface2);border:1px solid #222;border-radius:4px;padding:10px 16px;margin-bottom:24px;display:flex;align-items:center;gap:16px;font-size:.72rem;color:var(--dim)}
+.refresh-bar b{color:var(--text)}
+
+footer{border-top:1px solid #1a1a1a;padding:24px 0;font-size:.65rem;color:var(--dim);text-align:center}
+
+@media(max-width:700px){
+  .service-row{flex-direction:column;align-items:flex-start}
+  .service-row .svc-url{min-width:auto;word-break:break-all}
+}
+</style>
+</head>
+<body>
+
+<div class="w">
+  <header>
+    <a href="index.html" class="back">← back</a>
+    <h1>📡 System <em>Status</em></h1>
+    <p><span class="live-dot"></span>live infrastructure health & metrics</p>
+    <nav>
+      <a href="search.html">🔍 Search</a>
+      <a href="stats.html">📊 Stats</a>
+      <a href="browse.html">📂 Browse</a>
+      <a href="cluster-map.html">🗺️ Clusters</a>
+      <a href="status.html" class="active">📡 Status</a>
+    </nav>
+  </header>
+
+  <div class="refresh-bar">
+    <span class="live-dot"></span>
+    <span>Last checked: <b id="last-check">never</b></span>
+    <span>Auto-refresh: <b>60s</b></span>
+    <span>Next: <b id="next-check">—</b></span>
+    <span style="margin-left:auto;cursor:pointer" onclick="checkAll()" title="Refresh now">🔄 refresh</span>
+  </div>
+
+  <!-- Infrastructure Status -->
+  <section>
+    <h2>Infrastructure <em>Status Grid</em></h2>
+    <div id="services"></div>
+  </section>
+
+  <!-- Harness Metrics -->
+  <section>
+    <h2>Harness <em>Metrics</em></h2>
+    <div class="harness-card">
+      <h3>Cycle Engine</h3>
+      <div class="harness-grid" id="harness-metrics">
+        <div class="harness-metric"><b id="h-cycles">—</b><span>total cycles</span></div>
+        <div class="harness-metric"><b id="h-ewma">—</b><span>EWMA quality</span></div>
+        <div class="harness-metric"><b id="h-gamma">—</b><span>γ allocation</span></div>
+        <div class="harness-metric"><b id="h-eta">—</b><span>η allocation</span></div>
+        <div class="harness-metric"><b id="h-roi">—</b><span>exploration ROI</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vector Index Stats -->
+  <section>
+    <h2>Vector Index <em>Stats</em></h2>
+    <div class="grid" id="vector-stats">
+      <div class="metric"><b id="v-total">—</b><span>total vectors</span></div>
+      <div class="metric"><b id="v-dims">—</b><span>dimensions</span></div>
+      <div class="metric"><b id="v-index">—</b><span>index name</span></div>
+      <div class="metric"><b id="v-updated">—</b><span>last updated</span></div>
+    </div>
+  </section>
+
+  <!-- Build Health -->
+  <section>
+    <h2>Build <em>Health</em></h2>
+    <div class="grid" id="build-health">
+      <div class="metric"><b id="b-total">—</b><span>total crates</span></div>
+      <div class="metric"><b id="b-pass">—</b><span>pass rate</span></div>
+      <div class="metric"><b id="b-fail">—</b><span>known failures</span></div>
+      <div class="metric"><b id="b-ci">—</b><span>with CI</span></div>
+    </div>
+  </section>
+
+  <!-- Recent Activity -->
+  <section>
+    <h2>Recent <em>Activity</em></h2>
+    <div class="harness-card">
+      <h3>Recent Cycles</h3>
+      <div class="activity-feed" id="activity-feed">
+        <div class="activity-item"><span class="ts">—</span><span class="msg" style="color:var(--dim)">loading…</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    superinstance ecosystem · status page · <a href="index.html">home</a> · <a href="stats.html">stats</a> · <a href="search.html">search</a> · <a href="browse.html">browse</a>
+  </footer>
+</div>
+
+<script>
+const SERVICES = [
+  {name:'fleet-vector-api', url:'https://fleet-vector-api.casey-digennaro.workers.dev/stats', method:'GET', expect:'json'},
+  {name:'harness-api', url:'https://harness-api.casey-digennaro.workers.dev/metrics', method:'GET', expect:'json'},
+  {name:'superinstance-agent', url:'https://superinstance-agent.casey-digennaro.workers.dev/', method:'GET', expect:'any'},
+  {name:'superinstance-vectorize', url:'https://superinstance-vectorize.casey-digennaro.workers.dev/', method:'GET', expect:'any'},
+];
+
+const state = {services:{}, harness:{}, vector:{}, timer:null};
+
+function ts(iso){return iso ? new Date(iso).toLocaleString() : '—'}
+function now(){return new Date().toLocaleTimeString()}
+
+async function checkService(svc){
+  const el = document.querySelector(`[data-svc="${svc.name}"]`);
+  const badge = el?.querySelector('.status-badge');
+  const preview = el?.querySelector('.svc-meta');
+  try{
+    badge.className='status-badge checking';badge.textContent='checking…';
+    const t0=performance.now();
+    const res=await fetch(svc.url,{signal:AbortSignal.timeout(10000)});
+    const ms=Math.round(performance.now()-t0);
+    const text=await res.text();
+    let json;
+    try{json=JSON.parse(text)}catch(e){}
+    badge.className='status-badge up';badge.textContent=`UP ${res.status} · ${ms}ms`;
+    preview.textContent=json?JSON.stringify(json).slice(0,120):text.slice(0,120);
+    return{status:'up',ms,json,text:json?JSON.stringify(json):text};
+  }catch(e){
+    badge.className='status-badge down';badge.textContent='DOWN';
+    preview.textContent=e.message;
+    return{status:'down',error:e.message};
+  }
+}
+
+function renderServiceGrid(){
+  document.getElementById('services').innerHTML=SERVICES.map(s=>`
+    <div class="service-row" data-svc="${s.name}">
+      <span class="svc-name">${s.name}</span>
+      <span class="svc-url"><a href="${s.url}" target="_blank">${s.url}</a></span>
+      <span class="status-badge checking">checking…</span>
+      <span class="svc-meta">—</span>
+    </div>`).join('');
+}
+
+async function checkInfrastructure(){
+  renderServiceGrid();
+  const results={};
+  for(const svc of SERVICES){
+    results[svc.name]=await checkService(svc);
+  }
+  return results;
+}
+
+function updateVectorStats(results){
+  const fv=results['fleet-vector-api'];
+  if(fv?.status==='up'&&fv.json){
+    const d=fv.json;
+    document.getElementById('v-total').textContent=(d.crate_count||d.vector_count||'—').toLocaleString?.()||d.crate_count||'—';
+    document.getElementById('v-dims').textContent=d.dimensions||'—';
+    document.getElementById('v-index').textContent=d.index||'fleet-crates';
+    document.getElementById('v-updated').textContent=d.last_ingest||d.last_updated||'—';
+  }else{
+    ['v-total','v-dims','v-index','v-updated'].forEach(id=>document.getElementById(id).textContent='offline');
+  }
+}
+
+function updateHarnessMetrics(results){
+  const h=results['harness-api'];
+  if(h?.status==='up'&&h.json){
+    const d=h.json;
+    document.getElementById('h-cycles').textContent=d.total_cycles??d.cycles??'—';
+    document.getElementById('h-ewma').textContent=d.ewma_quality??d.ewma??'—';
+    document.getElementById('h-gamma').textContent=d.gamma_allocation??d.gamma??'—';
+    document.getElementById('h-eta').textContent=d.eta_allocation??d.eta??'—';
+    document.getElementById('h-roi').textContent=d.exploration_roi??d.roi??'—';
+
+    // Recent cycles
+    const cycles=d.recent_cycles||d.cycles||[];
+    if(cycles.length){
+      document.getElementById('activity-feed').innerHTML=cycles.slice(0,20).map(c=>`
+        <div class="activity-item">
+          <span class="ts">${ts(c.started_at||c.timestamp||c.created_at)}</span>
+          <span class="msg">${c.name||c.id||c.action||JSON.stringify(c).slice(0,100)}</span>
+        </div>`).join('')||'<div class="activity-item"><span class="msg" style="color:var(--dim)">no recent activity</span></div>';
+    }
+  }else{
+    ['h-cycles','h-ewma','h-gamma','h-eta','h-roi'].forEach(id=>document.getElementById(id).textContent='offline');
+    document.getElementById('activity-feed').innerHTML='<div class="activity-item"><span class="msg" style="color:var(--red)">harness-api unavailable</span></div>';
+  }
+}
+
+async function loadBuildHealth(){
+  try{
+    const res=await fetch('ecosystem-data.json');
+    const data=await res.json();
+    const repos=Array.isArray(data)?data:data.repos||[];
+    const total=repos.length;
+    const passing=repos.filter(r=>r.build_status==='pass'||r.category==='REAL').length;
+    const failing=total-passing;
+    const withCI=repos.filter(r=>r.has_ci).length;
+    document.getElementById('b-total').textContent=total.toLocaleString();
+    document.getElementById('b-pass').textContent=total?(passing/total*100).toFixed(1)+'%':'—';
+    document.getElementById('b-fail').textContent=failing.toLocaleString();
+    document.getElementById('b-ci').textContent=withCI.toLocaleString();
+  }catch(e){
+    ['b-total','b-pass','b-fail','b-ci'].forEach(id=>document.getElementById(id).textContent='err');
+  }
+}
+
+let countdown=60;
+function tickCountdown(){
+  countdown--;
+  if(countdown<=0)countdown=60;
+  document.getElementById('next-check').textContent=countdown+'s';
+}
+
+async function checkAll(){
+  document.getElementById('last-check').textContent=now();
+  countdown=60;
+  const results=await checkInfrastructure();
+  updateVectorStats(results);
+  updateHarnessMetrics(results);
+  await loadBuildHealth();
+}
+
+// Init
+checkAll();
+setInterval(()=>{tickCountdown();if(countdown===60)checkAll()},1000);
+</script>
+</body>
+</html>
