@@ -107,7 +107,7 @@ The ecosystem is building toward self-monitoring systems. Openmind-mirror checks
 - **Index:** `fleet-crates` on Cloudflare Vectorize (543 crates)
 - **Seed queries:** 10 queries spanning quantum physics, orchestration, poetry, GPU computing, dashboards, anomaly detection, geometry, metaprogramming, error taxonomy, and constraint solving
 - **Cross-domain queries:** 10 additional targeted queries designed to bridge distant domains
-- **Recommendation engine:** five task-based queries with context, using a composite of semantic and quality signals
+- **Recommendation engine:** five queries by task with context, blending semantic and quality signals
 - **Surprise criterion:** Results at positions 4–8 from seed queries (beyond the obvious top-3), and top results from deliberately cross-domain queries
 - **All scores are real cosine similarity values from the API**, not synthetic estimates
 
