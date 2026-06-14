@@ -3,187 +3,866 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuperInstance</title>
+<title>SuperInstance — Conservation-law governance for AI agent fleets</title>
+<meta name="description" content="SuperInstance enforces the first proven conservation law for AI agent fleets — γ + η ≤ C — turning chaotic multi-agent systems into governed, efficient, self-regulating fleets.">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--accent:#00ff88;--text:#e0e0e0;--dim:#666;--mono:'JetBrains Mono','Fira Code',monospace}
-html{font-size:16px;scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);line-height:1.7}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-::selection{background:var(--accent);color:var(--bg)}
-.w{max-width:860px;margin:0 auto;padding:0 24px}
-
-/* Hero */
-.hero{min-height:90vh;display:flex;flex-direction:column;justify-content:center;padding:60px 24px}
-.hero .tag{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
-.hero .manifesto{font-size:.88rem;color:var(--dim);max-width:720px;line-height:1.85}
-.hero .manifesto strong{color:var(--text)}
-.hero .nav{display:flex;gap:16px;font-size:.72rem;margin-bottom:24px;flex-wrap:wrap}
-.hero .nav a{color:var(--dim)}
-
-/* Stats bar */
-.stats{border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:20px 0}
-.stats .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.stat{text-align:center}
-.stat b{font-size:1.3rem;color:var(--accent);display:block}
-.stat span{font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
-
-/* Sections */
-section{padding:64px 0}
-section h2{font-size:1.3rem;margin-bottom:32px}
-section h2 em{font-style:normal;color:var(--accent)}
-section p{color:var(--dim);font-size:.85rem;margin-bottom:16px;max-width:640px}
-
-/* Principle equation */
-.eq{text-align:center;font-size:2rem;font-weight:700;margin:24px 0 32px;letter-spacing:.04em}
-.eq .g{color:#ff6b6b}.eq .e{color:#4ecdc4}.eq .c{color:var(--accent)}
-
-/* Stack cards */
-.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:24px}
-.stack-card{background:var(--surface);border:1px solid #222;border-radius:4px;padding:20px}
-.stack-card h3{font-size:.9rem;margin-bottom:6px}
-.stack-card p{font-size:.78rem;color:var(--dim);line-height:1.6;margin:0;max-width:none}
-.stack-card .lang{font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;margin-bottom:10px}
-
-/* Loop diagram */
-.loop-diagram{background:var(--surface);border:1px solid #222;border-radius:4px;padding:32px 24px;margin:24px auto;max-width:600px;font-size:.78rem;line-height:1.6;color:var(--dim);text-align:center;overflow-x:auto}
-.loop-diagram pre{display:inline-block;text-align:left;color:var(--dim);font-size:.72rem;line-height:1.5}
-.loop-diagram pre .accent{color:var(--accent)}
-.loop-diagram pre .warn{color:#ff6b6b}
-.loop-diagram pre .info{color:#4ecdc4}
-.loop-diagram .loop-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);margin-bottom:16px}
-
-/* Footer */
-footer{border-top:1px solid #1a1a1a;padding:40px 0;text-align:center}
-footer p{color:var(--dim);font-size:.75rem}
-footer .links{display:flex;justify-content:center;gap:24px;margin-bottom:16px;flex-wrap:wrap}
-footer .links a{font-size:.8rem}
-
-@media(max-width:600px){
-  .stats .w{flex-direction:column;align-items:center}
-  .stack-grid{grid-template-columns:1fr}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06080f;--bg2:#0a0e1a;--surface:#0d1220;--surface2:#131a2b;
+  --border:#1a2238;--borderb:#283352;
+  --text:#e8ecf4;--text2:#a8b2c8;--dim:#5a6580;
+  --accent:#00ff9d;--accent2:#00d4ff;--accent3:#7c5cff;--warn:#ff4d6d;
+  --mono:'SF Mono','JetBrains Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --maxw:1080px;--r:12px;
 }
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent);color:var(--bg)}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.5;pointer-events:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,8,15,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:var(--mono);font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.logo-mark{width:22px;height:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--bg);font-weight:900}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:.82rem;color:var(--text2);transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-cta{font-size:.8rem;padding:7px 16px;border:1px solid var(--borderb);border-radius:8px;color:var(--text);transition:all .2s;font-family:var(--mono)}
+.nav-cta:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 20px rgba(0,255,157,.15)}
+@media(max-width:720px){.nav-links{display:none}.nav-cta{display:none}}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 80px;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(0,255,157,.06);border:1px solid rgba(0,255,157,.2);border-radius:100px;font-size:.72rem;font-family:var(--mono);color:var(--accent);width:fit-content;margin-bottom:28px}
+.hero-badge .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:800;line-height:1.08;letter-spacing:-.03em;max-width:800px;margin-bottom:20px}
+.hero h1 .grad{background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p.sub{font-size:1.05rem;color:var(--text2);max-width:580px;line-height:1.7;margin-bottom:36px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.install-cmd{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;font-family:var(--mono);font-size:.84rem;color:var(--text2);cursor:pointer;transition:all .2s}
+.install-cmd:hover{border-color:var(--borderb)}
+.install-cmd .prompt{color:var(--accent)}
+.install-cmd .copy-i{color:var(--dim);transition:color .2s;margin-left:6px;font-size:.8rem}
+.install-cmd:hover .copy-i{color:var(--text2)}
+.install-cmd.copied .copy-i{color:var(--accent)}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--accent);color:var(--bg);border-radius:10px;font-size:.85rem;font-weight:700;font-family:var(--mono);transition:all .2s}
+.btn-primary:hover{box-shadow:0 0 30px rgba(0,255,157,.35);transform:translateY(-1px)}
+.btn-sec{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border:1px solid var(--borderb);border-radius:10px;font-size:.85rem;font-weight:600;font-family:var(--mono);color:var(--text);transition:all .2s}
+.btn-sec:hover{border-color:var(--accent);color:var(--accent)}
+.law-display{margin-top:56px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.law-formula{font-family:var(--mono);font-size:1.3rem;font-weight:600;display:flex;align-items:center;gap:4px}
+.law-formula .gamma{color:var(--warn)}
+.law-formula .eta{color:var(--accent2)}
+.law-formula .C{color:var(--accent)}
+.law-formula .op{color:var(--dim);margin:0 2px}
+.law-label{font-size:.72rem;color:var(--dim);font-family:var(--mono);padding:4px 10px;border:1px solid var(--border);border-radius:6px}
+
+/* SECTIONS */
+section{padding:100px 0;position:relative}
+.sec-label{font-size:.72rem;font-family:var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.18em;margin-bottom:12px}
+.sec-title{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:14px}
+.sec-sub{font-size:1rem;color:var(--text2);max-width:620px;line-height:1.7;margin-bottom:48px}
+
+/* PROBLEM */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:32px 24px;transition:all .3s}
+.pcard:hover{border-color:var(--warn);transform:translateY(-2px)}
+.picon{width:42px;height:42px;border-radius:10px;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:20px}
+.pcard h3{font-size:1rem;font-weight:600;margin-bottom:10px}
+.pcard p{font-size:.86rem;color:var(--text2);line-height:1.65}
+.pstat{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--warn);margin-top:14px}
+@media(max-width:780px){.pgrid{grid-template-columns:1fr}}
+
+/* SOLUTION DIAGRAM */
+.sol-diagram{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:40px;margin-top:20px;overflow-x:auto}
+.flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:nowrap;min-width:700px}
+.fnode{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 24px;border-radius:10px;min-width:130px;text-align:center;flex-shrink:0}
+.fnode.ag{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2)}
+.fnode.gov{background:rgba(0,255,157,.06);border:1px solid rgba(0,255,157,.2)}
+.fnode.fleet{background:rgba(124,92,255,.06);border:1px solid rgba(124,92,255,.2)}
+.fnode.dash{background:rgba(255,196,0,.06);border:1px solid rgba(255,196,0,.2)}
+.fnode-icon{font-size:1.4rem}
+.fnode-label{font-size:.82rem;font-weight:600;font-family:var(--mono)}
+.fnode-sub{font-size:.65rem;color:var(--dim)}
+.farrow{font-size:1.4rem;color:var(--dim);padding:0 8px;flex-shrink:0}
+.pid-loop{margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pid-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px}
+.pid-card h4{font-size:.82rem;font-weight:600;margin-bottom:8px;font-family:var(--mono);color:var(--accent)}
+.pid-card p{font-size:.8rem;color:var(--text2);line-height:1.6}
+@media(max-width:780px){.pid-loop{grid-template-columns:1fr}}
+
+/* METRICS */
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.mcard{text-align:center;padding:40px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);position:relative;overflow:hidden}
+.mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .3s}
+.mcard.vis::before{opacity:1}
+.mnum{font-family:var(--mono);font-size:clamp(2.5rem,6vw,3.8rem);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:10px}
+.msuf{font-size:1.6rem;color:var(--accent)}
+.mlabel{font-size:.85rem;color:var(--text2);text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:780px){.mgrid{grid-template-columns:1fr}}
+
+/* CODE */
+.code-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:20px}
+.code-head{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.cdots{display:flex;gap:6px}
+.cdots span{width:10px;height:10px;border-radius:50%}
+.cdots span:nth-child(1){background:#ff5f57}
+.cdots span:nth-child(2){background:#febc2e}
+.cdots span:nth-child(3){background:#28c840}
+.cfile{font-family:var(--mono);font-size:.78rem;color:var(--dim);margin-left:8px}
+.clang{margin-left:auto;font-family:var(--mono);font-size:.68rem;padding:2px 8px;border-radius:4px;background:rgba(0,255,157,.08);color:var(--accent)}
+.code-body{padding:24px;font-family:var(--mono);font-size:.84rem;line-height:1.8;overflow-x:auto}
+.code-body .kw{color:#c792ea}
+.code-body .fn{color:#82aaff}
+.code-body .str{color:#c3e88d}
+.code-body .num{color:#f78c6c}
+.code-body .com{color:#546e7a;font-style:italic}
+.code-body .var{color:#eeffff}
+.code-body .op{color:#89ddff}
+.code-body .ty{color:#ffcb6b}
+
+/* ARCHITECTURE */
+.arch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px}
+.arch-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px 20px;text-align:center;transition:all .3s}
+.arch-card:hover{border-color:var(--accent);box-shadow:0 0 30px rgba(0,255,157,.08)}
+.arch-card .aicon{font-size:1.8rem;margin-bottom:14px}
+.arch-card h4{font-size:.9rem;font-weight:600;margin-bottom:6px;font-family:var(--mono)}
+.arch-card p{font-size:.76rem;color:var(--text2);line-height:1.55}
+.arch-card .atag{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:.62rem;padding:3px 8px;border-radius:4px;background:var(--bg2);color:var(--dim)}
+@media(max-width:780px){.arch-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.arch-grid{grid-template-columns:1fr}}
+
+/* CONSERVATION LAW */
+.law-hero{text-align:center;padding:48px 24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:28px;position:relative;overflow:hidden}
+.law-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,255,157,.04) 0%,transparent 60%);pointer-events:none}
+.law-eq{font-family:var(--mono);font-size:clamp(2rem,6vw,3.5rem);font-weight:700;margin:20px 0;letter-spacing:.02em}
+.law-eq .gamma{color:var(--warn)}
+.law-eq .eta{color:var(--accent2)}
+.law-eq .C{color:var(--accent)}
+.law-eq .op{color:var(--dim)}
+.law-eq .val{font-size:.4em;color:var(--dim);vertical-align:middle}
+.law-vars{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:20px}
+.law-var{text-align:center}
+.law-var .sym{font-family:var(--mono);font-size:1.3rem;font-weight:700;margin-bottom:4px}
+.law-var .desc{font-size:.72rem;color:var(--dim)}
+.law-content{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px}
+.law-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px}
+.law-card h4{font-size:.9rem;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.law-card p{font-size:.84rem;color:var(--text2);line-height:1.7}
+.law-card .inline-f{font-family:var(--mono);background:var(--bg2);padding:2px 8px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+.scaling-tbl{margin-top:20px;width:100%;border-collapse:collapse;font-size:.8rem}
+.scaling-tbl th,.scaling-tbl td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+.scaling-tbl th{font-family:var(--mono);font-size:.7rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.scaling-tbl td{font-family:var(--mono);color:var(--text2)}
+.scaling-tbl td:last-child{color:var(--accent)}
+@media(max-width:780px){.law-content{grid-template-columns:1fr}}
+
+/* PACKAGES */
+.pkg-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pkg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:32px 28px;transition:all .3s}
+.pkg-card:hover{border-color:var(--accent2);transform:translateY(-2px)}
+.pkg-name{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--accent2);margin-bottom:8px}
+.pkg-desc{font-size:.85rem;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.pkg-install{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:.78rem;cursor:pointer;transition:border-color .2s}
+.pkg-install:hover{border-color:var(--borderb)}
+.pkg-install .prompt{color:var(--accent)}
+.pkg-install .cmd{color:var(--text2)}
+.pkg-install .copy{margin-left:auto;color:var(--dim);cursor:pointer;font-size:.75rem}
+.pkg-install .copy:hover{color:var(--accent)}
+.pkg-feat{margin-top:20px;list-style:none}
+.pkg-feat li{font-size:.8rem;color:var(--text2);padding:5px 0;display:flex;align-items:flex-start;gap:8px}
+.pkg-feat li::before{content:'\25B8';color:var(--accent);flex-shrink:0}
+@media(max-width:780px){.pkg-grid{grid-template-columns:1fr}}
+
+/* ECOSYSTEM */
+.eco-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.eco-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:all .3s}
+.eco-card:hover{border-color:var(--accent3)}
+.eco-card .eco-num{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--accent3);margin-bottom:6px}
+.eco-card h4{font-size:.88rem;font-weight:600;margin-bottom:6px}
+.eco-card p{font-size:.78rem;color:var(--text2);line-height:1.55}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:60px 0 40px;position:relative;z-index:1;background:var(--bg)}
+.fgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px}
+.fbrand .logo{margin-bottom:14px}
+.fbrand p{font-size:.82rem;color:var(--dim);max-width:280px;line-height:1.6}
+.fcol h5{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:14px;font-family:var(--mono)}
+.fcol a{display:block;font-size:.82rem;color:var(--dim);padding:4px 0;transition:color .2s}
+.fcol a:hover{color:var(--accent)}
+.fbottom{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.fbottom p{font-size:.76rem;color:var(--dim);font-family:var(--mono)}
+.fbottom .flinks{display:flex;gap:16px}
+.fbottom .flinks a{font-size:.76rem;color:var(--dim);transition:color .2s}
+.fbottom .flinks a:hover{color:var(--accent)}
+@media(max-width:780px){.fgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.fgrid{grid-template-columns:1fr}}
+
+/* REVEAL ANIMATION */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* SCROLL INDICATOR */
+.scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-size:.7rem;color:var(--dim);font-family:var(--mono);display:flex;flex-direction:column;align-items:center;gap:8px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
 </style>
 </head>
 <body>
 
+<canvas id="bg-canvas"></canvas>
+
+<!-- ═══════ NAV ═══════ -->
+<nav>
+  <div class="wrap">
+    <a href="#" class="logo">
+      <span class="logo-mark">SI</span>
+      SuperInstance
+    </a>
+    <div class="nav-links">
+      <a href="#problem">Problem</a>
+      <a href="#solution">Solution</a>
+      <a href="#quickstart">Quick Start</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#conservation">Conservation Law</a>
+      <a href="#packages">Packages</a>
+    </div>
+    <a href="https://github.com/SuperInstance" class="nav-cta">GitHub →</a>
+  </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
 <section class="hero">
-  <div class="w">
-    <div class="tag">distributed computing · ternary design · gauge principle</div>
-    <div class="nav">
-      <a href="stats.html">📊 dashboard</a>
-      <a href="cluster-map.html">🗺️ cluster map</a>
-      <a href="status.html">📡 status</a>
-      <a href="browse.html">📂 ecosystem</a>
-      <a href="education.html">🎓 education</a>
-      <a href="papers/">📄 papers</a>
-      <a href="https://github.com/SuperInstance/superinstance-mcp">🔌 MCP Server</a>
+  <div class="wrap">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Shannon-bound governance for multi-agent fleets
     </div>
-    <p class="manifesto">
-      SuperInstance is a distributed computing ecosystem built on a ternary design principle: every signal is classified as negative, zero, or positive <strong>{-1, 0, +1}</strong>, and every operation conserves the total ternary charge. This isn't arbitrary — it's the same conservation law that appears in Z₃ lattice gauge theory, where Gauss's law ensures charge is neither created nor destroyed. We apply this principle to fleet routing (bottles), agent coordination (cycles), and space traversal (depth), not as metaphor but as engineering constraint: one bottle in, one bottle out; one cycle logged, one quality signal emitted; one room entered, one room exited. The math is real. <strong>1,596 repos. 660+ automated builds.</strong> The conservation law is the invariant that makes the whole system auditable.
+    <h1>
+      Conservation-law governance<br>
+      for <span class="grad">AI agent fleets</span>
+    </h1>
+    <p class="sub">
+      SuperInstance enforces the first proven conservation law — γ + η ≤ C — that mathematically bounds waste and optimizes throughput. Works with any framework you already use.
     </p>
+    <div class="hero-cta">
+      <div class="install-cmd" onclick="copyText('npm install @superinstance/sdk',this)">
+        <span class="prompt">$</span>
+        <span>npm install @superinstance/sdk</span>
+        <span class="copy-i">copy</span>
+      </div>
+      <a href="#quickstart" class="btn-primary">Get Started →</a>
+      <a href="https://github.com/SuperInstance/superinstance-website/blob/main/papers/conservation-entropy-theorem.md" class="btn-sec">Read the Paper</a>
+    </div>
+    <div class="law-display">
+      <div class="law-formula">
+        <span class="gamma">γ</span>
+        <span class="op">+</span>
+        <span class="eta">η</span>
+        <span class="op">≤</span>
+        <span class="C">C</span>
+      </div>
+      <span class="law-label">C = log₂(3) ≈ 1.585 bits</span>
+      <span class="law-label">Shannon chain rule</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <span>↓</span>
   </div>
 </section>
 
-<div class="stats">
-  <div class="w">
-    <div class="stat"><b>1,537</b><span>crates</span></div>
-    <div class="stat"><b>1,596</b><span>repos</span></div>
-    <div class="stat"><b>1,091</b><span>with CI</span></div>
-    <div class="stat"><b>97.5%</b><span>build pass</span></div>
-    <div class="stat"><b>1,012</b><span>vectors indexed</span></div>
-    <div class="stat"><b>660+</b><span>automated builds</span></div>
-  </div>
-</div>
+<div class="divider"></div>
 
-<section>
-  <div class="w">
-    <h2>The <em>principle</em></h2>
-    <div class="eq"><span class="g">γ</span> + <span class="e">η</span> = <span class="c">C</span></div>
-    <p>Three axioms. (1) Every signal in the system is classified into one of three states: negative, zero, or positive — the elements of Z₃. (2) Every operation conserves total ternary charge. One bottle in, one bottle out. The sum of trits across a boundary is invariant. (3) This conservation law is structurally isomorphic to Gauss's law in Z₃ lattice gauge theory — the total ternary flux through any closed surface vanishes.</p>
-    <p>This is not a metaphor. It is an engineering constraint enforced at six layers: definition, runtime, build-time lint, compile-time injection, GPU kernel boundaries, and CDN edge. The fleet, agent, and space subsystems are gauge-coupled sectors that inherit this conservation law by construction.</p>
-  </div>
-</section>
-
-<section style="background:var(--surface)">
-  <div class="w">
-    <h2>The <em>stack</em></h2>
-    <p>Four languages. Each chosen for what it's actually good at.</p>
-    <div class="stack-grid">
-      <div class="stack-card">
-        <div class="lang" style="color:#dea584">rust</div>
-        <h3 style="color:#dea584">Agents &amp; core</h3>
-        <p>1,537 crates. Ternary math, conservation law, coordination protocols. The Agent trait: receive(Bottle) → Bottle. Two methods. Everything else is emergent.</p>
+<!-- ═══════ PROBLEM ═══════ -->
+<section id="problem">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">The Problem</div>
+      <div class="sec-title">Multi-agent AI works,<br>but it's wasteful</div>
+      <div class="sec-sub">Every multi-agent framework answers "how do agents talk?" Nobody answers "how do you know when your agents are doing too much?" Here's what actually happens in production:</div>
+    </div>
+    <div class="pgrid">
+      <div class="pcard reveal">
+        <div class="picon">💸</div>
+        <h3>Agents Over-Coordinate</h3>
+        <p>Five agents spend 80% of their token budget on "I'll handle this" / "No, I'll handle this." More tokens talking means fewer tokens doing.</p>
+        <div class="pstat">80% wasted</div>
       </div>
-      <div class="stack-card">
-        <div class="lang" style="color:#3178c6">typescript</div>
-        <h3 style="color:#3178c6">Edge</h3>
-        <p>28 repos on Cloudflare Workers. Fleet dispatch, vector search, bottle routing. JSON envelope + opaque payload. The wire format that makes agents reachable.</p>
+      <div class="pcard reveal">
+        <div class="picon">🔄</div>
+        <h3>Duplicate Work</h3>
+        <p>Nothing prevents Agent 4 from overwriting Agent 1's work. Nothing rate-limits the fleet. Nothing says "stop, you've done enough."</p>
+        <div class="pstat">0 governors</div>
       </div>
-      <div class="stack-card">
-        <div class="lang" style="color:#ffd43b">python</div>
-        <h3 style="color:#ffd43b">ML</h3>
-        <p>Ternary activations, convolutions, attention. BGE-small embeddings (384-dim) for vector search. The bridge between continuous gradients and discrete ternary signals.</p>
-      </div>
-      <div class="stack-card">
-        <div class="lang" style="color:#9558b2">julia</div>
-        <h3 style="color:#9558b2">Math</h3>
-        <p>Lattice gauge theory simulation. Wilson action, Metropolis Monte Carlo. The place where the conservation law stops being an assertion and starts being a measurement.</p>
+      <div class="pcard reveal">
+        <div class="picon">📈</div>
+        <h3>Costs Scale Linearly</h3>
+        <p>10 agents don't produce 10× output. They produce ~3× output at 10× cost. The 7× difference is pure coordination overhead.</p>
+        <div class="pstat">3.3× overpay</div>
       </div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="w">
-    <h2>The <em>loop</em></h2>
-    <p>The system improves itself. Not by magic — by a compound cycle where each rotation feeds the next.</p>
-    <div class="loop-diagram">
-      <div class="loop-label">self-improving compound cycle</div>
-      <pre>
-<span class="accent">  ┌─────────────────────────────────────────────────┐</span>
-<span class="accent">  │</span>                                                 <span class="accent">│</span>
-<span class="accent">  │</span>   <span class="info">BUILD</span> ──────────► <span class="info">MEASURE</span>                  <span class="accent">│</span>
-<span class="accent">  │</span>     │   1,596 repos     │ 97.5% pass rate       <span class="accent">│</span>
-<span class="accent">  │</span>     │   660+ CI jobs    │ conservation audit     <span class="accent">│</span>
-<span class="accent">  │</span>     ▼                  ▼                        <span class="accent">│</span>
-<span class="accent">  │</span>   <span class="warn">IDENTIFY</span> ◄──────── <span class="info">VERIFY</span>                   <span class="accent">│</span>
-<span class="accent">  │</span>     │   gap analysis    │ ternary charge         <span class="accent">│</span>
-<span class="accent">  │</span>     │   7 agents TODO    │ γ + η = C              <span class="accent">│</span>
-<span class="accent">  │</span>     ▼                                           <span class="accent">│</span>
-<span class="accent">  │</span>   <span class="info">IMPLEMENT</span> ──────► <span class="info">SHIP</span> ──── back to BUILD   <span class="accent">│</span>
-<span class="accent">  │</span>       bottle protocol    edge deploy             <span class="accent">│</span>
-<span class="accent">  │</span>       2-method trait      vector index            <span class="accent">│</span>
-<span class="accent">  │</span>                                                 <span class="accent">│</span>
-<span class="accent">  └─────────────────────────────────────────────────┘</span>
+<div class="divider"></div>
 
-  Each rotation:
-    • conserved signals   → auditable builds
-    • auditable builds    → measurable quality
-    • measurable quality  • tighter conservation
-    • tighter conservation → smaller gaps
-    • smaller gaps        → next rotation starts ahead
-      </pre>
+<!-- ═══════ SOLUTION ═══════ -->
+<section id="solution">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">The Solution</div>
+      <div class="sec-title">A governance layer,<br>not another framework</div>
+      <div class="sec-sub">SuperInstance doesn't replace your agent framework — it adds governance TO your fleet. Think circuit breakers for the power grid, not a new power plant.</div>
+    </div>
+    <div class="sol-diagram reveal">
+      <div class="flow">
+        <div class="fnode ag">
+          <span class="fnode-icon">📦</span>
+          <span class="fnode-label">SDK</span>
+          <span class="fnode-sub">Fleet · Agent · Governor</span>
+        </div>
+        <span class="farrow">→</span>
+        <div class="fnode gov">
+          <span class="fnode-icon">⚖️</span>
+          <span class="fnode-label">Governor</span>
+          <span class="fnode-sub">PID controller · γ → C/2</span>
+        </div>
+        <span class="farrow">→</span>
+        <div class="fnode fleet">
+          <span class="fnode-icon">🚀</span>
+          <span class="fnode-label">Fleet</span>
+          <span class="fnode-sub">Throttled agents</span>
+        </div>
+        <span class="farrow">→</span>
+        <div class="fnode dash">
+          <span class="fnode-icon">📊</span>
+          <span class="fnode-label">Dashboard</span>
+          <span class="fnode-sub">Live γ/η/C monitoring</span>
+        </div>
+      </div>
+    </div>
+    <div class="pid-loop reveal">
+      <div class="pid-card">
+        <h4>⚖️ Conservation Enforcement</h4>
+        <p>Before every agent action, the governor checks γ + η ≤ C. If the budget is exhausted, the agent waits. No over-coordination, no wasted tokens.</p>
+      </div>
+      <div class="pid-card">
+        <h4>🎛️ PID Throttling</h4>
+        <p>The ternary PID controller drives γ toward C/2 — balanced equilibrium. It automatically scales agents up when there's budget and down when there isn't.</p>
+      </div>
     </div>
   </div>
 </section>
 
+<div class="divider"></div>
+
+<!-- ═══════ METRICS ═══════ -->
+<section id="numbers">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">The Numbers</div>
+      <div class="sec-title">Same task. Same agents.<br>Different governance.</div>
+      <div class="sec-sub">A 5-agent fleet building a REST API with 10 endpoints, tests, and docs — with and without conservation law enforcement:</div>
+    </div>
+    <div class="mgrid">
+      <div class="mcard reveal" data-target="2.6" data-suffix="×">
+        <div class="mnum"><span class="counter">0</span><span class="msuf">×</span></div>
+        <div class="mlabel">Fewer Tokens</div>
+      </div>
+      <div class="mcard reveal" data-target="4" data-suffix="×">
+        <div class="mnum"><span class="counter">0</span><span class="msuf">×</span></div>
+        <div class="mlabel">Faster Wall Time</div>
+      </div>
+      <div class="mcard reveal" data-target="0" data-suffix="">
+        <div class="mnum"><span class="counter">0</span></div>
+        <div class="mlabel">Conflicts</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ QUICK START ═══════ -->
+<section id="quickstart">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">Quick Start</div>
+      <div class="sec-title">Governed fleet in 5 lines</div>
+      <div class="sec-sub">Install the SDK, spawn governed agents, and let the conservation law do the rest:</div>
+    </div>
+    <div class="code-block reveal">
+      <div class="code-head">
+        <div class="cdots"><span></span><span></span><span></span></div>
+        <span class="cfile">fleet.ts</span>
+        <span class="clang">TypeScript</span>
+      </div>
+      <div class="code-body">
+<span class="kw">import</span> { <span class="ty">Fleet</span> } <span class="kw">from</span> <span class="str">'@superinstance/sdk'</span>;<br>
+<br>
+<span class="kw">const</span> <span class="var">fleet</span> = <span class="kw">new</span> <span class="fn">Fleet</span>({ name: <span class="str">'my-team'</span> });<br>
+<span class="kw">const</span> <span class="var">agent</span> = fleet.<span class="fn">spawn</span>({ role: <span class="str">'builder'</span>, gammaBudget: <span class="num">0.3</span> });<br>
+<span class="kw">const</span> <span class="var">result</span> = <span class="kw">await</span> agent.<span class="fn">execute</span>(<span class="str">'build a REST API'</span>);<br>
+<span class="fn">console</span>.<span class="fn">log</span>(fleet.<span class="fn">status</span>());<br>
+<br>
+<span class="com">// → ✅ healthy, γ=0.28, η=0.15, δ=1.15</span>
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;gap:14px;flex-wrap:wrap" class="reveal">
+      <a href="https://npmjs.com/package/@superinstance/sdk" class="btn-sec">npm Package →</a>
+      <a href="https://github.com/SuperInstance" class="btn-sec">GitHub Examples →</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ ARCHITECTURE ═══════ -->
+<section id="architecture">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">Architecture</div>
+      <div class="sec-title">How it fits together</div>
+      <div class="sec-sub">Four layers, from your code to the fleet dashboard. Each layer is independently swappable.</div>
+    </div>
+    <div class="arch-grid">
+      <div class="arch-card reveal">
+        <div class="aicon">📦</div>
+        <h4>SDK</h4>
+        <p>Fleet, Agent, and Governor classes. Import in any Node.js or TypeScript project.</p>
+        <span class="atag">@superinstance/sdk</span>
+      </div>
+      <div class="arch-card reveal">
+        <div class="aicon">⚖️</div>
+        <h4>Governor</h4>
+        <p>PID controller driving γ → C/2. Observes fleet state, decides throttle/release/spawn/merge.</p>
+        <span class="atag">PID · ternary</span>
+      </div>
+      <div class="arch-card reveal">
+        <div class="aicon">🚀</div>
+        <h4>Fleet</h4>
+        <p>Manages agents, tracks conservation, enforces budgets. Wraps OpenAI, LangGraph, CrewAI.</p>
+        <span class="atag">framework-agnostic</span>
+      </div>
+      <div class="arch-card reveal">
+        <div class="aicon">📊</div>
+        <h4>Dashboard</h4>
+        <p>Real-time γ/η/C visualization. Fleet health metric δ at a glance. Like Grafana for agents.</p>
+        <span class="atag">live monitoring</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ CONSERVATION LAW ═══════ -->
+<section id="conservation">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">The Conservation Law</div>
+      <div class="sec-title">A proven bound,<br>not a heuristic</div>
+      <div class="sec-sub">This isn't a config setting someone made up. It's the Shannon chain rule of information theory — the most fundamental result in information science, applied to agent coordination.</div>
+    </div>
+    <div class="law-hero reveal">
+      <div class="law-eq">
+        <span class="gamma">γ</span>
+        <span class="op">+</span>
+        <span class="eta">η</span>
+        <span class="op">≤</span>
+        <span class="C">C</span>
+      </div>
+      <div class="law-vars">
+        <div class="law-var">
+          <div class="sym" style="color:var(--warn)">γ</div>
+          <div class="desc">Coordination cost<br>(coupling, communication)</div>
+        </div>
+        <div class="law-var">
+          <div class="sym" style="color:var(--accent2)">η</div>
+          <div class="desc">Value produced<br>(decisions, artifacts)</div>
+        </div>
+        <div class="law-var">
+          <div class="sym" style="color:var(--accent)">C</div>
+          <div class="desc">Fleet capacity<br>log₂(3) ≈ 1.585 bits</div>
+        </div>
+      </div>
+    </div>
+    <div class="law-content">
+      <div class="law-card reveal">
+        <h4>🧮 Shannon Chain Rule</h4>
+        <p>The total entropy of the fleet is bounded: <span class="inline-f">H(X) = I(X;G) + H(X|G)</span> where H(X) = C (total entropy), I(X;G) = η (mutual information with goal), H(X|G) = γ (conditional entropy). Full proof in the paper: 860 lines, rigorous.</p>
+      </div>
+      <div class="law-card reveal">
+        <h4>📊 Scaling Law</h4>
+        <p>The convergence rate <span class="inline-f">δ(n) = (1/√n)(1 − 3/(2n))</span> tells you exactly how many agents you need. Bigger fleets are proportionally cheaper to coordinate.</p>
+        <table class="scaling-tbl">
+          <tr><th>Agents</th><th>δ</th><th>Cancelled</th></tr>
+          <tr><td>5</td><td>0.40</td><td>49%</td></tr>
+          <tr><td>10</td><td>0.29</td><td>66%</td></tr>
+          <tr><td>100</td><td>0.097</td><td>90%</td></tr>
+          <tr><td>10,000</td><td>0.0097</td><td>99%</td></tr>
+        </table>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px" class="reveal">
+      <a href="https://github.com/SuperInstance/superinstance-website/blob/main/papers/conservation-entropy-theorem.md" class="btn-primary">Read the 860-line Proof →</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ PACKAGES ═══════ -->
+<section id="packages">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">Packages</div>
+      <div class="sec-title">Two packages.<br>Everything you need.</div>
+      <div class="sec-sub">The SDK for building governed fleets. The MCP server for fleet-aware AI assistants. Both on npm.</div>
+    </div>
+    <div class="pkg-grid">
+      <div class="pkg-card reveal">
+        <div class="pkg-name">@superinstance/sdk</div>
+        <div class="pkg-desc">Fleet, Agent, and Governor classes. Framework wrappers for OpenAI, LangGraph, CrewAI. CLI included.</div>
+        <div class="pkg-install" onclick="copyText('npm install @superinstance/sdk',this)">
+          <span class="prompt">$</span>
+          <span class="cmd">npm install @superinstance/sdk</span>
+          <span class="copy">copy</span>
+        </div>
+        <ul class="pkg-feat">
+          <li>Fleet class — manages agents, tracks conservation</li>
+          <li>Governor — PID controller driving γ → C/2</li>
+          <li>Wrappers — wrapOpenAI, wrapLangGraph, wrapCrewAI</li>
+          <li>CLI — init, status, check</li>
+          <li>Modular agent requests — search, budget, validate</li>
+        </ul>
+      </div>
+      <div class="pkg-card reveal">
+        <div class="pkg-name">superinstance-mcp</div>
+        <div class="pkg-desc">MCP server with 8 fleet tools for AI assistants. Works with Claude Code, Cursor, Cline, Windsurf, Goose, Amazon Q.</div>
+        <div class="pkg-install" onclick="copyText('npx superinstance-mcp',this)">
+          <span class="prompt">$</span>
+          <span class="cmd">npx superinstance-mcp</span>
+          <span class="copy">copy</span>
+        </div>
+        <ul class="pkg-feat">
+          <li>8 MCP tools — fleet_status, conservation_check, more</li>
+          <li>Works with any MCP-compatible assistant</li>
+          <li>One-command setup — no config needed</li>
+          <li>Real-time fleet awareness in your editor</li>
+          <li>Conservation gates in your AI workflow</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ ECOSYSTEM ═══════ -->
+<section id="ecosystem">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">Ecosystem</div>
+      <div class="sec-title">Built on a proven foundation</div>
+      <div class="sec-sub">SuperInstance isn't a prototype. It's a production ecosystem with years of engineering behind it.</div>
+    </div>
+    <div class="eco-grid">
+      <div class="eco-card reveal">
+        <div class="eco-num">160+</div>
+        <h4>Rust Crates</h4>
+        <p>Ternary math, conservation law, coordination protocols — the substrate.</p>
+      </div>
+      <div class="eco-card reveal">
+        <div class="eco-num">6</div>
+        <h4>Cloudflare Workers</h4>
+        <p>Fleet dispatch, vector search, bottle routing — deployed edge infrastructure.</p>
+      </div>
+      <div class="eco-card reveal">
+        <div class="eco-num">1,012</div>
+        <h4>Indexed Vectors</h4>
+        <p>SHOAL semantic search — 384-dim BGE embeddings for fleet knowledge.</p>
+      </div>
+      <div class="eco-card reveal">
+        <div class="eco-num">860</div>
+        <h4>Lines of Proof</h4>
+        <p>The conservation-entropy theorem — rigorous, not vibes.</p>
+      </div>
+      <div class="eco-card reveal">
+        <div class="eco-num">∞</div>
+        <h4>SHOAL Oracle</h4>
+        <p>Semantic crate search and fleet knowledge base. Always-on intelligence.</p>
+      </div>
+      <div class="eco-card reveal">
+        <div class="eco-num">24/7</div>
+        <h4>harbor-daemon</h4>
+        <p>Always-on fleet management. Conservation enforcement never sleeps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
 <footer>
-  <div class="w">
-    <div class="links">
-      <a href="https://github.com/casey-digennaro">github org</a>
-      <a href="https://crates.io/users/superinstance">crates.io</a>
-      <a href="education.html">education</a>
-      <a href="papers/">papers</a>
-      <a href="stats.html">dashboard</a>
-      <a href="cluster-map.html">cluster map</a>
-      <a href="status.html">status</a>
-      <a href="browse.html">architecture docs</a>
+  <div class="wrap">
+    <div class="fgrid">
+      <div class="fbrand">
+        <div class="logo">
+          <span class="logo-mark">SI</span>
+          SuperInstance
+        </div>
+        <p>Conservation-law governance for AI agent fleets. Build within the law.</p>
+      </div>
+      <div class="fcol">
+        <h5>Product</h5>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#packages">Packages</a>
+        <a href="#conservation">Conservation Law</a>
+      </div>
+      <div class="fcol">
+        <h5>Resources</h5>
+        <a href="https://github.com/SuperInstance/superinstance-website/blob/main/papers/conservation-entropy-theorem.md">The Paper</a>
+        <a href="https://npmjs.com/package/@superinstance/sdk">npm: SDK</a>
+        <a href="https://npmjs.com/package/superinstance-mcp">npm: MCP</a>
+        <a href="stats.html">Dashboard</a>
+      </div>
+      <div class="fcol">
+        <h5>Community</h5>
+        <a href="https://github.com/SuperInstance">GitHub</a>
+        <a href="browse.html">Ecosystem</a>
+        <a href="education.html">Education</a>
+        <a href="cluster-map.html">Cluster Map</a>
+      </div>
     </div>
-    <p>SuperInstance · γ + η = C · {-1, 0, +1}</p>
+    <div class="fbottom">
+      <p>γ + η ≤ C · {-1, 0, +1} · MIT License</p>
+      <div class="flinks">
+        <a href="https://github.com/SuperInstance">GitHub</a>
+        <a href="https://npmjs.com/package/@superinstance/sdk">npm</a>
+        <a href="https://github.com/SuperInstance/superinstance-website/blob/main/papers/conservation-entropy-theorem.md">Paper</a>
+      </div>
+    </div>
   </div>
 </footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// TERNARY SIGNAL CANVAS BACKGROUND — {-1, 0, +1} flowing
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, dpr;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.width = window.innerWidth * dpr;
+    H = canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const SYMBOLS = ['-1', ' 0', '+1'];
+  const COLORS = ['#ff4d6d', '#5a6580', '#00ff9d'];
+  const FONT_SIZE = 14;
+  const COL_SPACING = 80;
+  let columns = [];
+
+  function initColumns(){
+    const numCols = Math.ceil(W / (COL_SPACING * dpr));
+    columns = [];
+    for(let i = 0; i < numCols; i++){
+      columns.push({
+        x: i * COL_SPACING * dpr + 20,
+        y: Math.random() * H,
+        speed: 0.3 + Math.random() * 0.8,
+        items: []
+      });
+    }
+  }
+  initColumns();
+  window.addEventListener('resize', initColumns);
+
+  function draw(){
+    ctx.fillStyle = 'rgba(6, 8, 15, 0.06)';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.font = FONT_SIZE * dpr + 'px "SF Mono", "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+
+    columns.forEach(function(col){
+      // Randomly add new symbols
+      if(Math.random() < 0.04){
+        const idx = Math.floor(Math.random() * 3);
+        col.items.push({
+          text: SYMBOLS[idx],
+          color: COLORS[idx],
+          y: col.y,
+          opacity: 0.7 + Math.random() * 0.3,
+          life: 1.0
+        });
+        col.y += (FONT_SIZE + 6) * dpr;
+        if(col.y > H + 100) col.y = -50;
+      }
+
+      // Draw and update items
+      col.items = col.items.filter(function(item){
+        item.y += col.speed * dpr;
+        item.life -= 0.005;
+        if(item.life <= 0 || item.y > H + 50) return false;
+
+        const alpha = item.life * item.opacity;
+        ctx.fillStyle = item.color.replace(')', '').replace('rgb(', '');
+        // Use rgba directly
+        if(item.color === '#ff4d6d') ctx.fillStyle = 'rgba(255,77,109,' + alpha + ')';
+        else if(item.color === '#00ff9d') ctx.fillStyle = 'rgba(0,255,157,' + alpha + ')';
+        else ctx.fillStyle = 'rgba(90,101,128,' + alpha + ')';
+
+        ctx.fillText(item.text, col.x, item.y);
+        return true;
+      });
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// SCROLL REVEAL ANIMATION
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('vis');
+        // Trigger counter animation for metric cards
+        if(entry.target.classList.contains('mcard')){
+          animateCounter(entry.target);
+        }
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+  // Small stagger for grouped elements
+  document.querySelectorAll('.reveal').forEach(function(el, i){
+    const delay = (i % 4) * 80;
+    el.style.transitionDelay = delay + 'ms';
+    observer.observe(el);
+  });
+
+  // Also observe metric cards individually for counter trigger
+  document.querySelectorAll('.mcard').forEach(function(el){
+    observer.observe(el);
+  });
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// ANIMATED COUNTERS
+// ═══════════════════════════════════════════════════════════════
+function animateCounter(card){
+  const counter = card.querySelector('.counter');
+  if(!counter || counter.dataset.done) return;
+  counter.dataset.done = '1';
+
+  const target = parseFloat(card.dataset.target);
+  const suffix = card.dataset.suffix || '';
+  const duration = 1600;
+  const start = performance.now();
+
+  function tick(now){
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = target * eased;
+
+    if(target % 1 !== 0){
+      counter.textContent = value.toFixed(1);
+    } else {
+      counter.textContent = Math.round(value);
+    }
+
+    if(progress < 1){
+      requestAnimationFrame(tick);
+    } else {
+      counter.textContent = target % 1 !== 0 ? target.toFixed(1) : target;
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COPY TO CLIPBOARD
+// ═══════════════════════════════════════════════════════════════
+function copyText(text, el){
+  // Find the copy indicator
+  const copyEl = el.querySelector('.copy-i') || el.querySelector('.copy');
+  const originalText = copyEl ? copyEl.textContent : '';
+
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      if(copyEl){
+        copyEl.textContent = '✓ copied';
+        copyEl.style.color = 'var(--accent)';
+      }
+      el.classList.add('copied');
+      setTimeout(function(){
+        if(copyEl){
+          copyEl.textContent = originalText;
+          copyEl.style.color = '';
+        }
+        el.classList.remove('copied');
+      }, 1800);
+    });
+  } else {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    if(copyEl){
+      copyEl.textContent = '✓ copied';
+      copyEl.style.color = 'var(--accent)';
+    }
+    setTimeout(function(){
+      if(copyEl){
+        copyEl.textContent = originalText;
+        copyEl.style.color = '';
+      }
+    }, 1800);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAV BORDER ON SCROLL
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 20){
+      nav.style.borderColor = 'var(--borderb)';
+      nav.style.boxShadow = '0 4px 30px rgba(0,0,0,.3)';
+    } else {
+      nav.style.borderColor = 'var(--border)';
+      nav.style.boxShadow = 'none';
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
