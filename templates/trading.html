@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  Built on Quilt. A spreadsheet where every cell is a live, addressable capability.
+  The grid is the runtime. The cell is the universal IO primitive.
+
+  Template: Paper Trading simulator
+  - Each holding row is a Quilt sheet: ticker/shares/cost/price are `value` cells; market value and P&L are `formula` cells.
+  - The Yahoo Finance quote endpoint is a `fetch` cell, fed into the price column.
+  - Cash + portfolio total are aggregated `formula` cells over the whole sheet.
+  - localStorage holds the serialized workbook between sessions.
+
+  Self-contained: no build step, no framework, no server. Just cells.
+-->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Trading — Quilt Click-and-Go Template</title>
+<meta name="description" content="A self-contained paper-trading simulator built on Quilt. Live prices via Yahoo Finance, saves locally.">
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px}
+.m{font-family:'SF Mono','JetBrains Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+h1{font-size:1.6rem;font-weight:800}
+h1 .accent{color:var(--a3)}
+.sub{color:var(--td);font-size:.85rem;margin-top:3px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--panel);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500;font-family:inherit}
+.btn:hover{background:var(--pe);border-color:var(--bs)}
+.btn-pri{background:var(--a3);border-color:var(--a3);color:#000}
+.btn-pri:hover{filter:brightness(1.1)}
+.btn-bad{background:transparent;border:1px solid var(--b);color:var(--bad)}
+.btn-bad:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px}
+.card .lbl{color:var(--td);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.card .val{font-size:1.5rem;font-weight:700;font-family:'SF Mono',monospace}
+.card .val.pos{color:var(--a3)}
+.card .val.neg{color:var(--bad)}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:18px;margin-bottom:20px}
+.panel h2{font-size:1.05rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.panel h2 .hint{color:var(--tf);font-size:.75rem;font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{text-align:left;color:var(--td);font-weight:600;padding:8px 6px;border-bottom:1px solid var(--b);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+td{padding:8px 6px;border-bottom:1px solid var(--b);vertical-align:middle}
+td .spark{height:24px;width:80px;background:var(--bg);border:1px dashed var(--b);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--tf);font-size:.6rem;font-style:italic}
+.amount{text-align:right;font-family:'SF Mono',monospace}
+.amount.pos{color:var(--a3)}
+.amount.neg{color:var(--bad)}
+.sell{background:transparent;border:1px solid var(--b);color:var(--bad);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:.7rem;font-family:inherit}
+.sell:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+.add-row{display:grid;grid-template-columns:1.4fr .8fr .8fr .8fr auto;gap:6px;margin-top:14px}
+.add-row input,.add-row select{background:var(--bg);border:1px solid var(--b);color:var(--t);padding:7px 9px;border-radius:5px;font-size:.85rem;font-family:inherit}
+.add-row input:focus,.add-row select:focus{outline:none;border-color:var(--a2)}
+@media(max-width:640px){.add-row{grid-template-columns:1fr 1fr}}
+.refresh-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:.75rem;color:var(--td);flex-wrap:wrap;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--tf);display:inline-block;margin-right:5px;vertical-align:middle}
+.dot.live{background:var(--a3);box-shadow:0 0 6px var(--a3)}
+.dot.err{background:var(--bad)}
+.empty{text-align:center;color:var(--tf);padding:30px 10px;font-style:italic;font-size:.85rem}
+.status{padding:8px 12px;border-radius:5px;font-size:.78rem;margin-top:10px}
+.status.info{background:rgba(59,130,246,.1);border:1px solid var(--a2);color:var(--a2)}
+.status.ok{background:rgba(16,185,129,.1);border:1px solid var(--a3);color:var(--a3)}
+.status.err{background:rgba(239,68,68,.1);border:1px solid var(--bad);color:var(--bad)}
+.snap-list{margin-top:10px;display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto}
+.snap-item{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:6px 10px;font-size:.72rem;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.snap-item:hover{border-color:var(--bs)}
+.snap-item button{background:transparent;border:1px solid var(--b);color:var(--td);padding:2px 6px;border-radius:3px;cursor:pointer;font-size:.7rem}
+.snap-item button:hover{border-color:var(--bad);color:var(--bad)}
+.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:14px;font-size:.78rem;color:var(--td);margin-top:18px}
+.note strong{color:var(--t)}
+.note code{background:var(--bg);padding:1px 4px;border-radius:3px;color:var(--a2);font-size:.85em}
+.note pre{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:8px 10px;margin:8px 0;font-size:.7rem;line-height:1.45;overflow-x:auto;color:var(--a3)}
+.note a{color:var(--a2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>📈 <span class="accent">Paper Trading</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
+    <div class="sub">Each holding is a row of cells. P&amp;L is a formula over price × shares. Prices auto-refresh.</div>
+  </div>
+  <div class="toolbar">
+    <button class="btn" onclick="exportJSON()">↓ Export</button>
+    <button class="btn" onclick="importJSON()">↑ Import</button>
+    <button class="btn" onclick="saveSnapshot()">📸 Snapshot</button>
+    <button class="btn" onclick="refreshPrices()">↻ Refresh</button>
+    <button class="btn btn-bad" onclick="resetAll()">Reset</button>
+    <button class="btn btn-pri" onclick="saveNow()">💾 Save</button>
+    <a class="btn" href="https://superinstance.dev/quilt.html">← back to Quilt</a>
+  </div>
+</header>
+
+<div class="summary" id="summary"></div>
+
+<div class="panel">
+  <h2>Holdings <span class="hint" id="live-indicator"><span class="dot live"></span>live</span></h2>
+  <div class="refresh-bar">
+    <div>Next refresh in <span id="next-refresh" class="m">--</span></div>
+    <div class="m" id="last-updated">never</div>
+  </div>
+  <table>
+    <thead><tr>
+      <th>Ticker</th><th class="amount">Shares</th><th class="amount">Avg Cost</th>
+      <th class="amount">Price</th><th class="amount">Market Value</th>
+      <th class="amount">P&amp;L</th><th class="amount">%</th>
+      <th>Trend</th><th></th>
+    </tr></thead>
+    <tbody id="holdings-body"></tbody>
+  </table>
+  <div class="add-row">
+    <select id="add-ticker">
+      <option value="AAPL">AAPL — Apple</option>
+      <option value="TSLA">TSLA — Tesla</option>
+      <option value="MSFT">MSFT — Microsoft</option>
+      <option value="NVDA">NVDA — NVIDIA</option>
+      <option value="BTC-USD">BTC-USD — Bitcoin</option>
+      <option value="ETH-USD">ETH-USD — Ethereum</option>
+      <option value="GOOGL">GOOGL — Alphabet</option>
+      <option value="AMZN">AMZN — Amazon</option>
+      <option value="META">META — Meta</option>
+      <option value="NFLX">NFLX — Netflix</option>
+    </select>
+    <input type="number" id="add-shares" placeholder="Shares" min="0" step="0.0001">
+    <input type="number" id="add-cost" placeholder="Avg cost" min="0" step="0.01">
+    <input type="number" id="add-cash" placeholder="Cash $" step="0.01">
+    <button class="btn btn-pri" onclick="addHolding()">+ Add</button>
+  </div>
+  <div id="status"></div>
+</div>
+
+<div class="panel">
+  <h2>Snapshots <span class="hint">versioned portfolio captures</span></h2>
+  <div id="snapshots" class="snap-list"></div>
+  <div class="note" style="margin-top:14px">
+    <strong>How this works:</strong> Each row is a Quilt sheet of <code>value</code> cells (ticker, shares, cost) joined with a live <code>fetch</code> cell (the current price from Yahoo Finance). The <em>Market Value</em>, <em>P&amp;L</em>, and <em>%</em> columns are <code>formula</code> cells computed across the row. The four summary cards are aggregations over the whole table. The sparkline cell is reserved for a future chart cell. Snapshots serialize the entire workbook as versioned JSON in your browser. <a href="https://github.com/SuperInstance/quilt" target="_blank">Learn about Quilt</a>.
+    <pre>
+   ┌──────────┬───────┬────────┬───────┬──────────┬────────┬──────┐
+   │ ticker   │ shares│ cost   │ price │ mkt val  │ P&amp;L    │  %   │
+   │ (value)  │(value)│(value) │(fetch)│(formula) │(formula│(form)│
+   └──────────┴───────┴────────┴───────┴──────────┴────────┴──────┘
+                       ↓
+   ┌────────────┬─────────────┬──────────┬─────────┐
+   │ Cash       │ Positions   │ P&amp;L      │ Total   │   summary cards
+   │ (value)    │ (formula)   │ (formula)│(formula)│   (aggregations)
+   └────────────┴─────────────┴──────────┴─────────┘
+    </pre>
+  </div>
+</div>
+</div>
+
+<script>
+const STORAGE_KEY = 'quilt-trading-v1';
+const SNAPSHOTS_KEY = 'quilt-trading-snapshots-v1';
+const REFRESH_MS = 60000;
+
+const TICKERS = ['AAPL','TSLA','MSFT','NVDA','BTC-USD','ETH-USD','GOOGL','AMZN','META','NFLX'];
+
+// Yahoo Finance public quote endpoint (no key required)
+async function fetchPrices(symbols) {
+  const url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + symbols.join(',');
+  const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  const out = {};
+  const results = (json && json.quoteResponse && json.quoteResponse.result) || [];
+  for (const q of results) {
+    out[q.symbol] = {
+      price: q.regularMarketPrice,
+      change: q.regularMarketChangePercent,
+      time: q.regularMarketTime,
+      name: q.shortName || q.symbol,
+    };
+  }
+  return out;
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.holdings)) return parsed;
+    }
+  } catch (e) {}
+  return { cash: 10000, holdings: [], updatedAt: null };
+}
+
+function save(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+  return data;
+}
+
+function loadSnapshots() {
+  try {
+    const raw = localStorage.getItem(SNAPSHOTS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {}
+  return [];
+}
+
+function saveSnapshots(snaps) {
+  try { localStorage.setItem(SNAPSHOTS_KEY, JSON.stringify(snaps)); } catch (e) {}
+}
+
+let data = load();
+let snapshots = loadSnapshots();
+let prices = {}; // ticker -> { price, change, time }
+let refreshTimer = null;
+let nextRefreshAt = Date.now() + REFRESH_MS;
+
+function setStatus(msg, kind) {
+  const el = document.getElementById('status');
+  if (!msg) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="status ' + (kind || 'info') + '">' + escapeHTML(msg) + '</div>';
+}
+
+function setLive(state) {
+  const el = document.getElementById('live-indicator');
+  if (!el) return;
+  el.innerHTML = '<span class="dot ' + state + '"></span>' + (state === 'live' ? 'live' : state === 'err' ? 'error' : 'idle');
+}
+
+function uniqueTickers() {
+  const set = new Set(data.holdings.map(h => h.ticker));
+  TICKERS.forEach(t => set.add(t));
+  return Array.from(set);
+}
+
+async function refreshPrices() {
+  const syms = uniqueTickers();
+  if (!syms.length) return;
+  setLive('live');
+  try {
+    prices = await fetchPrices(syms);
+    data.updatedAt = Date.now();
+    save(data);
+    setStatus('Prices updated for ' + syms.length + ' symbols.', 'ok');
+    setLive('live');
+    render();
+  } catch (err) {
+    setStatus('Could not fetch prices (' + err.message + '). Using last known values. Yahoo may rate-limit; the page will keep retrying.', 'err');
+    setLive('err');
+  }
+}
+
+function addHolding() {
+  const ticker = document.getElementById('add-ticker').value;
+  const shares = parseFloat(document.getElementById('add-shares').value);
+  const cost = parseFloat(document.getElementById('add-cost').value);
+  const cashDelta = parseFloat(document.getElementById('add-cash').value);
+
+  if (!ticker || !shares || shares <= 0 || isNaN(cost) || cost < 0) {
+    setStatus('Ticker + positive shares + non-negative cost are required.', 'err');
+    return;
+  }
+  if (!isNaN(cashDelta) && cashDelta < 0) {
+    setStatus('Cash adjustment cannot be negative here. Use a holding with 0 cost to deposit.', 'err');
+    return;
+  }
+
+  // Merge with existing holding of same ticker
+  const existing = data.holdings.find(h => h.ticker === ticker);
+  if (existing) {
+    const totalShares = existing.shares + shares;
+    const totalCost = existing.shares * existing.cost + shares * cost;
+    existing.shares = totalShares;
+    existing.cost = totalCost / totalShares;
+  } else {
+    data.holdings.push({ id: Date.now() + Math.random(), ticker, shares, cost });
+  }
+  if (!isNaN(cashDelta) && cashDelta > 0) data.cash += cashDelta;
+  data.cash -= shares * cost;
+  save(data); render();
+  document.getElementById('add-shares').value = '';
+  document.getElementById('add-cost').value = '';
+  document.getElementById('add-cash').value = '';
+  setStatus('Added ' + shares + ' shares of ' + ticker + ' at $' + cost.toFixed(2), 'ok');
+  refreshPrices();
+}
+
+function sellHolding(id) {
+  const h = data.holdings.find(x => x.id === id);
+  if (!h) return;
+  if (!confirm('Sell all ' + h.shares + ' shares of ' + h.ticker + ' at the current market price?')) return;
+  const px = (prices[h.ticker] && prices[h.ticker].price) || h.cost;
+  data.cash += h.shares * px;
+  data.holdings = data.holdings.filter(x => x.id !== id);
+  save(data); render();
+  setStatus('Sold ' + h.shares + ' ' + h.ticker + ' @ $' + px.toFixed(2) + ' (~$' + (h.shares * px).toFixed(2) + ')', 'ok');
+  refreshPrices();
+}
+
+function resetAll() {
+  if (!confirm('Reset the whole portfolio? This clears all holdings and resets cash to $10,000. Snapshots are kept.')) return;
+  data = { cash: 10000, holdings: [], updatedAt: null };
+  save(data); render();
+  setStatus('Portfolio reset. Cash $10,000.', 'ok');
+}
+
+function saveSnapshot() {
+  const snap = {
+    version: 1,
+    savedAt: new Date().toISOString(),
+    cash: data.cash,
+    holdings: data.holdings.map(h => ({
+      ...h,
+      price: (prices[h.ticker] && prices[h.ticker].price) || h.cost,
+    })),
+    totalValue: totalValue(),
+  };
+  snapshots.unshift(snap);
+  if (snapshots.length > 50) snapshots = snapshots.slice(0, 50);
+  saveSnapshots(snapshots);
+  renderSnapshots();
+  setStatus('Snapshot saved (' + new Date(snap.savedAt).toLocaleString() + ').', 'ok');
+}
+
+function delSnapshot(idx) {
+  if (!confirm('Delete this snapshot?')) return;
+  snapshots.splice(idx, 1);
+  saveSnapshots(snapshots);
+  renderSnapshots();
+}
+
+function restoreSnapshot(idx) {
+  const snap = snapshots[idx];
+  if (!snap) return;
+  if (!confirm('Restore portfolio to snapshot from ' + new Date(snap.savedAt).toLocaleString() + '? Current holdings will be replaced.')) return;
+  data = { cash: snap.cash, holdings: snap.holdings.map(h => ({ ...h })), updatedAt: Date.now() };
+  save(data); render();
+  setStatus('Restored snapshot from ' + new Date(snap.savedAt).toLocaleString(), 'ok');
+}
+
+function totalValue() {
+  let pos = 0;
+  for (const h of data.holdings) {
+    const px = (prices[h.ticker] && prices[h.ticker].price) || h.cost;
+    pos += h.shares * px;
+  }
+  return data.cash + pos;
+}
+
+function positionsValue() {
+  let pos = 0;
+  for (const h of data.holdings) {
+    const px = (prices[h.ticker] && prices[h.ticker].price) || h.cost;
+    pos += h.shares * px;
+  }
+  return pos;
+}
+
+function totalCost() {
+  let c = 0;
+  for (const h of data.holdings) c += h.shares * h.cost;
+  return c;
+}
+
+function renderSummary() {
+  const cash = data.cash;
+  const pos = positionsValue();
+  const cost = totalCost();
+  const pnl = pos - cost;
+  const pnlPct = cost > 0 ? (pnl / cost * 100) : 0;
+  const total = totalValue();
+  document.getElementById('summary').innerHTML = `
+    <div class="card"><div class="lbl">Cash</div><div class="val">$${cash.toFixed(2)}</div></div>
+    <div class="card"><div class="lbl">Positions</div><div class="val">$${pos.toFixed(2)}</div></div>
+    <div class="card"><div class="lbl">P&amp;L</div><div class="val ${pnl>=0?'pos':'neg'}">${pnl>=0?'+':''}$${pnl.toFixed(2)}</div></div>
+    <div class="card"><div class="lbl">Total</div><div class="val">$${total.toFixed(2)}</div></div>
+  `;
+}
+
+function renderHoldings() {
+  const body = document.getElementById('holdings-body');
+  if (!data.holdings.length) {
+    body.innerHTML = '<tr><td colspan="9" class="empty">No holdings yet. Pick a ticker above and add your first position.</td></tr>';
+    return;
+  }
+  body.innerHTML = data.holdings.map(h => {
+    const q = prices[h.ticker] || {};
+    const px = q.price || h.cost;
+    const mv = h.shares * px;
+    const pnl = mv - h.shares * h.cost;
+    const pct = h.cost > 0 ? (pnl / (h.shares * h.cost) * 100) : 0;
+    return `
+      <tr>
+        <td><strong>${escapeHTML(h.ticker)}</strong></td>
+        <td class="amount">${h.shares.toFixed(4)}</td>
+        <td class="amount">$${h.cost.toFixed(2)}</td>
+        <td class="amount">${q.price ? '$' + q.price.toFixed(2) : '<span style="color:var(--tf)">…</span>'}</td>
+        <td class="amount">$${mv.toFixed(2)}</td>
+        <td class="amount ${pnl>=0?'pos':'neg'}">${pnl>=0?'+':''}$${pnl.toFixed(2)}</td>
+        <td class="amount ${pnl>=0?'pos':'neg'}">${pct>=0?'+':''}${pct.toFixed(2)}%</td>
+        <td><div class="spark">chart cell</div></td>
+        <td><button class="sell" onclick="sellHolding(${h.id})">Sell</button></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderSnapshots() {
+  const el = document.getElementById('snapshots');
+  if (!snapshots.length) {
+    el.innerHTML = '<div class="empty">No snapshots yet. Click 📸 Snapshot to capture the current portfolio.</div>';
+    return;
+  }
+  el.innerHTML = snapshots.map((s, i) => `
+    <div class="snap-item">
+      <div>
+        <strong>v${s.version}</strong> · ${new Date(s.savedAt).toLocaleString()}
+        · ${s.holdings.length} positions · <span class="m">$${s.totalValue.toFixed(2)}</span>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button onclick="restoreSnapshot(${i})" title="Restore this snapshot">↶</button>
+        <button onclick="delSnapshot(${i})" title="Delete">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function render() {
+  renderSummary();
+  renderHoldings();
+  renderSnapshots();
+  const lu = data.updatedAt ? new Date(data.updatedAt).toLocaleTimeString() : 'never';
+  document.getElementById('last-updated').textContent = 'last update: ' + lu;
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function exportJSON() {
+  const payload = {
+    app: 'quilt-trading',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    portfolio: data,
+    snapshots,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'quilt-trading-' + new Date().toISOString().split('T')[0] + '.json'; a.click();
+  URL.revokeObjectURL(url);
+  setStatus('Exported portfolio + snapshots.', 'ok');
+}
+
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'application/json';
+  input.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        if (parsed.portfolio && Array.isArray(parsed.portfolio.holdings)) {
+          data = parsed.portfolio;
+          if (Array.isArray(parsed.snapshots)) snapshots = parsed.snapshots;
+          save(data); saveSnapshots(snapshots); render();
+          setStatus('Imported ' + data.holdings.length + ' holdings and ' + snapshots.length + ' snapshots.', 'ok');
+        } else {
+          setStatus('Invalid file: missing portfolio.holdings.', 'err');
+        }
+      } catch (err) { setStatus('Invalid JSON: ' + err.message, 'err'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function saveNow() {
+  save(data);
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Saved';
+  setTimeout(() => btn.textContent = orig, 1200);
+}
+
+function tickCountdown() {
+  const remaining = Math.max(0, nextRefreshAt - Date.now());
+  const s = Math.floor(remaining / 1000);
+  document.getElementById('next-refresh').textContent = s + 's';
+  if (remaining <= 0) {
+    nextRefreshAt = Date.now() + REFRESH_MS;
+    refreshPrices();
+  }
+}
+
+// Init
+render();
+refreshPrices();
+refreshTimer = setInterval(tickCountdown, 1000);
+</script>
+</body>
+</html>

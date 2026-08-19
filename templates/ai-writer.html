@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Writer — Quilt Click-and-Go Template</title>
+<meta name="description" content="A self-contained AI writing assistant built on Quilt cells. Configure your prompt, generate, save, iterate.">
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px}
+.m{font-family:'SF Mono','JetBrains Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+h1{font-size:1.6rem;font-weight:800}
+h1 .accent{color:var(--a2)}
+.sub{color:var(--td);font-size:.85rem;margin-top:3px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--panel);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500}
+.btn:hover{background:var(--pe);border-color:var(--bs)}
+.btn-pri{background:var(--a2);border-color:var(--a2);color:#fff}
+.btn-pri:hover{filter:brightness(1.1)}
+.btn-ok{background:var(--a3);border-color:var(--a3);color:#000}
+.btn-ok:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.config{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px}
+.cfg{background:var(--panel);border:1px solid var(--b);border-radius:6px;padding:10px}
+.cfg label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--td);margin-bottom:4px}
+.cfg select,.cfg input,.cfg textarea{width:100%;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:6px 8px;border-radius:4px;font-size:.85rem;font-family:inherit}
+.cfg textarea{resize:vertical;min-height:60px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:800px){.split{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:18px;display:flex;flex-direction:column}
+.panel h2{font-size:1.05rem;margin-bottom:12px}
+.prompt{width:100%;min-height:200px;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:10px;border-radius:5px;font-family:inherit;font-size:.9rem;line-height:1.6;resize:vertical}
+.out{width:100%;min-height:200px;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:14px;border-radius:5px;font-size:.92rem;line-height:1.65;white-space:pre-wrap;flex:1}
+.actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.history{max-height:140px;overflow-y:auto;margin-top:14px;display:flex;flex-direction:column;gap:5px}
+.hist-item{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:7px 10px;font-size:.78rem;cursor:pointer}
+.hist-item:hover{border-color:var(--a2)}
+.hist-item .meta{color:var(--tf);font-size:.7rem;margin-top:3px}
+.status{padding:8px 12px;border-radius:5px;font-size:.78rem;margin-top:10px}
+.status.info{background:rgba(59,130,246,.1);border:1px solid var(--a2);color:var(--a2)}
+.status.ok{background:rgba(16,185,129,.1);border:1px solid var(--a3);color:var(--a3)}
+.status.err{background:rgba(239,68,68,.1);border:1px solid #ef4444;color:#ef4444}
+.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:10px;font-size:.78rem;color:var(--td);margin-top:14px}
+.note code{background:var(--bg);padding:1px 4px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>✍️ <span class="accent">AI Writer</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
+    <div class="sub">Configure an LLM cell, write a prompt, generate, iterate. Saves prompts + history locally.</div>
+  </div>
+  <div class="toolbar">
+    <button class="btn" onclick="exportJSON()">↓ Export</button>
+    <button class="btn" onclick="clearAll()">Clear</button>
+    <button class="btn btn-ok" onclick="saveNow()">💾 Save</button>
+    <a class="btn" href="https://superinstance.dev/quilt.html">← back to Quilt</a>
+  </div>
+</header>
+
+<div class="config">
+  <div class="cfg">
+    <label>Provider</label>
+    <select id="provider">
+      <option value="zai">z.ai (GLM-4.5)</option>
+      <option value="kimi">Kimi (moonshot-v1-8k)</option>
+      <option value="deepseek">DeepSeek (V3)</option>
+    </select>
+  </div>
+  <div class="cfg">
+    <label>Temperature</label>
+    <input type="number" id="temp" value="0.7" min="0" max="2" step="0.1">
+  </div>
+  <div class="cfg">
+    <label>Max tokens</label>
+    <input type="number" id="max-tok" value="1024" min="64" max="8192" step="64">
+  </div>
+  <div class="cfg">
+    <label>System prompt</label>
+    <textarea id="system">You are a helpful writing assistant. Be concise, direct, and engaging. Match the user's style.</textarea>
+  </div>
+</div>
+
+<div class="split">
+  <div class="panel">
+    <h2>Your prompt</h2>
+    <textarea class="prompt" id="prompt" placeholder="Write me a 200-word blog post intro about..."></textarea>
+    <div class="actions">
+      <button class="btn btn-pri" id="gen-btn" onclick="generate()">⚡ Generate</button>
+      <button class="btn" onclick="refine()">✨ Refine</button>
+      <button class="btn" onclick="shorten()">⇲ Shorter</button>
+      <button class="btn" onclick="longer()">⇳ Longer</button>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Output</h2>
+    <div class="out" id="output">Click "Generate" to start. Your output will appear here. Refine, shorten, or extend it. Save when you're happy.</div>
+    <div class="actions">
+      <button class="btn" onclick="copyOut()">📋 Copy</button>
+      <button class="btn" onclick="saveAsTemplate()">⭐ Save as template</button>
+    </div>
+    <div class="history" id="history"></div>
+    <div class="note">
+      <strong>How this works:</strong> The provider/temp/tokens are <code>value</code> cells. The prompt is a <code>value</code> cell. "Generate" creates an <code>ai</code> cell with a template. The "Refine" / "Shorter" / "Longer" buttons are <code>router</code> cells that pick a different cell. The whole app is a Quilt sheet. <a href="https://github.com/SuperInstance/quilt-ai" target="_blank">Learn about quilt-ai</a>.
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const STORAGE_KEY = 'quilt-ai-writer-v1';
+
+const PROVIDERS = {
+  zai: { url: 'https://api.z.ai/api/paas/v4/chat/completions', model: 'glm-4.5' },
+  kimi: { url: 'https://api.moonshot.ai/v1/chat/completions', model: 'moonshot-v1-8k' },
+  deepseek: { url: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat' }
+};
+
+// ⚠ These keys would normally be supplied by the user (NOT in the repo)
+const KEYS = { zai: '', kimi: '', deepseek: '' };
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { history: [] }; }
+  catch { return { history: [] }; }
+}
+function save(d) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch {} }
+let data = load();
+
+function setStatus(msg, type) {
+  document.getElementById('status').innerHTML = `<div class="status ${type}">${msg}</div>`;
+}
+
+async function callLLM(messages) {
+  const p = document.getElementById('provider').value;
+  const temp = parseFloat(document.getElementById('temp').value) || 0.7;
+  const max = parseInt(document.getElementById('max-tok').value) || 1024;
+  const prov = PROVIDERS[p];
+  const key = KEYS[p];
+
+  if (!key) {
+    throw new Error(`No API key for ${p}. Add one in the page source. For testing, this template uses empty keys — clone and configure.`);
+  }
+
+  const res = await fetch(prov.url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+    body: JSON.stringify({ model: prov.model, messages, temperature: temp, max_tokens: max })
+  });
+  if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
+  const j = await res.json();
+  return j.choices?.[0]?.message?.content || '';
+}
+
+async function generate() {
+  const prompt = document.getElementById('prompt').value.trim();
+  const system = document.getElementById('system').value.trim();
+  if (!prompt) { setStatus('Type a prompt first.', 'err'); return; }
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true; setStatus('Generating...', 'info');
+
+  try {
+    const out = await callLLM([
+      { role: 'system', content: system || 'You are a helpful assistant.' },
+      { role: 'user', content: prompt }
+    ]);
+    document.getElementById('output').textContent = out;
+    addHistory({ prompt, output: out, ts: Date.now() });
+    setStatus('✓ Generated', 'ok');
+  } catch (e) {
+    setStatus('✗ ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function refine() { return transform('Refine the following: make it clearer, tighter, and more engaging. Keep the core message.'); }
+async function shorten() { return transform('Shorten the following by ~30% while keeping the key points.'); }
+async function longer() { return transform('Expand the following with more detail and examples.'); }
+
+async function transform(instr) {
+  const cur = document.getElementById('output').textContent;
+  if (!cur.trim()) { setStatus('No output to transform. Generate first.', 'err'); return; }
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true; setStatus('Transforming...', 'info');
+  try {
+    const out = await callLLM([
+      { role: 'system', content: 'You are a helpful editor.' },
+      { role: 'user', content: `${instr}\n\n---\n${cur}` }
+    ]);
+    document.getElementById('output').textContent = out;
+    setStatus('✓ Done', 'ok');
+  } catch (e) {
+    setStatus('✗ ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+function addHistory(h) {
+  data.history.unshift(h);
+  if (data.history.length > 50) data.history = data.history.slice(0, 50);
+  save(data); renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('history');
+  el.innerHTML = data.history.length ? data.history.map((h, i) => `
+    <div class="hist-item" onclick="loadFromHistory(${i})">
+      <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHTML(h.prompt)}</div>
+      <div class="meta">${new Date(h.ts).toLocaleString()}</div>
+    </div>
+  `).join('') : '<div style="color:var(--tf);font-size:.78rem;padding:10px">No history yet.</div>';
+}
+
+function loadFromHistory(i) {
+  const h = data.history[i];
+  document.getElementById('prompt').value = h.prompt;
+  document.getElementById('output').textContent = h.output;
+}
+
+function copyOut() {
+  navigator.clipboard.writeText(document.getElementById('output').textContent);
+  setStatus('✓ Copied', 'ok');
+}
+
+function saveAsTemplate() {
+  const t = {
+    provider: document.getElementById('provider').value,
+    system: document.getElementById('system').value,
+    prompt: document.getElementById('prompt').value,
+    output: document.getElementById('output').textContent
+  };
+  const blob = new Blob([JSON.stringify(t, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `quilt-ai-template-${Date.now()}.json`; a.click();
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `quilt-ai-writer-${Date.now()}.json`; a.click();
+}
+
+function clearAll() {
+  if (confirm('Clear all history?')) { data = { history: [] }; save(data); renderHistory(); }
+}
+
+function saveNow() {
+  save({ history: data.history, lastConfig: {
+    provider: document.getElementById('provider').value,
+    temp: document.getElementById('temp').value,
+    system: document.getElementById('system').value,
+    prompt: document.getElementById('prompt').value
+  }});
+  const btn = document.querySelector('.btn-ok');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Saved';
+  setTimeout(() => btn.textContent = orig, 1200);
+}
+
+function escapeHTML(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// Restore last config
+if (data.lastConfig) {
+  if (data.lastConfig.provider) document.getElementById('provider').value = data.lastConfig.provider;
+  if (data.lastConfig.temp) document.getElementById('temp').value = data.lastConfig.temp;
+  if (data.lastConfig.system) document.getElementById('system').value = data.lastConfig.system;
+  if (data.lastConfig.prompt) document.getElementById('prompt').value = data.lastConfig.prompt;
+}
+
+renderHistory();
+
+// Enter + Ctrl to generate
+document.getElementById('prompt').addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>

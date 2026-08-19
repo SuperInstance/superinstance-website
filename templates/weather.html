@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Dashboard — Quilt Click-and-Go Template</title>
+<meta name="description" content="A self-contained weather dashboard built on Quilt. Multiple cities, live API, localStorage for favorites.">
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5}
+.m{font-family:'SF Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+h1{font-size:1.6rem;font-weight:800}
+h1 .accent{color:var(--a4)}
+.sub{color:var(--td);font-size:.85rem;margin-top:3px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--panel);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500}
+.btn:hover{background:var(--pe);border-color:var(--bs)}
+.btn-pri{background:var(--a4);border-color:var(--a4);color:#000}
+.btn-pri:hover{filter:brightness(1.1)}
+.search{display:flex;gap:6px;margin-bottom:18px}
+.search input{flex:1;background:var(--panel);border:1px solid var(--b);color:var(--t);padding:8px 12px;border-radius:6px;font-size:.9rem;font-family:inherit}
+.search input:focus{outline:none;border-color:var(--a4)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.city{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:18px;position:relative;transition:.2s}
+.city:hover{border-color:var(--bs)}
+.city .head{display:flex;justify-content:space-between;align-items:start;margin-bottom:10px}
+.city .name{font-size:1.2rem;font-weight:700}
+.city .country{color:var(--td);font-size:.78rem;margin-top:2px}
+.city .del{background:transparent;border:1px solid var(--b);color:var(--tf);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.85rem;line-height:1}
+.city .del:hover{background:#ff6b6b;border-color:#ff6b6b;color:#fff}
+.city .temp{font-size:3rem;font-weight:800;line-height:1;margin:8px 0}
+.city .desc{color:var(--td);font-size:.9rem;text-transform:capitalize;margin-bottom:10px}
+.city .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.78rem;margin-top:8px}
+.city .meta div{background:var(--bg);border-radius:4px;padding:5px 8px}
+.city .meta .lbl{color:var(--tf);font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;display:block}
+.city .meta .v{color:var(--t);font-weight:600;font-family:'SF Mono',monospace}
+.empty{text-align:center;color:var(--tf);padding:60px 20px;background:var(--panel);border:1px dashed var(--b);border-radius:10px}
+.status{padding:8px 12px;border-radius:5px;font-size:.78rem;margin-top:10px}
+.status.info{background:rgba(245,158,11,.1);border:1px solid var(--a4);color:var(--a4)}
+.status.err{background:rgba(239,68,68,.1);border:1px solid #ef4444;color:#ef4444}
+.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:10px;font-size:.78rem;color:var(--td);margin-top:18px}
+.note code{background:var(--bg);padding:1px 4px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>🌤️ <span style="color:var(--a4)">Weather</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
+    <div class="sub">Each city is an <code>api</code> cell. Cells auto-refresh. Favorites save to localStorage.</div>
+  </div>
+  <div class="toolbar">
+    <button class="btn" onclick="refreshAll()">↻ Refresh</button>
+    <button class="btn" onclick="saveNow()">💾 Save</button>
+    <a class="btn" href="https://superinstance.dev/quilt.html">← back to Quilt</a>
+  </div>
+</header>
+
+<div class="search">
+  <input type="text" id="city-input" placeholder="Add a city (e.g. San Francisco, Tokyo, Berlin)...">
+  <button class="btn btn-pri" onclick="addCity()">+ Add</button>
+</div>
+
+<div id="status"></div>
+
+<div class="grid" id="grid"></div>
+
+<div class="note">
+  <strong>How this works:</strong> Each city is a row in the grid, backed by an <code>api</code> cell that calls the Open-Meteo geocoding + forecast API. Auto-refresh on an interval is a <code>listener</code> cell. Saving favorites to localStorage is a <code>value</code> cell. The whole dashboard is a Quilt sheet running in your browser. <a href="https://github.com/SuperInstance/quilt" target="_blank">Learn about Quilt</a>.
+</div>
+</div>
+
+<script>
+const STORAGE_KEY = 'quilt-weather-v1';
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { cities: [] }; }
+  catch { return { cities: [] }; }
+}
+function save(d) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch {} }
+let data = load();
+
+function setStatus(msg, type) { document.getElementById('status').innerHTML = `<div class="status ${type}">${msg}</div>`; }
+
+async function geocode(name) {
+  const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json`);
+  const j = await r.json();
+  if (!j.results || !j.results.length) throw new Error(`No results for "${name}"`);
+  const c = j.results[0];
+  return { name: c.name, country: c.country_code || c.country, lat: c.latitude, lon: c.longitude, tz: c.timezone };
+}
+
+async function fetchWeather(city) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m,apparent_temperature&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
+  const r = await fetch(url);
+  const j = await r.json();
+  city.current = j.current;
+  city.fetchedAt = Date.now();
+}
+
+const WMO = {
+  0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+  45: 'Foggy', 48: 'Depositing rime fog',
+  51: 'Light drizzle', 53: 'Moderate drizzle', 55: 'Dense drizzle',
+  61: 'Slight rain', 63: 'Moderate rain', 65: 'Heavy rain',
+  71: 'Slight snow', 73: 'Moderate snow', 75: 'Heavy snow',
+  80: 'Slight rain showers', 81: 'Moderate rain showers', 82: 'Violent rain showers',
+  95: 'Thunderstorm', 96: 'Thunderstorm w/ slight hail', 99: 'Thunderstorm w/ heavy hail'
+};
+
+function wmoIcon(code) {
+  if (code === 0) return '☀️';
+  if (code <= 2) return '🌤️';
+  if (code === 3) return '☁️';
+  if (code <= 48) return '🌫️';
+  if (code <= 55) return '🌦️';
+  if (code <= 65) return '🌧️';
+  if (code <= 75) return '🌨️';
+  if (code <= 82) return '⛈️';
+  if (code <= 99) return '⚡';
+  return '🌡️';
+}
+
+async function addCity() {
+  const name = document.getElementById('city-input').value.trim();
+  if (!name) return;
+  setStatus(`Looking up ${name}...`, 'info');
+  try {
+    const geo = await geocode(name);
+    if (data.cities.find(c => c.name === geo.name && c.country === geo.country)) {
+      setStatus(`${geo.name} is already in your list.`, 'err');
+      return;
+    }
+    await fetchWeather(geo);
+    data.cities.push(geo);
+    save(data); render();
+    document.getElementById('city-input').value = '';
+    setStatus(`✓ Added ${geo.name}`, 'info');
+    setTimeout(() => setStatus('', 'info'), 2000);
+  } catch (e) {
+    setStatus('✗ ' + e.message, 'err');
+  }
+}
+
+function delCity(idx) {
+  data.cities.splice(idx, 1);
+  save(data); render();
+}
+
+async function refreshAll() {
+  setStatus('Refreshing all...', 'info');
+  for (const c of data.cities) {
+    try { await fetchWeather(c); } catch {}
+  }
+  save(data); render();
+  setStatus('✓ Refreshed', 'info');
+  setTimeout(() => setStatus('', 'info'), 2000);
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  if (!data.cities.length) {
+    grid.innerHTML = '<div class="empty">No cities yet. Add one above.</div>';
+    return;
+  }
+  grid.innerHTML = data.cities.map((c, i) => {
+    if (!c.current) return `
+      <div class="city">
+        <div class="head">
+          <div><div class="name">${c.name}</div><div class="country">${c.country}</div></div>
+        </div>
+        <div style="color:var(--tf);font-size:.85rem">Loading...</div>
+      </div>
+    `;
+    const cu = c.current;
+    return `
+      <div class="city">
+        <div class="head">
+          <div>
+            <div class="name">${wmoIcon(cu.weather_code)} ${c.name}</div>
+            <div class="country">${c.country}</div>
+          </div>
+          <button class="del" onclick="delCity(${i})">×</button>
+        </div>
+        <div class="temp">${Math.round(cu.temperature_2m)}°F</div>
+        <div class="desc">${WMO[cu.weather_code] || 'Unknown'}</div>
+        <div class="meta">
+          <div><span class="lbl">Feels like</span><span class="v">${Math.round(cu.apparent_temperature)}°F</span></div>
+          <div><span class="lbl">Humidity</span><span class="v">${cu.relative_humidity_2m}%</span></div>
+          <div><span class="lbl">Wind</span><span class="v">${cu.wind_speed_10m} mph</span></div>
+          <div><span class="lbl">Updated</span><span class="v">${new Date(c.fetchedAt).toLocaleTimeString()}</span></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function saveNow() {
+  save(data);
+  const btn = document.querySelector('.btn-ok') || document.querySelector('button.btn:nth-child(2)');
+  if (btn) {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Saved';
+    setTimeout(() => btn.textContent = orig, 1200);
+  }
+}
+
+// Enter to add
+document.getElementById('city-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addCity();
+});
+
+render();
+// Seed with a few cities if empty
+if (!data.cities.length) {
+  ['San Francisco', 'Tokyo', 'Berlin'].forEach(async n => {
+    try {
+      const geo = await geocode(n);
+      await fetchWeather(geo);
+      data.cities.push(geo);
+      save(data); render();
+    } catch {}
+  });
+}
+// Auto-refresh every 5 minutes
+setInterval(refreshAll, 5 * 60 * 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Finance — Quilt Click-and-Go Template</title>
+<meta name="description" content="A self-contained personal finance tracker built on Quilt. Save your work locally. No server, no account. Just cells.">
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5}
+.m{font-family:'SF Mono','JetBrains Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+h1{font-size:1.6rem;font-weight:800}
+h1 .accent{color:var(--a3)}
+.sub{color:var(--td);font-size:.85rem;margin-top:3px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--panel);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500}
+.btn:hover{background:var(--pe);border-color:var(--bs)}
+.btn-pri{background:var(--a1);border-color:var(--a1);color:#fff}
+.btn-pri:hover{background:#6d28d9;border-color:#6d28d9}
+.btn-ok{background:var(--a3);border-color:var(--a3);color:#000}
+.btn-ok:hover{filter:brightness(1.1)}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px}
+.card .lbl{color:var(--td);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.card .val{font-size:1.5rem;font-weight:700;font-family:'SF Mono',monospace}
+.card .val.pos{color:var(--a3)}
+.card .val.neg{color:var(--bad)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:18px}
+.panel h2{font-size:1.05rem;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{text-align:left;color:var(--td);font-weight:600;padding:7px 5px;border-bottom:1px solid var(--b);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+td{padding:7px 5px;border-bottom:1px solid var(--b)}
+td input,td select{background:var(--bg);border:1px solid var(--b);color:var(--t);padding:5px 7px;border-radius:4px;font-size:.85rem;width:100%;font-family:inherit}
+td input:focus,td select:focus{outline:none;border-color:var(--a2)}
+.amount{text-align:right;font-family:'SF Mono',monospace}
+.amount.pos{color:var(--a3)}
+.amount.neg{color:var(--bad)}
+.del{background:transparent;border:1px solid var(--b);color:var(--bad);padding:3px 7px;border-radius:4px;cursor:pointer;font-size:.7rem}
+.del:hover{background:var(--bad);color:#fff}
+.add-row{margin-top:12px;display:flex;gap:6px;align-items:center}
+.add-row input,.add-row select{background:var(--bg);border:1px solid var(--b);color:var(--t);padding:6px 9px;border-radius:4px;font-size:.85rem;font-family:inherit}
+.add-row input[type=date]{width:140px}
+.add-row input.amount-in{padding:6px 9px}
+.bar{height:18px;background:var(--b);border-radius:4px;overflow:hidden;margin-top:5px}
+.bar .fill{height:100%;background:linear-gradient(90deg,var(--a3) 0%,var(--a2) 100%);transition:width .3s}
+.cat-row{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:.85rem}
+.cat-row .name{width:120px;color:var(--td)}
+.cat-row .amt{flex:1;font-family:'SF Mono',monospace;text-align:right}
+.cat-row .bar-wrap{flex:2;min-width:100px}
+.empty{color:var(--tf);text-align:center;padding:30px;font-style:italic;font-size:.85rem}
+.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:10px;font-size:.78rem;color:var(--td);margin-top:14px}
+.note a{color:var(--a2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>💰 <span class="accent">Personal Finance</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
+    <div class="sub">Cells are transactions. Formulas compute the rest. Saves to your browser.</div>
+  </div>
+  <div class="toolbar">
+    <button class="btn" onclick="exportJSON()">↓ Export</button>
+    <button class="btn" onclick="importJSON()">↑ Import</button>
+    <button class="btn btn-ok" onclick="saveNow()">💾 Save</button>
+    <a class="btn" href="https://superinstance.dev/quilt.html">← back to Quilt</a>
+  </div>
+</header>
+
+<div class="summary" id="summary"></div>
+
+<div class="grid">
+  <div class="panel">
+    <h2>Transactions</h2>
+    <table id="txns">
+      <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="amount">Amount</th><th></th></tr></thead>
+      <tbody id="txn-body"></tbody>
+    </table>
+    <div class="add-row">
+      <input type="date" id="add-date">
+      <input type="text" id="add-desc" placeholder="Description" style="flex:1;min-width:120px">
+      <select id="add-cat">
+        <option>Food</option><option>Transport</option><option>Housing</option>
+        <option>Entertainment</option><option>Health</option><option>Income</option>
+        <option>Shopping</option><option>Other</option>
+      </select>
+      <input type="number" id="add-amt" placeholder="Amount" step="0.01" class="amount-in" style="width:100px">
+      <button class="btn btn-pri" onclick="addTxn()">+ Add</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>By category</h2>
+    <div id="bycat"></div>
+    <div class="note">
+      <strong>How this works:</strong> Each transaction is a <code>value</code> cell. The summary cards are <code>formula</code> cells (<code>sum</code>, <code>group</code>). The "By category" panel is a computed pivot. The whole thing runs in your browser — no server, no account, no tracking. <a href="https://github.com/SuperInstance/quilt" target="_blank">Learn about Quilt</a>.
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const STORAGE_KEY = 'quilt-finance-v1';
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { txns: [] };
+}
+
+function save(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+  return data;
+}
+
+let data = load();
+
+function todayISO() { return new Date().toISOString().split('T')[0]; }
+
+function addTxn() {
+  const date = document.getElementById('add-date').value || todayISO();
+  const desc = document.getElementById('add-desc').value.trim() || 'Untitled';
+  const cat = document.getElementById('add-cat').value;
+  const amt = parseFloat(document.getElementById('add-amt').value) || 0;
+  data.txns.push({ id: Date.now() + Math.random(), date, desc, cat, amt });
+  save(data); render();
+  document.getElementById('add-desc').value = '';
+  document.getElementById('add-amt').value = '';
+}
+
+function delTxn(id) {
+  data.txns = data.txns.filter(t => t.id !== id);
+  save(data); render();
+}
+
+function clearAll() {
+  if (confirm('Delete all transactions? This cannot be undone.')) {
+    data = { txns: [] };
+    save(data); render();
+  }
+}
+
+function sum(predicate) {
+  return data.txns.filter(predicate).reduce((s, t) => s + t.amt, 0);
+}
+
+function render() {
+  // Summary
+  const income = sum(t => t.amt > 0);
+  const expenses = sum(t => t.amt < 0);
+  const net = income + expenses;
+  const count = data.txns.length;
+  const avg = count ? Math.abs(expenses) / count : 0;
+
+  document.getElementById('summary').innerHTML = `
+    <div class="card"><div class="lbl">Income</div><div class="val pos">+$${income.toFixed(2)}</div></div>
+    <div class="card"><div class="lbl">Expenses</div><div class="val neg">-$${Math.abs(expenses).toFixed(2)}</div></div>
+    <div class="card"><div class="lbl">Net</div><div class="val ${net>=0?'pos':'neg'}">${net>=0?'+':''}$${net.toFixed(2)}</div></div>
+    <div class="card"><div class="lbl">Avg / txn</div><div class="val">$${avg.toFixed(2)}</div></div>
+  `;
+
+  // Transactions
+  const body = document.getElementById('txn-body');
+  if (!data.txns.length) {
+    body.innerHTML = '<tr><td colspan="5" class="empty">No transactions yet. Add one above.</td></tr>';
+  } else {
+    body.innerHTML = data.txns.slice().sort((a,b) => b.date.localeCompare(a.date)).map(t => `
+      <tr>
+        <td>${t.date}</td>
+        <td>${escapeHTML(t.desc)}</td>
+        <td>${escapeHTML(t.cat)}</td>
+        <td class="amount ${t.amt >= 0 ? 'pos' : 'neg'}">${t.amt >= 0 ? '+' : ''}$${t.amt.toFixed(2)}</td>
+        <td><button class="del" onclick="delTxn(${t.id})">×</button></td>
+      </tr>
+    `).join('');
+  }
+
+  // By category (expenses only)
+  const byCat = {};
+  for (const t of data.txns) {
+    if (t.amt < 0) {
+      byCat[t.cat] = (byCat[t.cat] || 0) + Math.abs(t.amt);
+    }
+  }
+  const cats = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
+  const totalExp = cats.reduce((s, [_, v]) => s + v, 0);
+  const bycat = document.getElementById('bycat');
+  if (!cats.length) {
+    bycat.innerHTML = '<div class="empty">Add some expenses to see the breakdown.</div>';
+  } else {
+    bycat.innerHTML = cats.map(([cat, amt]) => {
+      const pct = totalExp ? (amt / totalExp * 100) : 0;
+      return `
+        <div class="cat-row">
+          <div class="name">${escapeHTML(cat)}</div>
+          <div class="bar-wrap"><div class="bar"><div class="fill" style="width:${pct.toFixed(1)}%"></div></div></div>
+          <div class="amt">$${amt.toFixed(2)} <span style="color:var(--tf)">(${pct.toFixed(0)}%)</span></div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `quilt-finance-${todayISO()}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'application/json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (imported.txns) {
+          data = imported;
+          save(data); render();
+          alert(`Imported ${data.txns.length} transactions.`);
+        }
+      } catch (err) { alert('Invalid JSON file.'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function saveNow() {
+  save(data);
+  const btn = document.querySelector('.btn-ok');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Saved';
+  setTimeout(() => btn.textContent = orig, 1200);
+}
+
+// Init
+document.getElementById('add-date').value = todayISO();
+render();
+
+// Enter key on description/amount adds
+['add-desc', 'add-amt'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTxn();
+  });
+});
+</script>
+</body>
+</html>
