@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperInstance — Quilt, the cell model, and 15 repos for whatever you're building</title>
+<meta name="description" content="A spreadsheet where every cell is a live capability. TypeScript, Rust, a 70KB single-file browser version, an ESP32 no_std port, a Cloudflare Worker, and 9 other repos. From sensors to LLM agents, from IoT to the multiverse.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--err:#e07a8a;--w:#e6c87a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--a5:#ec4899;
+  --g:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%);
+  --gg:linear-gradient(135deg,#10b981 0%,#3b82f6 100%);
+  --gw:linear-gradient(135deg,#f59e0b 0%,#ec4899 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:'Inter',-apple-system,sans-serif;line-height:1.6}
+a{color:var(--a2);text-decoration:none}
+a:hover{color:var(--a1)}
+code,pre,.m{font-family:'JetBrains Mono',monospace}
+pre{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:13px 15px;overflow-x:auto;font-size:.8rem;line-height:1.5;color:var(--td)}
+p{color:var(--td);margin-bottom:12px}
+h1,h2,h3,h4{color:var(--t);line-height:1.2}
+.grad-text{background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ── Nav ── */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,10,20,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--b);padding:11px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.01em}
+.mark{width:26px;height:26px;background:var(--g);border-radius:5px;position:relative}
+.mark::after{content:'';position:absolute;inset:3px;background:linear-gradient(135deg,#0a0a14 0%,#14141f 100%);border-radius:3px}
+.mark::before{content:'◳';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;z-index:2}
+.brand-name{font-size:1.05rem}
+.brand-name .accent{color:var(--a1);font-weight:600}
+.nav-links{display:flex;gap:2px;flex-wrap:wrap}
+.nav-links a{padding:5px 9px;font-size:.8rem;color:var(--td);border-radius:6px}
+.nav-links a:hover{background:var(--panel);color:var(--t)}
+.nav-links .quilt-link{color:var(--a1);font-weight:600}
+.nav-cta{padding:7px 14px;background:var(--g);color:#fff;border-radius:6px;font-size:.84rem;font-weight:600}
+.nav-cta:hover{color:#fff;opacity:.9}
+
+/* ── Hero ── */
+.hero{position:relative;text-align:center;padding:64px 24px 36px;max-width:1000px;margin:0 auto;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,58,237,.18) 0%,rgba(59,130,246,.08) 30%,transparent 65%);pointer-events:none;z-index:-1}
+.hero h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;letter-spacing:-.035em;margin-bottom:18px;line-height:1.05}
+.hero .sub{font-size:clamp(1.05rem,2.2vw,1.3rem);color:var(--td);max-width:740px;margin:0 auto 26px;line-height:1.5}
+.hero .tagline{font-family:'JetBrains Mono',monospace;font-size:.88rem;color:var(--a3);margin-bottom:30px;letter-spacing:.02em}
+.hero .ctas{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:11px 20px;border-radius:7px;font-weight:600;font-size:.92rem;cursor:pointer;transition:.15s}
+.btn-grad{background:var(--g);color:#fff}
+.btn-grad:hover{opacity:.92;transform:translateY(-1px);color:#fff}
+.btn-alt{background:var(--panel);color:var(--t);border:1px solid var(--b)}
+.btn-alt:hover{background:var(--pe);color:var(--t);border-color:var(--bs)}
+.btn-warn{background:var(--gw);color:#1a1a26}
+.btn-warn:hover{opacity:.9;color:#1a1a26}
+.btn-sm{padding:7px 12px;font-size:.8rem}
+
+/* ── Sections ── */
+section{max-width:1180px;margin:0 auto;padding:50px 24px}
+section h2{font-size:clamp(1.6rem,3.4vw,2.2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+section h2 .num{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--tf);font-weight:500}
+section .lead{font-size:1.05rem;color:var(--td);max-width:780px;margin-bottom:32px}
+
+/* ── The Quilt feature (hero within heroes) ── */
+.quilt-hero{background:linear-gradient(135deg,rgba(124,58,237,.1) 0%,rgba(59,130,246,.08) 50%,rgba(16,185,129,.06) 100%);border:1px solid var(--b);border-radius:18px;padding:38px 32px;margin-bottom:30px;position:relative;overflow:hidden}
+.quilt-hero::before{content:'';position:absolute;top:0;right:0;width:280px;height:280px;background:radial-gradient(circle,rgba(124,58,237,.15) 0%,transparent 60%);pointer-events:none}
+.quilt-hero .qtag{display:inline-block;padding:4px 10px;background:rgba(124,58,237,.15);color:var(--a1);border:1px solid rgba(124,58,237,.4);border-radius:999px;font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px}
+.quilt-hero h3{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:800;letter-spacing:-.025em;margin-bottom:10px}
+.quilt-hero p.lede{font-size:1.08rem;color:var(--td);max-width:680px;margin-bottom:24px}
+.quilt-hero .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px}
+.quilt-hero .qcell{background:rgba(0,0,0,.3);border:1px solid var(--b);border-radius:9px;padding:13px 14px}
+.quilt-hero .qcell .k{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--a1);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.quilt-hero .qcell .d{font-size:.85rem;color:var(--td)}
+.quilt-hero .qcta{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ── Repo grid (15 repos) ── */
+.repos{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;margin-top:18px}
+.repo{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:7px;transition:.15s}
+.repo:hover{background:var(--pe);border-color:var(--bs);transform:translateY(-2px)}
+.repo .rname{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--t);font-size:.95rem}
+.repo .rdesc{font-size:.85rem;color:var(--td);line-height:1.45;flex:1}
+.repo .rtier{display:inline-block;padding:2px 7px;background:rgba(124,58,237,.12);color:var(--a1);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;width:fit-content}
+.repo .rtier.ts{background:rgba(59,130,246,.12);color:var(--a2)}
+.repo .rtier.rust{background:rgba(245,158,11,.12);color:var(--a4)}
+.repo .rtier.browser{background:rgba(16,185,129,.12);color:var(--a3)}
+.repo .rtier.edge{background:rgba(236,72,153,.12);color:var(--a5)}
+.repo .rlinks{display:flex;gap:8px;margin-top:6px}
+.repo .rlinks a{font-size:.78rem;color:var(--a2)}
+.repo .rlinks a:hover{color:var(--a1)}
+
+/* ── Demo / template grid ── */
+.demos{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;margin-top:18px}
+.demo{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:0;overflow:hidden;display:flex;flex-direction:column;transition:.15s}
+.demo:hover{border-color:var(--bs)}
+.demo .thumb{height:120px;background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);display:flex;align-items:center;justify-content:center;font-size:2.6rem;position:relative}
+.demo .thumb.ts{background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%)}
+.demo .thumb.rust{background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%)}
+.demo .thumb.ai{background:linear-gradient(135deg,#10b981 0%,#3b82f6 100%)}
+.demo .thumb.io{background:linear-gradient(135deg,#ec4899 0%,#7c3aed 100%)}
+.demo .thumb.fed{background:linear-gradient(135deg,#7c3aed 0%,#10b981 100%)}
+.demo .thumb.eng{background:linear-gradient(135deg,#f59e0b 0%,#ec4899 100%)}
+.demo .thumb-label{position:absolute;bottom:7px;right:9px;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.85);background:rgba(0,0,0,.4);padding:2px 6px;border-radius:3px}
+.demo .body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
+.demo .body h4{font-size:.95rem}
+.demo .body p{font-size:.83rem;color:var(--td);line-height:1.45;flex:1;margin:0}
+.demo .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.demo .actions a{padding:5px 10px;font-size:.74rem;background:var(--pe);border:1px solid var(--b);color:var(--t);border-radius:5px}
+.demo .actions a:hover{background:var(--a1);color:#fff;border-color:var(--a1)}
+.demo .actions a.save{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3)}
+.demo .actions a.save:hover{background:var(--a3);color:#0a0a14}
+
+/* ── Click-and-go templates (special, with save) ── */
+.template-card{background:var(--panel);border:2px solid var(--a3);border-radius:12px;padding:0;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.template-card::before{content:'CLICK & GO';position:absolute;top:8px;right:9px;font-family:'JetBrains Mono',monospace;font-size:.62rem;background:var(--a3);color:#0a0a14;padding:2px 7px;border-radius:3px;font-weight:700;letter-spacing:.06em;z-index:1}
+.template-card .tname{padding:16px 16px 8px;font-weight:700;font-size:1.02rem}
+.template-card .tdesc{padding:0 16px 12px;font-size:.85rem;color:var(--td);flex:1}
+.template-card .tfoot{padding:11px 16px;background:rgba(16,185,129,.08);border-top:1px solid rgba(16,185,129,.2);display:flex;justify-content:space-between;align-items:center;font-size:.78rem}
+.template-card .tfoot a{color:var(--a3);font-weight:600}
+.template-card .tfoot .save-status{color:var(--tf);font-family:'JetBrains Mono',monospace;font-size:.7rem}
+
+/* ── Coffee bar ── */
+.coffee{background:linear-gradient(135deg,rgba(245,158,11,.08) 0%,rgba(236,72,153,.06) 100%);border:1px solid var(--b);border-radius:14px;padding:28px 30px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.coffee .ci{font-size:3.2rem;flex-shrink:0}
+.coffee h3{font-size:1.3rem;margin-bottom:6px}
+.coffee p{font-size:.92rem;margin-bottom:0;flex:1;min-width:200px}
+.coffee .ctas{display:flex;gap:10px;flex-wrap:wrap}
+.coffee-btn{display:inline-flex;align-items:center;gap:8px;background:#FFDD00;color:#0a0a14;padding:11px 20px;border-radius:7px;font-weight:700;font-size:.95rem}
+.coffee-btn:hover{opacity:.92;color:#0a0a14}
+.coffee-btn svg{width:18px;height:18px;fill:currentColor}
+.coffee-later{font-size:.78rem;color:var(--tf);margin-top:8px;font-style:italic}
+
+/* ── Hosted preview ── */
+.hosted{background:linear-gradient(135deg,rgba(16,185,129,.08) 0%,rgba(59,130,246,.06) 100%);border:1px solid var(--a3);border-radius:14px;padding:28px 30px;position:relative;overflow:hidden}
+.hosted::before{content:'COMING SOON';position:absolute;top:11px;right:13px;font-family:'JetBrains Mono',monospace;font-size:.62rem;background:rgba(16,185,129,.2);color:var(--a3);padding:3px 9px;border-radius:3px;font-weight:700;letter-spacing:.06em;border:1px solid var(--a3)}
+.hosted h3{font-size:1.3rem;margin-bottom:8px}
+.hosted p{margin-bottom:16px}
+.hosted .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px;margin-bottom:14px}
+.hosted .tier{background:rgba(0,0,0,.3);border:1px solid var(--b);border-radius:8px;padding:14px}
+.hosted .tier h4{font-size:.92rem;margin-bottom:4px;color:var(--a3)}
+.hosted .tier .p{font-size:.78rem;color:var(--td);margin-bottom:8px}
+.hosted .tier ul{list-style:none;font-size:.8rem;color:var(--td)}
+.hosted .tier ul li{padding-left:14px;position:relative;margin-bottom:3px}
+.hosted .tier ul li::before{content:'✓';position:absolute;left:0;color:var(--a3);font-weight:700}
+.hosted .tier.future{opacity:.65}
+.hosted .tier.future h4{color:var(--tf)}
+
+/* ── Footer ── */
+footer{background:rgba(0,0,0,.4);border-top:1px solid var(--b);padding:30px 24px;text-align:center;color:var(--tf);font-size:.82rem;margin-top:60px}
+footer a{color:var(--a2);margin:0 8px}
+footer .copyright{margin-top:10px;font-size:.74rem;color:var(--tf)}
+
+/* ── Responsive ── */
+@media(max-width:720px){
+  .nav-links{display:none}
+  .hero{padding:40px 18px 24px}
+  section{padding:30px 18px}
+  .quilt-hero{padding:24px 20px}
+  .coffee,.hosted{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<nav>
+  <div class="brand">
+    <div class="mark"></div>
+    <div class="brand-name">super<span class="accent">Instance</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="#quilt">Quilt</a>
+    <a href="#repos">15 repos</a>
+    <a href="#demos">Demos</a>
+    <a href="#templates">Templates</a>
+    <a href="#hosted">Hosted</a>
+    <a href="#coffee">Support</a>
+    <a href="https://github.com/SuperInstance" target="_blank">GitHub</a>
+  </div>
+  <a class="nav-cta" href="quilt.html">Open Quilt →</a>
+</nav>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero">
+  <h1>One spreadsheet. <span class="grad-text">Every cell is alive.</span></h1>
+  <p class="sub">A reactive, typed, cellular runtime for whatever you're building — from boat autopilots to LLM agents, from IoT to the multiverse. 15 repos, 5 deployment tiers, 3 languages, 8 SDK primitives, 82 tests.</p>
+  <p class="tagline">// TypeScript · Rust · 70KB single-file · Cloudflare · ESP32 · GitHub Codespaces</p>
+  <div class="ctas">
+    <a class="btn btn-grad" href="#quilt">Meet Quilt</a>
+    <a class="btn btn-alt" href="#templates">Try a template</a>
+    <a class="btn btn-warn" href="#coffee">☕ Buy us a coffee</a>
+  </div>
+</section>
+
+<!-- ════════════════════ THE QUILT FEATURE ════════════════════ -->
+<section id="quilt">
+  <h2><span class="num">01</span> The flagship: <span class="grad-text">Quilt</span></h2>
+  <p class="lead">A spreadsheet where every cell is a live, addressable capability. The grid is the runtime. The cell is the universal IO primitive. A cell can be a value, a formula, an HTTP call, a sensor, a program, an LLM, or any combination — and they all wire together with reactive propagation.</p>
+
+  <div class="quilt-hero">
+    <span class="qtag">★ Flagship product</span>
+    <h3>Quilt — the cell model</h3>
+    <p class="lede">Cells reference each other by stable address (not by coordinate). Change one cell, every dependent rewires automatically. No callbacks, no event loops, no state machines — just cells. The same sheet format (YAML) runs everywhere.</p>
+
+    <div class="grid">
+      <div class="qcell">
+        <div class="k">value</div>
+        <div class="d">A static value, a number, a string, an object.</div>
+      </div>
+      <div class="qcell">
+        <div class="k">formula</div>
+        <div class="d">A computed expression over other cells. <code>=price * quantity</code></div>
+      </div>
+      <div class="qcell">
+        <div class="k">api</div>
+        <div class="d">An outbound HTTP call. Every request is a value.</div>
+      </div>
+      <div class="qcell">
+        <div class="k">sensor</div>
+        <div class="d">A pull-based data source: prices, weather, IoT readings.</div>
+      </div>
+      <div class="qcell">
+        <div class="k">program</div>
+        <div class="d">A function body. Full TypeScript closure in a cell.</div>
+      </div>
+      <div class="qcell">
+        <div class="k">router</div>
+        <div class="d">Picks a value based on the caller. Per-context memoization.</div>
+      </div>
+      <div class="qcell">
+        <div class="k">listener</div>
+        <div class="d">A push side-effect: notify, alert, fire webhook.</div>
+      </div>
+      <div class="qcell">
+        <div class="k">io</div>
+        <div class="d">Bidirectional IO: WebSocket, MQTT, serial, anything.</div>
+      </div>
+      <div class="qcell">
+        <div class="k">ai</div>
+        <div class="d">An LLM cell. z.ai, Kimi, DeepSeek, Cloudflare AI.</div>
+      </div>
+    </div>
+
+    <div class="qcta">
+      <a class="btn btn-grad btn-sm" href="quilt.html">Open the Quilt ecosystem →</a>
+      <a class="btn btn-alt btn-sm" href="https://quilt.superinstance.dev/playground.html" target="_blank">Playground (REPL)</a>
+      <a class="btn btn-alt btn-sm" href="https://github.com/SuperInstance/quilt" target="_blank">★ on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ THE 15 REPOS ════════════════════ -->
+<section id="repos">
+  <h2><span class="num">02</span> 15 repos across 5 deployment tiers</h2>
+  <p class="lead">The Quilt ecosystem is federated — multiple Quilt instances (Codespace, Jetson, ESP32, Cloudflare Worker) talk to each other via the URI scheme <code>quilt://[instance]/[sheet]#[cell]</code>. Same engine, same cell semantics, three different hardware tiers.</p>
+
+  <div class="repos">
+
+    <div class="repo">
+      <span class="rtier ts">canonical</span>
+      <div class="rname">quilt</div>
+      <div class="rdesc">The TypeScript core. 5 packages: <code>@quilt/core</code>, <code>@quilt/sdk</code>, <code>@quilt/cli</code>, <code>@quilt/mcp</code>, <code>@quilt/tui</code>. 82 tests, MCP-native.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt" target="_blank">repo</a> · <a href="quilt.html">feature</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier rust">compiled</span>
+      <div class="rname">quilt-rust</div>
+      <div class="rdesc">The Rust port. 5 crates, axum, crossterm. Single static binary, no Node.js, 68 tests.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-rust" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier browser">portable</span>
+      <div class="rname">quilt-live</div>
+      <div class="rdesc">A single 70KB HTML file with the full Quilt engine. Opens in any browser, works offline, saves state as a cookie or downloadable HTML.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-live" target="_blank">repo</a> · <a href="https://superinstance.github.io/quilt/landing/quilt-live.html" target="_blank">open</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier rust">edge</span>
+      <div class="rname">quilt-esp32</div>
+      <div class="rdesc">no_std Rust for ESP32. Sensors, motors, tight control loops. The "tiny end" of the federation.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-esp32" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier edge">edge</span>
+      <div class="rname">quilt-cloudflare</div>
+      <div class="rdesc">Cloudflare Workers + D1 + Vectorize + R2 + Workers AI. The "edge cloud" of the federation.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-cloudflare" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">codespace</span>
+      <div class="rname">quilt-codespace</div>
+      <div class="rdesc">GitHub Codespace as a live Quilt runtime. ttyd, HTTP API, dashboard. Token-authenticated for external callers.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-codespace" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">ai</span>
+      <div class="rname">quilt-ai</div>
+      <div class="rdesc">LLM cells across 4 providers: z.ai, Kimi, DeepSeek, Cloudflare AI. Cost tracking, caching, content-addressed artifacts.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-ai" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">evolve</span>
+      <div class="rname">quilt-evolve</div>
+      <div class="rdesc">Self-improvement loops. 4 components, 5 scopes. RLAIF as a first-class Quilt pattern.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-evolve" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">sync</span>
+      <div class="rname">quilt-mesh</div>
+      <div class="rdesc">CRDT-backed mesh. Cross-tab and cross-device sync via BroadcastChannel.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-mesh" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">agent</span>
+      <div class="rname">quilt-agent</div>
+      <div class="rdesc">An LLM agent as a sheet. Memory, tools, reasoning, goals — all cells. Multiple agents share cells.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-agent" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">time</span>
+      <div class="rname">quilt-time</div>
+      <div class="rdesc">Time-series cells with rolling windows and aggregations. 17 tests.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-time" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">vault</span>
+      <div class="rname">quilt-vault</div>
+      <div class="rdesc">Secrets cells with per-cell ACLs and rotation. 10 tests.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-vault" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier browser">vision</span>
+      <div class="rname">quilt-vision</div>
+      <div class="rdesc">Computer-vision cells. Camera → scene → caption. Web APIs + getUserMedia.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-vision" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">zk</span>
+      <div class="rname">quilt-zk</div>
+      <div class="rdesc">Zero-knowledge cell verification. Planner primitives. 7 tests.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-zk" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">flow</span>
+      <div class="rname">quilt-flow</div>
+      <div class="rdesc">Workflow cells — DAG execution, retry, rollback. 8 tests.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-flow" target="_blank">repo</a></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════ LIVE DEMOS ════════════════════ -->
+<section id="demos">
+  <h2><span class="num">03</span> Live demos</h2>
+  <p class="lead">Every demo is a real, working app — no mocks, no screenshots. Click in, try it, save your work.</p>
+
+  <div class="demos">
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/quilt-live.html" target="_blank">
+      <div class="thumb ts">⚡<span class="thumb-label">quilt-live</span></div>
+      <div class="body">
+        <h4>Quilt Live</h4>
+        <p>The single-file browser version. 70KB. Works offline. Save your sheet as a downloadable HTML or cookie.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/playground.html" target="_blank">
+      <div class="thumb ts">▶<span class="thumb-label">playground</span></div>
+      <div class="body">
+        <h4>Quilt Playground</h4>
+        <p>REPL for writing Quilt sheets. Type YAML on the left, see cells evaluate on the right. 8 starter snippets included.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/studio.html" target="_blank">
+      <div class="thumb ts">🎨<span class="thumb-label">studio</span></div>
+      <div class="body">
+        <h4>Quilt Studio</h4>
+        <p>Visual sheet editor. Drag cells, draw dependencies, see the graph update in real time.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/synoptic3d.html" target="_blank">
+      <div class="thumb ts">🌐<span class="thumb-label">3d</span></div>
+      <div class="body">
+        <h4>3D Synoptic</h4>
+        <p>Your Quilt sheet as a 3D force-directed graph. WebGL, custom shaders, 60fps. Click cells to inspect.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/ai-playground.html" target="_blank">
+      <div class="thumb ai">🤖<span class="thumb-label">ai</span></div>
+      <div class="body">
+        <h4>AI Playground</h4>
+        <p>LLM cells in action. z.ai, Kimi, DeepSeek, Cloudflare AI. See real responses, real costs, real propagation.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/federation.html" target="_blank">
+      <div class="thumb fed">🌐<span class="thumb-label">federation</span></div>
+      <div class="body">
+        <h4>Federation — 3-tier live</h4>
+        <p>ESP32 → Jetson → Codespace. Watch cells propagate across three hardware tiers. Real propagation, real trace log.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/engines.html" target="_blank">
+      <div class="thumb io">⚙️<span class="thumb-label">engines</span></div>
+      <div class="body">
+        <h4>Engine Federation</h4>
+        <p>Paper trading, backtest multiverse, grid-world, Jupyter, knowledge base. Real engines wrapped as Quilt cells.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/tavern.html" target="_blank">
+      <div class="thumb ai">🍺<span class="thumb-label">tavern</span></div>
+      <div class="body">
+        <h4>Tavern — radio theater on a spreadsheet</h4>
+        <p>3 characters, 3 LLMs, time-stepped simulation. A conversation plays out as cell-to-cell messages. Watch the trajectory.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/voice.html" target="_blank">
+      <div class="thumb io">🎙<span class="thumb-label">voice</span></div>
+      <div class="body">
+        <h4>Voice — speak to a sheet</h4>
+        <p>Real Web Speech API → cell updates. Say "set temperature to 72" and watch the formula recompute.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/camera.html" target="_blank">
+      <div class="thumb io">📷<span class="thumb-label">camera</span></div>
+      <div class="body">
+        <h4>Camera — getUserMedia → cell</h4>
+        <p>Real webcam → pixel analysis → cell. Average brightness, motion detection, all reactive.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/mesh-live.html" target="_blank">
+      <div class="thumb io">🔗<span class="thumb-label">mesh</span></div>
+      <div class="body">
+        <h4>Mesh — cross-tab sync</h4>
+        <p>Open this page in two tabs. Change a cell in one. Watch it appear in the other. CRDT-backed.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="demo" href="https://superinstance.github.io/quilt/landing/vibe.html" target="_blank">
+      <div class="thumb ts">✨<span class="thumb-label">vibe</span></div>
+      <div class="body">
+        <h4>Vibe-code interface</h4>
+        <p>Describe a scene in natural language. The AI generates the Quilt sheet. Click "play" to watch it run.</p>
+        <div class="actions">
+          <span class="save">Save your work</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ════════════════════ CLICK-AND-GO TEMPLATES ════════════════════ -->
+<section id="templates">
+  <h2><span class="num">04</span> Click-and-go templates</h2>
+  <p class="lead">Starter sheets for common use cases. Click in, see a working example, save your modifications locally. <strong>All templates save to your browser's localStorage</strong> — your work is private and persists across sessions.</p>
+
+  <div class="demos">
+
+    <div class="demo template-card">
+      <div class="thumb ts">📈<span class="thumb-label">starter</span></div>
+      <div class="tname">Personal finance tracker</div>
+      <div class="tdesc">Income, expenses, savings rate, monthly projection. All formulas, no setup.</div>
+      <div class="tfoot">
+        <a href="https://superinstance.github.io/quilt/landing/starter-finance.html" target="_blank">Open template →</a>
+        <span class="save-status" data-template="finance">Saves locally</span>
+      </div>
+    </div>
+
+    <div class="demo template-card">
+      <div class="thumb ai">🤖<span class="thumb-label">starter</span></div>
+      <div class="tname">AI content writer</div>
+      <div class="tdesc">Topic → outline → draft → polish. AI cells at every step. Your API key, your output.</div>
+      <div class="tfoot">
+        <a href="https://superinstance.github.io/quilt/landing/starter-ai-writer.html" target="_blank">Open template →</a>
+        <span class="save-status" data-template="ai-writer">Saves locally</span>
+      </div>
+    </div>
+
+    <div class="demo template-card">
+      <div class="thumb io">🌤️<span class="thumb-label">starter</span></div>
+      <div class="tname">Weather dashboard</div>
+      <div class="tdesc">3-day forecast for your location. Heat-index formula, alert listeners, live updates.</div>
+      <div class="tfoot">
+        <a href="https://superinstance.github.io/quilt/landing/starter-weather.html" target="_blank">Open template →</a>
+        <span class="save-status" data-template="weather">Saves locally</span>
+      </div>
+    </div>
+
+    <div class="demo template-card">
+      <div class="thumb fed">🚢<span class="thumb-label">starter</span></div>
+      <div class="tname">Boat autopilot (sim)</div>
+      <div class="tdesc">Sensor → PID → motor. The classic Quilt demo, in a browser. Tune the gains, watch the heading stabilize.</div>
+      <div class="tfoot">
+        <a href="https://superinstance.github.io/quilt/landing/boat-autopilot.html" target="_blank">Open template →</a>
+        <span class="save-status" data-template="autopilot">Saves locally</span>
+      </div>
+    </div>
+
+    <div class="demo template-card">
+      <div class="thumb eng">⚙️<span class="thumb-label">starter</span></div>
+      <div class="tname">Paper trading</div>
+      <div class="tdesc">Real BTC price, simulated portfolio, P&L cell. The simplest "real engine as a cell" demo.</div>
+      <div class="tfoot">
+        <a href="https://superinstance.github.io/quilt/landing/starter-trading.html" target="_blank">Open template →</a>
+        <span class="save-status" data-template="trading">Saves locally</span>
+      </div>
+    </div>
+
+    <div class="demo template-card">
+      <div class="thumb ai">💬<span class="thumb-label">starter</span></div>
+      <div class="tname">Chat-with-prompt chain</div>
+      <div class="tdesc">Multi-step LLM reasoning. Each step is a cell, the chain is a sheet. Watch the propagation.</div>
+      <div class="tfoot">
+        <a href="https://superinstance.github.io/quilt/landing/starter-chat-chain.html" target="_blank">Open template →</a>
+        <span class="save-status" data-template="chat-chain">Saves locally</span>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="margin-top:24px;font-size:.85rem;color:var(--tf)">
+    <strong>How save-your-work works:</strong> Every template writes to your browser's localStorage on each change. Your work is private (never sent to a server), persists across browser sessions, and is cleared when you wipe site data. Export to JSON or copy-paste YAML anytime.
+  </p>
+</section>
+
+<!-- ════════════════════ SETUP GUIDANCE ════════════════════ -->
+<section id="setup">
+  <h2><span class="num">05</span> Set up your own system</h2>
+  <p class="lead">Different goals need different setups. Pick yours:</p>
+
+  <div class="demos">
+
+    <div class="demo">
+      <div class="thumb ts">💻</div>
+      <div class="body">
+        <h4>Just want to try it</h4>
+        <p>Open the <a href="https://superinstance.github.io/quilt/landing/quilt-live.html" target="_blank">Quilt Live</a> HTML file. No install. Works offline. Save as a cookie or downloadable file.</p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="thumb ts">🌐</div>
+      <div class="body">
+        <h4>Build a web app</h4>
+        <p><code>npm install @quilt/core @quilt/sdk</code>. Import the engine. Add cells to your app. MCP-server compatible for free.</p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="thumb io">🤖</div>
+      <div class="body">
+        <h4>Add LLM cells</h4>
+        <p><code>npm install @quilt/ai</code>. 4 providers, content-addressed caching, cost tracking. Add <code>kind: 'ai'</code> cells to your sheet.</p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="thumb rust">🦀</div>
+      <div class="body">
+        <h4>Need a binary</h4>
+        <p><code>cargo install quilt-rust</code>. Single static binary, no Node.js. axum, crossterm, embedded targets.</p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="thumb rust">📡</div>
+      <div class="body">
+        <h4>Embedded / IoT</h4>
+        <p>Quilt on an ESP32. <code>cargo build --target xtensa-esp32-espidf</code>. Sensors and motors as cells. WiFi sync to a Quilt on a Codespace.</p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="thumb edge">☁️</div>
+      <div class="body">
+        <h4>Cloudflare Worker</h4>
+        <p><code>wrangler deploy</code> in the <code>quilt-cloudflare</code> repo. D1, KV, R2, Vectorize, Workers AI. 7 AI cell kinds.</p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="thumb fed">🏗</div>
+      <div class="body">
+        <h4>Federated 3-tier system</h4>
+        <p>ESP32 (sensors) + Jetson (vision) + Codespace (ML). The same sheet format, three hardware tiers. See <a href="quilt.html#federation">the federation</a>.</p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="thumb ai">🧬</div>
+      <div class="body">
+        <h4>Self-improving agents</h4>
+        <p><code>npm install @quilt/evolve</code>. RLAIF as a first-class pattern. 4 components, 5 scopes, plateau detection. Run evolution loops against any sheet.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════ HOSTED PREVIEW ════════════════════ -->
+<section id="hosted">
+  <div class="hosted">
+    <h3>Hosted Quilt — coming soon</h3>
+    <p>A managed Quilt runtime with persistent state, team sharing, audit logs, and one-click deploy. Save your work in the cloud, not just localStorage. Run your Quilt sheets as long-lived services. Federate across multiple Quilt instances from a single dashboard.</p>
+
+    <div class="tiers">
+      <div class="tier">
+        <h4>Free</h4>
+        <div class="p">$0/mo · always</div>
+        <ul>
+          <li>3 active sheets</li>
+          <li>localStorage save only</li>
+          <li>Community support</li>
+          <li>Quilt banner on hosted URLs</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <h4>Pro</h4>
+        <div class="p">$9/mo · per user</div>
+        <ul>
+          <li>Unlimited sheets</li>
+          <li>Cloud save + version history</li>
+          <li>No banner</li>
+          <li>Email support</li>
+          <li>Federate with your own Codespace</li>
+        </ul>
+      </div>
+      <div class="tier future">
+        <h4>Team</h4>
+        <div class="p">$39/mo · per user</div>
+        <ul>
+          <li>Everything in Pro</li>
+          <li>Team workspaces + ACLs</li>
+          <li>Audit logs + SOC 2</li>
+          <li>Shared Codespaces</li>
+          <li>Priority support</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="font-size:.85rem;color:var(--tf);margin-top:14px">
+      <strong>Until then, the cloud costs are out-of-pocket.</strong> See below.
+    </p>
+  </div>
+</section>
+
+<!-- ════════════════════ BUY US A COFFEE ════════════════════ -->
+<section id="coffee">
+  <div class="coffee">
+    <div class="ci">☕</div>
+    <div>
+      <h3>Support the work</h3>
+      <p>15 repos, 8 SDK primitives, 50+ landing pages, 82 tests, and a federation architecture that runs on a 70KB HTML file. All open source, all free. If Quilt has saved you time, helped you ship, or just made you smile — buy us a coffee. <span class="coffee-later">Crowd-funding for hardware and hosted services coming later.</span></p>
+    </div>
+    <div class="ctas">
+      <a class="coffee-btn" href="https://www.buymeacoffee.com/superinstance" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-.766-1.62-.379-.458-.864-.823-1.404-1.064-.541-.241-1.143-.357-1.768-.357-.626 0-1.227.116-1.768.357-.54.241-1.025.606-1.404 1.064-.378.457-.647 1.022-.766 1.62l-.132.666C10.067 6.161 9 7.382 9 8.85v6.798c0 1.482 1.067 2.689 2.375 2.689h1.25c.31 0 .611-.046.892-.135.281.089.582.135.892.135h1.25c.31 0 .611-.046.892-.135.281.089.582.135.892.135h1.25c1.308 0 2.375-1.207 2.375-2.689V8.85c0-1.468-1.067-2.689-2.375-2.689h-1.092zM12 6.5c.215 0 .42.025.625.075-.15.215-.275.46-.36.72-.085.26-.13.535-.13.83v.875h-1v-.875c0-.295-.045-.57-.13-.83-.085-.26-.21-.505-.36-.72.205-.05.41-.075.625-.075zm-3 2c.215 0 .42.025.625.075-.15.215-.275.46-.36.72-.085.26-.13.535-.13.83v.875h-1v-.875c0-.295-.045-.57-.13-.83-.085-.26-.21-.505-.36-.72.205-.05.41-.075.625-.075zm6 0c.215 0 .42.025.625.075-.15.215-.275.46-.36.72-.085.26-.13.535-.13.83v.875h-1v-.875c0-.295-.045-.57-.13-.83-.085-.26-.21-.505-.36-.72.205-.05.41-.075.625-.075zM18 8.85v6.798c0 .34-.281.625-.625.625h-1.25a.628.628 0 01-.625-.625v-1.25c0-.345.28-.625.625-.625s.625.28.625.625v1.25h-1v-1.25c0-.345-.28-.625-.625-.625a.628.628 0 00-.625.625v1.25h-1v-1.25c0-.345-.28-.625-.625-.625a.628.628 0 00-.625.625v1.25h-1v-1.25a.628.628 0 00-.625-.625.628.628 0 00-.625.625v1.25h-1v-1.25a.628.628 0 00-.625-.625.628.628 0 00-.625.625v1.25h-1v-1.25a.628.628 0 00-.625-.625z"/></svg>
+        Buy us a coffee
+      </a>
+      <a class="btn btn-alt btn-sm" href="https://github.com/sponsors/SuperInstance" target="_blank">GitHub Sponsors</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer>
+  <div>
+    <a href="https://github.com/SuperInstance" target="_blank">GitHub</a> ·
+    <a href="quilt.html">Quilt</a> ·
+    <a href="https://superinstance.github.io/quilt/landing/index.html" target="_blank">Quilt demos</a> ·
+    <a href="https://www.buymeacoffee.com/superinstance" target="_blank">Support</a>
+  </div>
+  <div class="copyright">
+    © 2026 SuperInstance · Apache 2.0 · Made with the cell model.
+  </div>
+</footer>
+
+</body>
+</html>
