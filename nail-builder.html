@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>.nail builder — portable agent state</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:14px;margin-bottom:14px}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4);font-size:.85rem}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+.panel h3{font-size:.92rem;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:7px 13px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+.reflex-list{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:9px;max-height:380px;overflow-y:auto}
+.reflex{background:var(--pe);border:1px solid var(--b);border-radius:6px;padding:9px;margin-bottom:7px;display:grid;grid-template-columns:1fr 70px 30px;gap:9px;align-items:center}
+.reflex .intent{font-size:.78rem;font-weight:700;color:var(--t)}
+.reflex .intent .action{font-size:.7rem;color:var(--td);font-family:'JetBrains Mono',monospace;margin-top:1px}
+.reflex .conf{font-size:.7rem;color:var(--a3);text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700}
+.reflex .del{color:var(--err);background:none;border:0;cursor:pointer;font-size:1.1rem}
+.empty{text-align:center;padding:18px;color:var(--tf);font-style:italic;font-size:.78rem}
+input,select,textarea{width:100%;background:var(--pe);color:var(--t);border:1px solid var(--bs);border-radius:5px;padding:6px 9px;font-size:.78rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--a2)}
+.field{margin-bottom:9px}
+label{display:block;font-size:.72rem;color:var(--td);margin-bottom:3px;font-weight:600}
+textarea{font-family:'JetBrains Mono',monospace;line-height:1.5;min-height:60px;resize:vertical}
+.bundle-info{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(59,130,246,.1) 100%);border:1px solid var(--a3);border-radius:8px;padding:14px;margin-top:9px}
+.bundle-info .row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:9px}
+.bundle-info .stat{text-align:center}
+.bundle-info .num{font-size:1.3rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.bundle-info .lbl{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em}
+.preview{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.74rem;max-height:280px;overflow:auto;line-height:1.5;white-space:pre-wrap;word-break:break-all}
+.targets{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:11px}
+@media (max-width:700px){.targets{grid-template-columns:repeat(2,1fr)}}
+.target{background:var(--pe);border:1px solid var(--b);border-radius:6px;padding:7px;cursor:pointer;text-align:center;font-size:.72rem}
+.target:hover{border-color:var(--a2)}
+.target.sel{background:rgba(124,58,237,.15);border-color:var(--a1);color:var(--t);font-weight:700}
+.target .icon{font-size:1.2rem;margin-bottom:3px}
+.target .name{font-weight:700}
+.target .size{color:var(--td);font-size:.6rem;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🔨 <span class="accent">.nail builder</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— portable agent state</span></h1>
+    <p style="margin-top:3px">Build a <code>.nail</code> bundle in your browser. A <code>.nail</code> is the portable state of an agent — reflex database, veto rules, compile history. Send it to a Quilt engine anywhere.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="playground.html">Playground</a>
+  <a href="token-calculator.html">Token calculator</a>
+  <a href="cron-builder.html">Cron builder</a>
+  <a href="json-to-sheet.html">JSON → sheet</a>
+  <a href="nail-builder.html" class="cur">.nail builder</a>
+  <a href="puzzle.html">Puzzle</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="debugger.html">Inspector</a>
+  <a href="from-react.html">From React</a>
+  <a href="cell-game.html">Cell game</a>
+  <a href="templates/finance.html">Finance</a>
+</div>
+
+<div class="intro">
+  <p><strong>What is a <code>.nail</code>?</strong> A portable, content-addressed bundle containing an agent's reflex database, veto rules, and compile history. Designed to be <strong>shipped over the network</strong> to any Quilt runtime — a cloud Worker, a workstation, an ESP32. The same bundle produces the same behavior everywhere.</p>
+</div>
+
+<h2>Add reflexes</h2>
+<div class="layout">
+  <div class="panel">
+    <h3>Bundle metadata</h3>
+    <div class="field">
+      <label>Bundle name</label>
+      <input type="text" id="bundle-name" value="devops-bot">
+    </div>
+    <div class="field">
+      <label>Tier (where this bundle will run)</label>
+      <input type="text" id="bundle-tier" value="cloud">
+    </div>
+
+    <h3 style="margin-top:18px">Add a reflex</h3>
+    <div class="field">
+      <label>Intent</label>
+      <input type="text" id="r-intent" placeholder="List running containers">
+    </div>
+    <div class="field">
+      <label>Action (JavaScript)</label>
+      <textarea id="r-action" placeholder="return { containers: ['api', 'db', 'worker'] };"></textarea>
+    </div>
+    <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+      <div class="field">
+        <label>Network</label>
+        <select id="r-network"><option>local</option><option>lan</option><option>any</option></select>
+      </div>
+      <div class="field">
+        <label>Sandbox</label>
+        <select id="r-sandbox"><option>none</option><option>wasm</option><option>docker</option><option>process</option></select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Initial confidence (0-1)</label>
+      <input type="number" id="r-conf" value="0.5" min="0" max="1" step="0.05">
+    </div>
+    <button id="add-reflex" style="width:100%">+ Add reflex</button>
+  </div>
+
+  <div class="panel">
+    <h3>Reflex database <span style="font-size:.7rem;color:var(--td)"><span id="count">0</span> reflexes</span></h3>
+    <div class="reflex-list" id="reflexes">
+      <div class="empty">No reflexes yet. Add one to get started.</div>
+    </div>
+  </div>
+</div>
+
+<h2>Bundle output</h2>
+<div class="panel">
+  <h3>Target runtime
+    <button class="secondary" id="load-pincher">Load from Pincher demo</button>
+    <button class="secondary" id="clear-all">Clear all</button>
+  </h3>
+  <div class="targets" id="targets">
+    <div class="target" data-tier="cloud">
+      <div class="icon">☁️</div>
+      <div class="name">Cloud</div>
+      <div class="size">full features</div>
+    </div>
+    <div class="target" data-tier="workstation">
+      <div class="icon">💻</div>
+      <div class="name">Workstation</div>
+      <div class="size">+ SQLite</div>
+    </div>
+    <div class="target" data-tier="esp32">
+      <div class="icon">🔌</div>
+      <div class="name">ESP32</div>
+      <div class="size">128KB max</div>
+    </div>
+    <div class="target" data-tier="jetson">
+      <div class="icon">🤖</div>
+      <div class="name">Jetson</div>
+      <div class="size">GPU support</div>
+    </div>
+  </div>
+
+  <div class="bundle-info" id="info">
+    <div class="row">
+      <div class="stat"><div class="num" id="i-reflexes">0</div><div class="lbl">reflexes</div></div>
+      <div class="stat"><div class="num" id="i-size">0</div><div class="lbl">bytes</div></div>
+      <div class="stat"><div class="num" id="i-fits">—</div><div class="lbl">fits target</div></div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:14px">Bundle preview <button class="secondary" id="copy-btn">📋 Copy</button> <button class="secondary" id="download-btn">⬇ Download .nail</button></h3>
+  <div class="preview" id="preview">// Add a reflex to build the bundle</div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  State
+// ─────────────────────────────────────────────────────────────────
+
+const state = {
+  name: 'devops-bot',
+  tier: 'cloud',
+  reflexes: [],
+};
+
+let targetTier = 'cloud';
+
+const TIER_LIMITS = {
+  cloud: Infinity,
+  workstation: Infinity,
+  esp32: 131072,  // 128KB
+  jetson: 10485760,  // 10MB
+};
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+const $reflexes = document.getElementById('reflexes');
+const $preview = document.getElementById('preview');
+const $count = document.getElementById('count');
+const $iReflexes = document.getElementById('i-reflexes');
+const $iSize = document.getElementById('i-size');
+const $iFits = document.getElementById('i-fits');
+const $bundleName = document.getElementById('bundle-name');
+const $bundleTier = document.getElementById('bundle-tier');
+
+function addReflex() {
+  const intent = document.getElementById('r-intent').value.trim();
+  const action = document.getElementById('r-action').value.trim();
+  const network = document.getElementById('r-network').value;
+  const sandbox = document.getElementById('r-sandbox').value;
+  const conf = parseFloat(document.getElementById('r-conf').value) || 0.5;
+  if (!intent || !action) return;
+  state.reflexes.push({
+    id: `r-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    embedding: hashEmbed(intent, 64),
+    intent,
+    action,
+    safety: { network, sandbox, filesystem: 'none' },
+    confidence: conf,
+    hits: 0,
+    createdAt: Date.now(),
+    lastHitAt: 0,
+  });
+  // Clear intent/action fields
+  document.getElementById('r-intent').value = '';
+  document.getElementById('r-action').value = '';
+  update();
+}
+
+function removeReflex(i) {
+  state.reflexes.splice(i, 1);
+  update();
+}
+
+function renderReflexes() {
+  if (state.reflexes.length === 0) {
+    $reflexes.innerHTML = '<div class="empty">No reflexes yet. Add one to get started.</div>';
+  } else {
+    $reflexes.innerHTML = state.reflexes.map((r, i) => `
+      <div class="reflex">
+        <div class="intent">${escapeHtml(r.intent)}<div class="action">${escapeHtml(r.action.slice(0, 80))}${r.action.length > 80 ? '...' : ''}</div></div>
+        <div class="conf">${(r.confidence * 100).toFixed(0)}%</div>
+        <button class="del" data-i="${i}">×</button>
+      </div>
+    `).join('');
+    $reflexes.querySelectorAll('.del').forEach((b) => {
+      b.addEventListener('click', () => removeReflex(+b.dataset.i));
+    });
+  }
+  $count.textContent = state.reflexes.length;
+}
+
+function buildBundle() {
+  // Strip embeddings to make bundle small (target re-embeds on load)
+  const strip = state.reflexes.map((r) => {
+    const { embedding, ...rest } = r;
+    return rest;
+  });
+  return {
+    version: '0.1.0',
+    reflexes: strip,
+    vetoRules: [
+      { rule: 'network:any requires reflex-safety:any', severity: 'deny' },
+      { rule: 'sandbox:none requires reflex-sandbox:wasm or higher', severity: 'deny' },
+    ],
+    compileHistory: [],
+    metadata: {
+      name: state.name,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      tier: targetTier,
+    },
+  };
+}
+
+function renderBundle() {
+  const bundle = buildBundle();
+  const json = JSON.stringify(bundle, null, 2);
+  $preview.textContent = json;
+
+  const size = new Blob([json]).size;
+  $iReflexes.textContent = state.reflexes.length;
+  $iSize.textContent = size.toLocaleString();
+
+  const limit = TIER_LIMITS[targetTier];
+  if (size <= limit) {
+    $iFits.textContent = '✓';
+    $iFits.style.color = 'var(--a3)';
+  } else {
+    $iFits.textContent = `× ${Math.round(size / limit * 100)}%`;
+    $iFits.style.color = 'var(--err)';
+  }
+}
+
+function update() {
+  state.name = $bundleName.value;
+  state.tier = $bundleTier.value;
+  renderReflexes();
+  renderBundle();
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Hash embedder (matching Pincher demo)
+// ─────────────────────────────────────────────────────────────────
+
+function hashEmbed(text, dim) {
+  const v = new Array(dim).fill(0);
+  for (let i = 0; i < text.length; i++) {
+    v[i % dim] += text.charCodeAt(i) / 1000;
+  }
+  const norm = Math.sqrt(v.reduce((s, x) => s + x * x, 0)) || 1;
+  return v.map((x) => x / norm);
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Wire up
+// ─────────────────────────────────────────────────────────────────
+
+document.getElementById('add-reflex').addEventListener('click', addReflex);
+document.getElementById('clear-all').addEventListener('click', () => {
+  state.reflexes = [];
+  update();
+});
+document.getElementById('load-pincher').addEventListener('click', () => {
+  // Try to load from Pincher demo's localStorage
+  try {
+    const saved = localStorage.getItem('quilt-pincher-v1');
+    if (saved) {
+      const reflexes = JSON.parse(saved);
+      state.reflexes = reflexes.map((r) => ({
+        ...r,
+        embedding: hashEmbed(r.intent, 64),
+        safety: r.safety || { network: 'local', sandbox: 'wasm' },
+      }));
+      update();
+    } else {
+      alert('No Pincher reflexes in localStorage. Run the Pincher demo first.');
+    }
+  } catch (e) {
+    alert('Error loading: ' + e.message);
+  }
+});
+
+$bundleName.addEventListener('input', update);
+$bundleTier.addEventListener('input', update);
+
+document.querySelectorAll('.target').forEach((el) => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.target').forEach((t) => t.classList.remove('sel'));
+    el.classList.add('sel');
+    targetTier = el.dataset.tier;
+    $bundleTier.value = targetTier;
+    update();
+  });
+});
+
+document.getElementById('copy-btn').addEventListener('click', () => {
+  navigator.clipboard.writeText($preview.textContent);
+  const btn = document.getElementById('copy-btn');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Copied';
+  setTimeout(() => btn.textContent = orig, 1500);
+});
+
+document.getElementById('download-btn').addEventListener('click', () => {
+  const blob = new Blob([$preview.textContent], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${state.name}.nail.json`; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Enter on intent field triggers add
+document.getElementById('r-intent').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); addReflex(); }
+});
+
+// Boot
+document.querySelector('.target[data-tier=cloud]').classList.add('sel');
+update();
+</script>
+</body>
+</html>

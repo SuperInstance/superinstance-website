@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quilt puzzle — solve by composing cells</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --hl:rgba(124,58,237,.2);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+.panel h3{font-size:.92rem;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.puzzle-list{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:9px;max-height:380px;overflow-y:auto}
+.puzzle{background:var(--pe);border:1px solid var(--b);border-radius:6px;padding:9px;margin-bottom:7px;cursor:pointer;transition:.15s}
+.puzzle:hover{border-color:var(--a2);transform:translateX(2px)}
+.puzzle.sel{background:rgba(16,185,129,.08);border-color:var(--a3)}
+.puzzle .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.puzzle .name{font-weight:700;font-size:.85rem}
+.puzzle .diff{padding:2px 6px;border-radius:3px;font-size:.6rem;font-weight:700;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.diff.easy{background:var(--a3);color:#0a0a14}
+.diff.med{background:var(--a4);color:#0a0a14}
+.diff.hard{background:var(--err);color:#fff}
+.puzzle .desc{font-size:.72rem;color:var(--td);line-height:1.4}
+.puzzle .solved{color:var(--a3);font-size:.66rem;font-weight:700;margin-top:3px}
+.brief{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:14px;margin-bottom:11px}
+.brief h3{color:var(--a3);font-size:.95rem;margin-bottom:5px}
+.brief p{font-size:.78rem;margin-bottom:7px}
+.brief code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4);font-size:.78rem}
+.target{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:9px;font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-bottom:9px}
+.target .lbl{color:var(--td);font-size:.7rem;text-transform:uppercase;margin-bottom:3px}
+.target .v{color:var(--a3);font-weight:700}
+.editor{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:9px;margin-bottom:9px}
+.editor h4{font-size:.74rem;color:var(--a3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.cell-input{background:var(--pe);color:var(--t);border:1px solid var(--b);border-radius:4px;padding:5px 7px;font-family:'JetBrains Mono',monospace;font-size:.74rem;width:100%;margin-bottom:5px}
+.cell-input:focus{outline:none;border-color:var(--a2)}
+.add-cell{background:var(--pe);color:var(--t);border:1px dashed var(--b);border-radius:4px;padding:5px 7px;width:100%;cursor:pointer;font-size:.74rem;color:var(--td)}
+.add-cell:hover{border-color:var(--a2);color:var(--t)}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:7px 13px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+.feedback{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.74rem;margin-top:9px;line-height:1.5;max-height:240px;overflow:auto}
+.feedback .ok{color:var(--a3)}
+.feedback .err{color:var(--err)}
+.feedback .step{padding:3px 0;border-bottom:1px dashed var(--b)}
+.feedback .step:last-child{border-bottom:0}
+.feedback .step .lbl{color:var(--a3);font-weight:700;margin-right:7px}
+.score{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(124,58,237,.1) 100%);border:1px solid var(--a3);border-radius:8px;padding:14px;margin-top:9px;text-align:center}
+.score .num{font-size:2rem;font-weight:800;color:var(--a3);font-family:'JetBrains Mono',monospace}
+.score .lbl{color:var(--td);font-size:.78rem}
+.hint{background:rgba(245,158,11,.08);border:1px solid var(--a4);border-radius:5px;padding:7px 9px;font-size:.7rem;color:var(--td);margin-top:7px;display:none}
+.hint.show{display:block}
+.hint code{background:var(--bg);padding:1px 4px;border-radius:3px;color:var(--a4);font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🧩 <span class="accent">Quilt puzzle</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— solve by composing cells</span></h1>
+    <p style="margin-top:3px">A puzzle game. Each puzzle has inputs and a target. Compose cells to compute the target. The fewer cells, the better your score.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="playground.html">Playground</a>
+  <a href="token-calculator.html">Token calculator</a>
+  <a href="cron-builder.html">Cron builder</a>
+  <a href="json-to-sheet.html">JSON → sheet</a>
+  <a href="nail-builder.html">.nail builder</a>
+  <a href="puzzle.html" class="cur">Puzzle</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="debugger.html">Inspector</a>
+  <a href="from-react.html">From React</a>
+  <a href="cell-game.html">Cell game</a>
+  <a href="templates/finance.html">Finance</a>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Puzzles <button class="secondary" id="reset-btn">Reset progress</button></h3>
+    <div class="puzzle-list" id="puzzle-list"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Solve: <span id="p-name">—</span>
+      <span>
+        <button class="secondary" id="hint-btn">Hint</button>
+        <button class="secondary" id="solve-btn">Auto-solve</button>
+        <button id="check-btn">▶ Check</button>
+      </span>
+    </h3>
+
+    <div class="brief" id="brief">
+      <p>Pick a puzzle from the list to begin.</p>
+    </div>
+
+    <div class="target" id="target">
+      <div class="lbl">Target</div>
+      <div class="v">—</div>
+    </div>
+
+    <div class="editor">
+      <h4>Your cells</h4>
+      <div id="cells"></div>
+      <button class="add-cell" id="add-cell">+ Add cell</button>
+    </div>
+
+    <div class="feedback" id="feedback"><span style="color:var(--tf)">Click "Check" to evaluate your cells.</span></div>
+
+    <div class="score" id="score" style="display:none">
+      <div class="num" id="score-num">—</div>
+      <div class="lbl" id="score-lbl">—</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Puzzles
+// ─────────────────────────────────────────────────────────────────
+
+const PUZZLES = [
+  {
+    id: 'sum',
+    name: 'Sum three numbers',
+    diff: 'easy',
+    desc: 'Add 3 numbers together',
+    inputs: { a: 2, b: 3, c: 5 },
+    target: 10,
+    par: 1,
+    hint: 'A single formula cell: (ctx) => ctx.a + ctx.b + ctx.c',
+    solve: [
+      { path: 'result', kind: 'formula', fn: '(ctx) => ctx.a + ctx.b + ctx.c' },
+    ],
+  },
+  {
+    id: 'double',
+    name: 'Double then add',
+    diff: 'easy',
+    desc: 'Take input, double it, then add 5',
+    inputs: { n: 7 },
+    target: 19,
+    par: 2,
+    hint: 'Two cells. First doubles: ctx.n * 2. Second adds 5.',
+    solve: [
+      { path: 'doubled', kind: 'formula', fn: '(ctx) => ctx.n * 2' },
+      { path: 'result', kind: 'formula', fn: '(ctx) => ctx.doubled + 5' },
+    ],
+  },
+  {
+    id: 'avg',
+    name: 'Average of five',
+    diff: 'easy',
+    desc: 'Compute the average of 5 numbers',
+    inputs: { a: 10, b: 20, c: 30, d: 40, e: 50 },
+    target: 30,
+    par: 1,
+    hint: 'A single formula cell: sum / 5',
+    solve: [
+      { path: 'result', kind: 'formula', fn: '(ctx) => (ctx.a + ctx.b + ctx.c + ctx.d + ctx.e) / 5' },
+    ],
+  },
+  {
+    id: 'celsius',
+    name: 'Celsius to Fahrenheit',
+    diff: 'easy',
+    desc: 'Convert 100°C to °F',
+    inputs: { c: 100 },
+    target: 212,
+    par: 1,
+    hint: 'F = C * 9/5 + 32',
+    solve: [
+      { path: 'result', kind: 'formula', fn: '(ctx) => ctx.c * 9/5 + 32' },
+    ],
+  },
+  {
+    id: 'discount',
+    name: 'Apply discount',
+    diff: 'med',
+    desc: 'Apply a 20% discount, then 8% tax',
+    inputs: { price: 100 },
+    target: 86.4,
+    par: 3,
+    hint: 'Three cells: discount_amount, after_discount, after_tax',
+    solve: [
+      { path: 'discount', kind: 'formula', fn: '(ctx) => ctx.price * 0.2' },
+      { path: 'after_discount', kind: 'formula', fn: '(ctx) => ctx.price - ctx.discount' },
+      { path: 'result', kind: 'formula', fn: '(ctx) => ctx.after_discount * 1.08' },
+    ],
+  },
+  {
+    id: 'bmi',
+    name: 'Compute BMI',
+    diff: 'med',
+    desc: 'kg/m² from weight and height',
+    inputs: { weight: 70, height: 1.75 },
+    target: 22.857142857142858,
+    par: 2,
+    hint: 'Two cells: height_squared, bmi',
+    solve: [
+      { path: 'height_sq', kind: 'formula', fn: '(ctx) => ctx.height * ctx.height' },
+      { path: 'result', kind: 'formula', fn: '(ctx) => ctx.weight / ctx.height_sq' },
+    ],
+  },
+  {
+    id: 'fib',
+    name: 'Fibonacci',
+    diff: 'med',
+    desc: 'Compute the 7th Fibonacci number',
+    inputs: { n: 7 },
+    target: 13,
+    par: 6,
+    hint: 'Build a chain: a, b, c, d, e, f, g, result',
+    solve: [
+      { path: 'fib1', kind: 'formula', fn: '(ctx) => 0' },
+      { path: 'fib2', kind: 'formula', fn: '(ctx) => 1' },
+      { path: 'fib3', kind: 'formula', fn: '(ctx) => ctx.fib1 + ctx.fib2' },
+      { path: 'fib4', kind: 'formula', fn: '(ctx) => ctx.fib2 + ctx.fib3' },
+      { path: 'fib5', kind: 'formula', fn: '(ctx) => ctx.fib3 + ctx.fib4' },
+      { path: 'result', kind: 'formula', fn: '(ctx) => ctx.fib4 + ctx.fib5' },
+    ],
+  },
+  {
+    id: 'compound',
+    name: 'Compound interest',
+    diff: 'hard',
+    desc: 'Compound interest after 5 years at 5%',
+    inputs: { principal: 1000, rate: 0.05, years: 5 },
+    target: 1276.2815625000003,
+    par: 2,
+    hint: 'Two cells: the formula and the exponent',
+    solve: [
+      { path: 'factor', kind: 'formula', fn: '(ctx) => 1 + ctx.rate' },
+      { path: 'result', kind: 'formula', fn: '(ctx) => ctx.principal * Math.pow(ctx.factor, ctx.years)' },
+    ],
+  },
+  {
+    id: 'stddev',
+    name: 'Standard deviation',
+    diff: 'hard',
+    desc: 'Standard deviation of 4 numbers',
+    inputs: { a: 2, b: 4, c: 4, d: 4, e: 5, f: 5, g: 7, h: 9 },
+    target: 2.138089935299395,
+    par: 4,
+    hint: 'mean, variance, stddev',
+    solve: [
+      { path: 'mean', kind: 'formula', fn: '(ctx) => (ctx.a + ctx.b + ctx.c + ctx.d + ctx.e + ctx.f + ctx.g + ctx.h) / 8' },
+      { path: 'variance', kind: 'formula', fn: '(ctx) => (Math.pow(ctx.a - ctx.mean, 2) + Math.pow(ctx.b - ctx.mean, 2) + Math.pow(ctx.c - ctx.mean, 2) + Math.pow(ctx.d - ctx.mean, 2) + Math.pow(ctx.e - ctx.mean, 2) + Math.pow(ctx.f - ctx.mean, 2) + Math.pow(ctx.g - ctx.mean, 2) + Math.pow(ctx.h - ctx.mean, 2)) / 8' },
+      { path: 'result', kind: 'formula', fn: '(ctx) => Math.sqrt(ctx.variance)' },
+    ],
+  },
+];
+
+let currentPuzzle = null;
+let userCells = [];
+const solved = new Set();
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+function renderPuzzleList() {
+  const el = document.getElementById('puzzle-list');
+  el.innerHTML = PUZZLES.map((p) => `
+    <div class="puzzle ${currentPuzzle?.id === p.id ? 'sel' : ''}" data-id="${p.id}">
+      <div class="head">
+        <div class="name">${p.name}</div>
+        <div class="diff ${p.diff}">${p.diff}</div>
+      </div>
+      <div class="desc">${p.desc}</div>
+      ${solved.has(p.id) ? '<div class="solved">✓ solved</div>' : ''}
+    </div>
+  `).join('');
+  el.querySelectorAll('.puzzle').forEach((el) => {
+    el.addEventListener('click', () => selectPuzzle(el.dataset.id));
+  });
+}
+
+function selectPuzzle(id) {
+  currentPuzzle = PUZZLES.find((p) => p.id === id);
+  userCells = currentPuzzle.solve ? [{ path: 'result', kind: 'formula', fn: '' }] : [];
+  document.getElementById('p-name').textContent = currentPuzzle.name;
+  document.getElementById('brief').innerHTML = `
+    <h3>${currentPuzzle.name}</h3>
+    <p>${currentPuzzle.desc}</p>
+    <p>Inputs: <code>${JSON.stringify(currentPuzzle.inputs)}</code></p>
+  `;
+  document.getElementById('target').innerHTML = `
+    <div class="lbl">Target (your final cell should output this)</div>
+    <div class="v">${currentPuzzle.target}</div>
+  `;
+  document.getElementById('score').style.display = 'none';
+  document.getElementById('feedback').innerHTML = '<span style="color:var(--tf)">Click "Check" to evaluate your cells.</span>';
+  document.getElementById('hint').classList.remove('show');
+  renderCells();
+  renderPuzzleList();
+}
+
+function renderCells() {
+  const el = document.getElementById('cells');
+  if (userCells.length === 0) {
+    el.innerHTML = '<div style="color:var(--tf);font-size:.74rem;padding:5px">No cells. Click "Add cell" to add one.</div>';
+    return;
+  }
+  el.innerHTML = userCells.map((c, i) => `
+    <div style="display:grid;grid-template-columns:1fr 90px 30px;gap:5px;margin-bottom:5px">
+      <input class="cell-input" data-i="${i}" data-k="path" value="${c.path}" placeholder="path">
+      <input class="cell-input" data-i="${i}" data-k="fn" value="${c.fn}" placeholder="(ctx) => ...">
+      <button class="secondary" data-del="${i}" style="padding:3px 7px">×</button>
+    </div>
+  `).join('');
+  el.querySelectorAll('input').forEach((inp) => {
+    inp.addEventListener('input', () => {
+      const i = +inp.dataset.i;
+      const k = inp.dataset.k;
+      userCells[i][k] = inp.value;
+    });
+  });
+  el.querySelectorAll('[data-del]').forEach((b) => {
+    b.addEventListener('click', () => {
+      userCells.splice(+b.dataset.del, 1);
+      renderCells();
+    });
+  });
+}
+
+function evaluate() {
+  if (!currentPuzzle) return;
+  const state = new Map();
+  // Seed inputs as value cells
+  for (const k in currentPuzzle.inputs) {
+    state.set(k, currentPuzzle.inputs[k]);
+  }
+  const trace = [];
+  let error = null;
+  for (const c of userCells) {
+    if (!c.path || !c.fn) continue;
+    try {
+      const fn = new Function('ctx', `return (${c.fn})(ctx);`);
+      const ctx = Object.fromEntries(state);
+      const result = fn(ctx);
+      state.set(c.path, result);
+      trace.push({ path: c.path, value: result, ok: true });
+    } catch (e) {
+      trace.push({ path: c.path, error: e.message, ok: false });
+      error = e.message;
+      break;
+    }
+  }
+  return { trace, state, error };
+}
+
+function check() {
+  if (!currentPuzzle) return;
+  const { trace, state, error } = evaluate();
+  const fb = document.getElementById('feedback');
+  let html = '';
+  if (error) {
+    html += `<div class="step err"><span class="lbl">× Error:</span> ${escapeHtml(error)}</div>`;
+  } else {
+    html += trace.map((t) => {
+      if (t.ok) return `<div class="step"><span class="lbl">${t.path}</span> = ${formatValue(t.value)}</div>`;
+      return `<div class="step err"><span class="lbl">${t.path}</span> = ${escapeHtml(t.error)}</div>`;
+    }).join('');
+  }
+  // Did the result match?
+  const result = state.get('result');
+  if (result !== undefined) {
+    const match = Math.abs(result - currentPuzzle.target) < 1e-9;
+    if (match) {
+      html += `<div class="step ok" style="margin-top:9px"><span class="lbl">✓ Match!</span> result = ${formatValue(result)} (target = ${currentPuzzle.target})</div>`;
+      solved.add(currentPuzzle.id);
+      renderPuzzleList();
+      showScore();
+    } else {
+      html += `<div class="step err" style="margin-top:9px"><span class="lbl">× Mismatch:</span> result = ${formatValue(result)} (target = ${currentPuzzle.target})</div>`;
+      document.getElementById('score').style.display = 'none';
+    }
+  }
+  fb.innerHTML = html;
+  fb.scrollTop = fb.scrollHeight;
+}
+
+function showScore() {
+  const cells = userCells.filter((c) => c.path && c.fn).length;
+  const par = currentPuzzle.par;
+  const score = par === 0 ? 0 : Math.max(0, Math.round((1 - (cells - par) / par) * 100));
+  const scoreEl = document.getElementById('score');
+  document.getElementById('score-num').textContent = score;
+  const labels = {
+    100: '⭐⭐⭐ par!',
+    50: '⭐⭐ close',
+    0: '⭐ solved, but more cells than par',
+  };
+  document.getElementById('score-lbl').textContent = labels[100] || labels[50] || labels[0];
+  scoreEl.style.display = 'block';
+}
+
+function autoSolve() {
+  if (!currentPuzzle) return;
+  userCells = JSON.parse(JSON.stringify(currentPuzzle.solve));
+  renderCells();
+  check();
+}
+
+function showHint() {
+  if (!currentPuzzle) return;
+  document.getElementById('hint')?.remove();
+  const el = document.createElement('div');
+  el.className = 'hint show';
+  el.id = 'hint';
+  el.innerHTML = `<strong>Hint:</strong> <code>${escapeHtml(currentPuzzle.hint)}</code>`;
+  document.querySelector('.editor').appendChild(el);
+}
+
+function formatValue(v) {
+  if (typeof v === 'number') return v;
+  if (typeof v === 'string') return `"${v}"`;
+  return JSON.stringify(v);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Wire up
+// ─────────────────────────────────────────────────────────────────
+
+document.getElementById('add-cell').addEventListener('click', () => {
+  userCells.push({ path: '', kind: 'formula', fn: '' });
+  renderCells();
+});
+document.getElementById('check-btn').addEventListener('click', check);
+document.getElementById('solve-btn').addEventListener('click', autoSolve);
+document.getElementById('hint-btn').addEventListener('click', showHint);
+document.getElementById('reset-btn').addEventListener('click', () => {
+  solved.clear();
+  renderPuzzleList();
+});
+
+// Boot
+renderPuzzleList();
+</script>
+</body>
+</html>

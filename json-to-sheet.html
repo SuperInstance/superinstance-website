@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON → Quilt sheet converter</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+.panel h3{font-size:.92rem;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+textarea{width:100%;background:var(--bg);color:var(--t);border:1px solid var(--bs);border-radius:6px;padding:9px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.5;resize:vertical;min-height:380px}
+textarea:focus{outline:none;border-color:var(--a2)}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:8px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px;align-items:center}
+.examples{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
+.example{background:var(--pe);border:1px solid var(--b);color:var(--td);padding:4px 9px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.example:hover{border-color:var(--a2);color:var(--t)}
+.options{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:9px;margin-bottom:11px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}
+.opt label{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--td);cursor:pointer}
+.opt input{accent-color:var(--a1)}
+.preview{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.74rem;max-height:400px;overflow:auto;line-height:1.55}
+.preview .ok{color:var(--a3)}
+.preview .err{color:var(--err)}
+.preview .key{color:var(--a4)}
+.preview .str{color:var(--a3)}
+.preview .num{color:var(--a2)}
+.cell-summary{background:var(--pe);border:1px solid var(--b);border-radius:6px;padding:9px;margin-top:9px;display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:7px;font-size:.74rem}
+.cell-summary .stat{text-align:center}
+.cell-summary .num{font-size:1.1rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.cell-summary .lbl{font-size:.6rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em}
+.copy-msg{background:var(--a3);color:#0a0a14;padding:4px 8px;border-radius:3px;font-size:.7rem;font-weight:700;display:none}
+.copy-msg.show{display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🔄 <span class="accent">JSON → Quilt sheet</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— paste JSON, get a sheet</span></h1>
+    <p style="margin-top:3px">Convert any JSON document into a Quilt sheet. Each top-level key becomes a `value` cell. Arrays and objects become derived `formula` cells. Nested paths use `parent.child` notation.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="playground.html">Playground</a>
+  <a href="token-calculator.html">Token calculator</a>
+  <a href="cron-builder.html">Cron builder</a>
+  <a href="json-to-sheet.html" class="cur">JSON → sheet</a>
+  <a href="nail-builder.html">.nail builder</a>
+  <a href="puzzle.html">Puzzle</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="debugger.html">Inspector</a>
+  <a href="from-react.html">From React</a>
+  <a href="cell-game.html">Cell game</a>
+  <a href="templates/finance.html">Finance</a>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Input JSON <span style="font-size:.7rem;color:var(--td)">paste anything</span></h3>
+    <div class="examples">
+      <span class="example" data-ex="user">User profile</span>
+      <span class="example" data-ex="config">App config</span>
+      <span class="example" data-ex="order">E-commerce order</span>
+      <span class="example" data-ex="metrics">Server metrics</span>
+      <span class="example" data-ex="recipe">Recipe</span>
+    </div>
+    <div class="options">
+      <div class="opt"><label><input type="checkbox" id="o-leaf-value" checked> Leaves as value</label></div>
+      <div class="opt"><label><input type="checkbox" id="o-nested-paths" checked> Nested paths</label></div>
+      <div class="opt"><label><input type="checkbox" id="o-summary-formulas" checked> Add summary formulas</label></div>
+      <div class="opt"><label><input type="checkbox" id="o-pretty" checked> Pretty output</label></div>
+    </div>
+    <textarea id="input" spellcheck="false"></textarea>
+  </div>
+
+  <div class="panel">
+    <h3>Quilt sheet
+      <span>
+        <button class="secondary" id="copy-btn">📋 Copy</button>
+        <button class="secondary" id="download-btn">⬇ Download</button>
+        <span class="copy-msg" id="copy-msg">copied!</span>
+      </span>
+    </h3>
+    <div class="cell-summary" id="summary"></div>
+    <textarea id="output" spellcheck="false" readonly></textarea>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  JSON → Sheet converter
+// ─────────────────────────────────────────────────────────────────
+
+const EXAMPLES = {
+  user: {
+    id: 123,
+    name: "Casey DiGennaro",
+    email: "casey@example.com",
+    active: true,
+    roles: ["admin", "developer"],
+    profile: {
+      bio: "Building Quilt",
+      age: 35,
+      location: "California",
+    },
+    createdAt: "2026-01-15T00:00:00Z",
+  },
+  config: {
+    name: "my-app",
+    version: "1.0.0",
+    port: 3000,
+    debug: false,
+    database: {
+      host: "localhost",
+      port: 5432,
+      name: "myapp",
+    },
+    features: {
+      auth: true,
+      analytics: true,
+      beta: false,
+    },
+  },
+  order: {
+    orderId: "ord_123",
+    customer: {
+      id: 456,
+      name: "Alice",
+    },
+    items: [
+      { sku: "BOOK-1", qty: 2, price: 19.99 },
+      { sku: "PEN-3", qty: 1, price: 4.99 },
+    ],
+    shipping: {
+      method: "express",
+      cost: 9.99,
+    },
+    total: 54.96,
+    status: "pending",
+  },
+  metrics: {
+    cpu: 42.5,
+    memory: 71.2,
+    disk: 35.8,
+    uptime: 86400,
+    errors: 0,
+    requests: 1234,
+  },
+  recipe: {
+    name: "Pancakes",
+    servings: 4,
+    prepTime: "10 min",
+    ingredients: [
+      { item: "flour", amount: "2 cups" },
+      { item: "milk", amount: "1.5 cups" },
+      { item: "eggs", amount: "2" },
+    ],
+    instructions: ["Mix dry", "Add wet", "Cook on griddle"],
+  },
+};
+
+function isObject(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
+function isLeaf(v) { return v === null || typeof v !== 'object'; }
+function safeIdent(s) { return s.replace(/[^a-zA-Z0-9_]/g, '_'); }
+
+function convert(json, opts) {
+  const cells = [];
+  const pathMap = new Map();  // path -> cell ref
+  const flat = flatten(json, '', pathMap, opts);
+  cells.push(...flat);
+
+  // Add summary formulas
+  if (opts.summaryFormulas) {
+    const allPaths = Array.from(pathMap.keys());
+    const numericPaths = allPaths.filter((p) => {
+      const v = pathMap.get(p);
+      return typeof v === 'number';
+    });
+    const arrayPaths = allPaths.filter((p) => {
+      const v = pathMap.get(p);
+      return Array.isArray(v);
+    });
+
+    if (numericPaths.length > 1) {
+      cells.push({
+        path: '_sum',
+        kind: 'formula',
+        fn: numericPaths.map((p) => `ctx.${p}`).join(' + '),
+        description: `Sum of ${numericPaths.length} numeric values`,
+      });
+      cells.push({
+        path: '_avg',
+        kind: 'formula',
+        fn: `(${numericPaths.map((p) => `ctx.${p}`).join(' + ')}) / ${numericPaths.length}`,
+        description: `Average of ${numericPaths.length} numeric values`,
+      });
+    }
+    if (arrayPaths.length > 0) {
+      cells.push({
+        path: '_count',
+        kind: 'formula',
+        fn: arrayPaths.map((p) => `ctx.${p}.length`).join(' + '),
+        description: `Total items across ${arrayPaths.length} arrays`,
+      });
+    }
+  }
+
+  return {
+    name: 'converted',
+    version: '0.1.0',
+    cells,
+  };
+}
+
+function flatten(value, path, pathMap, opts) {
+  const cells = [];
+  if (path === '') {
+    // Top level: emit one cell per key
+    for (const k in value) {
+      const subPath = safeIdent(k);
+      pathMap.set(subPath, value[k]);
+      const sub = flatten(value[k], subPath, pathMap, opts);
+      cells.push(...sub);
+    }
+    return cells;
+  }
+
+  if (isLeaf(value)) {
+    if (opts.leafValue) {
+      cells.push({ path, kind: 'value', value });
+    } else {
+      // As a formula that returns a literal
+      cells.push({
+        path,
+        kind: 'formula',
+        fn: typeof value === 'string' ? `() => ${JSON.stringify(value)}` : `() => ${value}`,
+        description: `Literal: ${JSON.stringify(value).slice(0, 50)}`,
+      });
+    }
+  } else if (Array.isArray(value)) {
+    // Array: store as value, optionally emit length
+    cells.push({ path, kind: 'value', value });
+    if (value.length > 0) {
+      cells.push({
+        path: `${path}_length`,
+        kind: 'formula',
+        fn: `(ctx) => ctx.${path}.length`,
+        description: `Length of ${path}`,
+      });
+    }
+  } else {
+    // Object: recurse with parent.child
+    if (opts.nestedPaths) {
+      for (const k in value) {
+        const subPath = `${path}.${safeIdent(k)}`;
+        pathMap.set(subPath, value[k]);
+        const sub = flatten(value[k], subPath, pathMap, opts);
+        cells.push(...sub);
+      }
+    } else {
+      cells.push({ path, kind: 'value', value });
+    }
+  }
+
+  return cells;
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+const $input = document.getElementById('input');
+const $output = document.getElementById('output');
+const $summary = document.getElementById('summary');
+const $copyMsg = document.getElementById('copy-msg');
+
+function getOpts() {
+  return {
+    leafValue: document.getElementById('o-leaf-value').checked,
+    nestedPaths: document.getElementById('o-nested-paths').checked,
+    summaryFormulas: document.getElementById('o-summary-formulas').checked,
+    pretty: document.getElementById('o-pretty').checked,
+  };
+}
+
+function update() {
+  let json;
+  try {
+    json = JSON.parse($input.value || '{}');
+  } catch (e) {
+    $output.value = `// JSON parse error:\n// ${e.message}`;
+    $summary.innerHTML = '<div class="stat"><div class="num" style="color:var(--err)">ERR</div><div class="lbl">parse</div></div>';
+    return;
+  }
+
+  const opts = getOpts();
+  const sheet = convert(json, opts);
+  $output.value = JSON.stringify(sheet, null, opts.pretty ? 2 : 0);
+
+  // Summary
+  const byKind = {};
+  for (const c of sheet.cells) {
+    byKind[c.kind] = (byKind[c.kind] || 0) + 1;
+  }
+  $summary.innerHTML = `
+    <div class="stat"><div class="num">${sheet.cells.length}</div><div class="lbl">total</div></div>
+    <div class="stat"><div class="num" style="color:var(--a3)">${byKind.value || 0}</div><div class="lbl">value</div></div>
+    <div class="stat"><div class="num" style="color:var(--a1)">${byKind.formula || 0}</div><div class="lbl">formula</div></div>
+    <div class="stat"><div class="num" style="color:var(--a2)">${Object.keys(json).length}</div><div class="lbl">top keys</div></div>
+  `;
+}
+
+function loadExample(key) {
+  $input.value = JSON.stringify(EXAMPLES[key], null, 2);
+  update();
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText($output.value).then(() => {
+    $copyMsg.classList.add('show');
+    setTimeout(() => $copyMsg.classList.remove('show'), 1500);
+  });
+}
+
+function downloadOutput() {
+  const blob = new Blob([$output.value], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'sheet.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Wire up
+$input.addEventListener('input', update);
+document.querySelectorAll('input[type=checkbox]').forEach((el) => el.addEventListener('change', update));
+document.querySelectorAll('.example').forEach((el) => el.addEventListener('click', () => loadExample(el.dataset.ex)));
+document.getElementById('copy-btn').addEventListener('click', copyOutput);
+document.getElementById('download-btn').addEventListener('click', downloadOutput);
+
+// Boot
+loadExample('user');
+</script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quilt Playground — live cell execution</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;--warn:#fbbf24;
+  --ok:#10b981;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono','Consolas',monospace;font-size:.78rem}
+.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+.panel h3{font-size:.92rem;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px;align-items:center}
+button,select,input[type=text]{background:var(--pe);color:var(--t);border:1px solid var(--bs);border-radius:5px;padding:6px 11px;font-size:.78rem;cursor:pointer}
+button:hover{border-color:var(--a2)}
+button.primary{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;font-weight:700}
+button.primary:hover{filter:brightness(1.1)}
+textarea{width:100%;background:var(--bg);color:var(--t);border:1px solid var(--bs);border-radius:6px;padding:9px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.55;resize:vertical;min-height:280px}
+textarea:focus{outline:none;border-color:var(--a2)}
+.cells{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;max-height:380px;overflow-y:auto;margin-bottom:11px}
+.cell{background:var(--pe);border:1px solid var(--b);border-radius:6px;padding:9px;margin-bottom:7px;display:grid;grid-template-columns:1fr 80px 70px 70px;gap:9px;align-items:center;font-size:.74rem}
+.cell .name{font-family:'JetBrains Mono',monospace;color:var(--t);font-weight:700}
+.cell .name .path{color:var(--a4);margin-right:4px}
+.cell .kind{font-family:'JetBrains Mono',monospace;font-size:.66rem;padding:2px 5px;border-radius:3px;text-align:center;font-weight:700}
+.kind.formula{background:rgba(124,58,237,.2);color:var(--a1)}
+.kind.program{background:rgba(59,130,246,.2);color:var(--a2)}
+.kind.value{background:rgba(16,185,129,.2);color:var(--a3)}
+.kind.listener{background:rgba(245,158,11,.2);color:var(--a4)}
+.kind.api{background:rgba(239,68,68,.2);color:var(--err)}
+.cell .eval{font-family:'JetBrains Mono',monospace;color:var(--td);text-align:right;font-size:.7rem}
+.cell .ms{font-family:'JetBrains Mono',monospace;color:var(--a3);text-align:right;font-weight:700;font-size:.7rem}
+.cell .ms.pending{color:var(--td)}
+.empty{text-align:center;padding:18px;color:var(--tf);font-style:italic;font-size:.78rem}
+.result{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.5;max-height:380px;overflow-y:auto;white-space:pre-wrap;word-break:break-word}
+.result .ok{color:var(--a3)}
+.result .err{color:var(--err)}
+.result .key{color:var(--a4)}
+.result .str{color:var(--a3)}
+.result .num{color:var(--a2)}
+.result .bool{color:var(--a1)}
+.result .null{color:var(--tf)}
+.examples{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:7px;margin-bottom:11px}
+.example{background:var(--pe);border:1px solid var(--b);border-radius:5px;padding:7px 9px;cursor:pointer;transition:.15s}
+.example:hover{border-color:var(--a2);transform:translateY(-1px)}
+.example .name{font-size:.78rem;font-weight:700;color:var(--t)}
+.example .desc{font-size:.68rem;color:var(--td);margin-top:1px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:11px}
+.stat{background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:7px;text-align:center}
+.stat .num{font-size:1.15rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.stat .lbl{font-size:.6rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:1px}
+.tab-row{display:flex;gap:0;margin-bottom:9px;border-bottom:1px solid var(--b)}
+.tab{background:transparent;color:var(--td);border:0;border-bottom:2px solid transparent;padding:7px 11px;font-size:.78rem;cursor:pointer;font-weight:600}
+.tab:hover{color:var(--t)}
+.tab.active{color:var(--a3);border-bottom-color:var(--a3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🧪 <span class="accent">Quilt Playground</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— live cell execution</span></h1>
+    <p style="margin-top:3px">Write a Quilt sheet. Run it. See the cells evaluate. All in your browser.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="playground.html" class="cur">Playground</a>
+  <a href="token-calculator.html">Token calculator</a>
+  <a href="cron-builder.html">Cron builder</a>
+  <a href="json-to-sheet.html">JSON → sheet</a>
+  <a href="nail-builder.html">.nail builder</a>
+  <a href="puzzle.html">Puzzle</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="debugger.html">Inspector</a>
+  <a href="from-react.html">From React</a>
+  <a href="cell-game.html">Cell game</a>
+  <a href="templates/finance.html">Finance</a>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Sheet source <button class="primary" id="run-btn">▶ Run sheet</button></h3>
+
+    <div class="examples">
+      <div class="example" data-ex="hello">
+        <div class="name">hello</div>
+        <div class="desc">One value cell, one formula</div>
+      </div>
+      <div class="example" data-ex="counter">
+        <div class="name">counter</div>
+        <div class="desc">State + listener</div>
+      </div>
+      <div class="example" data-ex="derived">
+        <div class="name">derived</div>
+        <div class="desc">Composition chain</div>
+      </div>
+      <div class="example" data-ex="timer">
+        <div class="name">timer</div>
+        <div class="desc">Listener on a tick</div>
+      </div>
+    </div>
+
+    <p style="font-size:.72rem;color:var(--tf)">A sheet is a JSON document. Each cell has a path, kind, and either a value or a function.</p>
+    <textarea id="editor" spellcheck="false"></textarea>
+  </div>
+
+  <div class="panel">
+    <h3>Execution trace <button id="reset-btn">Reset</button></h3>
+    <div class="stats">
+      <div class="stat"><div class="num" id="s-cells">0</div><div class="lbl">cells</div></div>
+      <div class="stat"><div class="num" id="s-evals">0</div><div class="lbl">evals</div></div>
+      <div class="stat"><div class="num" id="s-ms">0</div><div class="lbl">total ms</div></div>
+      <div class="stat"><div class="num" id="s-cached">0</div><div class="lbl">cached</div></div>
+    </div>
+    <div class="cells" id="cells"><div class="empty">Run a sheet to see cells evaluate.</div></div>
+
+    <div class="tab-row">
+      <button class="tab active" data-tab="results">Results</button>
+      <button class="tab" data-tab="graph">Graph</button>
+      <button class="tab" data-tab="errors">Errors</button>
+    </div>
+    <div class="result" id="result"><span class="empty">Results will appear here.</span></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Sheet examples
+// ─────────────────────────────────────────────────────────────────
+
+const EXAMPLES = {
+  hello: {
+    name: 'hello',
+    cells: [
+      { path: 'name', kind: 'value', value: 'World' },
+      { path: 'greeting', kind: 'formula', fn: "(ctx) => `Hello, ${ctx.name}!`" },
+    ],
+  },
+  counter: {
+    name: 'counter',
+    cells: [
+      { path: 'count', kind: 'value', value: 0 },
+      { path: 'doubled', kind: 'formula', fn: "(ctx) => ctx.count * 2" },
+      { path: 'isEven', kind: 'formula', fn: "(ctx) => ctx.doubled % 2 === 0" },
+      { path: 'log', kind: 'listener', listens: 'count', fn: "(ctx) => console.log('count changed to', ctx.count)" },
+    ],
+  },
+  derived: {
+    name: 'derived',
+    cells: [
+      { path: 'price', kind: 'value', value: 100 },
+      { path: 'tax', kind: 'value', value: 0.08 },
+      { path: 'subtotal', kind: 'formula', fn: "(ctx) => ctx.price" },
+      { path: 'taxAmount', kind: 'formula', fn: "(ctx) => ctx.subtotal * ctx.tax" },
+      { path: 'total', kind: 'formula', fn: "(ctx) => ctx.subtotal + ctx.taxAmount" },
+    ],
+  },
+  timer: {
+    name: 'timer',
+    cells: [
+      { path: 'now', kind: 'value', value: 0 },
+      { path: 'tick', kind: 'listener', listens: 'now', fn: "(ctx) => `tick #${ctx.now}`" },
+      { path: 'seconds', kind: 'formula', fn: "(ctx) => Math.floor(ctx.now / 1000)" },
+    ],
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────
+//  Cell evaluator
+// ─────────────────────────────────────────────────────────────────
+
+class MiniEngine {
+  constructor(sheet) {
+    this.sheet = sheet;
+    this.state = new Map();
+    this.errors = [];
+    this.evalCount = 0;
+    this.cachedCount = 0;
+    this.startMs = 0;
+    this.cells = [];
+  }
+
+  async run(initial = {}) {
+    this.startMs = performance.now();
+    this.errors = [];
+    this.evalCount = 0;
+    this.cachedCount = 0;
+
+    // Seed initial state
+    for (const cell of this.sheet.cells) {
+      if (cell.kind === 'value') {
+        this.state.set(cell.path, cell.value);
+      }
+    }
+    // Apply initial overrides
+    for (const k in initial) {
+      this.state.set(k, initial[k]);
+    }
+
+    // Evaluate in dependency order
+    for (const cell of this.sheet.cells) {
+      const cellRecord = {
+        path: cell.path,
+        kind: cell.kind,
+        ms: 0,
+        status: 'pending',
+        value: undefined,
+      };
+      this.cells.push(cellRecord);
+      const cellStart = performance.now();
+      try {
+        if (cell.kind === 'value') {
+          cellRecord.value = this.state.get(cell.path);
+          cellRecord.status = 'ok';
+          cellRecord.ms = performance.now() - cellStart;
+        } else if (cell.kind === 'formula' || cell.kind === 'program') {
+          const ctx = Object.fromEntries(this.state);
+          // Find the formula function
+          const fnSrc = cell.fn;
+          const fn = new Function('ctx', `return (${fnSrc})(ctx);`);
+          const result = await fn(ctx);
+          this.state.set(cell.path, result);
+          cellRecord.value = result;
+          cellRecord.status = 'ok';
+          cellRecord.ms = performance.now() - cellStart;
+          this.evalCount++;
+        } else if (cell.kind === 'listener') {
+          // Just record that it would fire
+          cellRecord.value = `listens on: ${cell.listens}`;
+          cellRecord.status = 'ok';
+          cellRecord.ms = performance.now() - cellStart;
+        }
+      } catch (e) {
+        cellRecord.status = 'err';
+        cellRecord.value = e.message;
+        this.errors.push({ path: cell.path, error: e.message });
+      }
+    }
+    return Object.fromEntries(this.state);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+const $editor = document.getElementById('editor');
+const $cells = document.getElementById('cells');
+const $result = document.getElementById('result');
+const $sCells = document.getElementById('s-cells');
+const $sEvals = document.getElementById('s-evals');
+const $sMs = document.getElementById('s-ms');
+const $sCached = document.getElementById('s-cached');
+
+function loadExample(key) {
+  const ex = EXAMPLES[key];
+  $editor.value = JSON.stringify(ex, null, 2);
+}
+
+function pretty(value) {
+  if (value === null) return '<span class="null">null</span>';
+  if (value === undefined) return '<span class="null">undefined</span>';
+  if (typeof value === 'string') {
+    const escaped = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (escaped.length > 200) return `<span class="str">"${escaped.slice(0, 200)}..."</span>`;
+    return `<span class="str">"${escaped}"</span>`;
+  }
+  if (typeof value === 'number') return `<span class="num">${value}</span>`;
+  if (typeof value === 'boolean') return `<span class="bool">${value}</span>`;
+  try {
+    const json = JSON.stringify(value, null, 2);
+    if (json.length > 1500) return `<span class="key">${json.slice(0, 1500)}...</span>`;
+    return syntaxHL(json);
+  } catch {
+    return String(value);
+  }
+}
+
+function syntaxHL(json) {
+  return json
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (m) => {
+      if (/^"/.test(m)) return /:$/.test(m) ? `<span class="key">${m}</span>` : `<span class="str">${m}</span>`;
+      if (/true|false/.test(m)) return `<span class="bool">${m}</span>`;
+      if (/null/.test(m)) return `<span class="null">${m}</span>`;
+      return `<span class="num">${m}</span>`;
+    });
+}
+
+async function run() {
+  let sheet;
+  try {
+    sheet = JSON.parse($editor.value);
+  } catch (e) {
+    $result.innerHTML = `<span class="err">JSON parse error: ${e.message}</span>`;
+    return;
+  }
+
+  const engine = new MiniEngine(sheet);
+  const result = await engine.run();
+
+  // Cells panel
+  if (engine.cells.length === 0) {
+    $cells.innerHTML = '<div class="empty">No cells evaluated.</div>';
+  } else {
+    $cells.innerHTML = engine.cells.map((c) => `
+      <div class="cell">
+        <div class="name"><span class="path">${c.path}</span> = ${pretty(c.value)}</div>
+        <div class="kind ${c.kind}">${c.kind}</div>
+        <div class="ms ${c.status === 'pending' ? 'pending' : ''}">${c.ms.toFixed(2)}ms</div>
+        <div class="eval">${c.status}</div>
+      </div>
+    `).join('');
+  }
+
+  // Stats
+  $sCells.textContent = engine.cells.length;
+  $sEvals.textContent = engine.evalCount;
+  $sMs.textContent = (performance.now() - engine.startMs).toFixed(1);
+  $sCached.textContent = engine.cachedCount;
+
+  // Results
+  if (engine.errors.length > 0) {
+    $result.innerHTML = `<span class="err">${engine.errors.length} error(s):\n${engine.errors.map((e) => `  ${e.path}: ${e.error}`).join('\n')}</span>\n\n` + pretty(result);
+  } else {
+    $result.innerHTML = `<span class="ok">OK — sheet executed successfully</span>\n\n` + pretty(result);
+  }
+}
+
+function reset() {
+  $editor.value = '';
+  $cells.innerHTML = '<div class="empty">Run a sheet to see cells evaluate.</div>';
+  $result.innerHTML = '<span class="empty">Results will appear here.</span>';
+  $sCells.textContent = $sEvals.textContent = $sMs.textContent = $sCached.textContent = '0';
+}
+
+// Wire up
+document.getElementById('run-btn').addEventListener('click', run);
+document.getElementById('reset-btn').addEventListener('click', reset);
+document.querySelectorAll('.example').forEach((el) => {
+  el.addEventListener('click', () => loadExample(el.dataset.ex));
+});
+document.querySelectorAll('.tab').forEach((tab) => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+    tab.classList.add('active');
+    // For demo, all tabs show same content
+  });
+});
+
+// Boot
+loadExample('hello');
+run();
+</script>
+</body>
+</html>

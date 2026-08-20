@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token calculator — multi-provider cost estimator</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;--warn:#fbbf24;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:16px 0 9px;color:var(--a3)}
+h3{font-size:.92rem;margin:11px 0 7px;color:var(--td)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.layout{display:grid;grid-template-columns:380px 1fr;gap:13px;margin-bottom:16px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+label{display:block;font-size:.74rem;color:var(--td);margin-bottom:3px;font-weight:600}
+input,select,textarea{width:100%;background:var(--pe);color:var(--t);border:1px solid var(--bs);border-radius:5px;padding:7px 9px;font-size:.78rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--a2)}
+.field{margin-bottom:11px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.workload{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;margin-bottom:11px}
+.workload .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.workload .head .name{font-weight:700;font-size:.85rem}
+.workload .head .remove{color:var(--err);background:none;border:0;cursor:pointer;font-size:1.1rem}
+.workload .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.workload .meta > div{font-size:.7rem;color:var(--td);font-family:'JetBrains Mono',monospace}
+.workload .meta > div .v{color:var(--t);font-weight:700}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:8px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.74rem}
+th,td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--b)}
+th{background:var(--pe);color:var(--td);font-weight:700;text-transform:uppercase;font-size:.65rem;letter-spacing:.04em}
+td.num{text-align:right}
+td.free{color:var(--a3)}
+td.met{color:var(--warn)}
+td.err{color:var(--err)}
+tr.hl{background:rgba(16,185,129,.08)}
+.bar{height:7px;background:var(--b);border-radius:3px;overflow:hidden;margin-top:3px}
+.bar .fill{height:100%;transition:width .3s}
+.bar .green{background:var(--a3)}
+.bar .yellow{background:var(--a4)}
+.bar .red{background:var(--err)}
+.totals{background:linear-gradient(135deg,rgba(124,58,237,.1) 0%,rgba(59,130,246,.1) 100%);border:1px solid var(--a1);border-radius:8px;padding:14px;margin-bottom:14px}
+.totals h3{color:var(--a3);margin-bottom:9px}
+.totals .row2{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.totals .stat{text-align:center}
+.totals .stat .v{font-size:1.5rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.totals .stat .v.free{color:var(--a3)}
+.totals .stat .v.met{color:var(--warn)}
+.totals .stat .l{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.recommend{background:rgba(16,185,129,.1);border:1px solid var(--a3);border-radius:7px;padding:11px;font-size:.78rem;color:var(--td);margin-top:11px}
+.recommend strong{color:var(--a3)}
+.recommend code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🧮 <span class="accent">Token calculator</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— multi-provider cost estimator</span></h1>
+    <p style="margin-top:3px">Tell us what your workflow does. We'll show you what it costs across providers, including free-tier ceilings.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="playground.html">Playground</a>
+  <a href="token-calculator.html" class="cur">Token calculator</a>
+  <a href="cron-builder.html">Cron builder</a>
+  <a href="json-to-sheet.html">JSON → sheet</a>
+  <a href="nail-builder.html">.nail builder</a>
+  <a href="puzzle.html">Puzzle</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="debugger.html">Inspector</a>
+  <a href="from-react.html">From React</a>
+  <a href="cell-game.html">Cell game</a>
+  <a href="templates/finance.html">Finance</a>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Build your workload</h3>
+    <p style="font-size:.72rem">Add tasks. Each task has a name, kind, and token cost.</p>
+
+    <div id="workloads"></div>
+    <button class="secondary" id="add-btn" style="width:100%;margin-bottom:9px">+ Add task</button>
+
+    <div class="field">
+      <label>Period (per day)</label>
+      <input type="number" id="period" value="1" min="1" max="10000">
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Provider comparison</h3>
+    <div class="totals" id="totals">
+      <h3>Per-day totals (at <span id="period-display">1</span>× / day)</h3>
+      <div class="row2">
+        <div class="stat"><div class="v free" id="t-zai">0</div><div class="l">z.ai free</div></div>
+        <div class="stat"><div class="v free" id="t-kimi">0</div><div class="l">Kimi free</div></div>
+        <div class="stat"><div class="v met" id="t-deepseek">$0.00</div><div class="l">DeepSeek</div></div>
+        <div class="stat"><div class="v met" id="t-cf">0</div><div class="l">Cloudflare AI</div></div>
+      </div>
+    </div>
+
+    <table id="results">
+      <thead>
+        <tr>
+          <th>Provider</th>
+          <th>Tokens</th>
+          <th>Cost</th>
+          <th>Free?</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="results-body"></tbody>
+    </table>
+
+    <div class="recommend" id="recommend"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Provider specs
+// ─────────────────────────────────────────────────────────────────
+
+const PROVIDERS = {
+  zai: {
+    name: 'z.ai (GLM-4.5)',
+    tier: 'free',
+    dailyFreeQuota: 100000,  // typical free tier
+    costPerMillion: 0,  // free
+    specialty: 'high-concurrency',
+  },
+  kimi: {
+    name: 'Kimi (moonshot-v1-8k)',
+    tier: 'free',
+    dailyFreeQuota: 100000,
+    costPerMillion: 0,
+    specialty: 'math',
+  },
+  deepseek: {
+    name: 'DeepSeek (V3 Flash)',
+    tier: 'metered',
+    dailyFreeQuota: 0,
+    costPerMillion: 0.07,  // input cache miss
+    specialty: 'niche',
+  },
+  cf: {
+    name: 'Cloudflare AI',
+    tier: 'free',
+    dailyFreeQuota: 10000,  // Workers AI free tier
+    costPerMillion: 0,
+    specialty: 'general',
+  },
+};
+
+// Routing rules (from quilt-elf Dispatcher)
+const ROUTES = {
+  'simulation': 'zai',
+  'example': 'zai',
+  'self-improve': 'kimi',
+  'math': 'kimi',
+  'audit': 'kimi',
+  'embedding': 'cf',
+  'classification': 'cf',
+  'fallback': 'zai',
+};
+
+const TASKS = [
+  { kind: 'simulation', name: 'Run simulation', baseTokens: 3000, runs: 1 },
+  { kind: 'example', name: 'Generate example', baseTokens: 2000, runs: 5 },
+  { kind: 'self-improve', name: 'Self-improve cycle', baseTokens: 4000, runs: 0.3 },
+  { kind: 'audit', name: 'Audit skill', baseTokens: 1500, runs: 2 },
+  { kind: 'embedding', name: 'Embed text batch', baseTokens: 500, runs: 10 },
+  { kind: 'math', name: 'Hard math problem', baseTokens: 2500, runs: 0.5 },
+  { kind: 'classification', name: 'Classify intent', baseTokens: 200, runs: 50 },
+  { kind: 'fallback', name: 'Fallback LLM call', baseTokens: 1000, runs: 1 },
+];
+
+let workloads = [
+  { kind: 'simulation', name: 'Background sim', runs: 1 },
+  { kind: 'embedding', name: 'Embed user queries', runs: 100 },
+  { kind: 'classification', name: 'Classify intents', runs: 200 },
+];
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+function renderWorkloads() {
+  const el = document.getElementById('workloads');
+  el.innerHTML = workloads.map((w, i) => {
+    const t = TASKS.find((t) => t.kind === w.kind);
+    return `
+      <div class="workload">
+        <div class="head">
+          <input type="text" class="m name" data-i="${i}" data-k="name" value="${w.name}" style="background:transparent;border:0;font-weight:700;color:var(--t);width:60%">
+          <button class="remove" data-i="${i}">×</button>
+        </div>
+        <div class="field" style="margin-bottom:7px">
+          <label>Task kind</label>
+          <select data-i="${i}" data-k="kind">
+            ${TASKS.map((t) => `<option value="${t.kind}" ${w.kind === t.kind ? 'selected' : ''}>${t.name} (~${t.baseTokens}t)</option>`).join('')}
+          </select>
+        </div>
+        <div class="meta">
+          <div>Routes to <span class="v">${ROUTES[w.kind] ?? 'zai'}</span></div>
+          <div>~<span class="v">${(t?.baseTokens ?? 0).toLocaleString()}</span> tok/run</div>
+        </div>
+        <div class="field" style="margin-top:7px">
+          <label>Runs per period</label>
+          <input type="number" data-i="${i}" data-k="runs" value="${w.runs}" min="0" max="100000" step="0.1">
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Wire up
+  el.querySelectorAll('input, select').forEach((el) => {
+    el.addEventListener('input', (e) => {
+      const i = +e.target.dataset.i;
+      const k = e.target.dataset.k;
+      if (e.target.type === 'number') {
+        workloads[i][k] = parseFloat(e.target.value) || 0;
+      } else {
+        workloads[i][k] = e.target.value;
+      }
+      compute();
+    });
+  });
+  el.querySelectorAll('.remove').forEach((el) => {
+    el.addEventListener('click', () => {
+      workloads.splice(+el.dataset.i, 1);
+      renderWorkloads();
+      compute();
+    });
+  });
+}
+
+function compute() {
+  const period = +document.getElementById('period').value || 1;
+  document.getElementById('period-display').textContent = period;
+
+  // Per-provider totals
+  const perProvider = { zai: 0, kimi: 0, deepseek: 0, cf: 0 };
+  for (const w of workloads) {
+    const t = TASKS.find((t) => t.kind === w.kind);
+    if (!t) continue;
+    const provider = ROUTES[w.kind] ?? 'zai';
+    const tokens = t.baseTokens * w.runs * period;
+    perProvider[provider] += tokens;
+  }
+
+  // Per-task table
+  const tbody = document.getElementById('results-body');
+  const rows = [];
+  for (const [key, p] of Object.entries(PROVIDERS)) {
+    const tokens = perProvider[key];
+    const cost = tokens / 1_000_000 * p.costPerMillion;
+    const isFree = p.tier === 'free';
+    const withinFree = p.dailyFreeQuota === 0 || tokens <= p.dailyFreeQuota;
+    let status, statusClass;
+    if (isFree) {
+      if (withinFree) {
+        status = 'free tier ok';
+        statusClass = 'free';
+      } else {
+        const overshoot = ((tokens - p.dailyFreeQuota) / p.dailyFreeQuota * 100).toFixed(0);
+        status = `over by ${overshoot}%`;
+        statusClass = 'err';
+      }
+    } else {
+      status = `$${cost.toFixed(4)}`;
+      statusClass = 'met';
+    }
+    rows.push({ key, name: p.name, tokens, cost, isFree, status, statusClass, withinFree, p });
+  }
+
+  // Sort: free-ok first, then metered
+  rows.sort((a, b) => {
+    if (a.isFree && !a.withinFree) return 1;
+    if (b.isFree && !b.withinFree) return -1;
+    return a.tokens - b.tokens;
+  });
+
+  tbody.innerHTML = rows.map((r) => {
+    const barClass = r.withinFree ? 'green' : 'red';
+    const barWidth = r.p.dailyFreeQuota > 0 ? Math.min(100, r.tokens / r.p.dailyFreeQuota * 100) : (r.tokens > 0 ? 100 : 0);
+    return `
+      <tr class="${r.isFree && r.withinFree ? 'hl' : ''}">
+        <td>${r.name}</td>
+        <td class="num">${Math.round(r.tokens).toLocaleString()}</td>
+        <td class="num ${r.statusClass}">${r.isFree ? 'free' : '$' + r.cost.toFixed(4)}</td>
+        <td class="num">${r.isFree ? (r.withinFree ? '✓' : '×') : '—'}</td>
+        <td>
+          ${r.status}
+          ${r.p.dailyFreeQuota > 0 ? `<div class="bar"><div class="fill ${barClass}" style="width:${barWidth}%"></div></div>` : ''}
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  // Totals
+  document.getElementById('t-zai').textContent = Math.round(perProvider.zai).toLocaleString();
+  document.getElementById('t-kimi').textContent = Math.round(perProvider.kimi).toLocaleString();
+  document.getElementById('t-deepseek').textContent = '$' + (perProvider.deepseek / 1_000_000 * PROVIDERS.deepseek.costPerMillion).toFixed(4);
+  document.getElementById('t-cf').textContent = Math.round(perProvider.cf).toLocaleString();
+
+  // Recommendation
+  const recommend = document.getElementById('recommend');
+  const overshoots = rows.filter((r) => r.isFree && !r.withinFree);
+  if (overshoots.length === 0) {
+    recommend.innerHTML = `<strong>✓ All workloads fit within free tiers.</strong> You're spending $0.00 per day. The elves will run invisibly.`;
+  } else {
+    const details = overshoots.map((o) => `<code>${o.name}</code> uses <code>${Math.round(o.tokens).toLocaleString()}</code> tokens (free quota: <code>${o.p.dailyFreeQuota.toLocaleString()}</code> — over by <code>${((o.tokens / o.p.dailyFreeQuota - 1) * 100).toFixed(0)}%</code>)`).join(', ');
+    recommend.innerHTML = `<strong>⚠️ Over budget on free tiers.</strong> ${details}. <br>Suggestion: route overflow to DeepSeek (cheapest metered) or add a <code>FLUSH_MODE</code> throttle — accelerate when free tokens are about to reset (22:00-00:00 UTC), throttle when user is active.`;
+  }
+}
+
+// Wire up
+document.getElementById('add-btn').addEventListener('click', () => {
+  workloads.push({ kind: 'classification', name: 'New task', runs: 1 });
+  renderWorkloads();
+  compute();
+});
+document.getElementById('period').addEventListener('input', compute);
+
+// Boot
+renderWorkloads();
+compute();
+</script>
+</body>
+</html>

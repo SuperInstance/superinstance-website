@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cron builder — visual cron expression</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --hl:rgba(124,58,237,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.expression{background:linear-gradient(135deg,rgba(124,58,237,.1) 0%,rgba(59,130,246,.1) 100%);border:1px solid var(--a1);border-radius:9px;padding:18px;text-align:center;margin-bottom:14px}
+.expression .expr{font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--a3);font-weight:700;margin-bottom:5px;letter-spacing:.06em}
+.expression .desc{color:var(--td);font-size:.85rem}
+.fields{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:14px}
+@media (max-width:800px){.fields{grid-template-columns:repeat(2,1fr)}}
+.field{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:11px}
+.field h3{font-size:.78rem;color:var(--a3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;text-align:center}
+.tabs{display:flex;gap:0;margin-bottom:7px;border-bottom:1px solid var(--b)}
+.tab{background:transparent;color:var(--td);border:0;border-bottom:2px solid transparent;padding:4px 7px;font-size:.7rem;cursor:pointer;font-weight:600;font-family:inherit}
+.tab:hover{color:var(--t)}
+.tab.active{color:var(--a3);border-bottom-color:var(--a3)}
+.input{background:var(--bg);color:var(--t);border:1px solid var(--bs);border-radius:5px;padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;width:100%;text-align:center;margin-bottom:7px}
+.input:focus{outline:none;border-color:var(--a2)}
+.values{display:grid;grid-template-columns:repeat(auto-fit,minmax(28px,1fr));gap:3px;max-height:130px;overflow-y:auto}
+.val{background:var(--pe);color:var(--td);border:1px solid var(--b);border-radius:4px;padding:3px 0;text-align:center;cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace}
+.val:hover{border-color:var(--a2);color:var(--t)}
+.val.sel{background:var(--hl);border-color:var(--a1);color:var(--t);font-weight:700}
+.presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:7px;margin-bottom:14px}
+.preset{background:var(--panel);border:1px solid var(--b);border-radius:7px;padding:9px;cursor:pointer;transition:.15s}
+.preset:hover{border-color:var(--a2);transform:translateY(-1px)}
+.preset.sel{border-color:var(--a3);background:rgba(16,185,129,.05)}
+.preset .name{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;color:var(--a3);margin-bottom:3px}
+.preset .desc{font-size:.7rem;color:var(--td)}
+.preview{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;margin-bottom:14px}
+.next-runs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:7px}
+.next-run{background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:7px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--td)}
+.next-run .when{color:var(--t);font-weight:700}
+.calendar{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;margin-bottom:14px}
+.calendar h3{font-size:.85rem;color:var(--a3);margin-bottom:9px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-family:'JetBrains Mono',monospace;font-size:.66rem}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--pe);border-radius:3px;color:var(--td)}
+.cal-day.head{color:var(--a3);font-weight:700;background:transparent;font-size:.65rem}
+.cal-day.run{background:rgba(16,185,129,.2);color:var(--a3);font-weight:700}
+.cal-day.now{border:2px solid var(--a1)}
+.hour-grid{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-top:9px}
+.hour{height:18px;background:var(--pe);border-radius:2px;font-size:.55rem;display:flex;align-items:center;justify-content:center;color:var(--tf);font-family:'JetBrains Mono',monospace}
+.hour.run{background:rgba(16,185,129,.3);color:var(--a3);font-weight:700}
+.hour.now{background:var(--a1);color:#fff;font-weight:700}
+.hour-labels{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;font-size:.55rem;color:var(--tf);font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>📅 <span class="accent">Cron builder</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— visual cron expressions</span></h1>
+    <p style="margin-top:3px">Build cron expressions visually. See when they fire. Works for Cloudflare Workers, GitHub Actions, and quilt-elf.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="playground.html">Playground</a>
+  <a href="token-calculator.html">Token calculator</a>
+  <a href="cron-builder.html" class="cur">Cron builder</a>
+  <a href="json-to-sheet.html">JSON → sheet</a>
+  <a href="nail-builder.html">.nail builder</a>
+  <a href="puzzle.html">Puzzle</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="debugger.html">Inspector</a>
+  <a href="from-react.html">From React</a>
+  <a href="cell-game.html">Cell game</a>
+  <a href="templates/finance.html">Finance</a>
+</div>
+
+<div class="expression">
+  <div class="expr" id="expr">* /15 * * * *</div>
+  <div class="desc" id="expr-desc">Every 15 minutes</div>
+</div>
+
+<h2>Presets</h2>
+<div class="presets" id="presets"></div>
+
+<h2>Customize</h2>
+<div class="fields" id="fields"></div>
+
+<h2>Preview</h2>
+<div class="preview">
+  <h3 style="font-size:.85rem;color:var(--a3);margin-bottom:9px">Next 8 runs (UTC)</h3>
+  <div class="next-runs" id="next-runs"></div>
+</div>
+
+<h2>Calendar (next 14 days)</h2>
+<div class="calendar">
+  <div class="cal-grid" id="cal"></div>
+  <h3 style="font-size:.85rem;color:var(--a3);margin:14px 0 7px">Today (24 hours)</h3>
+  <div class="hour-labels">
+    <div>0</div><div>3</div><div>6</div><div>9</div><div>12</div><div>15</div><div>18</div><div>21</div>
+  </div>
+  <div class="hour-grid" id="hours"></div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  State
+// ─────────────────────────────────────────────────────────────────
+
+const FIELDS = [
+  { name: 'minute', label: 'Minute', min: 0, max: 59 },
+  { name: 'hour', label: 'Hour', min: 0, max: 23 },
+  { name: 'dayOfMonth', label: 'Day', min: 1, max: 31 },
+  { name: 'month', label: 'Month', min: 1, max: 12 },
+  { name: 'dayOfWeek', label: 'Weekday', min: 0, max: 6, special: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] },
+];
+
+const PRESETS = [
+  { name: 'Every minute', expr: '* * * * *', desc: '60× per hour' },
+  { name: 'Every 5 min', expr: '*/5 * * * *', desc: '12× per hour' },
+  { name: 'Every 15 min', expr: '*/15 * * * *', desc: '4× per hour — quilt-elf default' },
+  { name: 'Every 30 min', expr: '*/30 * * * *', desc: '2× per hour' },
+  { name: 'Every hour', expr: '0 * * * *', desc: 'On the hour' },
+  { name: 'At 22:00 UTC', expr: '0 22 * * *', desc: 'Start of flush window' },
+  { name: 'At 00:00 UTC', expr: '0 0 * * *', desc: 'Daily reset' },
+  { name: 'Daily 9am', expr: '0 9 * * *', desc: 'Once a day' },
+  { name: 'Weekdays 9am', expr: '0 9 * * 1-5', desc: 'Mon-Fri' },
+  { name: 'Weekly Sunday', expr: '0 0 * * 0', desc: 'Midnight Sunday' },
+  { name: 'Monthly 1st', expr: '0 0 1 * *', desc: 'First of month' },
+  { name: 'Quarterly', expr: '0 0 1 */3 *', desc: 'Every 3 months' },
+];
+
+let state = {
+  minute: '*/15',
+  hour: '*',
+  dayOfMonth: '*',
+  month: '*',
+  dayOfWeek: '*',
+};
+
+// ─────────────────────────────────────────────────────────────────
+//  Cron parser (simple)
+// ─────────────────────────────────────────────────────────────────
+
+function parseField(field, min, max) {
+  if (field === '*') return new Set(range(min, max));
+  if (field.startsWith('*/')) {
+    const step = +field.slice(2);
+    return new Set(range(min, max).filter((n) => n % step === 0));
+  }
+  if (field.includes(',')) {
+    return new Set(field.split(',').flatMap((p) => parseField(p, min, max)));
+  }
+  if (field.includes('-')) {
+    const [a, b] = field.split('-').map(Number);
+    return new Set(range(a, b));
+  }
+  if (field.includes('/')) {
+    const [a, b] = field.split('/').map(Number);
+    return new Set(range(a, max).filter((n) => (n - a) % b === 0));
+  }
+  return new Set([+field]);
+}
+
+function range(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
+
+function matches(date, expr) {
+  const parts = expr.trim().split(/\s+/);
+  if (parts.length !== 5) return false;
+  const minutes = parseField(parts[0], 0, 59);
+  const hours = parseField(parts[1], 0, 23);
+  const days = parseField(parts[2], 1, 31);
+  const months = parseField(parts[3], 1, 12);
+  const dows = parseField(parts[4], 0, 6);
+  return minutes.has(date.getUTCMinutes())
+    && hours.has(date.getUTCHours())
+    && days.has(date.getUTCDate())
+    && months.has(date.getUTCMonth() + 1)
+    && dows.has(date.getUTCDay());
+}
+
+function describe(expr) {
+  const parts = expr.trim().split(/\s+/);
+  if (parts.length !== 5) return 'invalid cron';
+  const [m, h, d, mo, dw] = parts;
+  if (m === '*' && h === '*' && d === '*' && mo === '*' && dw === '*') return 'Every minute';
+  if (m.startsWith('*/') && h === '*' && d === '*' && mo === '*' && dw === '*') return `Every ${m.slice(2)} minutes`;
+  if (m === '0' && h === '*' && d === '*' && mo === '*' && dw === '*') return 'Every hour at :00';
+  if (m === '0' && h !== '*' && d === '*' && mo === '*' && dw === '*') return `Daily at ${h.padStart(2, '0')}:00 UTC`;
+  if (m === '0' && h === '0' && d === '*' && mo === '*' && dw === '*') return 'Daily at 00:00 UTC (free-tier reset)';
+  if (m === '0' && h === '22' && d === '*' && mo === '*' && dw === '*') return 'Daily at 22:00 UTC (start of flush window)';
+  if (m === '0' && h !== '*' && dw === '1-5') return `Weekdays at ${h.padStart(2, '0')}:00 UTC`;
+  return expr;
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+function renderPresets() {
+  const el = document.getElementById('presets');
+  el.innerHTML = PRESETS.map((p) => `
+    <div class="preset" data-expr="${p.expr}">
+      <div class="name">${p.expr}</div>
+      <div class="desc">${p.name} — ${p.desc}</div>
+    </div>
+  `).join('');
+  el.querySelectorAll('.preset').forEach((el) => {
+    el.addEventListener('click', () => {
+      const parts = el.dataset.expr.split(/\s+/);
+      state = {
+        minute: parts[0],
+        hour: parts[1],
+        dayOfMonth: parts[2],
+        month: parts[3],
+        dayOfWeek: parts[4],
+      };
+      update();
+    });
+  });
+}
+
+function renderFields() {
+  const el = document.getElementById('fields');
+  el.innerHTML = FIELDS.map((f) => {
+    const isStar = state[f.name] === '*';
+    return `
+      <div class="field">
+        <h3>${f.label}</h3>
+        <div class="tabs">
+          <button class="tab ${isStar ? 'active' : ''}" data-name="${f.name}" data-mode="*">every</button>
+          <button class="tab ${!isStar ? 'active' : ''}" data-name="${f.name}" data-mode="custom">specific</button>
+        </div>
+        <input class="input" data-name="${f.name}" value="${state[f.name]}" placeholder="* or */5 or 0,15,30">
+        <div class="values" data-name="${f.name}">
+          ${range(f.min, f.max).map((v) => {
+            const selected = !isStar && state[f.name].split(',').flatMap((p) => {
+              if (p === '*') return range(f.min, f.max);
+              if (p.startsWith('*/')) return range(f.min, f.max).filter((n) => n % +p.slice(2) === 0);
+              if (p.includes('-')) { const [a, b] = p.split('-').map(Number); return range(a, b); }
+              return [+p];
+            }).includes(v);
+            const label = f.special ? f.special[v] : v;
+            return `<div class="val ${selected ? 'sel' : ''}" data-name="${f.name}" data-v="${v}">${label}</div>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Tab handlers
+  el.querySelectorAll('.tab').forEach((t) => {
+    t.addEventListener('click', () => {
+      const name = t.dataset.name;
+      if (t.dataset.mode === '*') {
+        state[name] = '*';
+      } else {
+        // Default to first value when switching to specific
+        state[name] = '0';
+      }
+      update();
+    });
+  });
+
+  // Input handlers
+  el.querySelectorAll('input.input').forEach((inp) => {
+    inp.addEventListener('input', () => {
+      state[inp.dataset.name] = inp.value;
+      update();
+    });
+  });
+
+  // Value handlers
+  el.querySelectorAll('.val').forEach((v) => {
+    v.addEventListener('click', () => {
+      const name = v.dataset.name;
+      const val = +v.dataset.v;
+      const current = state[name] === '*' ? '' : state[name];
+      const set = new Set(current.split(',').filter(Boolean).map(Number));
+      if (set.has(val)) set.delete(val); else set.add(val);
+      if (set.size === 0) {
+        state[name] = '*';
+      } else {
+        state[name] = Array.from(set).sort((a, b) => a - b).join(',');
+      }
+      update();
+    });
+  });
+}
+
+function renderExpression() {
+  const expr = `${state.minute} ${state.hour} ${state.dayOfMonth} ${state.month} ${state.dayOfWeek}`;
+  document.getElementById('expr').textContent = expr;
+  document.getElementById('expr-desc').textContent = describe(expr);
+
+  // Highlight matching preset
+  document.querySelectorAll('.preset').forEach((el) => {
+    el.classList.toggle('sel', el.dataset.expr === expr);
+  });
+}
+
+function renderNextRuns() {
+  const expr = `${state.minute} ${state.hour} ${state.dayOfMonth} ${state.month} ${state.dayOfWeek}`;
+  const runs = [];
+  let d = new Date();
+  d.setUTCSeconds(0, 0);
+  d.setUTCMinutes(d.getUTCMinutes() + 1);
+  let attempts = 0;
+  while (runs.length < 8 && attempts < 10000) {
+    if (matches(d, expr)) {
+      runs.push(new Date(d));
+    }
+    d.setUTCMinutes(d.getUTCMinutes() + 1);
+    attempts++;
+  }
+
+  const el = document.getElementById('next-runs');
+  el.innerHTML = runs.map((r) => {
+    const date = r.toISOString().replace('T', ' ').slice(0, 16);
+    const now = new Date();
+    const diff = Math.round((r - now) / 1000 / 60);
+    const when = diff < 60 ? `in ${diff}m` : diff < 1440 ? `in ${Math.round(diff / 60)}h` : `in ${Math.round(diff / 1440)}d`;
+    return `<div class="next-run"><div>${date} UTC</div><div class="when">${when}</div></div>`;
+  }).join('') || '<div class="next-run">No matches in next 7 days</div>';
+}
+
+function renderCalendar() {
+  const expr = `${state.minute} ${state.hour} ${state.dayOfMonth} ${state.month} ${state.dayOfWeek}`;
+  const el = document.getElementById('cal');
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+
+  // 14-day grid
+  const head = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => `<div class="cal-day head">${d}</div>`).join('');
+  const startOfWeek = new Date(today);
+  startOfWeek.setUTCDate(today.getUTCDate() - today.getUTCDay());
+  const days = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(startOfWeek);
+    d.setUTCDate(d.getUTCDate() + i);
+    const isRun = matches(d, expr);
+    const isToday = d.getUTCDate() === today.getUTCDate() && d.getUTCMonth() === today.getUTCMonth();
+    const isFuture = d > today;
+    days.push(`<div class="cal-day ${isRun ? 'run' : ''} ${isToday ? 'now' : ''}" title="${d.toISOString().slice(0, 10)}">${d.getUTCDate()}</div>`);
+  }
+  el.innerHTML = head + days.join('');
+
+  // Hour grid
+  const hours = document.getElementById('hours');
+  const currentHour = new Date().getUTCHours();
+  const hourCells = [];
+  for (let h = 0; h < 24; h++) {
+    // Check if any minute in this hour matches
+    let isRun = false;
+    for (let m = 0; m < 60; m++) {
+      const d = new Date();
+      d.setUTCHours(h, m, 0, 0);
+      if (matches(d, expr) && d.getUTCDate() === today.getUTCDate()) {
+        isRun = true; break;
+      }
+    }
+    hourCells.push(`<div class="hour ${isRun ? 'run' : ''} ${h === currentHour ? 'now' : ''}">${h}</div>`);
+  }
+  hours.innerHTML = hourCells.join('');
+}
+
+function update() {
+  renderFields();
+  renderExpression();
+  renderNextRuns();
+  renderCalendar();
+}
+
+// Boot
+renderPresets();
+update();
+</script>
+</body>
+</html>
