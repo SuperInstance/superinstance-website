@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Habit Tracker — Quilt Click-and-Go Template</title>
+<meta name="description" content="A self-contained daily habit tracker. 7-day view, streaks, completion rate. Saves locally.">
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px}
+.m{font-family:'SF Mono','JetBrains Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+h1{font-size:1.6rem;font-weight:800}
+h1 .accent{color:var(--a3)}
+.sub{color:var(--td);font-size:.85rem;margin-top:3px}
+.coffee{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 12px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;font-family:'JetBrains Mono',monospace}
+.coffee:hover{filter:brightness(1.1);color:#422006}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px;white-space:nowrap}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px}
+.card .lbl{color:var(--td);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.card .val{font-size:1.5rem;font-weight:700;font-family:'SF Mono','JetBrains Mono',monospace}
+.card .val.good{color:var(--a3)}
+.card .val.warn{color:var(--a4)}
+.card .val.bad{color:var(--bad)}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:18px;margin-bottom:14px}
+.panel h2{font-size:1.05rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.panel h2 .sub{font-size:.72rem;color:var(--td);font-weight:400;margin-top:0}
+.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--pe);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500;font-family:inherit}
+.btn:hover{background:var(--bs);border-color:var(--bs)}
+.btn-pri{background:var(--a3);border-color:var(--a3);color:#000}
+.btn-pri:hover{filter:brightness(1.1)}
+.btn-bad{background:transparent;border:1px solid var(--b);color:var(--bad)}
+.btn-bad:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+.btn-sm{padding:3px 7px;font-size:.7rem;border-radius:4px}
+.week{display:grid;grid-template-columns:1.5fr repeat(7,1fr) 90px 100px 70px;gap:6px;align-items:center;margin-bottom:8px}
+.week .head{color:var(--td);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600;padding:4px 0;border-bottom:1px solid var(--b)}
+.week .head.left{text-align:left}
+.day{width:34px;height:34px;border-radius:6px;border:1px solid var(--b);background:var(--pe);cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;transition:.15s;font-size:1rem;color:var(--tf)}
+.day:hover{border-color:var(--bs)}
+.day.done{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);border-color:transparent;color:#fff}
+.day.today{box-shadow:0 0 0 2px var(--a3)}
+.day.future{opacity:.35;cursor:not-allowed}
+.hname{background:transparent;border:1px solid transparent;color:var(--t);padding:6px 8px;border-radius:4px;font-size:.9rem;font-family:inherit;width:100%}
+.hname:hover,.hname:focus{background:var(--pe);border-color:var(--b);outline:none}
+.streak{font-family:'SF Mono','JetBrains Mono',monospace;font-size:.85rem;text-align:center;color:var(--a4);font-weight:700}
+.rate{font-family:'SF Mono','JetBrains Mono',monospace;font-size:.85rem;text-align:center}
+.rate.g{color:var(--a3)} .rate.y{color:var(--a4)} .rate.r{color:var(--bad)}
+.iconbtn{background:transparent;border:1px solid var(--b);color:var(--bad);padding:5px 9px;border-radius:4px;cursor:pointer;font-size:.7rem}
+.iconbtn:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+.addrow{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.addrow input{flex:1;min-width:180px;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:7px 10px;border-radius:5px;font-size:.85rem;font-family:inherit}
+.addrow input:focus{outline:none;border-color:var(--a3)}
+.legend{display:flex;gap:12px;font-size:.72rem;color:var(--td);margin-top:10px;flex-wrap:wrap;align-items:center}
+.legend .sw{width:14px;height:14px;border-radius:3px;display:inline-block;vertical-align:middle;margin-right:4px;border:1px solid var(--b)}
+footer{text-align:center;padding:18px 0;color:var(--tf);font-size:.72rem;font-family:'SF Mono','JetBrains Mono',monospace;margin-top:20px;border-top:1px solid var(--b)}
+footer a{color:var(--a1);text-decoration:none}
+footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>✅ <span class="accent">Habit Tracker</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
+    <div class="sub">Check off daily. Watch the streak grow. Saves to your browser.</div>
+  </div>
+  <a class="coffee" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</header>
+
+<nav class="nav">
+  <a href="../index.html">Home</a>
+  <a href="../workspace.html">Workspace</a>
+  <a href="../playground.html">Playground</a>
+  <a href="../pincher.html">Pincher</a>
+  <a href="../vibe.html">Vibe</a>
+  <a href="../cron-builder.html">Cron</a>
+  <a href="../token-calculator.html">Tokens</a>
+  <a href="../json-to-sheet.html">JSON→Sheet</a>
+  <a href="../regex.html">Regex</a>
+  <a href="../debugger.html">Inspector</a>
+  <a href="habit-tracker.html" class="cur">Habits</a>
+</nav>
+
+<div class="summary" id="summary"></div>
+
+<div class="panel">
+  <h2>This week <span class="sub">— click a cell to toggle</span></h2>
+  <div class="week" id="weekhead">
+    <div class="head left">Habit</div>
+  </div>
+  <div id="habits"></div>
+  <div class="addrow">
+    <input id="newhabit" placeholder="Add a new habit (e.g. 'Read 20 min')" onkeydown="if(event.key==='Enter')addHabit()">
+    <button class="btn btn-pri" onclick="addHabit()">+ Add habit</button>
+  </div>
+  <div class="legend">
+    <span><span class="sw" style="background:linear-gradient(135deg,var(--a1),var(--a2))"></span>done</span>
+    <span><span class="sw" style="box-shadow:inset 0 0 0 2px var(--a3)"></span>today</span>
+    <span><span class="sw" style="opacity:.35"></span>future</span>
+    <span style="margin-left:auto">Streak = consecutive days through today. Rate = completion over the week.</span>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Actions</h2>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" onclick="exportJSON()">↓ Export JSON</button>
+    <button class="btn" onclick="importJSON()">↑ Import JSON</button>
+    <button class="btn" onclick="resetWeek()">↺ Reset this week</button>
+    <button class="btn btn-bad" onclick="clearAll()">Clear everything</button>
+    <button class="btn" onclick="seedSamples()">↺ Reset to sample habits</button>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  Quilt-powered · <a href="../workspace.html">more tools</a> · saves to localStorage
+</footer>
+
+<script>
+const STORAGE_KEY = 'quilt-habits-v1';
+
+function todayDate() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+function dateKey(d) {
+  return d.toISOString().slice(0,10);
+}
+
+function dayName(d) {
+  return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+}
+
+function shortDate(d) {
+  return (d.getMonth()+1) + '/' + d.getDate();
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return null;
+}
+
+function save(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+}
+
+function uid() { return Date.now() + Math.random().toString(36).slice(2,8); }
+
+function sampleData() {
+  const t = todayDate();
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(t); d.setDate(t.getDate() - i);
+    days.push(dateKey(d));
+  }
+  const todayKey = days[6];
+  return {
+    habits: [
+      { id: uid(), name: 'Drink 8 glasses of water', checks: {[days[5]]: true, [days[6]]: true} },
+      { id: uid(), name: 'Read 20 minutes', checks: {[days[3]]: true, [days[4]]: true, [days[5]]: true, [days[6]]: true} },
+      { id: uid(), name: 'Walk 30 minutes', checks: {[days[6]]: true} },
+      { id: uid(), name: 'Meditate 10 minutes', checks: {[days[2]]: true, [days[4]]: true, [days[6]]: true} },
+      { id: uid(), name: 'No social media before noon', checks: {[days[6]]: true} }
+    ]
+  };
+}
+
+let data = load() || sampleData();
+save(data);
+
+// Build the 7-day window: previous 6 days + today
+let weekDays = [];
+for (let i = 6; i >= 0; i--) {
+  const d = new Date(todayDate()); d.setDate(d.getDate() - i);
+  weekDays.push(d);
+}
+const todayKey = dateKey(weekDays[6]);
+
+function isChecked(habit, key) { return !!(habit.checks && habit.checks[key]); }
+
+function streak(habit) {
+  // count consecutive days ending at today (today included if checked, else 0)
+  if (!isChecked(habit, todayKey)) return 0;
+  let s = 0;
+  for (let i = 6; i >= 0; i--) {
+    const k = dateKey(weekDays[i]);
+    if (isChecked(habit, k)) s++;
+    else break;
+  }
+  return s;
+}
+
+function rate(habit) {
+  let done = 0;
+  for (let i = 0; i < 7; i++) {
+    if (isChecked(habit, dateKey(weekDays[i]))) done++;
+  }
+  return { done, total: 7, pct: Math.round(done/7*100) };
+}
+
+function rateClass(pct) {
+  if (pct >= 70) return 'g';
+  if (pct >= 40) return 'y';
+  return 'r';
+}
+
+function toggle(habitId, key) {
+  const h = data.habits.find(x => x.id === habitId);
+  if (!h) return;
+  h.checks = h.checks || {};
+  h.checks[key] = !h.checks[key];
+  if (!h.checks[key]) delete h.checks[key];
+  save(data);
+  render();
+}
+
+function addHabit() {
+  const inp = document.getElementById('newhabit');
+  const name = inp.value.trim();
+  if (!name) return;
+  data.habits.push({ id: uid(), name, checks: {} });
+  save(data);
+  inp.value = '';
+  render();
+}
+
+function renameHabit(habitId, newName) {
+  const h = data.habits.find(x => x.id === habitId);
+  if (!h) return;
+  h.name = newName;
+  save(data);
+}
+
+function deleteHabit(habitId) {
+  if (!confirm('Delete this habit and all its checkmarks?')) return;
+  data.habits = data.habits.filter(h => h.id !== habitId);
+  save(data);
+  render();
+}
+
+function clearAll() {
+  if (!confirm('Clear all habits and checkmarks? This cannot be undone.')) return;
+  data = { habits: [] };
+  save(data);
+  render();
+}
+
+function resetWeek() {
+  if (!confirm('Uncheck all habits for the visible 7-day window?')) return;
+  for (const h of data.habits) {
+    for (const d of weekDays) delete h.checks[dateKey(d)];
+  }
+  save(data);
+  render();
+}
+
+function seedSamples() {
+  if (!confirm('Reset to the 5 sample habits? Your current data will be lost.')) return;
+  data = sampleData();
+  save(data);
+  render();
+}
+
+function render() {
+  // header row
+  const head = document.getElementById('weekhead');
+  head.innerHTML = '<div class="head left">Habit</div>' +
+    weekDays.map(d => `<div class="head"><div>${dayName(d)}</div><div style="font-size:.65rem;font-weight:400">${shortDate(d)}</div></div>`).join('') +
+    '<div class="head">Streak</div><div class="head">Rate</div><div class="head"></div>';
+
+  // summary cards
+  const totalHabits = data.habits.length;
+  const todayDone = data.habits.filter(h => isChecked(h, todayKey)).length;
+  const bestStreak = data.habits.reduce((m, h) => Math.max(m, streak(h)), 0);
+  const avgRate = totalHabits ? Math.round(data.habits.reduce((s, h) => s + rate(h).pct, 0) / totalHabits) : 0;
+  document.getElementById('summary').innerHTML = `
+    <div class="card"><div class="lbl">Habits</div><div class="val">${totalHabits}</div></div>
+    <div class="card"><div class="lbl">Today</div><div class="val ${todayDone===totalHabits&&totalHabits?'good':''}">${todayDone} / ${totalHabits}</div></div>
+    <div class="card"><div class="lbl">Best streak</div><div class="val warn">${bestStreak} 🔥</div></div>
+    <div class="card"><div class="lbl">Week avg</div><div class="val ${avgRate>=70?'good':avgRate>=40?'warn':'bad'}">${avgRate}%</div></div>
+  `;
+
+  // habit rows
+  const wrap = document.getElementById('habits');
+  if (!data.habits.length) {
+    wrap.innerHTML = '<div style="color:var(--tf);text-align:center;padding:30px;font-style:italic;font-size:.85rem">No habits yet. Add one above to get started.</div>';
+    return;
+  }
+  wrap.innerHTML = data.habits.map(h => {
+    const s = streak(h);
+    const r = rate(h);
+    const cells = weekDays.map((d, i) => {
+      const k = dateKey(d);
+      const checked = isChecked(h, k);
+      const isToday = i === 6;
+      const isFuture = false; // we're showing 6 days back + today
+      const cls = ['day'];
+      if (checked) cls.push('done');
+      if (isToday) cls.push('today');
+      return `<div class="${cls.join(' ')}" onclick="toggle('${h.id}','${k}')" title="${k}">${checked ? '✓' : ''}</div>`;
+    }).join('');
+    return `
+      <div class="week" style="margin-bottom:6px">
+        <input class="hname" value="${escapeHTML(h.name)}" onblur="renameHabit('${h.id}', this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+        ${cells}
+        <div class="streak">${s > 0 ? s + ' 🔥' : '—'}</div>
+        <div class="rate ${rateClass(r.pct)}">${r.done}/${r.total} · ${r.pct}%</div>
+        <div style="text-align:center"><button class="iconbtn" onclick="deleteHabit('${h.id}')" title="Delete habit">×</button></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `quilt-habits-${dateKey(todayDate())}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.onchange = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const obj = JSON.parse(ev.target.result);
+        if (obj && Array.isArray(obj.habits)) {
+          data = obj;
+          save(data);
+          render();
+          alert(`Imported ${data.habits.length} habits.`);
+        } else {
+          alert('Invalid habits file.');
+        }
+      } catch (err) { alert('Invalid JSON: ' + err.message); }
+    };
+    reader.readAsText(f);
+  };
+  input.click();
+}
+
+render();
+</script>
+</body>
+</html>

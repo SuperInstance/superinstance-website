@@ -1,485 +1,431 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--
-  Built on Quilt. A spreadsheet where every cell is a live, addressable capability.
-  The grid is the runtime. The cell is the universal IO primitive.
-
-  Template: Chat Chain
-  - Each message is a `value` cell with role + content + parent_id.
-  - The "context" for the next message is a `window` cell that slices the last N messages from the active branch.
-  - Forks create new branches — every message keeps a parent_id, so the chain is a tree.
-  - The active branch is just the deepest selected path from the root to a leaf.
-  - The assistant cells are placeholders here; in real Quilt you'd plug an `ai` cell into the assistant position.
-
-  Self-contained: no build step, no framework, no server. Just cells.
--->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chat Chain — Quilt Click-and-Go Template</title>
-<meta name="description" content="A self-contained branching chat interface built on Quilt cells. Fork any message, switch branches.">
+<meta name="description" content="A self-contained branching chat. Each message can fork into child messages. Visualize the whole tree.">
 <style>
 :root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;height:100%}
 .m{font-family:'SF Mono','JetBrains Mono',monospace}
-.wrap{max-width:1200px;margin:0 auto;padding:20px;height:100vh;display:flex;flex-direction:column}
+.wrap{max-width:1300px;margin:0 auto;padding:20px;height:100vh;display:flex;flex-direction:column}
 header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
 h1{font-size:1.6rem;font-weight:800}
 h1 .accent{color:var(--a1)}
 .sub{color:var(--td);font-size:.85rem;margin-top:3px}
+.coffee{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 12px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;font-family:'JetBrains Mono',monospace}
+.coffee:hover{filter:brightness(1.1);color:#422006}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px;white-space:nowrap}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
 .toolbar{display:flex;gap:6px;flex-wrap:wrap}
-.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--panel);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500;font-family:inherit}
-.btn:hover{background:var(--pe);border-color:var(--bs)}
+.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--pe);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500;font-family:inherit}
+.btn:hover{background:var(--bs);border-color:var(--bs)}
 .btn-pri{background:var(--a1);border-color:var(--a1);color:#fff}
 .btn-pri:hover{filter:brightness(1.1)}
 .btn-ok{background:var(--a3);border-color:var(--a3);color:#000}
 .btn-ok:hover{filter:brightness(1.1)}
+.btn-bad{background:transparent;border:1px solid var(--b);color:var(--bad)}
+.btn-bad:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
 .btn-sm{padding:3px 7px;font-size:.7rem;border-radius:4px}
-.layout{flex:1;display:grid;grid-template-columns:240px 1fr;gap:14px;min-height:0}
-@media(max-width:800px){.layout{grid-template-columns:1fr;height:auto}}
-.sidebar{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:12px;display:flex;flex-direction:column;min-height:0;max-height:60vh;overflow-y:auto}
-.sidebar h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--td);margin-bottom:8px}
-.tree{font-size:.78rem;line-height:1.7}
-.tree-node{display:flex;align-items:center;gap:4px;padding:1px 0;cursor:pointer;border-radius:3px;padding-left:4px}
-.tree-node:hover{background:var(--pe)}
-.tree-node.active{background:rgba(124,58,237,.18);color:var(--a1)}
-.tree-node .role{font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--tf);width:38px;flex-shrink:0}
-.tree-node .role.u{color:var(--a2)}
-.tree-node .role.a{color:var(--a3)}
-.tree-node .txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.tree-children{border-left:1px solid var(--b);margin-left:8px;padding-left:8px}
-.main{display:flex;flex-direction:column;min-height:0}
-.branch-bar{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:.75rem;color:var(--td);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
-.messages{flex:1;overflow-y:auto;background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px;min-height:300px;max-height:60vh}
-@media(max-width:800px){.messages{max-height:none}}
-.msg{margin-bottom:12px;display:flex;gap:8px;align-items:flex-start}
-.msg .who{font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;color:var(--tf);width:64px;flex-shrink:0;padding-top:4px}
-.msg.u .who{color:var(--a2)}
-.msg.a .who{color:var(--a3)}
-.msg .bubble{flex:1;background:var(--pe);border:1px solid var(--b);border-radius:6px;padding:8px 12px;font-size:.88rem;white-space:pre-wrap;word-break:break-word}
-.msg.u .bubble{border-left:3px solid var(--a2)}
-.msg.a .bubble{border-left:3px solid var(--a3);color:var(--td);font-style:italic}
-.msg.a .bubble .placeholder{color:var(--tf);font-style:italic}
-.msg .meta{font-size:.65rem;color:var(--tf);margin-top:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.msg .fork{background:transparent;border:1px solid var(--b);color:var(--a1);padding:1px 6px;border-radius:3px;cursor:pointer;font-size:.65rem}
-.msg .fork:hover{background:var(--a1);color:#fff;border-color:var(--a1)}
-.composer{display:flex;gap:6px;margin-top:10px}
-.composer textarea{flex:1;background:var(--panel);border:1px solid var(--b);color:var(--t);padding:8px 12px;border-radius:6px;font-size:.88rem;font-family:inherit;resize:vertical;min-height:44px;max-height:140px}
+.layout{flex:1;display:grid;grid-template-columns:280px 1fr;gap:14px;min-height:0}
+@media(max-width:900px){.layout{grid-template-columns:1fr;height:auto}}
+.tree-panel{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:12px;display:flex;flex-direction:column;min-height:0;max-height:75vh;overflow-y:auto}
+.tree-panel h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--td);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.tree{font-size:.78rem;line-height:1.5}
+.node{display:flex;align-items:center;gap:5px;padding:3px 5px;cursor:pointer;border-radius:4px;margin:1px 0}
+.node:hover{background:var(--pe)}
+.node.active{background:rgba(124,58,237,.2);color:var(--a1);font-weight:600}
+.node .role{font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;width:42px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.node .role.u{color:var(--a2)}
+.node .role.a{color:var(--a3)}
+.node .role.s{color:var(--a4)}
+.node .txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.node .badge{background:var(--a1);color:#fff;border-radius:8px;padding:0 5px;font-size:.6rem;font-family:'JetBrains Mono',monospace}
+.children{margin-left:14px;border-left:1px dashed var(--b);padding-left:6px}
+.chat{flex:1;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--b);border-radius:8px;min-height:0}
+.chat-head{padding:12px 16px;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.chat-head .crumb{font-size:.78rem;color:var(--td)}
+.chat-head .crumb b{color:var(--a1)}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:200px}
+.msg{max-width:88%;padding:9px 12px;border-radius:8px;border:1px solid var(--b);background:var(--pe);position:relative}
+.msg.user{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.3);align-self:flex-start}
+.msg.assistant{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3);align-self:flex-end}
+.msg.system{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.3);align-self:center;font-size:.78rem;color:var(--td);font-style:italic}
+.msg .who{font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--tf);font-family:'JetBrains Mono',monospace;margin-bottom:3px}
+.msg.user .who{color:var(--a2)}
+.msg.assistant .who{color:var(--a3)}
+.msg .content{font-size:.88rem;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.msg .actions{position:absolute;top:4px;right:4px;display:none;gap:3px}
+.msg:hover .actions{display:flex}
+.msg .actions button{background:var(--bg);border:1px solid var(--b);color:var(--td);padding:1px 6px;border-radius:3px;cursor:pointer;font-size:.65rem;font-family:'JetBrains Mono',monospace}
+.msg .actions button:hover{background:var(--bs);color:var(--t)}
+.msg .branch-info{font-size:.65rem;color:var(--tf);margin-top:5px;padding-top:5px;border-top:1px dashed var(--b);font-family:'JetBrains Mono',monospace}
+.msg .branch-info b{color:var(--a1)}
+.empty{color:var(--tf);text-align:center;padding:30px;font-style:italic;font-size:.85rem}
+.composer{padding:12px;border-top:1px solid var(--b);display:flex;flex-direction:column;gap:8px}
+.composer .row{display:flex;gap:6px;align-items:center}
+.composer textarea{width:100%;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:9px 11px;border-radius:5px;font-size:.88rem;font-family:inherit;resize:none;min-height:50px;max-height:140px;line-height:1.5}
 .composer textarea:focus{outline:none;border-color:var(--a1)}
-.composer-info{padding:5px 8px;font-size:.7rem;color:var(--tf);background:var(--pe);border:1px solid var(--b);border-radius:4px;margin-top:6px;font-family:'SF Mono',monospace}
-.config{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;margin-bottom:10px}
-.cfg{background:var(--panel);border:1px solid var(--b);border-radius:5px;padding:6px 10px}
-.cfg label{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;color:var(--td);margin-bottom:2px}
-.cfg input,.cfg select{width:100%;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:4px 6px;border-radius:3px;font-size:.78rem;font-family:inherit}
-.status{padding:6px 10px;border-radius:4px;font-size:.72rem;margin-top:8px}
-.status.info{background:rgba(59,130,246,.1);border:1px solid var(--a2);color:var(--a2)}
-.status.ok{background:rgba(16,185,129,.1);border:1px solid var(--a3);color:var(--a3)}
-.status.err{background:rgba(239,68,68,.1);border:1px solid var(--bad);color:var(--bad)}
-.empty{text-align:center;color:var(--tf);padding:40px 10px;font-style:italic;font-size:.85rem}
-.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:14px;font-size:.78rem;color:var(--td);margin-top:14px}
-.note strong{color:var(--t)}
-.note code{background:var(--bg);padding:1px 4px;border-radius:3px;color:var(--a2);font-size:.85em}
-.note pre{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:10px 12px;margin:8px 0;font-size:.7rem;line-height:1.5;overflow-x:auto;color:var(--a3)}
-.note a{color:var(--a2)}
+.composer .opts{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.composer .opts label{font-size:.72rem;color:var(--td);display:flex;align-items:center;gap:4px}
+.composer .opts select{background:var(--bg);border:1px solid var(--b);color:var(--t);padding:4px 7px;border-radius:4px;font-size:.78rem;font-family:inherit}
+.composer .opts .spacer{flex:1}
+.totals{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;font-size:.78rem}
+.totals .lbl{color:var(--td);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.totals .val{font-family:'SF Mono',monospace;font-weight:700;font-size:1rem;color:var(--a1)}
+footer{text-align:center;padding:14px 0;color:var(--tf);font-size:.72rem;font-family:'SF Mono','JetBrains Mono',monospace;border-top:1px solid var(--b);margin-top:12px}
+footer a{color:var(--a1);text-decoration:none}
 </style>
 </head>
 <body>
 <div class="wrap">
+
 <header>
   <div>
-    <h1>🔗 <span class="accent">Chat Chain</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
-    <div class="sub">Each message is a cell. Forks create branches. The "context" is a window cell over the active path.</div>
+    <h1>🌳 <span class="accent">Chat Chain</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
+    <div class="sub">Branchable conversation. Every message can fork. Tree on the left, active path on the right.</div>
   </div>
   <div class="toolbar">
     <button class="btn" onclick="exportJSON()">↓ Export</button>
     <button class="btn" onclick="importJSON()">↑ Import</button>
-    <button class="btn" onclick="newChain()">+ New chain</button>
-    <button class="btn" onclick="clearAll()">Clear</button>
-    <button class="btn btn-ok" onclick="saveNow()">💾 Save</button>
-    <a class="btn" href="https://superinstance.dev/quilt.html">← back to Quilt</a>
+    <button class="btn" onclick="seedDemo()">↺ Reset to demo</button>
+    <a class="coffee" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
   </div>
 </header>
 
-<div class="config">
-  <div class="cfg">
-    <label>Context window</label>
-    <input type="number" id="win-size" min="1" max="20" value="6">
-  </div>
-  <div class="cfg">
-    <label>Active branch</label>
-    <div class="m" id="active-info" style="font-size:.75rem;padding:4px 0;color:var(--td)">—</div>
-  </div>
-</div>
+<nav class="nav">
+  <a href="../index.html">Home</a>
+  <a href="../workspace.html">Workspace</a>
+  <a href="../playground.html">Playground</a>
+  <a href="../pincher.html">Pincher</a>
+  <a href="../vibe.html">Vibe</a>
+  <a href="../cron-builder.html">Cron</a>
+  <a href="../token-calculator.html">Tokens</a>
+  <a href="../json-to-sheet.html">JSON→Sheet</a>
+  <a href="../regex.html">Regex</a>
+  <a href="../debugger.html">Inspector</a>
+  <a href="chat-chain.html" class="cur">Chat chain</a>
+</nav>
+
+<div class="totals" id="totals"></div>
 
 <div class="layout">
-  <div class="sidebar">
-    <h3>Branches</h3>
+  <div class="tree-panel">
+    <h3><span>Branches</span> <span id="branchcount" style="color:var(--tf);font-weight:400"></span></h3>
     <div class="tree" id="tree"></div>
   </div>
-
-  <div class="main">
-    <div class="branch-bar">
-      <div>Active chain: <strong id="active-label" style="color:var(--a1)">—</strong></div>
-      <div><span id="msg-count">0</span> messages · <span id="chain-count">0</span> chains</div>
+  <div class="chat">
+    <div class="chat-head">
+      <div class="crumb" id="crumb">No message selected</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="btn btn-sm" onclick="clearActive()">↶ Back to root</button>
+        <button class="btn btn-bad btn-sm" onclick="deleteActive()">Delete message</button>
+      </div>
     </div>
-    <div class="messages" id="messages"></div>
+    <div class="chat-body" id="chat"></div>
     <div class="composer">
-      <textarea id="input" placeholder="Type a message… (Enter to send, Shift+Enter for newline)"></textarea>
-      <button class="btn btn-pri" onclick="sendMessage()">Send</button>
+      <textarea id="input" placeholder="Write a message. Enter = send. Shift+Enter = newline."></textarea>
+      <div class="opts">
+        <label>Role: <select id="role">
+          <option value="user">User</option>
+          <option value="assistant">Assistant</option>
+          <option value="system">System</option>
+        </select></label>
+        <label><input type="checkbox" id="asBranch"> Add as a branch (sibling, not child)</label>
+        <div class="spacer"></div>
+        <button class="btn btn-pri" onclick="send()">Send</button>
+      </div>
     </div>
-    <div class="composer-info" id="ctx-info">Context window: —</div>
-    <div id="status"></div>
   </div>
 </div>
 
-<div class="note">
-  <strong>How this works:</strong> Every message is a Quilt <code>value</code> cell with <code>{id, parent_id, role, content, ts}</code>. The chain forms a tree because every cell (except the root) has exactly one <code>parent_id</code>. A "branch" is the path from the root to any leaf — the path that's currently selected. The "context" for the next message is a <code>window</code> cell that slices the last N messages from the active path. Forks create new leaves; clicking a leaf in the sidebar switches the active path. The assistant cell is currently a placeholder — wire in an <code>ai</code> cell to get real responses. <a href="https://github.com/SuperInstance/quilt" target="_blank">Learn about Quilt</a>.
-  <pre>
-   root
-   │
-   ├─ u: "Hi"  ─┐
-   │             ├─ a: "[LLM]" ─┐
-   │             │               ├─ u: "Tell me a joke"  ─┐
-   │             │               │                         ├─ a: "[LLM]"  (active branch)
-   │             │               │                         └─ u: "Explain"  (fork)
-   │             │               └─ u: "What's the weather?"  (fork)
-   │             └─ a: "[LLM v2]"  (different response to "Hi")
-   └─ u: "Hello"  (separate root / chain)
-  </pre>
 </div>
-</div>
+
+<footer>
+  Quilt-powered · <a href="../workspace.html">more tools</a> · saves to localStorage
+</footer>
 
 <script>
 const STORAGE_KEY = 'quilt-chat-chain-v1';
-// TODO: plug an AI cell here for real responses. The assistant role currently shows a placeholder.
 
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && Array.isArray(parsed.chains) && parsed.chains.length) return parsed;
-    }
+    if (raw) return JSON.parse(raw);
   } catch (e) {}
-  // Seed with a tiny demo chain
+  return null;
+}
+function save(d) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch (e) {} }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function now() { return Date.now(); }
+
+function sampleData() {
+  const t = now();
+  const r1 = uid(), a1 = uid(), r2 = uid(), a2 = uid();
+  const r2b = uid(), a2b = uid();
+  const r3 = uid();
   return {
-    chains: [createEmptyChain('Chain 1')],
-    activeChainId: null,
+    nodes: [
+      { id: r1, parentId: null, role: 'user', content: "What's a good name for a productivity app that's a chain of thoughts?", created: t - 5000 },
+      { id: a1, parentId: r1, role: 'assistant', content: "Some options:\n\n1. **Threadly** — captures the thread metaphor\n2. **Brancher** — emphasizes the tree structure\n3. **Lattice** — for the underlying idea\n4. **Pathwise** — each path is a different take\n\nWhich direction speaks to you?", created: t - 4000 },
+      { id: r2, parentId: a1, role: 'user', content: "I like the tree/branch vibe. What about something in that direction?", created: t - 3000 },
+      { id: a2, parentId: r2, role: 'assistant', content: "**Bough** is short, organic, sounds like 'bow' (a branch). Or **Canopy** for the lush vibe. **Braid** if you want a sense of woven ideas.", created: t - 2000 },
+      { id: r2b, parentId: a1, role: 'user', content: "Or the lattice/structure vibe?", created: t - 1900 },
+      { id: a2b, parentId: r2b, role: 'assistant', content: "Try **Cell** (the fundamental unit), **Lattice**, or **Quilt** (a sheet of cells). Quilt has a nice ring and the metaphor scales.", created: t - 1800 },
+      { id: r3, parentId: a2, role: 'user', content: "Quilt. That's the one.", created: t - 1000 }
+    ],
+    activePath: []
   };
 }
 
-function createEmptyChain(name) {
-  return {
-    id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-    name: name || ('Chain ' + new Date().toLocaleTimeString()),
-    messages: [],   // { id, parentId, role, content, ts }
-    activePath: [], // ordered list of message ids from root to active leaf
-  };
-}
-
-function save(data) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
-  return data;
-}
-
-let data = load();
-if (!data.activeChainId && data.chains[0]) data.activeChainId = data.chains[0].id;
-
-function currentChain() {
-  return data.chains.find(c => c.id === data.activeChainId) || data.chains[0];
-}
-
-function newChain() {
-  const name = prompt('Name for new chain:', 'Chain ' + (data.chains.length + 1));
-  if (name === null) return null;
-  const c = createEmptyChain(name || 'Untitled');
-  data.chains.push(c);
-  data.activeChainId = c.id;
-  save(data); renderAll();
-  return c;
-}
-
-function switchChain(id) {
-  if (!data.chains.find(c => c.id === id)) return;
-  data.activeChainId = id;
-  save(data); renderAll();
-}
-
-function getWinSize() {
-  const v = parseInt(document.getElementById('win-size').value, 10);
-  return Math.max(1, Math.min(20, isNaN(v) ? 6 : v));
-}
-
-function sendMessage() {
-  const input = document.getElementById('input');
-  const text = input.value.trim();
-  if (!text) return;
-  let chain = currentChain();
-  if (!chain) {
-    const created = newChain();
-    if (!created) return;          // user cancelled the create-chain prompt
-    chain = created;
-  }
-
-  // Forking? If the active path doesn't end at a leaf, we're forking.
-  // Find parent: last message in activePath, or null for root.
-  const parentId = chain.activePath.length ? chain.activePath[chain.activePath.length - 1] : null;
-
-  const uMsg = makeMessage('user', text, parentId);
-  chain.messages.push(uMsg);
-  chain.activePath = chain.activePath.concat([uMsg.id]);
-
-  // TODO: plug an AI cell here for real responses.
-  // For now: create a placeholder assistant cell. The fork user can edit the user
-  // message to get a different chain.
-  const aMsg = makeMessage('assistant', '[would call an LLM cell here]', uMsg.id);
-  chain.messages.push(aMsg);
-  chain.activePath = chain.activePath.concat([aMsg.id]);
-
-  save(data); renderAll();
-  input.value = '';
-  input.focus();
-  scrollToBottom();
-}
-
-function makeMessage(role, content, parentId) {
-  return {
-    id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-    parentId,
-    role,
-    content,
-    ts: Date.now(),
-  };
-}
-
-function forkFrom(messageId) {
-  const chain = currentChain(); if (!chain) return;
-  // Trim activePath to include this message
-  const idx = chain.activePath.indexOf(messageId);
-  if (idx === -1) {
-    // Message is not on current path; switch the path to it
-    chain.activePath = pathToRoot(chain, messageId);
-    save(data); renderAll();
-    return;
-  }
-  // Otherwise slice the active path to end at this message
-  chain.activePath = chain.activePath.slice(0, idx + 1);
-  save(data); renderAll();
-  // Focus composer
-  document.getElementById('input').focus();
-  setStatus('Forked at this message. Type to start a new branch.', 'info');
-}
-
-function pathToRoot(chain, messageId) {
-  // Walk parent links from messageId back to root
-  const byId = {}; chain.messages.forEach(m => byId[m.id] = m);
-  const path = []; let cur = byId[messageId];
-  while (cur) { path.unshift(cur.id); cur = cur.parentId ? byId[cur.parentId] : null; }
-  return path;
-}
-
-function deleteMessage(messageId) {
-  if (!confirm('Delete this message and everything below it in its branch?')) return;
-  const chain = currentChain(); if (!chain) return;
-  // BFS to find all descendants
-  const toDelete = new Set([messageId]);
-  let added = true;
-  while (added) {
-    added = false;
-    for (const m of chain.messages) {
-      if (m.parentId && toDelete.has(m.parentId) && !toDelete.has(m.id)) {
-        toDelete.add(m.id); added = true;
-      }
-    }
-  }
-  chain.messages = chain.messages.filter(m => !toDelete.has(m.id));
-  // Trim active path
-  chain.activePath = chain.activePath.filter(id => !toDelete.has(id));
-  save(data); renderAll();
-}
-
-function editMessage(messageId) {
-  const chain = currentChain();
-  const m = chain.messages.find(x => x.id === messageId); if (!m) return;
-  const next = prompt('Edit message:', m.content);
-  if (next === null) return;
-  m.content = next;
-  save(data); renderAll();
-}
-
-function clearAll() {
-  if (!confirm('Delete all chains? This cannot be undone.')) return;
-  data = { chains: [createEmptyChain('Chain 1')], activeChainId: null };
-  if (data.chains[0]) data.activeChainId = data.chains[0].id;
-  save(data); renderAll();
-}
+let data = load() || sampleData();
+if (!data.activePath) data.activePath = [];
+save(data);
 
 function escapeHTML(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function setStatus(msg, kind) {
-  const el = document.getElementById('status');
-  if (!msg) { el.innerHTML = ''; return; }
-  el.innerHTML = '<div class="status ' + (kind || 'info') + '">' + escapeHTML(msg) + '</div>';
-}
+function findNode(id) { return data.nodes.find(n => n.id === id); }
+function childrenOf(id) { return data.nodes.filter(n => n.parentId === id); }
+function roots() { return data.nodes.filter(n => !n.parentId); }
 
-function renderAll() {
-  renderTree();
-  renderMessages();
-  renderMeta();
-}
-
-function renderMeta() {
-  const chain = currentChain();
-  document.getElementById('active-label').textContent = chain ? chain.name : '—';
-  document.getElementById('active-info').textContent = chain ? chain.name : '—';
-  document.getElementById('msg-count').textContent = chain ? chain.messages.length : 0;
-  document.getElementById('chain-count').textContent = data.chains.length;
-}
-
-function renderMessages() {
-  const chain = currentChain();
-  const el = document.getElementById('messages');
-  if (!chain || !chain.activePath.length) {
-    el.innerHTML = '<div class="empty">Empty chain. Type a message below to start.</div>';
-    document.getElementById('ctx-info').textContent = 'Context window: (empty)';
-    return;
+function getActiveLeaf() {
+  if (!data.activePath.length) {
+    // pick first root's first child chain
+    const r = roots();
+    if (!r.length) return null;
+    return r[0].id;
   }
-  const byId = {}; chain.messages.forEach(m => byId[m.id] = m);
-  const visible = chain.activePath.map(id => byId[id]).filter(Boolean);
+  return data.activePath[data.activePath.length - 1];
+}
 
-  el.innerHTML = visible.map((m, i) => {
-    const isLast = i === visible.length - 1;
-    const roleClass = m.role === 'user' ? 'u' : 'a';
-    const content = m.role === 'assistant'
-      ? '<span class="placeholder">' + escapeHTML(m.content) + '</span>'
-      : escapeHTML(m.content);
-    const actions = m.role === 'user' || true ? `
-      <button class="fork" onclick="forkFrom('${m.id}')" title="Branch from here">⑃ fork</button>
-      <button class="fork" onclick="editMessage('${m.id}')" title="Edit">✎</button>
-      <button class="fork" onclick="deleteMessage('${m.id}')" title="Delete branch from here">×</button>
-    ` : '';
-    return `
-      <div class="msg ${roleClass}">
-        <div class="who">${m.role}</div>
-        <div class="bubble">${content}<div class="meta">${new Date(m.ts).toLocaleTimeString()} ${actions}</div></div>
-      </div>
-    `;
-  }).join('');
+function setActivePathTo(nodeId) {
+  // walk up to root then reverse
+  const path = [];
+  let cur = findNode(nodeId);
+  while (cur) {
+    path.push(cur.id);
+    cur = cur.parentId ? findNode(cur.parentId) : null;
+  }
+  data.activePath = path.reverse();
+  save(data);
+}
 
-  // Context window preview
-  const win = getWinSize();
-  const ctx = visible.slice(-win);
-  document.getElementById('ctx-info').textContent = 'Context window (last ' + win + ' of ' + visible.length + '): ' +
-    ctx.map(m => m.role[0].toUpperCase() + ':' + m.content.slice(0, 24).replace(/\n/g, ' ')).join('  |  ');
+function renderTotals() {
+  const total = data.nodes.length;
+  const userMsgs = data.nodes.filter(n => n.role === 'user').length;
+  const asstMsgs = data.nodes.filter(n => n.role === 'assistant').length;
+  const branches = data.nodes.length - roots().length;
+  document.getElementById('totals').innerHTML = `
+    <div><div class="lbl">Messages</div><div class="val">${total}</div></div>
+    <div><div class="lbl">User</div><div class="val" style="color:var(--a2)">${userMsgs}</div></div>
+    <div><div class="lbl">Assistant</div><div class="val" style="color:var(--a3)">${asstMsgs}</div></div>
+    <div><div class="lbl">Branches</div><div class="val" style="color:var(--a4)">${branches}</div></div>
+    <div><div class="lbl">Depth</div><div class="val">${data.activePath.length}</div></div>
+  `;
 }
 
 function renderTree() {
-  const el = document.getElementById('tree');
-  if (!data.chains.length) { el.innerHTML = '<div class="empty" style="padding:10px">No chains.</div>'; return; }
+  const activeLeaf = getActiveLeaf();
+  const tree = document.getElementById('tree');
+  if (!data.nodes.length) {
+    tree.innerHTML = '<div class="empty">No messages. Send one to start.</div>';
+    return;
+  }
+  function renderNode(id) {
+    const n = findNode(id);
+    if (!n) return '';
+    const kids = childrenOf(id);
+    const isActive = data.activePath.includes(id);
+    const isLeaf = activeLeaf === id;
+    return `<div class="node ${isActive?'active':''}" onclick="selectNode('${id}')">
+      <span class="role ${n.role[0]}">${n.role[0]}</span>
+      <span class="txt">${escapeHTML(n.content.slice(0,40) || '(empty)')}${n.content.length>40?'…':''}</span>
+      ${isLeaf?'<span class="badge">▶</span>':''}
+      ${kids.length > 1 ? `<span style="color:var(--a4);font-size:.7rem">×${kids.length}</span>` : ''}
+    </div>` + (kids.length ? `<div class="children">${kids.map(c => renderNode(c.id)).join('')}</div>` : '');
+  }
+  tree.innerHTML = roots().map(r => renderNode(r.id)).join('');
+  document.getElementById('branchcount').textContent = data.nodes.length + ' total';
+}
 
-  const html = data.chains.map(chain => {
-    const active = chain.id === data.activeChainId;
-    return `
-      <div class="tree-node ${active ? 'active' : ''}" onclick="switchChain('${chain.id}')" style="margin-bottom:6px">
-        <span style="font-size:.65rem">${active ? '●' : '○'}</span>
-        <span class="txt"><strong>${escapeHTML(chain.name)}</strong> <span style="color:var(--tf)">(${chain.messages.length})</span></span>
+function renderChat() {
+  const chat = document.getElementById('chat');
+  const crumb = document.getElementById('crumb');
+  if (!data.activePath.length) {
+    chat.innerHTML = '<div class="empty">Click a node in the tree to view that branch. Or send a new message below.</div>';
+    crumb.innerHTML = 'No branch selected';
+    return;
+  }
+  crumb.innerHTML = 'Path: ' + data.activePath.map(id => {
+    const n = findNode(id);
+    return `<b>${n.role[0].toUpperCase()}</b>${escapeHTML(n.content.slice(0,20))}${n.content.length>20?'…':''}`;
+  }).join(' → ');
+  chat.innerHTML = data.activePath.map(id => {
+    const n = findNode(id);
+    if (!n) return '';
+    const kids = childrenOf(id);
+    return `<div class="msg ${n.role}">
+      <div class="who">${n.role} · ${new Date(n.created).toLocaleTimeString()}</div>
+      <div class="content">${escapeHTML(n.content)}</div>
+      <div class="actions">
+        <button onclick="selectNode('${id}')" title="Focus this branch">🎯</button>
+        <button onclick="forkHere('${id}')" title="Add a sibling (branch from here)">⎇</button>
+        <button onclick="editNode('${id}')" title="Edit">✎</button>
       </div>
-      ${active ? renderBranchTree(chain) : ''}
-    `;
+      ${kids.length ? `<div class="branch-info">${kids.length} ${kids.length===1?'child':'children'} — <b>click in the tree</b> to switch</div>` : ''}
+    </div>`;
   }).join('');
-  el.innerHTML = html;
+  chat.scrollTop = chat.scrollHeight;
 }
 
-function renderBranchTree(chain) {
-  // Build a tree from messages of the active chain
-  const children = {};
-  for (const m of chain.messages) {
-    const p = m.parentId || '__root__';
-    if (!children[p]) children[p] = [];
-    children[p].push(m);
-  }
-  function render(parentId, depth) {
-    const kids = children[parentId] || [];
-    if (!kids.length) return '';
-    return '<div class="tree-children">' + kids.map(m => {
-      const onPath = chain.activePath.indexOf(m.id) !== -1;
-      return `
-        <div class="tree-node ${onPath ? 'active' : ''}" onclick="event.stopPropagation(); forkFrom('${m.id}')">
-          <span class="role ${m.role === 'user' ? 'u' : 'a'}">${m.role === 'user' ? 'user' : 'asst'}</span>
-          <span class="txt" title="${escapeHTML(m.content)}">${escapeHTML(m.content.replace(/\n/g, ' ').slice(0, 30))}</span>
-        </div>
-        ${render(m.id, depth + 1)}
-      `;
-    }).join('') + '</div>';
-  }
-  return render('__root__', 0);
+function render() {
+  renderTotals();
+  renderTree();
+  renderChat();
 }
 
-function scrollToBottom() {
-  const el = document.getElementById('messages');
-  el.scrollTop = el.scrollHeight;
+function selectNode(id) {
+  setActivePathTo(id);
+  render();
+}
+
+function send() {
+  const inp = document.getElementById('input');
+  const content = inp.value.trim();
+  if (!content) return;
+  const role = document.getElementById('role').value;
+  const asBranch = document.getElementById('asBranch').checked;
+  const parentId = asBranch
+    ? (data.activePath.length >= 2 ? data.activePath[data.activePath.length - 2] : null)
+    : getActiveLeaf();
+  if (asBranch && !parentId) {
+    alert('Need at least one message in the path to branch from.');
+    return;
+  }
+  const node = { id: uid(), parentId, role, content, created: now() };
+  data.nodes.push(node);
+  if (asBranch) {
+    setActivePathTo(node.id);
+  } else {
+    data.activePath = data.activePath.concat([node.id]);
+  }
+  inp.value = '';
+  document.getElementById('asBranch').checked = false;
+  save(data);
+  render();
+}
+
+function forkHere(id) {
+  document.getElementById('asBranch').checked = true;
+  // also pin the parent path: find the parent of id and select that branch's leaf
+  const n = findNode(id);
+  if (n && n.parentId) {
+    setActivePathTo(n.parentId);
+    render();
+  }
+  document.getElementById('input').focus();
+}
+
+function editNode(id) {
+  const n = findNode(id);
+  if (!n) return;
+  const newContent = prompt('Edit message:', n.content);
+  if (newContent === null) return;
+  n.content = newContent;
+  n.edited = now();
+  save(data);
+  render();
+}
+
+function deleteActive() {
+  const leaf = getActiveLeaf();
+  if (!leaf) return;
+  if (!confirm('Delete this message and all its descendants?')) return;
+  // collect descendants
+  const toDelete = new Set();
+  function walk(id) {
+    toDelete.add(id);
+    childrenOf(id).forEach(c => walk(c.id));
+  }
+  walk(leaf);
+  data.nodes = data.nodes.filter(n => !toDelete.has(n.id));
+  // re-select first sibling if any
+  const n = findNode(leaf);
+  if (n) {
+    const siblings = childrenOf(n.parentId);
+    const survivor = siblings.find(s => s.id !== leaf);
+    if (survivor) setActivePathTo(survivor.id);
+    else if (n.parentId) setActivePathTo(n.parentId);
+    else data.activePath = [];
+  } else {
+    data.activePath = [];
+  }
+  save(data);
+  render();
+}
+
+function clearActive() {
+  data.activePath = [];
+  save(data);
+  render();
+}
+
+function seedDemo() {
+  if (!confirm('Reset to the demo conversation? Your current data will be lost.')) return;
+  data = sampleData();
+  save(data);
+  render();
 }
 
 function exportJSON() {
-  const payload = {
-    app: 'quilt-chat-chain',
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    windowSize: getWinSize(),
-    ...data,
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'quilt-chat-chain-' + new Date().toISOString().split('T')[0] + '.json'; a.click();
+  a.href = url;
+  a.download = `quilt-chat-chain-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
   URL.revokeObjectURL(url);
-  setStatus('Exported ' + data.chains.length + ' chain(s).', 'ok');
 }
 
 function importJSON() {
   const input = document.createElement('input');
-  input.type = 'file'; input.accept = 'application/json';
+  input.type = 'file';
+  input.accept = 'application/json';
   input.onchange = e => {
-    const file = e.target.files[0]; if (!file) return;
+    const f = e.target.files[0];
+    if (!f) return;
     const reader = new FileReader();
     reader.onload = ev => {
       try {
-        const parsed = JSON.parse(ev.target.result);
-        if (parsed && Array.isArray(parsed.chains) && parsed.chains.length) {
-          data = {
-            chains: parsed.chains,
-            activeChainId: parsed.activeChainId || parsed.chains[0].id,
-          };
-          if (parsed.windowSize) document.getElementById('win-size').value = parsed.windowSize;
-          save(data); renderAll();
-          setStatus('Imported ' + data.chains.length + ' chain(s).', 'ok');
-        } else {
-          setStatus('Invalid file: no chains array.', 'err');
-        }
-      } catch (err) { setStatus('Invalid JSON: ' + err.message, 'err'); }
+        const obj = JSON.parse(ev.target.result);
+        if (obj && Array.isArray(obj.nodes)) {
+          data = obj;
+          if (!data.activePath) data.activePath = [];
+          save(data);
+          render();
+          alert(`Imported ${data.nodes.length} messages.`);
+        } else { alert('Invalid chat file.'); }
+      } catch (err) { alert('Invalid JSON: ' + err.message); }
     };
-    reader.readAsText(file);
+    reader.readAsText(f);
   };
   input.click();
 }
 
-function saveNow() {
-  save(data);
-  const btn = event.target;
-  const orig = btn.textContent;
-  btn.textContent = '✓ Saved';
-  setTimeout(() => btn.textContent = orig, 1200);
-}
-
-// Init
-renderAll();
 document.getElementById('input').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    send();
+  }
 });
-document.getElementById('win-size').addEventListener('change', () => renderMessages());
+
+render();
 </script>
 </body>
 </html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recipe Calculator — Quilt Click-and-Go Template</title>
+<meta name="description" content="A self-contained recipe calculator. Scale ingredients to any serving count. Multiple recipes.">
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px}
+.m{font-family:'SF Mono','JetBrains Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+h1{font-size:1.6rem;font-weight:800}
+h1 .accent{color:var(--a4)}
+.sub{color:var(--td);font-size:.85rem;margin-top:3px}
+.coffee{background:linear-gradient(135deg,#FFDD00,#fbbf24);color:#422006;padding:7px 12px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;font-family:'JetBrains Mono',monospace}
+.coffee:hover{filter:brightness(1.1);color:#422006}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px;white-space:nowrap}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--pe);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500;font-family:inherit}
+.btn:hover{background:var(--bs);border-color:var(--bs)}
+.btn-pri{background:var(--a4);border-color:var(--a4);color:#000}
+.btn-pri:hover{filter:brightness(1.1)}
+.btn-bad{background:transparent;border:1px solid var(--b);color:var(--bad)}
+.btn-bad:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+.btn-sm{padding:3px 8px;font-size:.7rem}
+.layout{display:grid;grid-template-columns:260px 1fr;gap:14px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}}
+.sidebar{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:10px;max-height:75vh;overflow-y:auto}
+.sidebar h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--td);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.rec{padding:9px 10px;border-radius:5px;cursor:pointer;margin-bottom:4px;border:1px solid transparent}
+.rec:hover{background:var(--pe);border-color:var(--b)}
+.rec.active{background:rgba(245,158,11,.1);border-color:var(--a4)}
+.rec .ttl{font-size:.9rem;font-weight:600;color:var(--t);margin-bottom:2px}
+.rec .meta{font-size:.68rem;color:var(--tf);font-family:'JetBrains Mono',monospace}
+.empty{color:var(--tf);text-align:center;padding:24px;font-style:italic;font-size:.85rem}
+.main{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:18px;min-height:500px}
+.rhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.rhead input{background:transparent;border:1px solid transparent;color:var(--t);padding:5px 7px;font-size:1.3rem;font-weight:700;font-family:inherit;border-radius:4px;flex:1;min-width:200px}
+.rhead input:hover,.rhead input:focus{background:var(--bg);border-color:var(--b);outline:none}
+.scaler{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(124,58,237,.08));border:1px solid var(--a4);border-radius:8px;padding:14px;margin-bottom:16px;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
+@media(max-width:600px){.scaler{grid-template-columns:1fr}}
+.scaler .field{text-align:center}
+.scaler label{display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--td);margin-bottom:4px}
+.scaler input[type=number]{width:90px;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:7px 10px;border-radius:5px;font-size:1.3rem;font-weight:700;font-family:'JetBrains Mono',monospace;text-align:center}
+.scaler input[type=number]:focus{outline:none;border-color:var(--a4)}
+.scaler .arrow{color:var(--a4);font-size:1.4rem;text-align:center}
+.scaler .ratio{font-size:.75rem;color:var(--a2);font-family:'JetBrains Mono',monospace;margin-top:4px}
+.scaler .presets{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.scaler .presets button{background:var(--pe);border:1px solid var(--b);color:var(--td);padding:2px 7px;border-radius:3px;cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace}
+.scaler .presets button:hover{background:var(--bs);color:var(--t)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{text-align:left;color:var(--td);font-weight:600;padding:7px 5px;border-bottom:1px solid var(--b);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em}
+td{padding:6px 5px;border-bottom:1px solid var(--b)}
+td input,td select{background:var(--bg);border:1px solid var(--b);color:var(--t);padding:5px 7px;border-radius:4px;font-size:.85rem;width:100%;font-family:inherit}
+td input:focus,td select:focus{outline:none;border-color:var(--a4)}
+td input.amount{font-family:'JetBrains Mono',monospace;text-align:right;width:90px}
+.scaled{font-family:'JetBrains Mono',monospace;text-align:right;color:var(--a3);font-weight:600;white-space:nowrap}
+.del{background:transparent;border:1px solid var(--b);color:var(--bad);padding:3px 7px;border-radius:4px;cursor:pointer;font-size:.7rem}
+.del:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+.addrow{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.addrow input,.addrow select{background:var(--bg);border:1px solid var(--b);color:var(--t);padding:6px 9px;border-radius:4px;font-size:.85rem;font-family:inherit}
+.addrow input[type=text]{flex:1;min-width:140px}
+.notes-area{margin-top:18px}
+.notes-area textarea{width:100%;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:10px;border-radius:5px;font-size:.85rem;font-family:inherit;line-height:1.55;min-height:80px;resize:vertical}
+.notes-area textarea:focus{outline:none;border-color:var(--a4)}
+.notes-area label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--td);margin-bottom:4px}
+.actions{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--b)}
+.totals{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:12px 14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.totals .lbl{color:var(--td);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em}
+.totals .val{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--a4)}
+footer{text-align:center;padding:18px 0;color:var(--tf);font-size:.72rem;font-family:'SF Mono','JetBrains Mono',monospace;margin-top:18px;border-top:1px solid var(--b)}
+footer a{color:var(--a1);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>🍳 <span class="accent">Recipe Calculator</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
+    <div class="sub">Scale any recipe to any serving count. Multiple recipes. Saves to your browser.</div>
+  </div>
+  <div class="toolbar">
+    <button class="btn" onclick="exportJSON()">↓ Export</button>
+    <button class="btn" onclick="importJSON()">↑ Import</button>
+    <button class="btn btn-pri" onclick="newRecipe()">+ New recipe</button>
+    <a class="coffee" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+  </div>
+</header>
+
+<nav class="nav">
+  <a href="../index.html">Home</a>
+  <a href="../workspace.html">Workspace</a>
+  <a href="../playground.html">Playground</a>
+  <a href="../pincher.html">Pincher</a>
+  <a href="../vibe.html">Vibe</a>
+  <a href="../cron-builder.html">Cron</a>
+  <a href="../token-calculator.html">Tokens</a>
+  <a href="../json-to-sheet.html">JSON→Sheet</a>
+  <a href="../regex.html">Regex</a>
+  <a href="../debugger.html">Inspector</a>
+  <a href="recipe.html" class="cur">Recipes</a>
+</nav>
+
+<div class="totals" id="totals"></div>
+
+<div class="layout">
+  <div class="sidebar">
+    <h3><span>Recipes</span> <span id="reccount" style="color:var(--tf);font-weight:400"></span></h3>
+    <div id="reclist"></div>
+  </div>
+  <div class="main" id="main"></div>
+</div>
+
+</div>
+
+<footer>
+  Quilt-powered · <a href="../workspace.html">more tools</a> · saves to localStorage
+</footer>
+
+<script>
+const STORAGE_KEY = 'quilt-recipes-v1';
+const UNITS = ['g','kg','ml','l','tsp','tbsp','cup','oz','lb','piece','pinch','clove','slice'];
+
+function load() { try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch (e) {} return null; }
+function save(d) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch (e) {} }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function sampleData() {
+  return {
+    recipes: [
+      { id: uid(), title: 'Pasta sauce', baseServings: 4,
+        ingredients: [
+          { name: 'Olive oil', amount: 2, unit: 'tbsp' },
+          { name: 'Garlic, minced', amount: 3, unit: 'clove' },
+          { name: 'Crushed tomatoes', amount: 400, unit: 'g' },
+          { name: 'Salt', amount: 1, unit: 'tsp' },
+          { name: 'Fresh basil', amount: 6, unit: 'leaf' }
+        ], notes: 'Simmer 20 min. Toss with cooked pasta.' },
+      { id: uid(), title: 'Pancakes', baseServings: 4,
+        ingredients: [
+          { name: 'Flour', amount: 200, unit: 'g' },
+          { name: 'Milk', amount: 250, unit: 'ml' },
+          { name: 'Egg', amount: 2, unit: 'piece' },
+          { name: 'Sugar', amount: 2, unit: 'tbsp' },
+          { name: 'Baking powder', amount: 2, unit: 'tsp' }
+        ], notes: 'Whisk wet, fold in dry. Cook on buttered pan.' },
+      { id: uid(), title: 'Lemonade', baseServings: 6,
+        ingredients: [
+          { name: 'Lemons, juiced', amount: 6, unit: 'piece' },
+          { name: 'Sugar', amount: 150, unit: 'g' },
+          { name: 'Water, cold', amount: 1.2, unit: 'l' },
+          { name: 'Ice', amount: 2, unit: 'cup' }
+        ], notes: 'Dissolve sugar in warm water first, then combine.' }
+    ],
+    activeId: null
+  };
+}
+
+let data = load() || sampleData();
+if (!data.activeId && data.recipes.length) data.activeId = data.recipes[0].id;
+save(data);
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function fmtAmount(n) {
+  if (n === 0) return '0';
+  if (n < 1) {
+    const fr = [[0.25,'¼'],[0.5,'½'],[0.75,'¾'],[0.33,'⅓'],[0.67,'⅔'],[0.125,'⅛'],[0.375,'⅜'],[0.625,'⅝'],[0.875,'⅞']];
+    for (const [v, sym] of fr) {
+      if (Math.abs(n - Math.floor(n) - v) < 0.02) {
+        const w = Math.floor(n);
+        return (w ? w + ' ' : '') + sym;
+      }
+    }
+    return n.toFixed(2);
+  }
+  if (n < 10) return n.toFixed(2).replace(/\.?0+$/, '');
+  if (n < 1000) return n.toFixed(1).replace(/\.0$/, '');
+  return Math.round(n).toString();
+}
+
+function renderTotals() {
+  const total = data.recipes.length;
+  const totalIngs = data.recipes.reduce((s, r) => s + r.ingredients.length, 0);
+  const avgBase = total ? Math.round(data.recipes.reduce((s,r)=>s+r.baseServings,0)/total) : 0;
+  document.getElementById('totals').innerHTML = `
+    <div><div class="lbl">Recipes</div><div class="val">${total}</div></div>
+    <div><div class="lbl">Total ingredients</div><div class="val">${totalIngs}</div></div>
+    <div><div class="lbl">Avg base servings</div><div class="val">${avgBase}</div></div>`;
+}
+
+function renderRecList() {
+  const wrap = document.getElementById('reclist');
+  if (!data.recipes.length) {
+    wrap.innerHTML = '<div class="empty">No recipes yet. Click <b>+ New recipe</b>.</div>';
+    return;
+  }
+  wrap.innerHTML = data.recipes.map(r => `
+    <div class="rec ${r.id===data.activeId?'active':''}" onclick="selectRec('${r.id}')">
+      <div class="ttl">${escapeHTML(r.title)}</div>
+      <div class="meta">${r.ingredients.length} ingredients · base ${r.baseServings} servings</div>
+    </div>`).join('');
+  document.getElementById('reccount').textContent = data.recipes.length + ' total';
+}
+
+function renderMain() {
+  const wrap = document.getElementById('main');
+  const r = data.recipes.find(x => x.id === data.activeId);
+  if (!r) { wrap.innerHTML = '<div class="empty">Select a recipe on the left, or click <b>+ New recipe</b>.</div>'; return; }
+  const scaleTo = Math.max(1, Math.round(r.baseServings));
+  const ratio = scaleTo / r.baseServings;
+  wrap.innerHTML = `
+    <div class="rhead">
+      <input value="${escapeHTML(r.title)}" oninput="updateTitle('${r.id}',this.value)" placeholder="Recipe name">
+      <span class="meta">${r.ingredients.length} ingredients</span>
+    </div>
+    <div class="scaler">
+      <div class="field">
+        <label>Base servings</label>
+        <input type="number" min="1" step="1" value="${r.baseServings}" oninput="updateBase('${r.id}',this.value)">
+      </div>
+      <div class="arrow">→ ×${fmtAmount(ratio)} →</div>
+      <div class="field">
+        <label>Scale to</label>
+        <input type="number" id="scaleto" min="1" step="1" value="${scaleTo}" oninput="renderIngs('${r.id}',this.value)">
+        <div class="ratio">${scaleTo} / ${r.baseServings} = ${fmtAmount(ratio)}×</div>
+        <div class="presets">
+          <button onclick="setScale(0.5)">½</button>
+          <button onclick="setScale(1)">1×</button>
+          <button onclick="setScale(2)">2×</button>
+          <button onclick="setScale(3)">3×</button>
+          <button onclick="setScale(4)">4×</button>
+        </div>
+      </div>
+    </div>
+    <div class="ings">
+      <h2>Ingredients</h2>
+      <div id="ingtable"></div>
+      <div class="addrow">
+        <input type="text" id="add-name" placeholder="Ingredient name" style="flex:1;min-width:140px">
+        <input type="number" id="add-amt" placeholder="Amount" step="0.01" class="amount" style="width:90px">
+        <select id="add-unit">${UNITS.map(u=>`<option>${u}</option>`).join('')}</select>
+        <button class="btn btn-pri" onclick="addIng('${r.id}')">+ Add</button>
+      </div>
+    </div>
+    <div class="notes-area">
+      <label>Method / notes</label>
+      <textarea oninput="updateNotes('${r.id}',this.value)" placeholder="Steps, tips, oven temp…">${escapeHTML(r.notes||'')}</textarea>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="duplicateRec('${r.id}')">Duplicate</button>
+      <button class="btn btn-bad" onclick="deleteRec('${r.id}')">Delete recipe</button>
+    </div>`;
+  renderIngs(r.id, scaleTo);
+}
+
+function renderIngs(rid, scaleTo) {
+  const r = data.recipes.find(x => x.id === rid);
+  if (!r) return;
+  const to = Math.max(1, parseFloat(scaleTo) || r.baseServings);
+  const ratio = to / r.baseServings;
+  const tbl = document.getElementById('ingtable');
+  if (!tbl) return;
+  if (!r.ingredients.length) { tbl.innerHTML = '<div class="empty" style="padding:20px">No ingredients yet.</div>'; return; }
+  tbl.innerHTML = `
+    <table>
+      <thead><tr>
+        <th>Ingredient</th>
+        <th style="width:90px;text-align:right">Amount</th>
+        <th style="width:90px">Unit</th>
+        <th style="width:120px;text-align:right">Scaled</th>
+        <th style="width:50px"></th>
+      </tr></thead>
+      <tbody>${r.ingredients.map((ing, i) => {
+        const scaled = ing.amount * ratio;
+        const sel = UNITS.map(u => `<option ${u===ing.unit?'selected':''}>${u}</option>`).join('');
+        return `<tr>
+          <td><input type="text" value="${escapeHTML(ing.name)}" oninput="updateIng('${rid}',${i},'name',this.value)"></td>
+          <td><input type="number" step="0.01" class="amount" value="${ing.amount}" oninput="updateIng('${rid}',${i},'amount',this.value)"></td>
+          <td><select onchange="updateIng('${rid}',${i},'unit',this.value)">${sel}</select></td>
+          <td class="scaled">${fmtAmount(scaled)} ${escapeHTML(ing.unit)}</td>
+          <td><button class="del" onclick="delIng('${rid}',${i})">×</button></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+}
+
+function setScale(mult) {
+  const r = data.recipes.find(x => x.id === data.activeId);
+  if (!r) return;
+  const inp = document.getElementById('scaleto');
+  inp.value = Math.max(1, Math.round(r.baseServings * mult));
+  renderIngs(r.id, inp.value);
+}
+
+function selectRec(id) { data.activeId = id; save(data); render(); }
+function newRecipe() {
+  const r = { id: uid(), title: 'New recipe', baseServings: 4, ingredients: [], notes: '' };
+  data.recipes.unshift(r); data.activeId = r.id; save(data); render();
+}
+function duplicateRec(id) {
+  const r = data.recipes.find(x => x.id === id);
+  if (!r) return;
+  const copy = JSON.parse(JSON.stringify(r));
+  copy.id = uid(); copy.title = r.title + ' (copy)';
+  data.recipes.unshift(copy); data.activeId = copy.id; save(data); render();
+}
+function deleteRec(id) {
+  if (!confirm('Delete this recipe?')) return;
+  data.recipes = data.recipes.filter(x => x.id !== id);
+  if (data.activeId === id) data.activeId = data.recipes.length ? data.recipes[0].id : null;
+  save(data); render();
+}
+function updateTitle(id, v) {
+  const r = data.recipes.find(x => x.id === id); if (!r) return;
+  r.title = v; save(data); renderRecList();
+}
+function updateBase(id, v) {
+  const r = data.recipes.find(x => x.id === id); if (!r) return;
+  r.baseServings = Math.max(1, parseInt(v) || 1); save(data);
+  const inp = document.getElementById('scaleto');
+  if (inp) { inp.value = r.baseServings; renderIngs(id, r.baseServings); }
+  renderRecList();
+}
+function updateNotes(id, v) {
+  const r = data.recipes.find(x => x.id === id); if (!r) return;
+  r.notes = v; save(data);
+}
+function addIng(rid) {
+  const r = data.recipes.find(x => x.id === rid); if (!r) return;
+  const name = document.getElementById('add-name').value.trim();
+  const amt = parseFloat(document.getElementById('add-amt').value);
+  const unit = document.getElementById('add-unit').value;
+  if (!name || isNaN(amt)) return;
+  r.ingredients.push({ name, amount: amt, unit });
+  save(data);
+  document.getElementById('add-name').value = '';
+  document.getElementById('add-amt').value = '';
+  const inp = document.getElementById('scaleto');
+  renderIngs(rid, inp ? inp.value : r.baseServings);
+  renderTotals(); renderRecList();
+}
+function updateIng(rid, idx, field, val) {
+  const r = data.recipes.find(x => x.id === rid);
+  if (!r || !r.ingredients[idx]) return;
+  if (field === 'amount') r.ingredients[idx].amount = parseFloat(val) || 0;
+  else r.ingredients[idx][field] = val;
+  save(data);
+  if (field === 'name') renderRecList();
+  const inp = document.getElementById('scaleto');
+  if (inp) renderIngs(rid, inp.value);
+}
+function delIng(rid, idx) {
+  const r = data.recipes.find(x => x.id === rid); if (!r) return;
+  r.ingredients.splice(idx, 1); save(data);
+  const inp = document.getElementById('scaleto');
+  renderIngs(rid, inp ? inp.value : r.baseServings);
+  renderTotals(); renderRecList();
+}
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `quilt-recipes-${new Date().toISOString().slice(0,10)}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'application/json';
+  input.onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const obj = JSON.parse(ev.target.result);
+        if (obj && Array.isArray(obj.recipes)) {
+          data = obj;
+          if (!data.activeId && data.recipes.length) data.activeId = data.recipes[0].id;
+          save(data); render();
+          alert(`Imported ${data.recipes.length} recipes.`);
+        } else { alert('Invalid recipes file.'); }
+      } catch (err) { alert('Invalid JSON: ' + err.message); }
+    };
+    reader.readAsText(f);
+  };
+  input.click();
+}
+
+function render() { renderTotals(); renderRecList(); renderMain(); }
+render();
+</script>
+</body>
+</html>

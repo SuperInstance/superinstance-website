@@ -1,0 +1,390 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario simulator — Quilt fleet federation</title>
+<style>
+:root{--bg:#0a0a14;--p:#14141f;--pe:#1a1a26;--b:#252535;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--er:#ff6b6b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.w{max-width:1400px;margin:0 auto;padding:16px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.35rem;font-weight:800}
+h1 .ac{background:linear-gradient(135deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+p{color:var(--td);margin-bottom:9px;font-size:.84rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:8px 11px;margin-bottom:13px;font-size:.76rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:10px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.cof{background:linear-gradient(135deg,#FFDD00,#fbbf24);color:#422006;padding:5px 11px;border-radius:5px;font-weight:700;font-size:.72rem;text-decoration:none}
+.cof:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:11px;margin-bottom:13px;font-size:.76rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 4px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.intro strong{color:var(--t)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:13px}
+@media (max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+.st{background:var(--p);border:1px solid var(--b);border-radius:6px;padding:8px 11px}
+.st .lb{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--tf);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.st .v{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:700}
+.st .v.c1{color:var(--a1)}.st .v.c2{color:var(--a2)}.st .v.c3{color:var(--a3)}.st .v.c4{color:var(--a4)}
+.sw{position:relative;background:var(--p);border:1px solid var(--b);border-radius:9px;padding:48px 13px 13px;margin-bottom:13px}
+.svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.sr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;position:relative;z-index:1}
+@media (max-width:900px){.sr{grid-template-columns:1fr}}
+.ins{background:var(--pe);border:1px solid var(--b);border-radius:8px;padding:10px;min-height:330px}
+.ih{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--b)}
+.in{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.8rem;display:flex;align-items:center;gap:6px}
+.ip{width:8px;height:8px;border-radius:50%;animation:pu 2s ease-in-out infinite}
+@keyframes pu{0%,100%{opacity:1;box-shadow:0 0 0 0 currentColor}50%{opacity:.6;box-shadow:0 0 0 5px transparent}}
+.is{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--tf);text-align:right}
+.is div{margin-bottom:1px}
+.cl{background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:6px 8px;margin-bottom:4px;cursor:pointer;font-size:.7rem;display:grid;grid-template-columns:1fr 75px;gap:5px;align-items:center;transition:all .15s;font-family:'JetBrains Mono',monospace}
+.cl:hover{border-color:var(--a2);transform:translateX(2px)}
+.cl.m{border-left:3px solid var(--a3)}
+.cl.f{animation:fl 1.4s}
+@keyframes fl{0%{background:rgba(16,185,129,.3);border-color:var(--a3);box-shadow:0 0 12px rgba(16,185,129,.4)}100%{background:var(--bg)}}
+.cp{font-weight:700;font-size:.68rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cv{color:var(--t);font-size:.76rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cv.s{color:var(--a3)}.cv.n{color:var(--a2)}.cv.b{color:var(--a4)}.cv.o{color:var(--a1)}
+.cm{display:flex;justify-content:space-between;font-size:.58rem;color:var(--tf);margin-top:3px;grid-column:1/-1}
+.ct{background:var(--pe);padding:0 4px;border-radius:3px}
+.ct.s{color:var(--a3)}.ct.n{color:var(--a2)}.ct.b{color:var(--a4)}.ct.o{color:var(--a1)}
+.cm2{font-size:.55rem;color:var(--a3);margin-left:3px}
+.sl{stroke:var(--a3);stroke-width:1.5;stroke-dasharray:5,4;fill:none;opacity:.55;animation:fw 1.5s linear infinite}
+@keyframes fw{to{stroke-dashoffset:-18}}
+.pk{fill:var(--a4);filter:drop-shadow(0 0 6px var(--a4))}
+.slt{fill:var(--a3);font-family:'JetBrains Mono',monospace;font-size:9px;opacity:.7}
+.ctl{background:var(--p);border:1px solid var(--b);border-radius:9px;padding:10px 12px;margin-bottom:13px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:0;padding:7px 12px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.72rem;font-family:inherit}
+button:hover{filter:brightness(1.1)}
+button:disabled{background:var(--b);cursor:not-allowed;opacity:.5}
+button.s{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+button.w{background:linear-gradient(135deg,var(--a4),var(--er))}
+.lc{font-size:.68rem;color:var(--td);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.lc input[type=range]{vertical-align:middle;width:75px;accent-color:var(--a1)}
+.lg{background:var(--p);border:1px solid var(--b);border-radius:9px;padding:11px 13px;margin-bottom:13px;max-height:260px;overflow-y:auto}
+.lg h3{font-size:.66rem;color:var(--a3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;font-family:'JetBrains Mono',monospace;font-weight:700}
+.le{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:4px 7px;margin-bottom:2px;border-left:2px solid var(--b);background:var(--bg);border-radius:0 4px 4px 0;line-height:1.4}
+.le.s{border-color:var(--a4)}.le.f{border-color:var(--a3)}.le.su{border-color:var(--a2)}.le.u{border-color:var(--er)}.le.t{border-color:var(--a1)}
+.ts{color:var(--tf);font-size:.6rem;margin-right:5px}
+.md{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(5,5,12,.78);z-index:100;display:none;align-items:center;justify-content:center}
+.md.s{display:flex}
+.mp{background:var(--p);border:1px solid var(--a1);border-radius:9px;padding:18px;max-width:540px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 18px 60px rgba(124,58,237,.25)}
+.md h3{font-size:.95rem;color:var(--a3);margin-bottom:11px;font-family:'JetBrains Mono',monospace;font-weight:700}
+.fr{margin-bottom:10px}
+.fr label{display:block;font-size:.64rem;color:var(--td);margin-bottom:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
+.fr input,.fr select{width:100%;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:5px;padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:.76rem}
+.fr input:focus,.fr select:focus{outline:none;border-color:var(--a2)}
+.he{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:6px 8px;margin-bottom:4px;background:var(--bg);border:1px solid var(--b);border-radius:4px}
+.he .v{font-weight:700}
+.he .v.s{color:var(--a3)}.he .v.n{color:var(--a2)}.he .v.b{color:var(--a4)}.he .v.o{color:var(--a1)}
+.he .mt{color:var(--tf);font-size:.58rem;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
+.he .vf{color:var(--a3)}.he .vl{color:var(--a4)}
+.em{color:var(--tf);font-size:.68rem;text-align:center;padding:24px 0;font-style:italic}
+.ma{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+.ft{text-align:center;padding:14px;color:var(--tf);font-size:.68rem;border-top:1px solid var(--b);margin-top:14px;font-family:'JetBrains Mono',monospace}
+.ft .qp{color:var(--a1);font-weight:700}
+</style></head><body><div class="w"><div class="top">
+  <div>
+    <h1>🛰️ <span class="ac">Scenario simulator</span> <span style="color:var(--td);font-size:.8rem;font-weight:400">— Quilt fleet federation</span></h1>
+    <p style="margin-top:2px">3 Quilt instances in your browser. Each has its own sheet. They federate by subscribing to each other's cells. Updates propagate across the simulated network.</p>
+  </div>
+  <a class="cof" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="ai-sheet.html">AI sheet</a>
+  <a href="scenario-simulator.html" class="cur">Scenario simulator</a>
+</div>
+
+<div class="intro">
+  <p>Tiny fleet of <code>quilt</code> instances running in your browser. Each owns a <strong>sheet</strong> of typed cells. Instances can <strong>federate</strong>: A subscribes to a cell on B, and when B's cell changes the new value propagates after a simulated network delay (<code>50–500ms</code>). Click any cell to see its full history, edit a value to watch it propagate, or hit stress test to fire 100 random updates.</p>
+</div>
+
+<div class="stats">
+  <div class="st"><div class="lb">Cells (total)</div><div class="v c1" id="sc">0</div></div>
+  <div class="st"><div class="lb">Subscriptions</div><div class="v c2" id="ss">0</div></div>
+  <div class="st"><div class="lb">Events fired</div><div class="v c3" id="se">0</div></div>
+  <div class="st"><div class="lb">Federations</div><div class="v c4" id="sf">0</div></div>
+</div>
+
+<div class="sw" id="sw">
+  <svg class="svg" id="svg">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#10b981" opacity=".7"/></marker></defs>
+  </svg>
+  <div class="sr" id="sr"></div>
+</div>
+
+<div class="ctl">
+  <button id="acBtn">+ Add cell</button>
+  <button id="asBtn" class="s">+ Subscribe</button>
+  <button id="stBtn" class="w">⚡ Stress test (100 events)</button>
+  <button id="rsBtn" class="s">↻ Reset fleet</button>
+  <div class="lc" style="margin-left:auto">Latency: <input type="range" id="lm" min="20" max="300" value="50"><span id="lmv">50</span>ms – <input type="range" id="lx" min="100" max="800" value="500"><span id="lxv">500</span>ms</div>
+</div>
+
+<div class="lg"><h3>Activity log</h3><div id="le"></div></div></div><div class="ft">⚡ <span class="qp">Quilt-powered</span> · scenario simulator · federation visualized in browser</div>
+
+<div class="md" id="hm"><div class="mp"><h3 id="ht">Cell history</h3><div id="hc"></div><div class="ma"><button id="he">Edit value &amp; propagate</button><button id="hc2" class="s">Close</button></div></div></div>
+
+<div class="md" id="am"><div class="mp"><h3>Add cell to instance</h3>
+<div class="fr"><label>Instance</label><select id="ai"></select></div>
+<div class="fr"><label>Cell path (e.g. config.theme)</label><input id="ap" placeholder="config.theme"></div>
+<div class="fr"><label>Type</label><select id="at"><option value="s">string</option><option value="n">number</option><option value="b">boolean</option><option value="o">object (JSON)</option></select></div>
+<div class="fr"><label>Initial value</label><input id="av" placeholder="hello"></div>
+<div class="ma"><button id="asub">Add cell</button><button id="acl" class="s">Cancel</button></div>
+</div></div>
+
+<div class="md" id="sm"><div class="mp"><h3>Add federation subscription</h3>
+<div class="fr"><label>From (subscriber)</label><select id="sf2"></select></div>
+<div class="fr"><label>To (publisher)</label><select id="st2"></select></div>
+<div class="fr"><label>Cell path on publisher</label><select id="sp2"></select></div>
+<div class="ma"><button id="ssub">Subscribe</button><button id="scl" class="s">Cancel</button></div>
+</div></div>
+
+<div class="md" id="em"><div class="mp"><h3 id="et">Edit cell</h3>
+<div class="fr"><label>Current value</label><div id="ec" style="font-family:'JetBrains Mono',monospace;color:var(--td);padding:5px;background:var(--bg);border-radius:4px;font-size:.78rem"></div></div>
+<div class="fr"><label>New value</label><input id="ev"></div>
+<div class="ma"><button id="esub">Update &amp; propagate</button><button id="ecl" class="s">Cancel</button></div>
+</div></div>
+
+<script>
+const COL=['#7c3aed','#3b82f6','#10b981'],SK='quilt_sim_v1';
+function mh(v,s,vr){return{value:v,src:s||'init',via:vr||'local',ts:Date.now()}}
+function def(){
+  return{instances:[
+    {id:'i1',name:'Quilt-01',color:COL[0],cells:[
+      {path:'config.theme',value:'midnight',type:'s',history:[mh('midnight')]},
+      {path:'user.count',value:42,type:'n',history:[mh(42)]},
+      {path:'feature.flags',value:true,type:'b',history:[mh(true)]},
+      {path:'app.version',value:'1.4.2',type:'s',history:[mh('1.4.2')]}
+    ]},
+    {id:'i2',name:'Quilt-02',color:COL[1],cells:[
+      {path:'rate.limit',value:100,type:'n',history:[mh(100)]},
+      {path:'api.version',value:'v2',type:'s',history:[mh('v2')]},
+      {path:'debug',value:false,type:'b',history:[mh(false)]}
+    ]},
+    {id:'i3',name:'Quilt-03',color:COL[2],cells:[
+      {path:'cache.size',value:1024,type:'n',history:[mh(1024)]},
+      {path:'cache.ttl',value:3600,type:'n',history:[mh(3600)]},
+      {path:'region',value:'us-west-2',type:'s',history:[mh('us-west-2')]}
+    ]}
+  ],subscriptions:[
+    {id:'s1',from:'i1',to:'i2',cellPath:'api.version'},
+    {id:'s2',from:'i3',to:'i1',cellPath:'config.theme'},
+    {id:'s3',from:'i2',to:'i3',cellPath:'cache.size'}
+  ],events:[],counters:{events:0,fed:0},latencyMin:50,latencyMax:500}
+}
+let S;
+function load(){try{const r=localStorage.getItem(SK);if(r){const p=JSON.parse(r);if(p&&p.instances&&p.instances.length){S=p;if(!S.counters)S.counters={events:0,fed:0};return}}}catch(e){}S=def()}
+function save(){try{localStorage.setItem(SK,JSON.stringify(S))}catch(e){}}
+const $=id=>document.getElementById(id);
+function inst(id){return S.instances.find(i=>i.id===id)}
+function inN(id){return inst(id)?.name||id}
+function fc(iid,path){return inst(iid)?.cells.find(c=>c.path===path)}
+function rd(m,x){return Math.floor(Math.random()*(x-m+1))+m}
+function eh(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fv(v,t){if(t==='o')return typeof v==='string'?v:JSON.stringify(v);if(t==='s')return JSON.stringify(v);return String(v)}
+function ta(ts){const d=Date.now()-ts;if(d<1000)return'now';if(d<60000)return Math.floor(d/1000)+'s';if(d<3600000)return Math.floor(d/60000)+'m';return Math.floor(d/3600000)+'h'}
+function ck(ts){return new Date(ts).toTimeString().slice(0,8)}
+function coerce(v,t){
+  if(t==='n'){const x=Number(v);return isNaN(x)?0:x}
+  if(t==='b')return v==='true'||v===true||v==='1'||v==='on'||v===1
+  if(t==='o'){if(typeof v==='object')return v;try{return JSON.parse(v)}catch(e){return v}}
+  return String(v)
+}
+function setC(iid,path,val,src,via,rec){
+  const c=fc(iid,path);if(!c)return false;
+  val=coerce(val,c.type);c.value=val;
+  if(rec!==false){c.history.unshift({value:val,ts:Date.now(),src:src||'?',via:via||'local'});if(c.history.length>50)c.history.length=50}
+  return true
+}
+function log(t,msg){
+  S.events.unshift({type:t,msg:msg,ts:Date.now()});
+  if(S.events.length>250)S.events.length=250;
+  S.counters.events++;
+  save();rLog();upd()
+}
+function propagate(oIid,path,val){
+  S.subscriptions.forEach(sub=>{
+    if(sub.to===oIid&&sub.cellPath===path){
+      const lat=rd(S.latencyMin,S.latencyMax);
+      spawnP(sub.to,sub.from,lat);
+      setTimeout(()=>{
+        if(setC(sub.from,path,val,inN(oIid),'federation')){
+          S.counters.fed++;log('f',`${inN(sub.from)} ← ${inN(sub.to)}.${path} = ${fv(val,fc(sub.from,path)?.type||typeof val)}  (${lat}ms)`);
+          flashC(sub.from,path);rIns(sub.from);rLines()
+        }
+      },lat)
+    }
+  });save()
+}
+function flashC(iid,path){
+  const el=document.querySelector(`.cl[data-iid="${iid}"][data-path="${CSS.escape(path)}"]`);
+  if(el){el.classList.remove('f');void el.offsetWidth;el.classList.add('f')}
+}
+function renderAll(){rIns();rLines();rLog();upd()}
+function rIns(){
+  const root=$('sr');root.innerHTML='';
+  S.instances.forEach(i=>{
+    const w=document.createElement('div');w.className='ins';w.style.borderTop=`3px solid ${i.color}`;
+    const sC=S.subscriptions.filter(s=>s.from===i.id).length;
+    const pC=S.subscriptions.filter(s=>s.to===i.id).length;
+    let ch='';
+    if(!i.cells.length)ch='<div class="em">no cells yet</div>';
+    else i.cells.forEach(c=>{
+      const m=S.subscriptions.some(s=>s.from===i.id&&s.cellPath===c.path);
+      ch+=`<div class="cl${m?' m':''}" data-iid="${i.id}" data-path="${eh(c.path)}"><div><div class="cp" title="${eh(c.path)}">${eh(c.path)}${m?'<span class="cm2">↻</span>':''}</div></div><div class="cv ${c.type}" title="${eh(fv(c.value,c.type))}">${eh(fv(c.value,c.type))}</div><div class="cm"><span class="ct ${c.type}">${c.type}</span><span>${ta(c.history[0]?.ts||Date.now())} ago</span></div></div>`
+    });
+    w.innerHTML=`<div class="ih"><div class="in" style="color:${i.color}"><span class="ip" style="color:${i.color};background:${i.color}"></span>${i.name}</div><div class="is"><div>${i.cells.length} cells</div><div>${sC}↓ ${pC}↑</div></div></div>${ch}`;
+    root.appendChild(w)
+  });
+  document.querySelectorAll('.cl').forEach(el=>el.addEventListener('click',()=>openH(el.dataset.iid,el.dataset.path)))
+}
+function rIns1(iid){rIns();rLines()}
+function upd(){
+  $('sc').textContent=S.instances.reduce((n,i)=>n+i.cells.length,0);
+  $('ss').textContent=S.subscriptions.length;
+  $('se').textContent=S.counters.events||0;
+  $('sf').textContent=S.counters.fed||0
+}
+function rLines(){
+  const svg=$('svg');
+  svg.querySelectorAll('path.sub,text').forEach(n=>n.remove());
+  if(!S.instances.length)return;
+  const wr=svg.getBoundingClientRect();
+  S.subscriptions.forEach(sub=>{
+    const f=document.querySelector(`.ins [data-iid="${sub.from}"]`)?.closest('.ins');
+    const t=document.querySelector(`.ins [data-iid="${sub.to}"]`)?.closest('.ins');
+    if(!f||!t)return;
+    const fr=f.getBoundingClientRect(),tr=t.getBoundingClientRect();
+    const x1=fr.left+fr.width/2-wr.left,y1=fr.top-wr.top;
+    const x2=tr.left+tr.width/2-wr.left,y2=tr.top-wr.top;
+    const mx=(x1+x2)/2,my=Math.min(y1,y2)-26;
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',`M${x1},${y1} Q${mx},${my} ${x2},${y2}`);
+    p.setAttribute('class','sl');p.setAttribute('marker-end','url(#ar)');
+    svg.appendChild(p);
+    const l=document.createElementNS('http://www.w3.org/2000/svg','text');
+    l.setAttribute('x',mx);l.setAttribute('y',my-4);l.setAttribute('text-anchor','middle');l.setAttribute('class','slt');
+    l.textContent=sub.cellPath;svg.appendChild(l)
+  })
+}
+function spawnP(fI,tI,lat){
+  const svg=$('svg');
+  const f=document.querySelector(`.ins [data-iid="${fI}"]`)?.closest('.ins');
+  const t=document.querySelector(`.ins [data-iid="${tI}"]`)?.closest('.ins');
+  if(!f||!t)return;
+  const wr=svg.getBoundingClientRect(),fr=f.getBoundingClientRect(),tr=t.getBoundingClientRect();
+  const x1=fr.left+fr.width/2-wr.left,y1=fr.top-wr.top;
+  const x2=tr.left+tr.width/2-wr.left,y2=tr.top-wr.top;
+  const mx=(x1+x2)/2,my=Math.min(y1,y2)-26;
+  const pD=`M${x1},${y1} Q${mx},${my} ${x2},${y2}`;
+  const p=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  p.setAttribute('r',5);p.setAttribute('class','pk');
+  p.style.offsetPath=`path('${pD}')`;svg.appendChild(p);
+  try{p.animate([{offsetDistance:'0%',opacity:1},{offsetDistance:'100%',opacity:.85}],{duration:Math.max(300,lat*0.9),easing:'ease-in-out',fill:'forwards'}).onfinish=()=>p.remove()}catch(e){p.remove()}
+}
+function rLog(){
+  const el=$('le');
+  if(!S.events.length){el.innerHTML='<div class="em">no events yet — try editing a cell or firing the stress test</div>';return}
+  el.innerHTML=S.events.slice(0,100).map(e=>`<div class="le ${e.type}"><span class="ts">[${ck(e.ts)}]</span> ${eh(e.msg)}</div>`).join('')
+}
+let MC=null;
+function openH(iid,path){
+  MC={iid,path};const c=fc(iid,path);if(!c)return;
+  $('ht').textContent=inN(iid)+' / '+path;
+  let h=c.history.map(x=>{
+    const dt=new Date(x.ts);
+    return`<div class="he"><div><span class="v ${c.type}">${eh(fv(x.value,c.type))}</span></div><div class="mt"><span>${dt.toLocaleTimeString()}</span><span>src: ${eh(x.src||'?')}</span><span class="${x.via==='federation'?'vf':'vl'}">via: ${eh(x.via||'?')}</span></div></div>`
+  }).join('');
+  if(!c.history.length)h='<div class="em">no history</div>';
+  $('hc').innerHTML=h;$('hm').classList.add('s')
+}
+function openAC(){
+  $('ai').innerHTML=S.instances.map(i=>`<option value="${i.id}">${i.name} (${i.cells.length})</option>`).join('');
+  $('ap').value='';$('at').value='s';$('av').value='';
+  $('am').classList.add('s');setTimeout(()=>$('ap').focus(),50)
+}
+function openAS(){
+  $('sf2').innerHTML=S.instances.map(i=>`<option value="${i.id}">${i.name}</option>`).join('');
+  $('st2').innerHTML=S.instances.map(i=>`<option value="${i.id}">${i.name}</option>`).join('');
+  rSubPath();$('st2').onchange=rSubPath;$('sm').classList.add('s')
+}
+function rSubPath(){
+  const to=$('st2').value,i=inst(to);
+  $('sp2').innerHTML=(i?.cells||[]).map(c=>`<option value="${c.path}">${c.path} (${c.type})</option>`).join('')||'<option value="">(no cells)</option>'
+}
+function openE(iid,path){
+  const c=fc(iid,path);if(!c)return;MC={iid,path};
+  $('et').textContent='Edit '+inN(iid)+' / '+path;
+  $('ec').textContent=fv(c.value,c.type);
+  const inp=$('ev');inp.value=c.type==='o'?JSON.stringify(c.value,null,2):(c.type==='b'?String(c.value):c.value);
+  $('em').classList.add('s');setTimeout(()=>{inp.focus();inp.select()},50)
+}
+function closeM(id){$(id).classList.remove('s')}
+function stress(){
+  const btn=$('stBtn');btn.disabled=true;btn.textContent='⚡ Firing 100 events…';
+  log('t',`Stress test started: 100 random events`);
+  let n=0;const T=100;
+  (function fire(){
+    if(n>=T){btn.disabled=false;btn.textContent='⚡ Stress test (100 events)';log('t',`Stress test complete: ${T} events, ${S.counters.fed} federations`);save();return}
+    const i=S.instances[rd(0,S.instances.length-1)],c=i.cells[rd(0,i.cells.length-1)];
+    if(c){
+      let v;
+      if(c.type==='n')v=c.value+rd(-7,7);
+      else if(c.type==='b')v=!c.value;
+      else if(c.type==='o')v={...(c.value||{}),_t:Date.now()};
+      else v=c.path.includes('time')?String(Date.now()):(c.value+(Math.random()>.5?'!':'?'));
+      if(setC(i.id,c.path,v,inN(i.id),'local')){flashC(i.id,c.path);propagate(i.id,c.path,v);rIns1(i.id)}
+    }
+    n++;setTimeout(fire,40)
+  })()
+}
+function init(){
+  load();renderAll();
+  $('acBtn').onclick=openAC;$('asBtn').onclick=openAS;$('stBtn').onclick=stress;
+  $('rsBtn').onclick=()=>{if(confirm('Reset fleet? Clears all cells, subscriptions, history.')){S=def();save();renderAll()}};
+  const lm=$('lm'),lx=$('lx'),updL=()=>{let m=Number(lm.value),x=Number(lx.value);if(m>x){m=x;lm.value=m}S.latencyMin=m;S.latencyMax=x;$('lmv').textContent=m;$('lxv').textContent=x;save()};
+  lm.oninput=updL;lx.oninput=updL;lm.value=S.latencyMin;lx.value=S.latencyMax;updL();
+  $('hc2').onclick=()=>closeM('hm');$('acl').onclick=()=>closeM('am');$('scl').onclick=()=>closeM('sm');$('ecl').onclick=()=>closeM('em');
+  $('he').onclick=()=>{if(MC){closeM('hm');openE(MC.iid,MC.path)}};
+  document.querySelectorAll('.md').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('s')}));
+  $('asub').onclick=()=>{
+    const iid=$('ai').value,path=$('ap').value.trim(),type=$('at').value,val=$('av').value;
+    if(!path){alert('Path required');return}
+    if(!/^[a-zA-Z][\w.\-]*$/.test(path)){alert('Path like "config.theme"');return}
+    if(fc(iid,path)){alert('Cell exists');return}
+    const v=coerce(val,type);
+    inst(iid).cells.push({path,value:v,type,history:[mh(v,'init','local')]});
+    log('s',`${inN(iid)} added ${path} (${type}) = ${fv(v,type)}`);closeM('am');save();renderAll()
+  };
+  $('ssub').onclick=()=>{
+    const from=$('sf2').value,to=$('st2').value,cp=$('sp2').value;
+    if(from===to){alert('Cannot subscribe to self');return}
+    if(!cp||!fc(to,cp)){alert('Pick a cell path on publisher');return}
+    if(S.subscriptions.some(s=>s.from===from&&s.to===to&&s.cellPath===cp)){alert('Subscription exists');return}
+    S.subscriptions.push({id:'s'+Date.now()+rd(1,99),from,to,cellPath:cp});
+    log('su',`${inN(from)} subscribes to ${inN(to)}.${cp}`);closeM('sm');save();renderAll()
+  };$('esub').onclick=()=>{
+    if(!MC)return;const{iid,path}=MC,c=fc(iid,path);if(!c)return;
+    const cv=coerce($('ev').value,c.type);
+    if(cv===c.value){closeM('em');return}
+    setC(iid,path,cv,inN(iid),'local');
+    log('s',`${inN(iid)}.${path} = ${fv(cv,c.type)}`);flashC(iid,path);closeM('em');save();rIns1(iid);propagate(iid,path,cv)
+  };
+  let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(rLines,100)});
+  setInterval(()=>{document.querySelectorAll('.cl').forEach(el=>{const iid=el.dataset.iid,path=el.dataset.path,c=fc(iid,path);if(!c)return;const sp=el.querySelectorAll('.cm span');if(sp.length>1)sp[1].textContent=ta(c.history[0]?.ts||Date.now())+' ago'})},5000);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.md.s').forEach(m=>m.classList.remove('s'))});
+  setTimeout(rLines,50);setTimeout(rLines,250)
+}
+init();
+</script>
+</body>
+</html>

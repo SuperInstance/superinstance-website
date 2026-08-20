@@ -1,23 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--
-  Built on Quilt. A spreadsheet where every cell is a live, addressable capability.
-  The grid is the runtime. The cell is the universal IO primitive.
-
-  Template: Note Garden
-  - Each note is a Quilt `value` cell with { id, title, body, color, tags, x, y }.
-  - Each connection is a `formula` cell that references two notes: { from, to, label }.
-  - The SVG canvas is the rendered sheet — positions are persisted, layout runs locally.
-  - Deleting a note is a `cascade` formula: it removes the note AND any formula cells that reference it.
-  - localStorage holds the workbook; export/import shares it as JSON.
-
-  Self-contained: no build step, no framework, no libraries (no d3, no cytoscape). Just cells.
--->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Note Garden — Quilt Click-and-Go Template</title>
-<meta name="description" content="A self-contained graph note-taking app built on Quilt cells. Notes are values, edges are formulas.">
+<title>Notes — Quilt Click-and-Go Template</title>
+<meta name="description" content="A self-contained note-taking app. Cells with title, content, tags. Search and export.">
 <style>
 :root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -28,9 +15,15 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 h1{font-size:1.6rem;font-weight:800}
 h1 .accent{color:var(--a4)}
 .sub{color:var(--td);font-size:.85rem;margin-top:3px}
+.coffee{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 12px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;font-family:'JetBrains Mono',monospace}
+.coffee:hover{filter:brightness(1.1);color:#422006}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px;white-space:nowrap}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
 .toolbar{display:flex;gap:6px;flex-wrap:wrap}
-.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--panel);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500;font-family:inherit}
-.btn:hover{background:var(--pe);border-color:var(--bs)}
+.btn{padding:7px 12px;border-radius:6px;border:1px solid var(--b);background:var(--pe);color:var(--t);font-size:.78rem;cursor:pointer;font-weight:500;font-family:inherit}
+.btn:hover{background:var(--bs);border-color:var(--bs)}
 .btn-pri{background:var(--a4);border-color:var(--a4);color:#000}
 .btn-pri:hover{filter:brightness(1.1)}
 .btn-ok{background:var(--a3);border-color:var(--a3);color:#000}
@@ -38,534 +31,373 @@ h1 .accent{color:var(--a4)}
 .btn-bad{background:transparent;border:1px solid var(--b);color:var(--bad)}
 .btn-bad:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
 .search{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.search input{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--b);color:var(--t);padding:7px 10px;border-radius:5px;font-size:.85rem;font-family:inherit}
-.search input:focus{outline:none;border-color:var(--a4)}
-.layout{flex:1;display:grid;grid-template-columns:1fr 280px;gap:14px;min-height:0}
+.search input,.search select{flex:1;min-width:140px;background:var(--panel);border:1px solid var(--b);color:var(--t);padding:7px 10px;border-radius:5px;font-size:.85rem;font-family:inherit}
+.search input:focus,.search select:focus{outline:none;border-color:var(--a4)}
+.layout{flex:1;display:grid;grid-template-columns:280px 1fr;gap:14px;min-height:0}
 @media(max-width:800px){.layout{grid-template-columns:1fr;height:auto}}
-.canvas-wrap{background:var(--panel);border:1px solid var(--b);border-radius:8px;position:relative;overflow:hidden;min-height:500px}
-.canvas-wrap svg{width:100%;height:100%;display:block;cursor:crosshair}
-.canvas-hint{position:absolute;top:10px;left:12px;font-size:.7rem;color:var(--tf);background:rgba(10,10,20,.7);padding:4px 8px;border-radius:4px;pointer-events:none}
-.canvas-hint kbd{background:var(--bg);border:1px solid var(--b);padding:0 4px;border-radius:3px;font-size:.65rem}
-.canvas-hint.hidden{display:none}
-.canvas-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--tf);font-style:italic;font-size:.85rem;text-align:center;padding:20px;pointer-events:none}
-.sidebar{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px;display:flex;flex-direction:column;min-height:0;max-height:80vh;overflow-y:auto}
-.sidebar h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--td);margin-bottom:8px}
-.field{margin-bottom:8px}
-.field label{display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--td);margin-bottom:3px}
-.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:6px 8px;border-radius:4px;font-size:.82rem;font-family:inherit}
-.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--a4)}
-.field textarea{min-height:120px;resize:vertical;line-height:1.5}
-.color-row{display:flex;gap:4px}
-.color-swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.15s}
-.color-swatch.active{border-color:var(--t);transform:scale(1.15)}
-.empty-edit{color:var(--tf);font-style:italic;font-size:.82rem;padding:14px 0;text-align:center}
-.connections-list{margin-top:10px;display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto}
-.conn-item{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:5px 8px;font-size:.72rem;display:flex;justify-content:space-between;align-items:center;gap:4px}
-.conn-item:hover{border-color:var(--bs)}
-.conn-item button{background:transparent;border:none;color:var(--bad);cursor:pointer;font-size:.85rem;padding:0 3px}
-.status{padding:6px 10px;border-radius:4px;font-size:.72rem;margin-top:8px}
-.status.info{background:rgba(59,130,246,.1);border:1px solid var(--a2);color:var(--a2)}
-.status.ok{background:rgba(16,185,129,.1);border:1px solid var(--a3);color:var(--a3)}
-.status.err{background:rgba(239,68,68,.1);border:1px solid var(--bad);color:var(--bad)}
-.stats{display:flex;gap:14px;font-size:.7rem;color:var(--td);margin-bottom:8px;flex-wrap:wrap}
-.stats span strong{color:var(--t)}
-.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:14px;font-size:.78rem;color:var(--td);margin-top:14px}
-.note strong{color:var(--t)}
-.note code{background:var(--bg);padding:1px 4px;border-radius:3px;color:var(--a2);font-size:.85em}
-.note pre{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:10px 12px;margin:8px 0;font-size:.7rem;line-height:1.5;overflow-x:auto;color:var(--a3)}
-.note a{color:var(--a2)}
-/* SVG node styles */
-.node-rect{fill:var(--pe);stroke:var(--b);stroke-width:1.5;cursor:pointer;transition:stroke .15s, filter .15s}
-.node-rect:hover{stroke:var(--a4);filter:drop-shadow(0 0 6px var(--a4))}
-.node-rect.selected{stroke:var(--a4);stroke-width:2.5;filter:drop-shadow(0 0 8px var(--a4))}
-.node-rect.source{stroke:var(--a2);stroke-dasharray:4 3}
-.node-rect.search-hit{stroke:var(--a3);stroke-width:2}
-.node-rect.dimmed{opacity:.25}
-.node-title{fill:var(--t);font-size:13px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;pointer-events:none}
-.node-tags{fill:var(--td);font-size:10px;font-family:'SF Mono',monospace;pointer-events:none}
-.edge-line{stroke:var(--bs);stroke-width:1.5;fill:none;opacity:.6;pointer-events:none}
-.edge-line.dimmed{opacity:.1}
-.edge-label{fill:var(--td);font-size:10px;font-family:'SF Mono',monospace;pointer-events:none;opacity:.7}
+.list{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:10px;overflow-y:auto;max-height:75vh}
+.note-row{padding:9px 10px;border-radius:5px;cursor:pointer;margin-bottom:4px;border:1px solid transparent}
+.note-row:hover{background:var(--pe);border-color:var(--b)}
+.note-row.active{background:rgba(245,158,11,.1);border-color:var(--a4)}
+.note-row .ttl{font-size:.9rem;font-weight:600;color:var(--t);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-row .meta{font-size:.7rem;color:var(--tf);display:flex;gap:5px;flex-wrap:wrap}
+.note-row .tag{background:rgba(124,58,237,.15);color:var(--a1);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.65rem}
+.empty{color:var(--tf);text-align:center;padding:24px;font-style:italic;font-size:.85rem}
+.editor{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:16px;display:flex;flex-direction:column;min-height:0}
+.editor .trow{display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap}
+.editor input.ttl{flex:1;min-width:200px;background:transparent;border:1px solid transparent;color:var(--t);padding:6px 8px;font-size:1.1rem;font-weight:600;font-family:inherit;border-radius:4px}
+.editor input.ttl:hover,.editor input.ttl:focus{background:var(--bg);border-color:var(--b);outline:none}
+.editor input.tags{background:var(--bg);border:1px solid var(--b);color:var(--t);padding:6px 9px;border-radius:4px;font-size:.8rem;font-family:inherit;width:280px}
+.editor input.tags:focus{outline:none;border-color:var(--a4)}
+.mode{display:flex;gap:4px}
+.mode button{padding:4px 10px;border:1px solid var(--b);background:var(--pe);color:var(--td);border-radius:4px;cursor:pointer;font-size:.72rem;font-family:'JetBrains Mono',monospace}
+.mode button.on{background:var(--a4);color:#000;border-color:var(--a4)}
+.body{flex:1;display:grid;grid-template-rows:1fr;min-height:280px}
+.body textarea,.body .preview{width:100%;height:100%;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:12px;border-radius:5px;font-size:.9rem;font-family:inherit;line-height:1.6;resize:none;overflow-y:auto}
+.body textarea:focus{outline:none;border-color:var(--a4)}
+.body .preview{padding:14px 16px}
+.body .preview h1{font-size:1.4rem;margin:.5em 0 .3em;color:var(--a1)}
+.body .preview h2{font-size:1.2rem;margin:.5em 0 .3em;color:var(--a2)}
+.body .preview h3{font-size:1.05rem;margin:.5em 0 .3em;color:var(--a3)}
+.body .preview p{margin:.4em 0}
+.body .preview code{background:var(--pe);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4);font-size:.85em}
+.body .preview pre{background:var(--pe);border:1px solid var(--b);padding:10px;border-radius:5px;margin:.6em 0;overflow-x:auto}
+.body .preview pre code{background:transparent;padding:0;color:var(--t)}
+.body .preview ul,.body .preview ol{margin:.4em 0 .4em 1.4em}
+.body .preview blockquote{border-left:3px solid var(--a1);padding:2px 12px;color:var(--td);margin:.6em 0;background:rgba(124,58,237,.05)}
+.body .preview hr{border:none;border-top:1px solid var(--b);margin:.8em 0}
+.body .preview a{color:var(--a2);text-decoration:underline}
+.body .preview strong{color:var(--t);font-weight:700}
+.body .preview em{color:var(--td)}
+.body .empty-preview{color:var(--tf);text-align:center;padding:60px 20px;font-style:italic}
+.bar{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:.7rem;color:var(--tf);flex-wrap:wrap;gap:6px}
+.bar .actions{display:flex;gap:6px}
+.bar .actions .btn{padding:4px 9px;font-size:.72rem}
+.totals{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:12px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.totals .lbl{color:var(--td);font-size:.65rem;text-transform:uppercase;letter-spacing:.06em}
+.totals .val{font-family:'SF Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--a3)}
+footer{text-align:center;padding:14px 0;color:var(--tf);font-size:.72rem;font-family:'SF Mono','JetBrains Mono',monospace;border-top:1px solid var(--b);margin-top:12px}
+footer a{color:var(--a1);text-decoration:none}
 </style>
 </head>
 <body>
 <div class="wrap">
+
 <header>
   <div>
-    <h1>🌱 <span class="accent">Note Garden</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
-    <div class="sub">Notes are nodes. Connections are formulas. The canvas is the rendered sheet.</div>
+    <h1>📝 <span class="accent">Notes</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— a Quilt click-and-go</span></h1>
+    <div class="sub">Title, content, tags. Search. Markdown-lite. Saves to your browser.</div>
   </div>
   <div class="toolbar">
     <button class="btn" onclick="exportJSON()">↓ Export</button>
     <button class="btn" onclick="importJSON()">↑ Import</button>
-    <button class="btn" onclick="autoLayout()">↺ Auto-layout</button>
-    <button class="btn btn-bad" onclick="clearAll()">Reset</button>
-    <button class="btn btn-ok" onclick="saveNow()">💾 Save</button>
-    <a class="btn" href="https://superinstance.dev/quilt.html">← back to Quilt</a>
+    <button class="btn btn-pri" onclick="newNote()">+ New note</button>
+    <a class="coffee" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
   </div>
 </header>
 
+<nav class="nav">
+  <a href="../index.html">Home</a>
+  <a href="../workspace.html">Workspace</a>
+  <a href="../playground.html">Playground</a>
+  <a href="../pincher.html">Pincher</a>
+  <a href="../vibe.html">Vibe</a>
+  <a href="../cron-builder.html">Cron</a>
+  <a href="../token-calculator.html">Tokens</a>
+  <a href="../json-to-sheet.html">JSON→Sheet</a>
+  <a href="../regex.html">Regex</a>
+  <a href="../debugger.html">Inspector</a>
+  <a href="notes.html" class="cur">Notes</a>
+</nav>
+
+<div class="totals" id="totals"></div>
+
 <div class="search">
-  <input type="text" id="search" placeholder="Search by title or tag…  (try: idea, todo, project)">
-  <button class="btn btn-pri" onclick="addNoteFromEmpty()">+ New note</button>
+  <input id="q" placeholder="Search title, content, or #tag…" oninput="render()">
+  <select id="tagfilter" onchange="render()"><option value="">All tags</option></select>
+  <select id="sort" onchange="render()">
+    <option value="updated">Sort: updated</option>
+    <option value="created">Sort: created</option>
+    <option value="title">Sort: title</option>
+  </select>
 </div>
 
 <div class="layout">
-  <div class="canvas-wrap" id="canvas-wrap">
-    <div class="canvas-hint" id="hint">Click empty space to add a note. Click a note, then click another to connect them. Drag notes to move.</div>
-    <div class="canvas-empty" id="empty-msg">No notes yet. Click "+ New note" or anywhere on the canvas to plant one.</div>
-    <svg id="graph" xmlns="http://www.w3.org/2000/svg"></svg>
-  </div>
-
-  <div class="sidebar">
-    <h3>Inspector</h3>
-    <div id="edit-pane"></div>
-  </div>
+  <div class="list" id="list"></div>
+  <div class="editor" id="editor"></div>
 </div>
 
-<div id="status"></div>
-
-<div class="note">
-  <strong>How this works:</strong> Each note is a Quilt <code>value</code> cell (<code>{id, title, body, color, tags, x, y}</code>). Each connection is a <code>formula</code> cell that references two notes (<code>{from, to, label}</code>). The SVG canvas is the rendered sheet: positions are persisted, and a tiny inline force-iteration settles the layout when you press <em>Auto-layout</em>. The right-hand panel edits the cell you clicked. Deleting a note is a <code>cascade</code> formula — it removes the note and every formula that references it. Search is a <code>filter</code> cell over title + tags. <a href="https://github.com/SuperInstance/quilt" target="_blank">Learn about Quilt</a>.
-  <pre>
-   note ────── connection ────── note
-   (value)    (formula)          (value)
-     │            │                  │
-   {id,        {from,            {id,
-    title,       to,               title,
-    body,        label}            body,
-    color,                         color,
-    tags,                          tags,
-    x, y}                          x, y}
-
-   cascade on delete: any formula whose from/to == deleted.id is also removed.
-  </pre>
 </div>
-</div>
+
+<footer>
+  Quilt-powered · <a href="../workspace.html">more tools</a> · saves to localStorage
+</footer>
 
 <script>
 const STORAGE_KEY = 'quilt-notes-v1';
-const COLORS = ['#7c3aed','#3b82f6','#10b981','#f59e0b','#ec4899','#06b6d4','#ef4444','#a855f7'];
 
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && Array.isArray(parsed.notes)) return parsed;
-    }
+    if (raw) return JSON.parse(raw);
   } catch (e) {}
-  // Seed with a small demo garden
-  const a = makeNote('Welcome', 'Click empty space to add a note. Click a note, then click another to connect them.', COLORS[0], ['intro','help'], 400, 200);
-  const b = makeNote('Quilt', 'A spreadsheet where every cell is a live, addressable capability.', COLORS[1], ['idea','quilt'], 650, 320);
-  const c = makeNote('Try tags', 'Use the search bar above to filter by tag.', COLORS[2], ['intro','tip'], 200, 380);
+  return null;
+}
+
+function save(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {} }
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function now() { return Date.now(); }
+
+function sampleData() {
+  const t = now();
   return {
-    notes: [a, b, c],
-    connections: [
-      { id: cid(), from: a.id, to: b.id, label: 'about' },
-      { id: cid(), from: a.id, to: c.id, label: 'see' },
+    notes: [
+      { id: uid(), title: 'Welcome to Notes', tags: ['intro','help'], body: '# Welcome\n\nThis is a **cell** in your notebook. Each note has:\n\n- A **title**\n- **Tags** (comma separated)\n- A **body** with *markdown-lite* formatting\n\n## Supported formatting\n\nUse `# heading`, `## subheading`, `### smaller`.\nUse `**bold**`, `*italic*`, `` `code` ``.\nUse `- bullet` or `1. numbered` for lists.\nUse `> quote` for blockquotes.\nUse `---` for a divider.\n\nClick **New note** to start a fresh one. Click the toggle to switch between edit and preview.', created: t - 5000, updated: t - 1000 },
+      { id: uid(), title: 'Grocery list', tags: ['home','todo'], body: '# Grocery\n\n- [ ] Eggs\n- [ ] Bread\n- [ ] Coffee beans\n- [x] Milk\n\nRun to the *corner store* on 5th.', created: t - 100000, updated: t - 80000 },
+      { id: uid(), title: 'Project: tent demo', tags: ['work','demo'], body: '## Goal\nShip a working demo of the tent-cell library by end of month.\n\n### Steps\n1. Get the canvas rendering at 60fps\n2. Wire up the formula cells\n3. Add a basic test sheet\n4. Write a one-pager\n\n> Block time on Tuesday afternoon for the writeup.', created: t - 300000, updated: t - 200000 },
+      { id: uid(), title: 'Reading list', tags: ['books','ideas'], body: '# Reading\n\n- *The Beginning of Infinity* — Deutsch\n- *Gödel, Escher, Bach* — Hofstadter\n- *Tools and Weapons* — Brad Smith\n\n> "Every new idea is a small step backward in some other direction."', created: t - 600000, updated: t - 500000 }
     ],
+    activeId: null
   };
 }
 
-function makeNote(title, body, color, tags, x, y) {
-  return { id: 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7), title, body, color: color || COLORS[0], tags: tags || [], x: x || 300, y: y || 300 };
-}
+let data = load() || sampleData();
+if (!data.activeId && data.notes.length) data.activeId = data.notes[0].id;
+save(data);
 
-function cid() { return 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7); }
-
-function save(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {} return data; }
-
-let data = load();
-let selectedId = null;
-let pendingSourceId = null;   // when set, next note click creates a connection
-let filter = '';
-let dragging = null;          // {id, offsetX, offsetY}
-let canvasW = 800, canvasH = 500;
-
-function getCanvasSize() {
-  const r = document.getElementById('canvas-wrap').getBoundingClientRect();
-  canvasW = r.width; canvasH = r.height;
-  document.getElementById('graph').setAttribute('viewBox', '0 0 ' + canvasW + ' ' + canvasH);
-}
-
-function setStatus(msg, kind) {
-  const el = document.getElementById('status');
-  if (!msg) { el.innerHTML = ''; return; }
-  el.innerHTML = '<div class="status ' + (kind || 'info') + '">' + escapeHTML(msg) + '</div>';
-}
+let activeMode = 'edit'; // 'edit' or 'preview'
 
 function escapeHTML(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function notesMatching() {
-  if (!filter) return new Set(data.notes.map(n => n.id));
-  const q = filter.toLowerCase();
-  return new Set(data.notes.filter(n =>
-    n.title.toLowerCase().includes(q) ||
-    n.body.toLowerCase().includes(q) ||
-    (n.tags || []).some(t => t.toLowerCase().includes(q))
-  ).map(n => n.id));
-}
-
-function renderGraph() {
-  const svg = document.getElementById('graph');
-  const hit = notesMatching();
-  const empty = document.getElementById('empty-msg');
-  empty.style.display = data.notes.length ? 'none' : 'flex';
-
-  // Build SVG content
-  const noteById = {}; data.notes.forEach(n => noteById[n.id] = n);
-
-  // Edges first (under nodes)
-  const edges = data.connections
-    .filter(c => noteById[c.from] && noteById[c.to])
-    .map(c => {
-      const a = noteById[c.from], b = noteById[c.to];
-      const dim = filter && (!hit.has(a.id) || !hit.has(b.id)) ? ' dimmed' : '';
-      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-      return `
-        <line class="edge-line${dim}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"></line>
-        <text class="edge-label${dim}" x="${mx}" y="${my - 4}" text-anchor="middle">${escapeHTML(c.label || '')}</text>
-      `;
-    }).join('');
-
-  // Nodes
-  const nodes = data.notes.map(n => {
-    const w = Math.max(100, n.title.length * 8 + 24);
-    const h = 56 + (n.tags && n.tags.length ? 14 : 0);
-    const isSel = n.id === selectedId;
-    const isSrc = n.id === pendingSourceId;
-    const isDim = filter && !hit.has(n.id);
-    const isHit = filter && hit.has(n.id);
-    const cls = ['node-rect'];
-    if (isSel) cls.push('selected');
-    if (isSrc) cls.push('source');
-    if (isDim) cls.push('dimmed');
-    if (isHit) cls.push('search-hit');
-    return `
-      <g class="node" data-id="${n.id}" transform="translate(${n.x - w/2}, ${n.y - h/2})">
-        <rect class="${cls.join(' ')}" width="${w}" height="${h}" rx="8" fill="${n.color}22" stroke="${n.color}"></rect>
-        <circle cx="14" cy="14" r="4" fill="${n.color}"></circle>
-        <text class="node-title" x="26" y="18">${escapeHTML(n.title || 'Untitled')}</text>
-        <foreignObject x="10" y="26" width="${w - 20}" height="${h - 30}">
-          <div xmlns="http://www.w3.org/1999/xhtml" style="font-size:11px;color:var(--td);line-height:1.35;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">${escapeHTML((n.body || '').slice(0, 60))}${(n.body || '').length > 60 ? '…' : ''}</div>
-        </foreignObject>
-        ${n.tags && n.tags.length ? `<text class="node-tags" x="10" y="${h - 4}">#${n.tags.map(escapeHTML).join(' #')}</text>` : ''}
-      </g>
-    `;
-  }).join('');
-
-  svg.innerHTML = edges + nodes;
-  attachNodeHandlers();
-}
-
-function attachNodeHandlers() {
-  const svg = document.getElementById('graph');
-  svg.querySelectorAll('.node').forEach(g => {
-    const id = g.getAttribute('data-id');
-    g.addEventListener('mousedown', e => startDrag(e, id));
-    g.addEventListener('click', e => { e.stopPropagation(); nodeClick(id); });
+function renderMarkdown(s) {
+  // First escape, then apply transformations on escaped text (so <script> becomes &lt;script&gt;)
+  let out = escapeHTML(s);
+  // code blocks ```...```
+  out = out.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${code.trim()}</code></pre>`);
+  // inline code
+  out = out.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  // headings
+  out = out.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  out = out.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  out = out.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  // horizontal rule
+  out = out.replace(/^---+$/gm, '<hr>');
+  // blockquote
+  out = out.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  // lists (simple)
+  // unordered: lines starting with - or *
+  out = out.replace(/(^|\n)((?:[-*] .+(?:\n|$))+)/g, (m, pre, block) => {
+    const items = block.trim().split('\n').map(l => `<li>${l.replace(/^[-*] /, '')}</li>`).join('');
+    return pre + '<ul>' + items + '</ul>';
   });
+  // ordered: lines starting with "1. "
+  out = out.replace(/(^|\n)((?:\d+\. .+(?:\n|$))+)/g, (m, pre, block) => {
+    const items = block.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
+    return pre + '<ol>' + items + '</ol>';
+  });
+  // bold then italic
+  out = out.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  out = out.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+  // links [text](url)
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  // paragraphs: lines that aren't already wrapped
+  out = out.split(/\n{2,}/).map(block => {
+    if (/^\s*<(h\d|ul|ol|li|blockquote|pre|hr|p)/i.test(block)) return block;
+    return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+  }).join('\n');
+  return out;
 }
 
-function svgPoint(e) {
-  const svg = document.getElementById('graph');
-  const pt = svg.createSVGPoint();
-  pt.x = e.clientX; pt.y = e.clientY;
-  const ctm = svg.getScreenCTM();
-  if (!ctm) return { x: e.offsetX, y: e.offsetY };
-  const p = pt.matrixTransform(ctm.inverse());
-  return { x: p.x, y: p.y };
+function allTags() {
+  const set = new Set();
+  for (const n of data.notes) for (const t of (n.tags || [])) set.add(t);
+  return Array.from(set).sort();
 }
 
-function startDrag(e, id) {
-  e.stopPropagation();
-  e.preventDefault();
-  const n = data.notes.find(x => x.id === id); if (!n) return;
-  const p = svgPoint(e);
-  dragging = { id, dx: p.x - n.x, dy: p.y - n.y };
-  window.addEventListener('mousemove', onDrag);
-  window.addEventListener('mouseup', endDrag);
+function getFiltered() {
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const tagF = document.getElementById('tagfilter').value;
+  const sort = document.getElementById('sort').value;
+  let list = data.notes.slice();
+  if (q) {
+    list = list.filter(n =>
+      n.title.toLowerCase().includes(q) ||
+      n.body.toLowerCase().includes(q) ||
+      (n.tags || []).some(t => t.toLowerCase().includes(q)) ||
+      ('#' + (n.tags||[]).join(' #')).toLowerCase().includes(q)
+    );
+  }
+  if (tagF) list = list.filter(n => (n.tags || []).includes(tagF));
+  if (sort === 'updated') list.sort((a, b) => b.updated - a.updated);
+  else if (sort === 'created') list.sort((a, b) => b.created - a.created);
+  else if (sort === 'title') list.sort((a, b) => a.title.localeCompare(b.title));
+  return list;
 }
 
-function onDrag(e) {
-  if (!dragging) return;
-  const p = svgPoint(e);
-  const n = data.notes.find(x => x.id === dragging.id); if (!n) return;
-  n.x = Math.max(40, Math.min(canvasW - 40, p.x - dragging.dx));
-  n.y = Math.max(30, Math.min(canvasH - 30, p.y - dragging.dy));
-  renderGraph();
+function renderTagFilter() {
+  const sel = document.getElementById('tagfilter');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All tags</option>' + allTags().map(t => `<option ${t===cur?'selected':''}>#${escapeHTML(t)}</option>`).join('');
 }
 
-function endDrag() {
-  if (dragging) { save(data); }
-  dragging = null;
-  window.removeEventListener('mousemove', onDrag);
-  window.removeEventListener('mouseup', endDrag);
+function renderTotals() {
+  const total = data.notes.length;
+  const tags = allTags().length;
+  const words = data.notes.reduce((s, n) => s + (n.body.match(/\b\w+\b/g) || []).length, 0);
+  const last = data.notes.length ? new Date(Math.max(...data.notes.map(n => n.updated))).toLocaleString() : '—';
+  document.getElementById('totals').innerHTML = `
+    <div><div class="lbl">Notes</div><div class="val">${total}</div></div>
+    <div><div class="lbl">Tags</div><div class="val">${tags}</div></div>
+    <div><div class="lbl">Words</div><div class="val">${words.toLocaleString()}</div></div>
+    <div><div class="lbl">Last edit</div><div class="val" style="font-size:.85rem">${escapeHTML(last)}</div></div>
+  `;
 }
 
-function nodeClick(id) {
-  // If we're in "connect from" mode, the second click creates the connection
-  if (pendingSourceId && pendingSourceId !== id) {
-    const label = prompt('Label for this connection (optional):', 'relates to') || '';
-    data.connections.push({ id: cid(), from: pendingSourceId, to: id, label });
-    pendingSourceId = null;
-    document.getElementById('hint').classList.remove('hidden');
-    setStatus('Connection created.', 'ok');
-    save(data); renderGraph();
+function renderList() {
+  const list = getFiltered();
+  const wrap = document.getElementById('list');
+  if (!list.length) {
+    wrap.innerHTML = '<div class="empty">No notes match.</div>';
     return;
   }
-  selectedId = id;
-  renderAll();
+  wrap.innerHTML = list.map(n => {
+    const tagHTML = (n.tags || []).slice(0,3).map(t => `<span class="tag">#${escapeHTML(t)}</span>`).join('');
+    return `<div class="note-row ${n.id===data.activeId?'active':''}" onclick="selectNote('${n.id}')">
+      <div class="ttl">${escapeHTML(n.title || 'Untitled')}</div>
+      <div class="meta">${tagHTML}<span style="margin-left:auto">${new Date(n.updated).toLocaleDateString()}</span></div>
+    </div>`;
+  }).join('');
 }
 
-function canvasClick(e) {
-  // Only fire when the click was on the SVG itself, not on a node
-  if (e.target.closest('.node')) return;
-  // If pending source was set, cancel it
-  if (pendingSourceId) {
-    pendingSourceId = null;
-    document.getElementById('hint').classList.remove('hidden');
-    setStatus('Cancelled pending connection.', 'info');
-    renderGraph();
+function renderEditor() {
+  const wrap = document.getElementById('editor');
+  const n = data.notes.find(x => x.id === data.activeId);
+  if (!n) {
+    wrap.innerHTML = '<div class="empty" style="margin:auto">No note selected. Click "New note" or pick one from the list.</div>';
     return;
   }
-  const p = svgPoint(e);
-  const n = makeNote('Untitled', '', COLORS[Math.floor(Math.random() * COLORS.length)], [], p.x, p.y);
-  data.notes.push(n);
-  selectedId = n.id;
-  save(data); renderAll();
-  setStatus('Note planted at (' + Math.round(p.x) + ', ' + Math.round(p.y) + ').', 'ok');
-}
-
-function addNoteFromEmpty() {
-  const n = makeNote('Untitled', '', COLORS[Math.floor(Math.random() * COLORS.length)], [], canvasW / 2, canvasH / 2);
-  data.notes.push(n);
-  selectedId = n.id;
-  save(data); renderAll();
-  setStatus('New note added. Edit it in the panel on the right.', 'ok');
-}
-
-function renderEdit() {
-  const el = document.getElementById('edit-pane');
-  if (!selectedId) {
-    el.innerHTML = '<div class="empty-edit">Select a note to inspect, or click empty canvas to add one.</div>';
-    return;
-  }
-  const n = data.notes.find(x => x.id === selectedId);
-  if (!n) { selectedId = null; return renderEdit(); }
-  const conns = data.connections.filter(c => c.from === n.id || c.to === n.id);
-  const noteById = {}; data.notes.forEach(x => noteById[x.id] = x);
-  el.innerHTML = `
-    <div class="field"><label>Title</label>
-      <input type="text" id="ed-title" value="${escapeHTML(n.title)}" oninput="updateField('title', this.value)">
-    </div>
-    <div class="field"><label>Body</label>
-      <textarea id="ed-body" oninput="updateField('body', this.value)">${escapeHTML(n.body)}</textarea>
-    </div>
-    <div class="field"><label>Tags (comma-separated)</label>
-      <input type="text" id="ed-tags" value="${escapeHTML((n.tags || []).join(', '))}" oninput="updateTags(this.value)">
-    </div>
-    <div class="field"><label>Color</label>
-      <div class="color-row">
-        ${COLORS.map(c => `<div class="color-swatch ${c === n.color ? 'active' : ''}" style="background:${c}" onclick="setColor('${c}')"></div>`).join('')}
+  const tagStr = (n.tags || []).join(', ');
+  wrap.innerHTML = `
+    <div class="trow">
+      <input class="ttl" value="${escapeHTML(n.title)}" oninput="updateField('${n.id}','title',this.value)" placeholder="Untitled">
+      <input class="tags" value="${escapeHTML(tagStr)}" oninput="updateTags('${n.id}', this.value)" placeholder="comma, separated, tags">
+      <div class="mode">
+        <button class="${activeMode==='edit'?'on':''}" onclick="setMode('edit')">Edit</button>
+        <button class="${activeMode==='preview'?'on':''}" onclick="setMode('preview')">Preview</button>
       </div>
     </div>
-    <div class="field"><label>Position</label>
-      <div class="m" style="font-size:.75rem;color:var(--td)">x = ${Math.round(n.x)}, y = ${Math.round(n.y)}</div>
+    <div class="body">
+      ${activeMode==='edit'
+        ? `<textarea id="body-area" placeholder="Write something…" oninput="updateField('${n.id}','body',this.value)">${escapeHTML(n.body)}</textarea>`
+        : (n.body.trim() ? `<div class="preview">${renderMarkdown(n.body)}</div>` : '<div class="empty-preview">Nothing to preview yet.</div>')}
     </div>
-    <div class="field" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
-      <button class="btn" onclick="startConnect('${n.id}')">⑃ Connect…</button>
-      <button class="btn btn-bad" onclick="deleteNote('${n.id}')">Delete</button>
-    </div>
-    <h3 style="margin-top:14px">Connections (${conns.length})</h3>
-    <div class="connections-list">
-      ${conns.length ? conns.map(c => {
-        const otherId = c.from === n.id ? c.to : c.from;
-        const other = noteById[otherId];
-        const dir = c.from === n.id ? '→' : '←';
-        return `<div class="conn-item">
-          <span><strong>${dir}</strong> ${escapeHTML(other ? other.title : '?')} <span style="color:var(--tf)">[${escapeHTML(c.label || '')}]</span></span>
-          <button onclick="deleteConn('${c.id}')" title="Delete">×</button>
-        </div>`;
-      }).join('') : '<div style="color:var(--tf);font-size:.72rem;padding:4px 0">No connections yet.</div>'}
+    <div class="bar">
+      <div>Created ${new Date(n.created).toLocaleString()} · Updated ${new Date(n.updated).toLocaleString()}</div>
+      <div class="actions">
+        <button class="btn" onclick="duplicateNote('${n.id}')">Duplicate</button>
+        <button class="btn btn-bad" onclick="deleteNote('${n.id}')">Delete</button>
+      </div>
     </div>
   `;
 }
 
-function updateField(field, value) {
-  const n = data.notes.find(x => x.id === selectedId); if (!n) return;
+function render() {
+  renderTagFilter();
+  renderTotals();
+  renderList();
+  renderEditor();
+}
+
+function setMode(m) { activeMode = m; render(); }
+
+function selectNote(id) { data.activeId = id; save(data); render(); }
+
+function newNote() {
+  const n = { id: uid(), title: 'Untitled', tags: [], body: '', created: now(), updated: now() };
+  data.notes.unshift(n);
+  data.activeId = n.id;
+  activeMode = 'edit';
+  save(data);
+  render();
+}
+
+function updateField(id, field, value) {
+  const n = data.notes.find(x => x.id === id);
+  if (!n) return;
   n[field] = value;
+  n.updated = now();
   save(data);
-  renderGraph();
+  if (field === 'title') renderList();
 }
 
-function updateTags(value) {
-  const n = data.notes.find(x => x.id === selectedId); if (!n) return;
+function updateTags(id, value) {
+  const n = data.notes.find(x => x.id === id);
+  if (!n) return;
   n.tags = value.split(',').map(t => t.trim()).filter(Boolean);
+  n.updated = now();
   save(data);
-  renderGraph();
-}
-
-function setColor(c) {
-  const n = data.notes.find(x => x.id === selectedId); if (!n) return;
-  n.color = c;
-  save(data); renderAll();
-}
-
-function startConnect(id) {
-  pendingSourceId = id;
-  selectedId = id;
-  document.getElementById('hint').textContent = 'Pending: click a target note to connect to.';
-  document.getElementById('hint').classList.remove('hidden');
-  setStatus('Click another note to connect from "' + (data.notes.find(n => n.id === id) || {}).title + '". Click empty space to cancel.', 'info');
-  renderGraph();
+  renderTagFilter();
+  renderList();
 }
 
 function deleteNote(id) {
-  const n = data.notes.find(x => x.id === id); if (!n) return;
-  if (!confirm('Delete "' + n.title + '" and all its connections?')) return;
-  const before = data.connections.length;
-  data.notes = data.notes.filter(x => x.id !== id);
-  // Cascade: remove any formula cell that references the deleted note
-  data.connections = data.connections.filter(c => c.from !== id && c.to !== id);
-  const removed = before - data.connections.length;
-  if (selectedId === id) selectedId = null;
-  if (pendingSourceId === id) pendingSourceId = null;
-  save(data); renderAll();
-  setStatus('Note deleted. Cascade removed ' + removed + ' connection' + (removed === 1 ? '' : 's') + '.', 'ok');
+  if (!confirm('Delete this note?')) return;
+  data.notes = data.notes.filter(n => n.id !== id);
+  if (data.activeId === id) data.activeId = data.notes.length ? data.notes[0].id : null;
+  save(data);
+  render();
 }
 
-function deleteConn(id) {
-  if (!confirm('Delete this connection?')) return;
-  data.connections = data.connections.filter(c => c.id !== id);
-  save(data); renderAll();
-}
-
-function autoLayout() {
-  // Tiny force-iteration: push apart, pull connected
-  const ITER = 220;
-  const cx = canvasW / 2, cy = canvasH / 2;
-  // Random initial nudge if no positions
-  for (const n of data.notes) {
-    if (n.x == null) n.x = 100 + Math.random() * (canvasW - 200);
-    if (n.y == null) n.y = 100 + Math.random() * (canvasH - 200);
-  }
-  for (let it = 0; it < ITER; it++) {
-    // Repulsion
-    for (let i = 0; i < data.notes.length; i++) {
-      for (let j = i + 1; j < data.notes.length; j++) {
-        const a = data.notes[i], b = data.notes[j];
-        let dx = a.x - b.x, dy = a.y - b.y;
-        let d2 = dx*dx + dy*dy; if (d2 < 1) d2 = 1;
-        const force = 8000 / d2;
-        const d = Math.sqrt(d2);
-        const fx = (dx / d) * force, fy = (dy / d) * force;
-        a.x += fx; a.y += fy; b.x -= fx; b.y -= fy;
-      }
-    }
-    // Attraction along edges
-    const byId = {}; data.notes.forEach(n => byId[n.id] = n);
-    for (const c of data.connections) {
-      const a = byId[c.from], b = byId[c.to]; if (!a || !b) continue;
-      const dx = b.x - a.x, dy = b.y - a.y;
-      const d = Math.sqrt(dx*dx + dy*dy) || 1;
-      const target = 180;
-      const f = (d - target) * 0.02;
-      const fx = (dx / d) * f, fy = (dy / d) * f;
-      a.x += fx; a.y += fy; b.x -= fx; b.y -= fy;
-    }
-    // Centering pull
-    for (const n of data.notes) {
-      n.x += (cx - n.x) * 0.005;
-      n.y += (cy - n.y) * 0.005;
-    }
-  }
-  // Clamp to canvas
-  for (const n of data.notes) {
-    n.x = Math.max(40, Math.min(canvasW - 40, n.x));
-    n.y = Math.max(30, Math.min(canvasH - 30, n.y));
-  }
-  save(data); renderGraph();
-  setStatus('Auto-layout applied.', 'ok');
-}
-
-function renderStats() {
-  // (Reserved for future stats bar.)
-}
-
-function renderAll() {
-  renderGraph();
-  renderEdit();
-  renderStats();
-}
-
-function clearAll() {
-  if (!confirm('Reset the entire garden? All notes and connections will be deleted.')) return;
-  data = { notes: [], connections: [] };
-  selectedId = null; pendingSourceId = null;
-  save(data); renderAll();
-  setStatus('Garden reset.', 'ok');
+function duplicateNote(id) {
+  const n = data.notes.find(x => x.id === id);
+  if (!n) return;
+  const copy = { ...n, id: uid(), title: n.title + ' (copy)', created: now(), updated: now() };
+  data.notes.unshift(copy);
+  data.activeId = copy.id;
+  save(data);
+  render();
 }
 
 function exportJSON() {
-  const payload = {
-    app: 'quilt-notes',
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    ...data,
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'quilt-notes-' + new Date().toISOString().split('T')[0] + '.json'; a.click();
+  a.href = url;
+  a.download = `quilt-notes-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
   URL.revokeObjectURL(url);
-  setStatus('Exported ' + data.notes.length + ' notes, ' + data.connections.length + ' connections.', 'ok');
 }
 
 function importJSON() {
   const input = document.createElement('input');
-  input.type = 'file'; input.accept = 'application/json';
+  input.type = 'file';
+  input.accept = 'application/json';
   input.onchange = e => {
-    const file = e.target.files[0]; if (!file) return;
+    const f = e.target.files[0];
+    if (!f) return;
     const reader = new FileReader();
     reader.onload = ev => {
       try {
-        const parsed = JSON.parse(ev.target.result);
-        if (parsed && Array.isArray(parsed.notes)) {
-          data = {
-            notes: parsed.notes,
-            connections: Array.isArray(parsed.connections) ? parsed.connections : [],
-          };
-          selectedId = null; pendingSourceId = null;
-          save(data); renderAll();
-          setStatus('Imported ' + data.notes.length + ' notes, ' + data.connections.length + ' connections.', 'ok');
-        } else {
-          setStatus('Invalid file: missing notes array.', 'err');
-        }
-      } catch (err) { setStatus('Invalid JSON: ' + err.message, 'err'); }
+        const obj = JSON.parse(ev.target.result);
+        if (obj && Array.isArray(obj.notes)) {
+          data = obj;
+          if (!data.activeId && data.notes.length) data.activeId = data.notes[0].id;
+          save(data);
+          render();
+          alert(`Imported ${data.notes.length} notes.`);
+        } else { alert('Invalid notes file.'); }
+      } catch (err) { alert('Invalid JSON: ' + err.message); }
     };
-    reader.readAsText(file);
+    reader.readAsText(f);
   };
   input.click();
 }
 
-function saveNow() {
-  save(data);
-  const btn = event.target;
-  const orig = btn.textContent;
-  btn.textContent = '✓ Saved';
-  setTimeout(() => btn.textContent = orig, 1200);
-}
-
-// Init
-getCanvasSize();
-window.addEventListener('resize', () => { getCanvasSize(); renderGraph(); });
-document.getElementById('graph').addEventListener('click', canvasClick);
-document.getElementById('search').addEventListener('input', e => { filter = e.target.value.trim(); renderGraph(); });
-renderAll();
+render();
 </script>
 </body>
 </html>
