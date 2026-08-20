@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fleet — all 35 Quilt repos at a glance</title>
+<title>Fleet — all 37 Quilt repos at a glance</title>
 <style>
 :root{
   --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
@@ -64,7 +64,7 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
 
 <div class="top">
   <div>
-    <h1>🚢 <span class="accent">Fleet</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— all 35 Quilt repos</span></h1>
+    <h1>🚢 <span class="accent">Fleet</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— all 37 Quilt repos</span></h1>
     <p style="margin-top:3px">A single page showing every Quilt repo: tier, language, dependencies, test counts, links. Click a card to open the repo.</p>
   </div>
   <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
@@ -109,6 +109,7 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
   <span class="chip" data-tier="hardware">hardware</span>
   <span class="chip" data-tier="infra">infra</span>
   <span class="chip" data-tier="polyformalism">polyformalism</span>
+  <span class="chip" data-tier="orchestrator">orchestrator</span>
   <span style="margin-left:11px" class="lbl">Lang:</span>
   <span class="chip on" data-lang="all">all</span>
   <span class="chip" data-lang="ts">TypeScript</span>
@@ -170,6 +171,8 @@ const REPOS = [
   { name: 'quilt-csharp', icon: '🎯', tier: 'polyformalism', lang: 'cs', desc: 'C#. Records, delegates, events, LINQ. All the pieces already exist.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
   { name: 'quilt-metal', icon: '🖥️', tier: 'polyformalism', lang: 'metal', desc: 'Metal. GPU-evaluated cells. Kernels = formulas, buffers = cell values.', tests: 0, size: '14KB', deps: 0, version: '0.1.0' },
   { name: 'quilt-swift', icon: '🦅', tier: 'polyformalism', lang: 'swift', desc: 'Swift. @Published is exactly a ValueCell. Combine is exactly a reactive engine.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
+  // Orchestrators — bootstrappers
+  { name: 'quilt-radio-orchestrator', icon: '🥚', tier: 'orchestrator', lang: 'py', desc: 'Fetalized-egg pattern. Bootstrap Quilt radio-theater sheets from a seed using z.ai + DeepSeek + Kimi.', tests: 0, size: '10KB', deps: 0, version: '0.1.0' },
 ];
 
 // ─────────────────────────────────────────────────────────────────
