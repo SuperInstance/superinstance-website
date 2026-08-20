@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuperInstance — Quilt, the cell model, and 15 repos for whatever you're building</title>
+<title>SuperInstance — Quilt, the cell model, and 18 repos for whatever you're building</title>
 <meta name="description" content="A spreadsheet where every cell is a live capability. TypeScript, Rust, a 70KB single-file browser version, an ESP32 no_std port, a Cloudflare Worker, and 9 other repos. From sensors to LLM agents, from IoT to the multiverse.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -172,7 +172,7 @@ footer .copyright{margin-top:10px;font-size:.74rem;color:var(--tf)}
   </div>
   <div class="nav-links">
     <a href="#quilt">Quilt</a>
-    <a href="#repos">15 repos</a>
+    <a href="#repos">18 repos</a>
     <a href="#demos">Demos</a>
     <a href="#templates">Templates</a>
     <a href="#hosted">Hosted</a>
@@ -186,7 +186,7 @@ footer .copyright{margin-top:10px;font-size:.74rem;color:var(--tf)}
 <!-- ════════════════════ HERO ════════════════════ -->
 <section class="hero">
   <h1>One spreadsheet. <span class="grad-text">Every cell is alive.</span></h1>
-  <p class="sub">A reactive, typed, cellular runtime for whatever you're building — from boat autopilots to LLM agents, from IoT to the multiverse. 15 repos, 5 deployment tiers, 3 languages, 8 SDK primitives, 82 tests.</p>
+  <p class="sub">A reactive, typed, cellular runtime for whatever you're building — from boat autopilots to LLM agents, from IoT to the multiverse. 18 repos, 5 deployment tiers, 3 languages, 79 SDK tests (82 total), all Apache 2.0.</p>
   <p class="tagline">// TypeScript · Rust · 70KB single-file · Cloudflare · ESP32 · GitHub Codespaces</p>
   <div class="ctas">
     <a class="btn btn-grad" href="#quilt">Meet Quilt</a>
@@ -254,7 +254,7 @@ footer .copyright{margin-top:10px;font-size:.74rem;color:var(--tf)}
 
 <!-- ════════════════════ THE 15 REPOS ════════════════════ -->
 <section id="repos">
-  <h2><span class="num">02</span> 15 repos across 5 deployment tiers</h2>
+  <h2><span class="num">02</span> 18 repos across 5 deployment tiers</h2>
   <p class="lead">The Quilt ecosystem is federated — multiple Quilt instances (Codespace, Jetson, ESP32, Cloudflare Worker) talk to each other via the URI scheme <code>quilt://[instance]/[sheet]#[cell]</code>. Same engine, same cell semantics, three different hardware tiers.</p>
 
   <div class="repos">
@@ -320,6 +320,27 @@ footer .copyright{margin-top:10px;font-size:.74rem;color:var(--tf)}
       <div class="rname">quilt-mesh</div>
       <div class="rdesc">CRDT-backed mesh. Cross-tab and cross-device sync via BroadcastChannel.</div>
       <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-mesh" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier rs">jetson</span>
+      <div class="rname">quilt-jetson</div>
+      <div class="rdesc">NVIDIA Jetson runtime. CUDA, ROS2 bridge, vision cells via TensorRT/ONNX, sensor fusion. The missing mid-tier.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-jetson" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">rag</span>
+      <div class="rname">quilt-rag</div>
+      <div class="rdesc">Production RAG as cells. 5 vector stores, 5 embedders, 3 rerankers, 4 evaluators. RAGPipeline orchestrator. 17 tests.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-rag" target="_blank">repo</a></div>
+    </div>
+
+    <div class="repo">
+      <span class="rtier ts">fleet</span>
+      <div class="rname">quilt-fleet</div>
+      <div class="rdesc">Multi-instance federation orchestrator. Discovery, health, quorum, migration, auto-scaling. 4 transports. CLI + REST API.</div>
+      <div class="rlinks"><a href="https://github.com/SuperInstance/quilt-fleet" target="_blank">repo</a></div>
     </div>
 
     <div class="repo">
@@ -829,7 +850,7 @@ footer .copyright{margin-top:10px;font-size:.74rem;color:var(--tf)}
     <div class="ci">☕</div>
     <div>
       <h3>Support the work</h3>
-      <p>15 repos, 8 SDK primitives, 50+ landing pages, 82 tests, and a federation architecture that runs on a 70KB HTML file. All open source, all free. If Quilt has saved you time, helped you ship, or just made you smile — buy us a coffee. <span class="coffee-later">Crowd-funding for hardware and hosted services coming later.</span></p>
+      <p>18 repos, 10 SDK primitives, 13+ landing pages, 79 SDK tests, and a federation architecture that runs on a 70KB HTML file. All open source, all free. If Quilt has saved you time, helped you ship, or just made you smile — buy us a coffee. <span class="coffee-later">Crowd-funding for hardware and hosted services coming later.</span></p>
     </div>
     <div class="ctas">
       <a class="coffee-btn" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank" rel="noopener">
