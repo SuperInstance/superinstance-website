@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polyformalism — Quilt in 12 languages</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --warn:#fbbf24;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.1rem;margin:18px 0 11px;color:var(--a3)}
+h3{font-size:.95rem;margin:14px 0 7px;color:var(--a2)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:14px;margin-bottom:18px;font-size:.85rem;color:var(--td);line-height:1.6}
+.intro strong{color:var(--a3)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.langs{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:20px}
+.lang{background:var(--panel);border:1px solid var(--b);border-radius:9px;overflow:hidden;transition:.2s}
+.lang:hover{border-color:var(--a2)}
+.lang .head{height:100px;background-size:cover;background-position:center;border-bottom:1px solid var(--b)}
+.lang .body{padding:13px}
+.lang .name{font-size:1.05rem;font-weight:800;color:var(--a3);margin-bottom:5px;font-family:'JetBrains Mono',monospace}
+.lang .era{font-size:.7rem;color:var(--tf);margin-bottom:7px}
+.lang .tagline{font-size:.85rem;color:var(--t);margin-bottom:7px;line-height:1.4}
+.lang .insight{font-size:.78rem;color:var(--td);margin-bottom:9px;line-height:1.4;font-style:italic;border-left:2px solid var(--a2);padding-left:7px}
+.lang .links{display:flex;gap:6px;flex-wrap:wrap}
+.lang .links a{background:var(--pe);border:1px solid var(--b);color:var(--a2);padding:3px 8px;border-radius:3px;font-size:.7rem;text-decoration:none;font-family:'JetBrains Mono',monospace}
+.lang .links a:hover{border-color:var(--a2);background:rgba(124,58,237,.1)}
+.comparison{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:18px;margin-bottom:20px;overflow-x:auto}
+.comparison table{width:100%;border-collapse:collapse;font-size:.78rem}
+.comparison th,.comparison td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--b)}
+.comparison th{color:var(--a3);font-weight:700;background:var(--pe)}
+.comparison td code{background:var(--bg);padding:1px 4px;border-radius:2px;font-family:'JetBrains Mono',monospace;color:var(--a4);font-size:.72rem}
+.comparison td{color:var(--td);font-size:.78rem}
+.methodology{background:linear-gradient(135deg,rgba(124,58,237,.1) 0%,rgba(59,130,246,.1) 100%);border:1px solid var(--a1);border-radius:12px;padding:20px;margin-bottom:20px}
+.methodology h2{color:var(--a3);margin-top:0}
+.methodology ol{color:var(--td);padding-left:18px;line-height:1.7}
+.methodology li{margin-bottom:7px}
+.methodology li strong{color:var(--a3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🔮 <span class="accent">Polyformalism</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— Quilt in 12 languages</span></h1>
+    <p style="margin-top:3px">Same model, every language. <strong>What works crazy well. What needs crazy workarounds.</strong> What you learn by expressing the same idea in 12 different language constraints.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="polyformalism.html" class="cur">Polyformalism</a>
+  <a href="infra.html">Infrastructure</a>
+  <a href="playground.html">Playground</a>
+  <a href="ai-sheet.html">AI sheet</a>
+</div>
+
+<div class="intro">
+  <p><strong>Polyformalism</strong> is the practice of expressing the same model in many different formal languages to discover what's essential vs accidental. You write the same Quilt cell system in 12 different programming languages. Each language's constraints force different choices. The differences reveal the model. The similarities confirm the model.</p>
+  <p style="margin-bottom:0">This page is the entry point to the <strong>12-language Quilt polyformalism</strong>. Each card is one language. Each one has a GitHub repo, a splash image, a philosophy, concrete proof, and insights you can only get from that language's perspective.</p>
+</div>
+
+<div class="methodology">
+  <h2>The polyformalism methodology</h2>
+  <p>From the parent framework at <a href="https://github.com/SuperInstance/polyformalism" target="_blank" style="color:var(--a2)">github.com/SuperInstance/polyformalism</a>:</p>
+  <ol>
+    <li><strong>Pick a constraint kernel.</strong> The Quilt cell model: a typed value, a formula, a listener, a dependency edge.</li>
+    <li><strong>Express it in each language.</strong> No translation guides. The language's idiom is the point.</li>
+    <li><strong>Note what works crazy well.</strong> Each language has a feature that makes the model more natural than the canonical version.</li>
+    <li><strong>Note what needs crazy workarounds.</strong> Each language has a constraint that forces a non-obvious choice.</li>
+    <li><strong>Synthesize insights.</strong> The things that are easy everywhere are essential. The things that are hard in one place are likely accidental.</li>
+    <li><strong>Iterate the canonical version.</strong> The polyformalism back-pressure makes the original better.</li>
+  </ol>
+</div>
+
+<h2>The 12 languages</h2>
+<div class="langs">
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%)"></div>
+    <div class="body">
+      <div class="name">quilt (TypeScript)</div>
+      <div class="era">Canonical · 2024</div>
+      <div class="tagline">The original. 9 cell kinds, reactive evaluation, federation, 96 tests.</div>
+      <div class="insight">"Reactive evaluation is natural in JS. It hides the state machine structure."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#fbbf24 0%,#92400e 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-tutor</div>
+      <div class="era">1970s PLATO · Foundational</div>
+      <div class="tagline">The original cell-based authoring system. Multi-user cells by default.</div>
+      <div class="insight">"Multi-user cells are the default in Tutor. Federation is a 1970s feature, not a 2020s one."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-tutor" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-tutor/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#3b82f6 0%,#10b981 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-pydantic-ai</div>
+      <div class="era">2026 · Production Python</div>
+      <div class="tagline">The modern descendant of Tutor. Type-safe cells for LLM agents.</div>
+      <div class="insight">"Pydantic is to Pydantic-AI what Fortran was to Tutor. Both are the trusted type layer."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-pydantic-ai" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-pydantic-ai/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#06b6d4 0%,#3b82f6 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-mojo</div>
+      <div class="era">2024 · AI hardware</div>
+      <div class="tagline">Cells as types. SIMD-friendly formulas. Compile-time reactivity.</div>
+      <div class="insight">"In Mojo, the cell is a struct, not a value. The type IS the cell kind."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-mojo" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-mojo/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#8b5cf6 0%,#06b6d4 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-julia</div>
+      <div class="era">2012 · Scientific</div>
+      <div class="tagline">Multiple dispatch = cell kinds. The reactive engine IS the type system.</div>
+      <div class="insight">"Cell kinds become types. Formulas become methods. The engine is just dispatch."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-julia" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-julia/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#f97316 0%,#1e40af 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-chapel</div>
+      <div class="era">2009 · HPC</div>
+      <div class="tagline">Distributed cell evaluation across locales. Cells are inherently parallel.</div>
+      <div class="insight">"In Chapel, cells are first-class distributed. The reactive engine runs on every node."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-chapel" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-chapel/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#a16207 0%,#422006 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-cobol</div>
+      <div class="era">1959 · Business legacy</div>
+      <div class="tagline">The cell model is older than spreadsheets. COBOL programmers were doing it.</div>
+      <div class="insight">"The four COBOL divisions are a layered cell system. IDENTIFICATION is metadata, PROCEDURE is the reactive engine."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-cobol" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-cobol/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#1e293b 0%,#475569 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-c</div>
+      <div class="era">1972 · Bare metal</div>
+      <div class="tagline">The mathematical core. Cells = structs. Formulas = functions. No sugar.</div>
+      <div class="insight">"In C, the cell model is just a struct + a function table. Everything else is sugar."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-c" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-c/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#1e3a8a 0%,#0ea5e9 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-cpp</div>
+      <div class="era">1985 · Systems modern</div>
+      <div class="tagline">Templates reveal the cell kind lattice. Type-erasure for any cell.</div>
+      <div class="insight">"`std::variant<>` is the perfect cell value. `std::function<>` is the perfect formula."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-cpp" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-cpp/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#5b21b6 0%,#3b82f6 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-csharp</div>
+      <div class="era">2000 · Enterprise</div>
+      <div class="tagline">Records for cells, delegates for formulas, events for listeners. LINQ for graph queries.</div>
+      <div class="insight">"C# has all the pieces already. Records + delegates + events + LINQ. Just compose them."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-csharp" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-csharp/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#581c87 0%,#a78bfa 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-metal</div>
+      <div class="era">2014 · GPU</div>
+      <div class="tagline">Cells evaluated in parallel on the GPU. Kernels = formulas. Buffers = cell values.</div>
+      <div class="insight">"The cell model is inherently parallel. The GPU is the natural runtime."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-metal" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-metal/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang">
+    <div class="head" style="background:linear-gradient(135deg,#f97316 0%,#a855f7 100%)"></div>
+    <div class="body">
+      <div class="name">quilt-swift</div>
+      <div class="era">2014 · Apple</div>
+      <div class="tagline">Actors for cell isolation. `@Published` is exactly a Quilt cell.</div>
+      <div class="insight">"Swift's Combine framework IS a cell engine. The polyformalism finds what was always there."</div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-swift" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-swift/blob/main/README.md" target="_blank">README</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>The cross-language comparison</h2>
+<div class="comparison">
+<table>
+  <tr>
+    <th>Language</th>
+    <th>Era</th>
+    <th>Cell =</th>
+    <th>Formula =</th>
+    <th>Insight</th>
+  </tr>
+  <tr><td>TypeScript</td><td>2024</td><td><code>{path, kind, value}</code></td><td><code>(ctx) => any</code></td><td>Reactivity is natural</td></tr>
+  <tr><td>Tutor</td><td>1970</td><td><code>$variable</code></td><td><code>do fortran.X</code></td><td>Multi-user by default</td></tr>
+  <tr><td>Pydantic-AI</td><td>2026</td><td><code>BaseModel</code></td><td><code>Callable[[dict], Any]</code></td><td>Types are the contract</td></tr>
+  <tr><td>Mojo</td><td>2024</td><td><code>struct</code></td><td><code>@always_inline fn</code></td><td>Cells are types</td></tr>
+  <tr><td>Julia</td><td>2012</td><td><code>struct</code></td><td><code>method on type</code></td><td>Engine is the type system</td></tr>
+  <tr><td>Chapel</td><td>2009</td><td><code>var</code> on locale</td><td><code>proc</code></td><td>Cells are distributed</td></tr>
+  <tr><td>COBOL</td><td>1959</td><td><code>01 RECORD</code></td><td><code>PERFORM</code></td><td>Hierarchy is explicit</td></tr>
+  <tr><td>C</td><td>1972</td><td><code>struct</code></td><td><code>function ptr</code></td><td>Everything is sugar</td></tr>
+  <tr><td>C++</td><td>1985</td><td><code>std::variant</code></td><td><code>std::function</code></td><td>Templates reveal the lattice</td></tr>
+  <tr><td>C#</td><td>2000</td><td><code>record</code></td><td><code>delegate</code></td><td>All pieces already exist</td></tr>
+  <tr><td>Metal</td><td>2014</td><td><code>buffer</code></td><td><code>kernel fn</code></td><td>Cells are inherently parallel</td></tr>
+  <tr><td>Swift</td><td>2014</td><td><code>@Published var</code></td><td><code>async fn</code></td><td>Combine is a cell engine</td></tr>
+</table>
+</div>
+
+<h2>The polyformalism insight</h2>
+<div class="intro">
+  <p>The 12 languages differ in 12 ways. They agree on 1 thing: <strong>a cell is a typed value, a formula is a function, a listener is a reaction, a sheet is a collection of cells with dependencies.</strong> That agreement is the model. The differences are the polyformalism findings.</p>
+  <p style="margin-bottom:0">The polyformalism methodology also iterates back. The insights from each language version feed back into the canonical TypeScript version. <strong>quilt-pydantic-ai</strong> in particular is iterated twice — once at the start (as the modern equivalent of Tutor) and once at the end (informed by all the other languages). The end version is better than the start version. That's the back-pressure working.</p>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:30px 20px 20px;margin-top:40px;border-top:1px solid var(--b)">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank" style="background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px">☕ Buy Casey a Coffee — support the polyformalism research</a>
+  <div style="margin-top:11px;color:var(--tf);font-size:.78rem">
+    12 languages. 1 model. ∞ insights. Designed with z.ai + Kimi. Apache 2.0.
+  </div>
+</div>
+
+</body>
+</html>
