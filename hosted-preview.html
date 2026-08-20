@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hosted Quilt — preview</title>
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6;font-size:15px}
+.m{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1100px;margin:0 auto;padding:22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.7rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.3rem;margin:32px 0 12px;color:var(--a3)}
+p{color:var(--td);margin-bottom:14px}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 13px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.banner{background:linear-gradient(90deg,var(--a1) 0%,var(--a2) 100%);border-radius:9px;padding:9px 14px;color:#fff;font-size:.78rem;font-weight:600;text-align:center;margin-bottom:18px}
+.banner strong{margin-right:5px}
+.preview{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:0;margin:20px 0;overflow:hidden}
+.preview-bar{display:flex;align-items:center;background:var(--pe);padding:7px 12px;border-bottom:1px solid var(--b);font-size:.78rem}
+.preview-bar .dots{display:flex;gap:4px;margin-right:10px}
+.preview-bar .dot{width:9px;height:9px;border-radius:50%}
+.preview-bar .dot.r{background:#ff5f57}
+.preview-bar .dot.y{background:#febc2e}
+.preview-bar .dot.g{background:#28c840}
+.preview-bar .url{flex:1;background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:3px 9px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--td)}
+.preview-body{background:#06060c;color:var(--t);padding:18px;min-height:300px;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.6}
+.tier-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:24px 0}
+@media(max-width:800px){.tier-grid{grid-template-columns:1fr}}
+.tier{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:18px;position:relative}
+.tier.featured{border-color:var(--a3);background:linear-gradient(180deg,rgba(16,185,129,.06) 0%,var(--panel) 100%)}
+.tier.future{border-color:var(--b);background:rgba(245,158,11,.04)}
+.tier h3{font-size:1.2rem;margin-bottom:5px}
+.tier .price{font-size:1.6rem;font-weight:800;margin:7px 0;color:var(--a3)}
+.tier.future .price{color:var(--a4)}
+.tier .per{color:var(--td);font-size:.8rem;margin-bottom:14px}
+.tier ul{list-style:none;font-size:.85rem;color:var(--td);margin:0 0 14px;padding:0}
+.tier ul li{padding:5px 0 5px 18px;position:relative}
+.tier ul li::before{content:'✓';position:absolute;left:0;color:var(--a3);font-weight:700}
+.tier.future ul li::before{content:'·';color:var(--a4)}
+.tier .btn{display:block;text-align:center;padding:9px;border-radius:6px;background:var(--a3);color:#0a0a14;font-weight:700;text-decoration:none;font-size:.85rem}
+.tier .btn:hover{filter:brightness(1.1)}
+.tier .btn.future{background:var(--pe);color:var(--td);border:1px solid var(--b)}
+.tier .btn.future:hover{background:var(--b)}
+.faq{margin:30px 0}
+.faq .q{background:var(--panel);border:1px solid var(--b);border-radius:6px;padding:11px 14px;margin-bottom:7px;cursor:pointer}
+.faq .q:hover{border-color:var(--a2)}
+.faq .q .q-text{font-weight:600;color:var(--t)}
+.faq .q .a{color:var(--td);font-size:.85rem;margin-top:5px;display:none}
+.faq .q.open .a{display:block}
+.coffee-bottom{text-align:center;padding:30px 20px 20px;margin-top:50px;border-top:1px solid var(--b)}
+.coffee-bottom a{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.coffee-bottom a:hover{filter:brightness(1.1);color:#422006}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>☁️ <span class="accent">Hosted Quilt</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— preview</span></h1>
+    <p style="color:var(--td);max-width:740px;margin-top:6px">A managed Quilt runtime with persistent state, team sharing, audit logs, and one-click deploy. Your work in the cloud, not just localStorage. Long-lived services. Federated across multiple Quilt instances.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<!-- Banner: shows what free tier users would see -->
+<div class="banner" id="banner">
+  <strong>FREE TIER</strong>
+  You're on a hosted Quilt sheet served by SuperInstance. <a href="#tiers" style="color:#fff;text-decoration:underline">Upgrade to Pro to remove this banner.</a>
+</div>
+
+<!-- Live preview of what hosted Quilt looks like -->
+<div class="preview">
+  <div class="preview-bar">
+    <div class="dots">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    </div>
+    <div class="url">https://quilt.superinstance.dev/s/casey/personal-finance</div>
+  </div>
+  <div class="preview-body">
+    <span style="color:var(--td)">// user@casey:~$ quilt open personal-finance</span><br><br>
+    <span style="color:var(--a3)">sheets</span>: 3 of ∞ (3 in localStorage, 0 in cloud)<br>
+    <span style="color:var(--a3)">saving</span>: localStorage (auto-sync: <span style="color:var(--a4)">paused</span> — upgrade to sync)<br>
+    <span style="color:var(--a3)">plan</span>: Free · banner shown · <a style="color:var(--a2)">upgrade</a><br><br>
+    <span style="color:var(--td)">// recent activity</span><br>
+    <span style="color:var(--tf)">·</span> <span style="color:var(--a4)">2 min ago</span>  cell <span style="color:var(--a1)">transactions[3].amount</span> = -42.50<br>
+    <span style="color:var(--tf)">·</span> <span style="color:var(--a4)">5 min ago</span>  formula <span style="color:var(--a1)">summary.net</span> = 1,234.56<br>
+    <span style="color:var(--tf)">·</span> <span style="color:var(--a4)">12 min ago</span> cell <span style="color:var(--a1)">transactions[2]</span> added<br>
+    <span style="color:var(--tf)">·</span> <span style="color:var(--a4)">1 hour ago</span> sheet <span style="color:var(--a1)">personal-finance</span> created<br>
+    <span style="color:var(--tf)">·</span> <span style="color:var(--a4)">2 hours ago</span> synced from localStorage<br><br>
+    <span style="color:var(--td)">// federation</span><br>
+    <span style="color:var(--a3)">this instance</span>:  quilt-prod-us-east-1<br>
+    <span style="color:var(--a3)">upstream</span>:    <span style="color:var(--tf)">(none — Free tier doesn't federate)</span><br>
+    <span style="color:var(--a3)">downstream</span>:  <span style="color:var(--tf)">(none)</span><br><br>
+    <span style="color:var(--td)">// run a command</span><br>
+    <span style="color:var(--a3)">quilt</span> get summary.net<br>
+    <span style="color:var(--td)">  →  1,234.56 (cached for 60s)</span><br><br>
+    <span style="color:var(--a3)">quilt</span> inspect transactions[3]<br>
+    <span style="color:var(--td)">  →  { id: 't3', amount: -42.50, category: 'Food', date: '2026-08-19' }</span>
+  </div>
+</div>
+
+<!-- Tiers -->
+<h2 id="tiers">Three tiers</h2>
+<p>Start free. Upgrade when you outgrow it. Cancel anytime.</p>
+
+<div class="tier-grid">
+  <div class="tier">
+    <h3>Free</h3>
+    <div class="price">$0<span style="font-size:.7rem;color:var(--td)">/mo</span></div>
+    <div class="per">forever · with a banner</div>
+    <ul>
+      <li>3 active sheets</li>
+      <li>localStorage save only</li>
+      <li>Quilt banner on hosted URLs</li>
+      <li>Community support (Discord)</li>
+      <li>9 cell kinds</li>
+      <li>Single instance</li>
+    </ul>
+    <a class="btn" style="background:var(--pe);color:var(--t);border:1px solid var(--b)" href="https://quilt.superinstance.dev/signup">Start free</a>
+  </div>
+
+  <div class="tier featured">
+    <h3>Pro <span style="color:var(--a3);font-size:.7rem;margin-left:5px">★ most popular</span></h3>
+    <div class="price">$9<span style="font-size:.7rem;color:var(--td)">/mo</span></div>
+    <div class="per">per user · billed monthly</div>
+    <ul>
+      <li>Unlimited sheets</li>
+      <li>Cloud save + version history (90 days)</li>
+      <li>No banner</li>
+      <li>Email support (24h response)</li>
+      <li>FederatedArtifactStore (R2 canonical)</li>
+      <li>MQTT broker (5 devices)</li>
+      <li>Federate with your own Codespace</li>
+      <li>All 9 cell kinds + early access to v2</li>
+      <li>Custom domain (yourname.quilt.com)</li>
+    </ul>
+    <a class="btn" href="https://quilt.superinstance.dev/signup?plan=pro">Start Pro trial</a>
+  </div>
+
+  <div class="tier future">
+    <h3>Team <span style="color:var(--a4);font-size:.7rem;margin-left:5px">— coming Q4 2026</span></h3>
+    <div class="price">$39<span style="font-size:.7rem;color:var(--td)">/mo</span></div>
+    <div class="per">per user · billed monthly</div>
+    <ul>
+      <li>Everything in Pro</li>
+      <li>Team workspaces + ACLs</li>
+      <li>Audit logs (forever retention)</li>
+      <li>SOC 2 / GDPR compliance</li>
+      <li>Shared Codespaces (multiplayer)</li>
+      <li>quilt-fleet orchestration</li>
+      <li>Unlimited MQTT devices</li>
+      <li>Custom domain (quilt.yourcompany.com)</li>
+      <li>Priority support (4h response)</li>
+      <li>SSO + SAML</li>
+    </ul>
+    <a class="btn future" href="#waitlist">Join waitlist</a>
+  </div>
+</div>
+
+<!-- FAQ -->
+<h2>FAQ</h2>
+<div class="faq">
+  <div class="q open" onclick="this.classList.toggle('open')">
+    <div class="q-text">When does Hosted Quilt launch?</div>
+    <div class="a">Free and Pro tiers are slated for Q1 2026. Team is Q4 2026. We'll email all backers the moment we're ready. The free tier banner is a soft launch — we already run a hosted instance at <code>quilt.superinstance.dev</code> with all 18 repos, so the infrastructure is real and tested.</div>
+  </div>
+  <div class="q" onclick="this.classList.toggle('open')">
+    <div class="q-text">Why are the Pro features worth $9/month?</div>
+    <div class="a">Two reasons. (1) Your work persists in the cloud, not just your browser — you can switch devices and keep going. (2) Federation: connect to your own ESP32 sensors, Jetson robots, Codespace runtimes. The cell graph is one runtime across your fleet. That second one is genuinely hard to build yourself. The R2 canonical store + MQTT broker + custom domain would cost you ~$30/month on Cloudflare + a couple weekends of glue code.</div>
+  </div>
+  <div class="q" onclick="this.classList.toggle('open')">
+    <div class="q-text">Can I self-host?</div>
+    <div class="a">Yes. Every repo is Apache 2.0. The hosted service is convenience — the same features (federation, R2 store, MQTT) work on your own infrastructure. See the <a href="quilt-ecosystem.html">Quilt ecosystem</a> for the 18 repos and how to assemble them yourself.</div>
+  </div>
+  <div class="q" onclick="this.classList.toggle('open')">
+    <div class="q-text">What about the cloud costs?</div>
+    <div class="a">Until the hosted service is live, the cloud bills (Cloudflare R2 + Workers + Pages) come out of pocket. The Buy Me a Coffee and GitHub Sponsors links help cover those. Eventually we crowd-fund for hardware (an actual fleet of Quilt instances to demonstrate the federation at scale) and a hosted service. If you want to help, every coffee counts.</div>
+  </div>
+  <div class="q" onclick="this.classList.toggle('open')">
+    <div class="q-text">Is my data private?</div>
+    <div class="a">On Free, your work stays in your browser (localStorage). Nothing is sent to a server. On Pro, your sheets are stored encrypted in Cloudflare R2; only you can decrypt them. On Team, you get audit logs and SOC 2 compliance. The architecture is <a href="https://github.com/SuperInstance/quilt">open source</a> — you can audit it yourself.</div>
+  </div>
+  <div class="q" onclick="this.classList.toggle('open')">
+    <div class="q-text">How does the cell model help AI agents?</div>
+    <div class="a">Three ways. (1) An agent's working memory is a sheet — you can address any cell by URI, audit any cell's history, replay the agent's session deterministically. (2) Federation — your agent can subscribe to a sensor on a boat, a model on Cloudflare, a user prompt in your terminal, all via the same <code>quilt://</code> URI. (3) Self-improvement: <a href="https://github.com/SuperInstance/quilt-evolve">quilt-evolve</a> uses RLAIF on a sheet of agent outputs, regenerating the lowest-scoring cells. The cell model makes the agent's state first-class, debuggable, and federated.</div>
+  </div>
+</div>
+
+</div>
+
+<div class="coffee-bottom">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee — support the work</a>
+  <div style="margin-top:9px;color:var(--tf);font-size:.78rem">
+    Quilt is Apache 2.0 and free forever. Donations cover the cloud bills and keep the cell model running.
+  </div>
+</div>
+
+</body>
+</html>
