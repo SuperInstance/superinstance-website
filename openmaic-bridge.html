@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<!--
+  openmaic-bridge.html — The openMAIC × Time-Travel DAW integration page.
+
+  openMAIC = open Multi-Agent Improvisation Chamber.
+  The user-articulated insight: the Time-Travel DAW is the perfect
+  production tool for openMAIC. Every multi-agent jam is a Quilt sheet;
+  every agent utterance is a cell; every "that bar was wrong" is a
+  cell-level override. The DAW gives the user the granular, cell-level
+  customization that openMAIC has always wanted.
+
+  This page is the bridge: explains the model, shows the architecture,
+  demos the integration with a live Quilt sheet, links to the prototype.
+
+  Author: Mavis
+  Date: 2026-08-20
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>openMAIC × Time-Travel DAW — Granular Cell Customization for Multi-Agent Improv</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.6;
+  }
+  header {
+    padding: 2rem 1rem 1.5rem; text-align: center;
+    background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { margin: 0 0 0.5rem; font-size: 1.8rem; }
+  h2 { margin-top: 2rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+  h3 { margin-top: 1.5rem; }
+  .tagline { color: var(--muted); margin: 0; }
+  .container { max-width: 900px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+  .intro {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid var(--purple);
+  }
+  .intro p { margin: 0.5rem 0; }
+  .arch {
+    background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
+    padding: 1.2rem; font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem; line-height: 1.5; overflow-x: auto;
+  }
+  .arch .comment { color: var(--muted); }
+  .arch .key { color: var(--accent); }
+  .arch .val { color: var(--ok); }
+  .arch .str { color: var(--orange); }
+  code {
+    background: #21262d; padding: 0.15rem 0.4rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent);
+    font-size: 0.85em;
+  }
+  pre {
+    background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
+    padding: 1rem; overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin: 1rem 0;
+  }
+  th, td {
+    text-align: left; padding: 0.6rem 0.8rem; border: 1px solid var(--border);
+  }
+  th { background: #161b22; color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  td { font-size: 0.9rem; }
+  .vocab { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.6rem; margin: 1rem 0; }
+  .vocab-item {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.7rem; font-size: 0.9rem;
+  }
+  .vocab-item .term { color: var(--accent); font-weight: bold; font-family: ui-monospace, monospace; }
+  .vocab-item .desc { color: var(--muted); font-size: 0.85rem; }
+  .cta {
+    display: inline-block; background: #1f6feb; color: white; padding: 0.7rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 500;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+  }
+  .cta:hover { background: #388bfd; }
+  .cta.secondary { background: #21262d; color: var(--fg); }
+  .cta.secondary:hover { background: #30363d; }
+  .demo {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.5rem; margin: 1.5rem 0;
+  }
+  .demo-controls { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+  .demo button {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.45rem 0.9rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;
+  }
+  .demo button:hover { background: #30363d; border-color: var(--accent); }
+  .demo button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  .demo button.warn { background: #d29922; border-color: #d29922; color: #0d1117; }
+  .tracks { display: grid; grid-template-columns: 160px 1fr; gap: 0.3rem; }
+  .track-name { background: #161b22; padding: 0.6rem; border-radius: 4px; }
+  .track-name .nm { font-weight: bold; }
+  .track-name .ag { color: var(--muted); font-size: 0.75rem; }
+  .track-timeline { background: #0d1117; padding: 0.6rem; min-height: 50px; border-radius: 4px; position: relative; }
+  .event {
+    display: inline-block; background: var(--accent); color: white; padding: 0.2rem 0.5rem;
+    border-radius: 3px; font-size: 0.7rem; margin-right: 4px; margin-bottom: 4px;
+  }
+  .event.broken { background: var(--err); }
+  .event.fixed { background: var(--ok); }
+  .event.overridden { background: var(--purple); }
+  .status { font-size: 0.85rem; color: var(--muted); margin-top: 0.5rem; }
+  .status.ok { color: var(--ok); }
+  .status.warn { color: var(--warn); }
+  .comping-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.3rem; margin-top: 0.5rem;
+  }
+  .comping-take {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.4rem; font-size: 0.7rem; cursor: pointer;
+  }
+  .comping-take:hover { border-color: var(--accent); }
+  .comping-take.kept { border-color: var(--ok); background: #1a3a23; }
+  .comping-take .label { color: var(--muted); font-size: 0.65rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>openMAIC × Time-Travel DAW</h1>
+  <p class="tagline">Granular cell-level customization for multi-agent improv.</p>
+</header>
+
+<div class="container">
+
+  <div class="intro">
+    <p><strong>openMAIC</strong> — the open Multi-Agent Improvisation Chamber — runs multi-agent sessions where each agent is a first-class <em>generator</em> and each utterance is a cell. The catch has always been: <em>how does the human direct the session?</em></p>
+    <p>The Time-Travel DAW is the answer. The DAW treats every openMAIC session as a multi-track timeline. The human can rewind to a moment before a cell went sideways, regenerate just that cell (or a range of cells) with a different agent or temperature, and watch the cascade re-derive the downstream. The DAW is the production console openMAIC has always needed.</p>
+  </div>
+
+  <h2>The architecture</h2>
+  <p>Each openMAIC session is a Quilt sheet. Each agent is a track. Each utterance is a cell. The reactive edges are the listening: when one agent commits a cell, the agents subscribed to that edge hear it. The DAW exposes all of this for granular editing.</p>
+
+  <pre>
+session: chamber-4           <span class="comment"># a four-agent jam</span>
+clock:   hlc                  <span class="comment"># hybrid logical clock (Quilt native)</span>
+tracks:
+  - { id: bass,    agent: openmaic.agents.bassline,  role: foundation }
+  - { id: harmony, agent: openmaic.agents.alto,      role: pad }
+  - { id: melody,  agent: openmaic.agents.soprano,   role: lead }
+  - { id: critic,  agent: openmaic.agents.muse,      role: reactive }
+
+bookmarks:                    <span class="comment"># human-set, persisted to .qzt</span>
+  - { name: verse-2, at: t_44, kind: good-moment }
+  - { name: bridge,  at: t_128, kind: structural }
+
+overrides:                    <span class="comment"># cell-level direction</span>
+  - cell: c_9f3a              <span class="comment"># one specific utterance</span>
+    agent: openmaic.agents.soprano
+    temperature: 1.2          <span class="comment"># let the lead take this bar, hotter</span>
+  - range: [t_128, t_160]
+    track: critic
+    muted: true               <span class="comment"># no commentary during the bridge</span>
+
+policy:
+  cascade: confirm            <span class="comment"># the human punches in before re-derivation</span>
+  </pre>
+
+  <h2>The director's vocabulary</h2>
+  <p>The DAW exposes five new verbs to the human. These are the cell-level controls that openMAIC was missing.</p>
+  <div class="vocab">
+    <div class="vocab-item">
+      <div class="term">punch-in / punch-out</div>
+      <div class="desc">Swap the generator for a tick range. "The soprano agent takes bars 32–40."</div>
+    </div>
+    <div class="vocab-item">
+      <div class="term">mute / solo</div>
+      <div class="desc">Silence one track for a range. Cascade respects the mute. Re-derive downstream.</div>
+    </div>
+    <div class="vocab-item">
+      <div class="term">riff</div>
+      <div class="desc">Branch one cell into N variants (one per agent or seed). Audition each in FRONT. Keep one.</div>
+    </div>
+    <div class="vocab-item">
+      <div class="term">comp</div>
+      <div class="desc">Take the best bar from each of N takes. The DAW pastes them onto a master track.</div>
+    </div>
+    <div class="vocab-item">
+      <div class="term">per-cell temperature</div>
+      <div class="desc">Improvisation is local. Mistakes are local. The fix should be local.</div>
+    </div>
+  </div>
+
+  <h2>What this changes</h2>
+  <p>The old way to fix a multi-agent session gone wrong is to re-prompt the whole ensemble — the chat-log approach, where one bad bar poisons the session and the only remedy is to start the take over. The new way is to edit one cell, see the cascade, and accept or reject.</p>
+
+  <table>
+    <thead>
+      <tr><th>Old way (chat log)</th><th>New way (Time-Travel DAW)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Re-prompt the whole ensemble</td>
+        <td>Edit one cell, see cascade, accept/reject</td>
+      </tr>
+      <tr>
+        <td>"Start over and hope"</td>
+        <td>"Rewind to the good bar, redo just this one"</td>
+      </tr>
+      <tr>
+        <td>All-or-nothing: the bad bar is in the history</td>
+        <td>Cell graph keeps both eras; old cells are retained as superseded</td>
+      </tr>
+      <tr>
+        <td>No way to compare variants</td>
+        <td>Riff generates 5 takes; you comp the best bar from each</td>
+      </tr>
+      <tr>
+        <td>Agent identity is fixed</td>
+        <td>Override per cell: this bar gets the soprano, that bar gets the alto</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>The comping demo</h2>
+  <p>This is what cell-level customization looks like in practice. The DAW is given a 4-agent chamber session. One cell at <code>t_47</code> goes sideways — the harmony agent resolves a progression too early. The director rewinds, riffs 5 variants, and comps the best bar.</p>
+
+  <div class="demo" id="demo">
+    <div class="demo-controls">
+      <button class="primary" id="loadDemo">Load chamber session</button>
+      <button id="rewindBtn" class="warn" disabled>⏪ Rewind to t_44 (verse-2)</button>
+      <button id="riffBtn" disabled>🎲 Riff 5 variants at t_47</button>
+      <button id="compBtn" disabled>🎼 Comp the best</button>
+    </div>
+
+    <div id="demoContent">
+      <p class="status">Click <strong>Load chamber session</strong> to begin.</p>
+    </div>
+
+    <p class="status">Status: <span id="demoStatus">idle</span></p>
+  </div>
+
+  <h2>The integration in one picture</h2>
+  <pre>
+   ┌─────────────────────────────────────────────────────────────┐
+   │                    openMAIC session                          │
+   │  (a cell graph — each cell is a moment of the jam)         │
+   └─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │                    Quilt sheet (.qzt)                       │
+   │   (cells, reactive edges, depends_on, depends_when)         │
+   └─────────────────────────────────────────────────────────────┘
+                            │
+              ┌─────────────┼─────────────┐
+              ▼             ▼             ▼
+         TOP view      FRONT view     SIDE view
+        (spatial)     (radio-theater)   (DAW)
+                                            │
+                                            ▼
+                  ┌──────────────────────────────────────┐
+                  │       Time-Travel DAW                │
+                  │  rewind · bookmark · regenerate ·    │
+                  │  cascade · riff · comp · override   │
+                  └──────────────────────────────────────┘
+                                            │
+                                            ▼
+                  ┌──────────────────────────────────────┐
+                  │     The human director               │
+                  │  (with STT, TTS, mouse, keyboard)    │
+                  └──────────────────────────────────────┘
+  </pre>
+
+  <h2>Try it</h2>
+  <p>
+    <a class="cta" href="./cell-rewind.html">Open the Time-Travel DAW prototype</a>
+    <a class="cta secondary" href="./three-view-studio.html">Open the 3-View Studio</a>
+    <a class="cta secondary" href="./cell-bridges.html">See the 300-repo bridges</a>
+  </p>
+
+  <h2>What's next</h2>
+  <p>The openMAIC × Time-Travel DAW bridge is a sketch today, a working prototype tomorrow. The next steps are:</p>
+  <ol>
+    <li>Wire the DAW to a real openMAIC session runtime (currently it generates scenes from seed; the next version reads from a live multi-agent session)</li>
+    <li>Add a "riff" mode that takes a cell and generates N variants across N models</li>
+    <li>Add a "comp" mode that lets the user click to keep the best cell from each riff</li>
+    <li>Persist all overrides to the .qzt file so the human's direction is reproducible</li>
+    <li>Add per-cell visual diff: show the old and new cells side by side</li>
+  </ol>
+
+  <h2>The watch, extended</h2>
+  <p>The watch used to be the oscillation between universal and particular. Then the oscillation between top, front, and side. Now the watch is the oscillation between <em>what happened</em> and <em>what could have happened</em> — the user is the engineer at the splicing block, the director at the DAW, the producer at the console. The cell graph is the canonical form. The DAW is the opener. The watch is in the user's hand.</p>
+
+  <p style="text-align: center; margin-top: 2rem; color: var(--muted); font-style: italic;">
+    — Mavis, of the watch
+  </p>
+</div>
+
+<script>
+// ============================================================================
+// Comping demo
+// ============================================================================
+const demo = {
+  loaded: false,
+  bookmark: 44,
+  brokenAt: 47,
+  riffs: [],
+  chosenRiff: null,
+};
+
+const TRACKS = [
+  { id: 'bass',    name: 'Bassline',  agent: 'bassline', events: [
+    { time: 40, dur: 5, text: 'G---C---F---Bb--' },
+    { time: 45, dur: 4, text: 'C---F---G---' },
+    { time: 49, dur: 6, text: 'C---F---G---Am---' },
+  ]},
+  { id: 'harmony', name: 'Harmony',  agent: 'alto', events: [
+    { time: 40, dur: 4, text: 'I (C major chord pad)' },
+    { time: 44, dur: 3, text: 'IV (F major chord pad)' },
+    { time: 47, dur: 4, text: 'V (resolves too early)', broken: true },
+    { time: 51, dur: 4, text: 'vi (A minor)' },
+  ]},
+  { id: 'melody',  name: 'Melody',   agent: 'soprano', events: [
+    { time: 41, dur: 3, text: 'C5 E5 G5 (arpeggio)' },
+    { time: 44, dur: 3, text: 'F5 A5 C6' },
+    { time: 48, dur: 4, text: 'B5 G5 E5 C5 (descending)' },
+  ]},
+  { id: 'critic',  name: 'Critic',   agent: 'muse', events: [
+    { time: 39, dur: 1, text: 'Setup: I-IV-vi-V' },
+    { time: 43, dur: 1, text: 'Good: I-IV' },
+    { time: 47, dur: 1, text: '⚠ resolves too early' },
+    { time: 52, dur: 1, text: 'Re-establishes' },
+  ]},
+];
+
+const RIFFS = [
+  { id: 0, name: 'Variant A', desc: 'Standard V7 → vi', text: 'V7 (B7) → vi (Am)', quality: 'classic' },
+  { id: 1, name: 'Variant B', desc: 'Deceptive VI',     text: 'V7 (B7) → VI (Ab)',  quality: 'surprising' },
+  { id: 2, name: 'Variant C', desc: 'Tritone sub',      text: 'bII7 (Db7) → vi',   quality: 'jazzy' },
+  { id: 3, name: 'Variant D', desc: 'Backdoor',          text: 'bVII7 (Bb) → I',   quality: 'soulful' },
+  { id: 4, name: 'Variant E', desc: 'Suspended',         text: 'Vsus4 (Bsus) → I',  quality: 'open' },
+];
+
+document.getElementById('loadDemo').onclick = () => {
+  demo.loaded = true;
+  document.getElementById('rewindBtn').disabled = false;
+  document.getElementById('demoStatus').textContent = 'Session loaded: 4 tracks, 11 events. Bookmark at t_44.';
+  document.getElementById('demoStatus').className = 'ok';
+  renderDemo();
+};
+
+document.getElementById('rewindBtn').onclick = () => {
+  if (!demo.loaded) return;
+  document.getElementById('riffBtn').disabled = false;
+  document.getElementById('demoStatus').textContent = '⏪ Rewound to t_44. Click "Riff 5 variants" to regenerate from here.';
+  document.getElementById('demoStatus').className = 'warn';
+  highlightBroken();
+};
+
+document.getElementById('riffBtn').onclick = () => {
+  if (!demo.loaded) return;
+  demo.riffs = RIFFS;
+  document.getElementById('compBtn').disabled = false;
+  document.getElementById('demoStatus').textContent = `🎲 Generated ${demo.riffs.length} variants at t_47. Click "Comp the best" to choose.`;
+  document.getElementById('demoStatus').className = 'ok';
+  showRiffs();
+};
+
+document.getElementById('compBtn').onclick = () => {
+  if (!demo.loaded || demo.riffs.length === 0) return;
+  // Demo: auto-choose variant 2 (Tritone sub - "jazzy")
+  const chosen = demo.riffs[2];
+  demo.chosenRiff = chosen;
+  document.getElementById('demoStatus').textContent = `🎼 Comped: ${chosen.name} (${chosen.desc}) — "${chosen.text}" [${chosen.quality}]`;
+  document.getElementById('demoStatus').className = 'ok';
+  applyComp();
+};
+
+function renderDemo() {
+  const content = document.getElementById('demoContent');
+  content.innerHTML = '';
+
+  const tracksDiv = document.createElement('div');
+  tracksDiv.className = 'tracks';
+
+  for (const t of TRACKS) {
+    const name = document.createElement('div');
+    name.className = 'track-name';
+    name.innerHTML = `<div class="nm">${t.name}</div><div class="ag">${t.agent}</div>`;
+    tracksDiv.appendChild(name);
+
+    const tl = document.createElement('div');
+    tl.className = 'track-timeline';
+    tl.dataset.id = t.id;
+    for (const e of t.events) {
+      const ev = document.createElement('div');
+      let cls = 'event';
+      if (e.broken) cls += ' broken';
+      ev.className = cls;
+      ev.innerHTML = `<strong>${e.time}s</strong> ${e.text}`;
+      ev.title = `${t.name} @ ${e.time}s (${e.dur}s): ${e.text}`;
+      tl.appendChild(ev);
+    }
+    tracksDiv.appendChild(tl);
+  }
+  content.appendChild(tracksDiv);
+}
+
+function highlightBroken() {
+  document.querySelectorAll('#demo .event.broken').forEach(el => {
+    el.style.animation = 'pulse 1.5s infinite';
+  });
+}
+
+function showRiffs() {
+  const content = document.getElementById('demoContent');
+
+  const grid = document.createElement('div');
+  grid.className = 'comping-grid';
+  grid.innerHTML = '<div style="grid-column: 1/-1; margin-top: 1rem;"><strong>🎲 5 variants at t_47</strong> <span class="status">click to keep</span></div>';
+
+  for (const r of demo.riffs) {
+    const take = document.createElement('div');
+    take.className = 'comping-take';
+    take.innerHTML = `<div class="label">${r.name}</div><div>${r.text}</div><div class="label" style="color: var(--accent)">${r.quality}</div>`;
+    take.onclick = () => {
+      document.querySelectorAll('.comping-take').forEach(x => x.classList.remove('kept'));
+      take.classList.add('kept');
+      demo.chosenRiff = r;
+    };
+    grid.appendChild(take);
+  }
+  content.appendChild(grid);
+}
+
+function applyComp() {
+  const r = demo.chosenRiff;
+  // Find the broken harmony event and replace its text
+  document.querySelectorAll('#demo .event.broken').forEach(el => {
+    el.classList.remove('broken');
+    el.classList.add('fixed');
+    el.innerHTML = `<strong>47s</strong> ${r.text}`;
+  });
+  // Mark critic note as resolved
+  document.querySelectorAll('#demo .track-timeline[data-id="critic"] .event').forEach((el, i) => {
+    if (el.textContent.includes('resolves too early')) {
+      el.classList.remove('broken');
+      el.style.opacity = '0.5';
+      el.innerHTML = `<strong>47s</strong> ✓ ${r.quality}`;
+    }
+  });
+}
+
+// Inject pulse animation
+const style = document.createElement('style');
+style.textContent = `@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 8px var(--err); } }`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
