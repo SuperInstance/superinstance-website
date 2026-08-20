@@ -46,6 +46,6 @@
 - **GitHub Pages** — CNAME configured to `superinstance.dev`, deployed to `master` branch via workflow
 
 ### To verify (manual, by user)
-- [ ] Update Buy Me a Coffee URL if `buymeacoffee.com/superinstance` is not the actual handle
+- [ ] Update Buy Me a Coffee URL if `buymeacoffee.com/CaseyDiGennaro` is not the actual handle
 - [ ] Wait for GitHub Pages to provision Let's Encrypt cert (typically 15-30 min after CNAME config) — once done, can enable `https_enforced: true`
 - [ ] Set up GitHub Sponsors link in addition to Buy Me a Coffee

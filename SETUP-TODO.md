@@ -1,7 +1,7 @@
 # Setup TODO — what to verify before going live
 
 ## Buy Me a Coffee link
-- Currently set to: https://www.buymeacoffee.com/superinstance
+- Currently set to: https://www.buymeacoffee.com/CaseyDiGennaro
 - If your actual handle is different, find/replace across:
   - `index.html` (2 occurrences)
   - `quilt.html` (3 occurrences)
