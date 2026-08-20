@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regex tester — test, visualize, export</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --m1:rgba(124,58,237,.25);--m2:rgba(59,130,246,.25);--m3:rgba(16,185,129,.25);--m4:rgba(245,158,11,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.pattern{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;margin-bottom:14px}
+.pattern-row{display:flex;gap:7px;align-items:center;margin-bottom:9px}
+.slash{color:var(--a3);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem}
+input.regex-input{flex:1;background:var(--bg);color:var(--t);border:1px solid var(--bs);border-radius:5px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:.92rem}
+input.regex-input:focus{outline:none;border-color:var(--a2)}
+.flags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.flag{background:var(--pe);border:1px solid var(--b);color:var(--td);padding:3px 7px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.flag:hover{border-color:var(--a2);color:var(--t)}
+.flag.on{background:rgba(124,58,237,.15);border-color:var(--a1);color:var(--t);font-weight:700}
+.error{color:var(--err);font-size:.74rem;margin-top:5px;display:none;padding:5px 9px;background:rgba(255,107,107,.08);border-radius:4px;border:1px solid var(--err)}
+.error.show{display:block}
+.split{display:grid;grid-template-columns:1fr 380px;gap:13px;margin-bottom:16px}
+@media (max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px}
+.test-area{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:13px;min-height:200px;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:380px;overflow:auto}
+.test-area .m1{background:var(--m1);border-radius:2px;padding:1px 0;color:#fff}
+.test-area .m2{background:var(--m2);border-radius:2px;padding:1px 0;color:#fff}
+.test-area .m3{background:var(--m3);border-radius:2px;padding:1px 0;color:#fff}
+.test-area .m4{background:var(--m4);border-radius:2px;padding:1px 0;color:#0a0a14}
+.matches{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;max-height:380px;overflow-y:auto}
+.match{background:var(--pe);border:1px solid var(--b);border-radius:5px;padding:7px;margin-bottom:5px;font-family:'JetBrains Mono',monospace;font-size:.74rem;display:grid;grid-template-columns:30px 1fr 60px 60px;gap:7px;align-items:center}
+.match .i{color:var(--a4);text-align:right;font-weight:700}
+.match .v{color:var(--a3);font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.match .v .g{color:var(--td);font-weight:400}
+.match .pos{color:var(--td);text-align:right;font-size:.65rem}
+.breakdown{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;margin-top:9px}
+.breakdown h4{font-size:.74rem;color:var(--a3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.token{display:inline-block;background:var(--pe);border:1px solid var(--b);color:var(--td);padding:2px 5px;border-radius:3px;margin:1px;font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.token .label{color:var(--a4);font-size:.6rem;margin-left:3px}
+.preset{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:5px 9px;border-radius:5px;font-size:.72rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.preset:hover{border-color:var(--a2)}
+.presets{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
+.export{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.5;white-space:pre;color:var(--a3);max-height:140px;overflow:auto}
+.tab-row{display:flex;gap:0;margin-bottom:9px;border-bottom:1px solid var(--b)}
+.tab{background:transparent;color:var(--td);border:0;border-bottom:2px solid transparent;padding:7px 11px;font-size:.78rem;cursor:pointer;font-weight:600;font-family:inherit}
+.tab.active{color:var(--a3);border-bottom-color:var(--a3)}
+.tab:hover{color:var(--t)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🔤 <span class="accent">Regex tester</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— match, visualize, export</span></h1>
+    <p style="margin-top:3px">Type a regex. See matches. Visualize groups. Export to JavaScript or Python.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="regex.html" class="cur">Regex</a>
+  <a href="diff.html">Diff</a>
+  <a href="reflex-tracer.html">Reflex tracer</a>
+  <a href="lint.html">Lint</a>
+  <a href="ai-sheet.html">AI sheet</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="pattern">
+  <div class="presets">
+    <span class="preset" data-r="\\b[A-Z][a-z]+\\b">Capitalized</span>
+    <span class="preset" data-r="\\b\\d{3}-\\d{2}-\\d{4}\\b">SSN</span>
+    <span class="preset" data-r="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}">Email</span>
+    <span class="preset" data-r="https?://[^\\s]+">URL</span>
+    <span class="preset" data-r="(?:\\+?\\d{1,3}[\\s-]?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}">Phone</span>
+    <span class="preset" data-r="^#[0-9A-Fa-f]{6}$">Hex color</span>
+    <span class="preset" data-r="\\b\\d+\\.\\d{1,2}\\b">Decimal</span>
+    <span class="preset" data-r="function\\s+(\\w+)\\s*\\(">Function decl</span>
+  </div>
+
+  <div class="pattern-row">
+    <span class="slash">/</span>
+    <input class="regex-input" id="pattern" value="\\b([A-Z][a-z]+)\\s+([A-Z][a-z]+)\\b" placeholder="regex pattern">
+    <span class="slash">/</span>
+  </div>
+
+  <div class="flags">
+    <span class="flag on" data-f="g">g</span>
+    <span class="flag" data-f="i">i</span>
+    <span class="flag" data-f="m">m</span>
+    <span class="flag" data-f="s">s</span>
+    <span class="flag" data-f="u">u</span>
+  </div>
+  <div class="error" id="err"></div>
+</div>
+
+<div class="split">
+  <div class="panel">
+    <h3>Test input</h3>
+    <textarea id="input" class="test-area" style="width:100%;min-height:200px;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6;resize:vertical">John Smith and Jane Doe met at 3:00 PM.
+Contact: john@example.com or jane.doe@company.co.uk
+Phone numbers: 555-123-4567 or (555) 987-6543
+Visit https://example.com or http://test.org
+SSN: 123-45-6789</textarea>
+    <h3 style="margin-top:11px">Highlighted output</h3>
+    <div class="test-area" id="output"></div>
+
+    <div class="breakdown">
+      <h4>Pattern breakdown</h4>
+      <div id="breakdown"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Matches</h3>
+    <div class="matches" id="matches">
+      <div style="color:var(--tf);font-style:italic;text-align:center;padding:18px">No matches yet.</div>
+    </div>
+
+    <div class="tab-row" style="margin-top:14px">
+      <button class="tab active" data-tab="js">JavaScript</button>
+      <button class="tab" data-tab="py">Python</button>
+      <button class="tab" data-tab="sheet">Quilt cell</button>
+    </div>
+    <div class="export" id="export"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  State
+// ─────────────────────────────────────────────────────────────────
+
+const STORAGE_KEY = 'quilt-regex-v1';
+let flags = { g: true, i: false, m: false, s: false, u: false };
+let pattern = '\\b([A-Z][a-z]+)\\s+([A-Z][a-z]+)\\b';
+let input = '';
+let currentTab = 'js';
+
+// ─────────────────────────────────────────────────────────────────
+//  Pattern breakdown
+// ─────────────────────────────────────────────────────────────────
+
+function breakdownPattern(p) {
+  const tokens = [];
+  let i = 0;
+  while (i < p.length) {
+    const c = p[i];
+    // Character class
+    if (c === '[') {
+      let j = i + 1;
+      while (j < p.length && p[j] !== ']') {
+        if (p[j] === '\\') j++;
+        j++;
+      }
+      tokens.push({ type: 'class', value: p.slice(i, j + 1), label: 'character class' });
+      i = j + 1;
+      continue;
+    }
+    // Escape
+    if (c === '\\' && i + 1 < p.length) {
+      const next = p[i + 1];
+      const labels = {
+        d: 'digit', w: 'word', s: 'space', D: 'non-digit', W: 'non-word', S: 'non-space',
+        b: 'word boundary', B: 'non-boundary',
+        n: 'newline', t: 'tab', r: 'return', f: 'form feed',
+        0: 'null', x: 'hex', u: 'unicode',
+      };
+      tokens.push({ type: 'escape', value: p.slice(i, i + 2), label: labels[next] || 'escape' });
+      i += 2;
+      continue;
+    }
+    // Group
+    if (c === '(') {
+      const noncap = p[i + 1] === '?';
+      tokens.push({ type: 'group', value: noncap ? '(?:' : '(', label: noncap ? 'non-capturing group' : 'capturing group' });
+      i += noncap ? 2 : 1;
+      continue;
+    }
+    if (c === ')') {
+      tokens.push({ type: 'group', value: ')', label: 'end group' });
+      i++;
+      continue;
+    }
+    // Quantifier
+    if ('*+?{'.includes(c)) {
+      const labels = { '*': '0 or more', '+': '1 or more', '?': 'optional', '{': 'custom' };
+      tokens.push({ type: 'quant', value: c, label: labels[c] });
+      i++;
+      continue;
+    }
+    // Anchors
+    if (c === '^' || c === '$') {
+      tokens.push({ type: 'anchor', value: c, label: c === '^' ? 'start' : 'end' });
+      i++;
+      continue;
+    }
+    // Literal
+    tokens.push({ type: 'lit', value: c, label: 'literal' });
+    i++;
+  }
+  return tokens;
+}
+
+function buildRegex() {
+  const flagStr = Object.entries(flags).filter(([_, v]) => v).map(([k]) => k).join('');
+  return new RegExp(pattern, flagStr);
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+const $pattern = document.getElementById('pattern');
+const $input = document.getElementById('input');
+const $output = document.getElementById('output');
+const $matches = document.getElementById('matches');
+const $breakdown = document.getElementById('breakdown');
+const $export = document.getElementById('export');
+const $err = document.getElementById('err');
+
+function render() {
+  // Validate
+  let re;
+  try {
+    re = buildRegex();
+    $err.classList.remove('show');
+  } catch (e) {
+    $err.textContent = 'Invalid regex: ' + e.message;
+    $err.classList.add('show');
+    return;
+  }
+
+  // Save to localStorage
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ pattern, flags, input: $input.value }));
+
+  // Match
+  const matches = [...$input.value.matchAll(re)];
+  // Highlight
+  let html = '';
+  let last = 0;
+  for (let i = 0; i < matches.length; i++) {
+    const m = matches[i];
+    const start = m.index;
+    const end = start + m[0].length;
+    html += escapeHtml($input.value.slice(last, start));
+    const group = (i % 4) + 1;
+    html += `<span class="m${group}">${escapeHtml(m[0])}</span>`;
+    last = end;
+  }
+  html += escapeHtml($input.value.slice(last));
+  $output.innerHTML = html;
+
+  // Matches panel
+  if (matches.length === 0) {
+    $matches.innerHTML = '<div style="color:var(--tf);font-style:italic;text-align:center;padding:18px">No matches.</div>';
+  } else {
+    $matches.innerHTML = matches.map((m, i) => {
+      const groups = m.slice(1).filter((g) => g !== undefined).map((g, gi) => `<span class="g">$${gi + 1}=${escapeHtml(g)}</span>`).join(' ');
+      return `<div class="match">
+        <div class="i">#${i + 1}</div>
+        <div class="v">${escapeHtml(m[0])} ${groups}</div>
+        <div class="pos">@${m.index}</div>
+        <div class="pos">len ${m[0].length}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Pattern breakdown
+  const tokens = breakdownPattern(pattern);
+  $breakdown.innerHTML = tokens.map((t) => `<span class="token">${escapeHtml(t.value)}<span class="label">${t.label}</span></span>`).join('');
+
+  // Export
+  renderExport();
+}
+
+function renderExport() {
+  const flagStr = Object.entries(flags).filter(([_, v]) => v).map(([k]) => k).join('');
+  const esc = pattern.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  let code;
+  if (currentTab === 'js') {
+    code = `const re = /${pattern}/${flagStr};\nconst matches = [...text.matchAll(re)];`;
+  } else if (currentTab === 'py') {
+    const py = pattern.replace(/\\b/g, '\\b').replace(/\\d/g, '\\d');
+    code = `import re\npattern = r'${py}'\nmatches = re.findall(pattern, text)`;
+  } else {
+    code = `// Quilt cell — paste into playground.html\n{\n  path: "matches",\n  kind: "formula",\n  fn: "(ctx) => [...ctx.text.matchAll(/${pattern}/${flagStr})]"\n}`;
+  }
+  $export.textContent = code;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Wire up
+// ─────────────────────────────────────────────────────────────────
+
+$pattern.addEventListener('input', () => { pattern = $pattern.value; render(); });
+$input.addEventListener('input', render);
+
+document.querySelectorAll('.flag').forEach((el) => {
+  el.addEventListener('click', () => {
+    const f = el.dataset.f;
+    flags[f] = !flags[f];
+    el.classList.toggle('on', flags[f]);
+    render();
+  });
+});
+
+document.querySelectorAll('.preset').forEach((el) => {
+  el.addEventListener('click', () => {
+    $pattern.value = el.dataset.r;
+    pattern = el.dataset.r;
+    render();
+  });
+});
+
+document.querySelectorAll('.tab').forEach((el) => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+    el.classList.add('active');
+    currentTab = el.dataset.tab;
+    renderExport();
+  });
+});
+
+// Boot
+const saved = localStorage.getItem(STORAGE_KEY);
+if (saved) {
+  try {
+    const data = JSON.parse(saved);
+    pattern = data.pattern || pattern;
+    flags = data.flags || flags;
+    $pattern.value = pattern;
+    $input.value = data.input || $input.value;
+    document.querySelectorAll('.flag').forEach((el) => {
+      el.classList.toggle('on', !!flags[el.dataset.f]);
+    });
+  } catch (e) {}
+}
+render();
+</script>
+</body>
+</html>

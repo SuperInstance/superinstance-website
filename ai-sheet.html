@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI sheet — natural language → Quilt sheet</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px}
+.panel h3{font-size:.92rem;color:var(--a3);margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+textarea{width:100%;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.5;min-height:140px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--a2)}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:8px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button:disabled{background:var(--b);cursor:not-allowed;opacity:.5}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+.examples{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
+.example{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:4px 9px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.example:hover{border-color:var(--a2)}
+.sheet-output{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.55;max-height:500px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.sheet-output .key{color:var(--a4)}
+.sheet-output .str{color:var(--a3)}
+.sheet-output .num{color:var(--a2)}
+.sheet-output .bool{color:var(--a1)}
+.sheet-output .null{color:var(--tf)}
+.status{padding:11px;border-radius:6px;font-size:.78rem;margin-bottom:11px;display:none}
+.status.show{display:block}
+.status.thinking{background:rgba(124,58,237,.1);border:1px solid var(--a1);color:var(--a3)}
+.status.error{background:rgba(255,107,107,.1);border:1px solid var(--err);color:var(--err)}
+.status.ok{background:rgba(16,185,129,.1);border:1px solid var(--a3);color:var(--a3)}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.preview{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;margin-top:9px;max-height:300px;overflow-y:auto}
+.preview h4{font-size:.74rem;color:var(--a3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em}
+.cell-card{background:var(--pe);border:1px solid var(--b);border-radius:5px;padding:7px;margin-bottom:5px;font-size:.72rem;display:grid;grid-template-columns:90px 70px 1fr;gap:7px;align-items:center}
+.cell-card .path{font-family:'JetBrains Mono',monospace;color:var(--a3);font-weight:700}
+.cell-card .kind{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:1px 4px;border-radius:2px;text-align:center;font-weight:700}
+.cell-card .kind.value{background:var(--a3);color:#0a0a14}
+.cell-card .kind.formula{background:var(--a1);color:#fff}
+.cell-card .kind.listener{background:var(--a4);color:#0a0a14}
+.cell-card .desc{color:var(--td);font-family:'JetBrains Mono',monospace;font-size:.65rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.token-usage{background:var(--pe);border:1px solid var(--b);border-radius:5px;padding:7px;font-size:.7rem;color:var(--td);margin-top:11px;font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>✨ <span class="accent">AI sheet</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— natural language → Quilt sheet</span></h1>
+    <p style="margin-top:3px">Describe what you want to compute. z.ai GLM-4.5 generates a Quilt sheet. Copy it into <a href="playground.html">Playground</a> to run it.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="regex.html">Regex</a>
+  <a href="diff.html">Diff</a>
+  <a href="reflex-tracer.html">Reflex tracer</a>
+  <a href="lint.html">Lint</a>
+  <a href="ai-sheet.html" class="cur">AI sheet</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="intro">
+  <p>This page calls <code>z.ai</code>'s <strong>GLM-4.5</strong> with a Quilt-aware prompt. The model returns JSON. The page renders the sheet. You can run it in the Playground, lint it, or build it into a .nail bundle. <em>The model never sees your data — only the request.</em></p>
+</div>
+
+<div class="examples">
+  <span class="example" data-q="track my daily expenses: food, transport, entertainment. Compute total spend, by-category breakdown, and a savings rate (assuming income is 5000)">Expense tracker</span>
+  <span class="example" data-q="simulate a stock portfolio: 3 stocks with current prices, compute total value, percentage allocation, and a 1-year projection at 7% growth">Stock portfolio</span>
+  <span class="example" data-q="compute the area and perimeter of a rectangle given width and height, and the area and circumference of a circle given radius">Geometry calc</span>
+  <span class="example" data-q="a time tracker: log entries with start time, end time, and project. Compute duration per entry and total per project">Time tracker</span>
+  <span class="example" data-q="a recipe scaler: take a recipe with servings and ingredients, and scale to a new serving count">Recipe scaler</span>
+  <span class="example" data-q="a workout tracker: exercises with sets, reps, weight. Compute total volume (sets * reps * weight) per exercise and total workout volume">Workout tracker</span>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Your request</h3>
+    <textarea id="prompt" placeholder="What do you want to compute?"></textarea>
+    <div class="actions" style="margin-top:11px">
+      <button id="generate-btn">✨ Generate sheet</button>
+      <button class="secondary" id="copy-btn">📋 Copy sheet</button>
+      <button class="secondary" id="lint-btn">🧹 Lint sheet</button>
+      <button class="secondary" id="playground-btn">▶ Open in playground</button>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="token-usage" id="usage" style="display:none"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Generated sheet</h3>
+    <div class="sheet-output" id="sheet-output"><span style="color:var(--tf)">Generated sheet will appear here.</span></div>
+    <div class="preview" id="preview" style="display:none">
+      <h4>Cell preview</h4>
+      <div id="cell-cards"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  State
+// ─────────────────────────────────────────────────────────────────
+
+let lastSheet = null;
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+const $prompt = document.getElementById('prompt');
+const $sheetOutput = document.getElementById('sheet-output');
+const $status = document.getElementById('status');
+const $usage = document.getElementById('usage');
+const $preview = document.getElementById('preview');
+const $cellCards = document.getElementById('cell-cards');
+
+const SYSTEM_PROMPT = `You are a Quilt sheet generator. Given a user request, return ONLY a JSON object with this shape:
+
+{
+  "name": "<short-name>",
+  "cells": [
+    { "path": "<dot.notation.path>", "kind": "value|formula|listener|program", "value": <for value cells>, "fn": "(ctx) => ...", "listens": "<for listener cells>" }
+  ]
+}
+
+Rules:
+- Use 'value' cells for inputs (constants or starting values)
+- Use 'formula' cells for derived computations; the fn is a JavaScript arrow function
+- Use 'listener' cells to react to changes in another cell
+- Reference other cells via ctx.<path>
+- Use snake_case for cell paths
+- Add a brief description as a "_desc" cell if helpful
+- All formulas should be pure (no side effects)
+- Return ONLY the JSON, no markdown fences, no commentary
+
+Example:
+{
+  "name": "tip-calculator",
+  "cells": [
+    { "path": "bill", "kind": "value", "value": 100 },
+    { "path": "tip_pct", "kind": "value", "value": 0.18 },
+    { "path": "tip", "kind": "formula", "fn": "(ctx) => ctx.bill * ctx.tip_pct" },
+    { "path": "total", "kind": "formula", "fn": "(ctx) => ctx.bill + ctx.tip" }
+  ]
+}`;
+
+function syntaxHL(json) {
+  return json
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (m) => {
+      if (/^"/.test(m)) return /:$/.test(m) ? `<span class="key">${m}</span>` : `<span class="str">${m}</span>`;
+      if (/true|false/.test(m)) return `<span class="bool">${m}</span>`;
+      if (/null/.test(m)) return `<span class="null">${m}</span>`;
+      return `<span class="num">${m}</span>`;
+    });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function showStatus(text, kind) {
+  $status.textContent = text;
+  $status.className = 'status show ' + kind;
+}
+function clearStatus() {
+  $status.className = 'status';
+}
+
+function renderSheet(sheet) {
+  lastSheet = sheet;
+  const json = JSON.stringify(sheet, null, 2);
+  $sheetOutput.innerHTML = syntaxHL(json);
+  if (sheet.cells && sheet.cells.length) {
+    $preview.style.display = 'block';
+    $cellCards.innerHTML = sheet.cells.map((c) => {
+      const desc = c.fn ? escapeHtml(c.fn.slice(0, 80)) : c.value !== undefined ? `value: ${escapeHtml(JSON.stringify(c.value))}` : '(empty)';
+      return `<div class="cell-card">
+        <div class="path">${escapeHtml(c.path)}</div>
+        <div class="kind ${c.kind}">${c.kind}</div>
+        <div class="desc">${desc}</div>
+      </div>`;
+    }).join('');
+  } else {
+    $preview.style.display = 'none';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Generate
+// ─────────────────────────────────────────────────────────────────
+
+async function generate() {
+  const prompt = $prompt.value.trim();
+  if (!prompt) {
+    showStatus('Type a request first.', 'error');
+    return;
+  }
+  const btn = document.getElementById('generate-btn');
+  btn.disabled = true;
+  showStatus('Thinking (z.ai GLM-4.5)…', 'thinking');
+
+  try {
+    const r = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'glm-4.5',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: prompt },
+        ],
+        max_tokens: 1500,
+        temperature: 0.3,
+      }),
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}: ${await r.text()}`);
+    const j = await r.json();
+    const text = j.choices?.[0]?.message?.content || '';
+    const usage = j.usage;
+
+    // Try to extract JSON
+    let sheet;
+    try {
+      // First try direct parse
+      const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+      sheet = JSON.parse(cleaned);
+    } catch (e) {
+      // Try to find JSON in the response
+      const match = text.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('No JSON in response: ' + text.slice(0, 200));
+      sheet = JSON.parse(match[0]);
+    }
+
+    if (!sheet.cells || !Array.isArray(sheet.cells)) {
+      throw new Error('Response is not a valid sheet (no cells array)');
+    }
+    renderSheet(sheet);
+    let usageText = `Tokens: ${usage?.total_tokens || '?'} (prompt ${usage?.prompt_tokens || '?'} + completion ${usage?.completion_tokens || '?'})`;
+    if (sheet.cells.length) usageText += ` · ${sheet.cells.length} cells`;
+    $usage.textContent = usageText;
+    $usage.style.display = 'block';
+    showStatus(`✓ Generated ${sheet.cells.length} cells. Copy to Playground to run.`, 'ok');
+  } catch (e) {
+    showStatus('Error: ' + e.message, 'error');
+    $sheetOutput.innerHTML = `<span style="color:var(--err)">${escapeHtml(e.message)}</span>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Wire up
+// ─────────────────────────────────────────────────────────────────
+
+document.getElementById('generate-btn').addEventListener('click', generate);
+document.getElementById('copy-btn').addEventListener('click', () => {
+  if (!lastSheet) return;
+  navigator.clipboard.writeText(JSON.stringify(lastSheet, null, 2));
+  const btn = document.getElementById('copy-btn');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Copied';
+  setTimeout(() => btn.textContent = orig, 1500);
+});
+document.getElementById('lint-btn').addEventListener('click', () => {
+  if (!lastSheet) return;
+  // Stash and open lint
+  localStorage.setItem('quilt-lint-input', JSON.stringify(lastSheet, null, 2));
+  window.open('lint.html', '_blank');
+});
+document.getElementById('playground-btn').addEventListener('click', () => {
+  if (!lastSheet) return;
+  localStorage.setItem('quilt-playground-input', JSON.stringify(lastSheet, null, 2));
+  window.open('playground.html', '_blank');
+});
+document.querySelectorAll('.example').forEach((el) => {
+  el.addEventListener('click', () => {
+    $prompt.value = el.dataset.q;
+  });
+});
+$prompt.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) generate();
+});
+
+// Boot
+</script>
+</body>
+</html>

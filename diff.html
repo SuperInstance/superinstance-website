@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diff &amp; merge — text and JSON comparison</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --add:rgba(16,185,129,.18);--del:rgba(255,107,107,.18);--mod:rgba(245,158,11,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.controls{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:7px 13px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px}
+@media (max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px}
+.panel h3{font-size:.85rem;color:var(--a3);margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+textarea{width:100%;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.5;min-height:300px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--a2)}
+.diff{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--b);border-radius:6px;overflow:hidden;background:var(--bg);font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.55}
+.diff-side{border-right:1px solid var(--b);min-height:300px;max-height:600px;overflow-y:auto}
+.diff-side:last-child{border-right:0}
+.line{display:grid;grid-template-columns:40px 1fr;padding:1px 5px;white-space:pre-wrap;word-break:break-word}
+.line .n{color:var(--tf);text-align:right;padding-right:7px;user-select:none}
+.line .t{color:var(--t)}
+.line.add{background:var(--add)}
+.line.add .t{color:var(--a3)}
+.line.del{background:var(--del)}
+.line.del .t{color:var(--err)}
+.line.mod{background:var(--mod)}
+.line.mod .t{color:var(--a4)}
+.line.empty{background:rgba(255,255,255,.02)}
+.line.empty .t{color:var(--tf)}
+.summary{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(124,58,237,.1) 100%);border:1px solid var(--a3);border-radius:8px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.summary .stat{text-align:center}
+.summary .v{font-size:1.5rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.summary .add{color:var(--a3)}
+.summary .del{color:var(--err)}
+.summary .mod{color:var(--a4)}
+.summary .l{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.presets{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.preset{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:4px 9px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.preset:hover{border-color:var(--a2)}
+.merge{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;margin-bottom:14px}
+.merge h3{font-size:.92rem;color:var(--a3);margin-bottom:9px}
+.merge pre{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.5;max-height:300px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🔀 <span class="accent">Diff &amp; merge</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— text and JSON comparison</span></h1>
+    <p style="margin-top:3px">Compare two pieces of text or JSON. See additions, deletions, and modifications. Paste a sheet from <a href="json-to-sheet.html">JSON → sheet</a> to compare versions.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="regex.html">Regex</a>
+  <a href="diff.html" class="cur">Diff</a>
+  <a href="reflex-tracer.html">Reflex tracer</a>
+  <a href="lint.html">Lint</a>
+  <a href="ai-sheet.html">AI sheet</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="presets">
+  <span class="preset" data-a="apiVersion: v1\nkind: Service\nmetadata:\n  name: app\nspec:\n  replicas: 3\n  image: app:1.0" data-b="apiVersion: v1\nkind: Service\nmetadata:\n  name: app\n  namespace: prod\nspec:\n  replicas: 5\n  image: app:1.1">K8s manifest</span>
+  <span class="preset" data-a='{"version":"1.0.0","deps":{"a":"1.0.0","b":"2.0.0"}}' data-b='{"version":"1.1.0","deps":{"a":"1.0.0","b":"2.1.0","c":"3.0.0"}}'>package.json</span>
+  <span class="preset" data-a="line 1\nline 2\nline 3\nline 4" data-b="line 1\nline TWO\nline 3\nline 4\nline 5">Text edit</span>
+  <span class="preset" data-a="{
+  &quot;cells&quot;: [
+    { &quot;path&quot;: &quot;a&quot;, &quot;kind&quot;: &quot;value&quot;, &quot;value&quot;: 1 },
+    { &quot;path&quot;: &quot;b&quot;, &quot;kind&quot;: &quot;value&quot;, &quot;value&quot;: 2 }
+  ]
+}" data-b="{
+  &quot;cells&quot;: [
+    { &quot;path&quot;: &quot;a&quot;, &quot;kind&quot;: &quot;value&quot;, &quot;value&quot;: 1 },
+    { &quot;path&quot;: &quot;b&quot;, &quot;kind&quot;: &quot;value&quot;, &quot;value&quot;: 5 },
+    { &quot;path&quot;: &quot;c&quot;, &quot;kind&quot;: &quot;formula&quot;, &quot;fn&quot;: &quot;(ctx) => ctx.a + ctx.b&quot; }
+  ]
+}">Quilt sheet v1 vs v2</span>
+</div>
+
+<div class="controls">
+  <button id="compare-btn">▶ Compare</button>
+  <button class="secondary" id="swap-btn">⇄ Swap</button>
+  <button class="secondary" id="clear-btn">Clear</button>
+  <span style="margin-left:auto;color:var(--td);font-size:.72rem">
+    <label><input type="checkbox" id="ignore-ws"> Ignore whitespace</label>
+  </span>
+</div>
+
+<div class="split">
+  <div class="panel">
+    <h3>Original (A)</h3>
+    <textarea id="a" spellcheck="false"></textarea>
+  </div>
+  <div class="panel">
+    <h3>Modified (B)</h3>
+    <textarea id="b" spellcheck="false"></textarea>
+  </div>
+</div>
+
+<div class="summary" id="summary" style="display:none">
+  <div class="stat"><div class="v" id="s-a">0</div><div class="l">A lines</div></div>
+  <div class="stat"><div class="v" id="s-b">0</div><div class="l">B lines</div></div>
+  <div class="stat"><div class="v add" id="s-add">0</div><div class="l">added</div></div>
+  <div class="stat"><div class="v del" id="s-del">0</div><div class="l">deleted</div></div>
+</div>
+
+<div class="panel" style="margin-bottom:14px">
+  <h3>Side-by-side diff</h3>
+  <div class="diff" id="diff">
+    <div class="diff-side" id="diff-a"></div>
+    <div class="diff-side" id="diff-b"></div>
+  </div>
+</div>
+
+<div class="merge">
+  <h3>Merged result <button class="secondary" id="merge-btn" style="float:right">⇄ Generate merge</button></h3>
+  <pre id="merge-out">// Click "Generate merge" to compute a 3-way merge.</pre>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Line-level diff (Myers algorithm simplified)
+// ─────────────────────────────────────────────────────────────────
+
+function diffLines(a, b) {
+  const aLines = a.split('\n');
+  const bLines = b.split('\n');
+  const m = aLines.length, n = bLines.length;
+  // LCS table
+  const lcs = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (aLines[i - 1] === bLines[j - 1]) {
+        lcs[i][j] = lcs[i - 1][j - 1] + 1;
+      } else {
+        lcs[i][j] = Math.max(lcs[i - 1][j], lcs[i][j - 1]);
+      }
+    }
+  }
+  // Backtrack
+  const ops = [];
+  let i = m, j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && aLines[i - 1] === bLines[j - 1]) {
+      ops.unshift({ op: 'eq', a: aLines[i - 1], b: bLines[j - 1], i: i - 1, j: j - 1 });
+      i--; j--;
+    } else if (j > 0 && (i === 0 || lcs[i][j - 1] >= lcs[i - 1][j])) {
+      ops.unshift({ op: 'add', b: bLines[j - 1], j: j - 1 });
+      j--;
+    } else if (i > 0) {
+      ops.unshift({ op: 'del', a: aLines[i - 1], i: i - 1 });
+      i--;
+    }
+  }
+  return { ops, aLines, bLines };
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+const $a = document.getElementById('a');
+const $b = document.getElementById('b');
+const $diffA = document.getElementById('diff-a');
+const $diffB = document.getElementById('diff-b');
+const $summary = document.getElementById('summary');
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function render() {
+  let a = $a.value;
+  let b = $b.value;
+  if (document.getElementById('ignore-ws').checked) {
+    a = a.replace(/\s+/g, ' ').trim();
+    b = b.replace(/\s+/g, ' ').trim();
+  }
+  if (!a && !b) {
+    $summary.style.display = 'none';
+    $diffA.innerHTML = '<div class="line empty"><span class="n">—</span><span class="t">— empty —</span></div>';
+    $diffB.innerHTML = '<div class="line empty"><span class="n">—</span><span class="t">— empty —</span></div>';
+    return;
+  }
+  const { ops, aLines, bLines } = diffLines(a, b);
+  // Render
+  let aHtml = '', bHtml = '';
+  let aN = 0, bN = 0, adds = 0, dels = 0, mods = 0;
+  // Group consecutive adds/dels to detect modifications
+  const grouped = [];
+  let k = 0;
+  while (k < ops.length) {
+    if (ops[k].op === 'eq') { grouped.push(['eq', ops[k]]); k++; }
+    else {
+      const delsHere = [];
+      const addsHere = [];
+      while (k < ops.length && ops[k].op !== 'eq') {
+        if (ops[k].op === 'del') delsHere.push(ops[k]);
+        else addsHere.push(ops[k]);
+        k++;
+      }
+      if (delsHere.length && addsHere.length) {
+        // Pair them up — modifications
+        const n = Math.max(delsHere.length, addsHere.length);
+        for (let x = 0; x < n; x++) {
+          if (delsHere[x] && addsHere[x]) grouped.push(['mod', { a: delsHere[x].a, b: addsHere[x].b, i: delsHere[x].i, j: addsHere[x].j }]);
+          else if (delsHere[x]) grouped.push(['del', { a: delsHere[x].a, i: delsHere[x].i }]);
+          else if (addsHere[x]) grouped.push(['add', { b: addsHere[x].b, j: addsHere[x].j }]);
+        }
+      } else {
+        delsHere.forEach((d) => grouped.push(['del', { a: d.a, i: d.i }]));
+        addsHere.forEach((ad) => grouped.push(['add', { b: ad.b, j: ad.j }]));
+      }
+    }
+  }
+  for (const [op, data] of grouped) {
+    if (op === 'eq') {
+      aN++; bN++;
+      aHtml += `<div class="line"><span class="n">${aN}</span><span class="t">${escapeHtml(data.a)}</span></div>`;
+      bHtml += `<div class="line"><span class="n">${bN}</span><span class="t">${escapeHtml(data.b)}</span></div>`;
+    } else if (op === 'add') {
+      bN++; adds++;
+      aHtml += `<div class="line empty"><span class="n">-</span><span class="t"></span></div>`;
+      bHtml += `<div class="line add"><span class="n">${bN}</span><span class="t">${escapeHtml(data.b)}</span></div>`;
+    } else if (op === 'del') {
+      aN++; dels++;
+      aHtml += `<div class="line del"><span class="n">${aN}</span><span class="t">${escapeHtml(data.a)}</span></div>`;
+      bHtml += `<div class="line empty"><span class="n">-</span><span class="t"></span></div>`;
+    } else if (op === 'mod') {
+      aN++; bN++; mods++;
+      aHtml += `<div class="line mod"><span class="n">${aN}</span><span class="t">${escapeHtml(data.a)}</span></div>`;
+      bHtml += `<div class="line mod"><span class="n">${bN}</span><span class="t">${escapeHtml(data.b)}</span></div>`;
+    }
+  }
+  $diffA.innerHTML = aHtml;
+  $diffB.innerHTML = bHtml;
+  $summary.style.display = 'grid';
+  document.getElementById('s-a').textContent = aLines.length;
+  document.getElementById('s-b').textContent = bLines.length;
+  document.getElementById('s-add').textContent = adds;
+  document.getElementById('s-del').textContent = dels + mods;
+}
+
+function generateMerge() {
+  // Simple 3-way: if A and B both have the same line at the same position, keep it.
+  // If A has it but B doesn't, it's a deletion.
+  // If B has it but A doesn't, it's an addition.
+  // We don't have a 3rd version, so this is a 2-way merge to B.
+  const merge = $b.value;
+  document.getElementById('merge-out').textContent = merge || '// empty';
+}
+
+// Wire up
+document.getElementById('compare-btn').addEventListener('click', render);
+document.getElementById('swap-btn').addEventListener('click', () => {
+  const t = $a.value; $a.value = $b.value; $b.value = t;
+  render();
+});
+document.getElementById('clear-btn').addEventListener('click', () => {
+  $a.value = ''; $b.value = ''; render();
+});
+document.getElementById('merge-btn').addEventListener('click', generateMerge);
+document.getElementById('ignore-ws').addEventListener('change', render);
+$a.addEventListener('input', debounce(render, 200));
+$b.addEventListener('input', debounce(render, 200));
+
+document.querySelectorAll('.preset').forEach((el) => {
+  el.addEventListener('click', () => {
+    $a.value = el.dataset.a;
+    $b.value = el.dataset.b;
+    render();
+  });
+});
+
+function debounce(fn, ms) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+// Boot with first preset
+const first = document.querySelector('.preset');
+$a.value = first.dataset.a;
+$b.value = first.dataset.b;
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benchmark — measure Quilt cell evaluation</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.scenarios{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px;margin-bottom:14px}
+.scenario{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:13px;cursor:pointer;transition:.15s}
+.scenario:hover{border-color:var(--a2);transform:translateY(-2px)}
+.scenario.sel{border-color:var(--a3);background:rgba(16,185,129,.05)}
+.scenario .name{font-weight:700;font-size:.92rem;color:var(--a3);margin-bottom:3px}
+.scenario .desc{font-size:.7rem;color:var(--td);line-height:1.4}
+.scenario .work{font-size:.65rem;color:var(--a4);font-family:'JetBrains Mono',monospace;margin-top:5px}
+.controls{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:13px;margin-bottom:14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:8px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button:disabled{background:var(--b);cursor:not-allowed;opacity:.5}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+.results{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px;margin-bottom:14px}
+.results h2{margin-top:0}
+table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.74rem;margin-top:11px}
+th,td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--b)}
+th{background:var(--pe);color:var(--td);font-weight:700;text-transform:uppercase;font-size:.65rem;letter-spacing:.04em}
+td.num{text-align:right}
+.bar-cell{width:200px}
+.bar{height:9px;background:var(--b);border-radius:3px;overflow:hidden}
+.bar .fill{height:100%;background:linear-gradient(90deg,var(--a3) 0%,var(--a2) 100%);transition:width .3s}
+.summary{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(124,58,237,.1) 100%);border:1px solid var(--a3);border-radius:8px;padding:14px;margin-bottom:14px}
+.summary .row{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.summary .stat{text-align:center}
+.summary .v{font-size:1.6rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.summary .v.good{color:var(--a3)}
+.summary .v.mid{color:var(--a4)}
+.summary .v.bad{color:var(--err)}
+.summary .l{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.history{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px}
+.history h3{font-size:.85rem;color:var(--a3);margin-bottom:9px}
+.history-chart{height:140px;display:flex;align-items:flex-end;gap:1px;background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:9px}
+.history-bar{flex:1;background:linear-gradient(180deg,var(--a3) 0%,var(--a1) 100%);min-height:2px;position:relative;transition:height .3s}
+.history-bar:hover{background:var(--a4)}
+.history-bar::after{content:attr(data-ms);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--td);font-family:'JetBrains Mono',monospace;padding:1px 3px;background:var(--bg);border:1px solid var(--b);border-radius:2px;white-space:nowrap;opacity:0;pointer-events:none}
+.history-bar:hover::after{opacity:1}
+.empty{text-align:center;padding:20px;color:var(--tf);font-style:italic;font-size:.78rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>📊 <span class="accent">Benchmark</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— measure cell evaluation</span></h1>
+    <p style="margin-top:3px">Run 5 workload scenarios in your browser. See how Quilt handles them. Numbers depend on your hardware.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="benchmark.html" class="cur">Benchmark</a>
+  <a href="regex.html">Regex</a>
+  <a href="diff.html">Diff</a>
+  <a href="reflex-tracer.html">Reflex tracer</a>
+  <a href="lint.html">Lint</a>
+  <a href="ai-sheet.html">AI sheet</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="intro">
+  <p>These 5 scenarios are designed to surface different bottlenecks: <strong>scale</strong> (many cells, few deps), <strong>depth</strong> (long dependency chains), <strong>reactivity</strong> (many listeners), <strong>compute</strong> (expensive formulas), and <strong>realism</strong> (mixed cells, random deps). <em>Per Kimi moonshot-v1-8k.</em></p>
+</div>
+
+<h2>Scenarios</h2>
+<div class="scenarios" id="scenarios"></div>
+
+<div class="controls">
+  <button id="run-btn">▶ Run selected</button>
+  <button class="secondary" id="run-all-btn">Run all</button>
+  <button class="secondary" id="clear-btn">Clear history</button>
+  <span style="color:var(--td);font-size:.74rem;margin-left:auto">Iterations: <input type="number" id="iters" value="5" min="1" max="50" style="width:50px;background:var(--pe);border:1px solid var(--bs);border-radius:3px;padding:3px 5px;color:var(--t);font-family:inherit"></span>
+</div>
+
+<div class="summary" id="summary" style="display:none">
+  <h2 style="color:var(--a3);margin-bottom:11px">Last run</h2>
+  <div class="row">
+    <div class="stat"><div class="v good" id="s-cells">0</div><div class="l">cells</div></div>
+    <div class="stat"><div class="v mid" id="s-ms">0</div><div class="l">ms</div></div>
+    <div class="stat"><div class="v good" id="s-cps">0</div><div class="l">cells/sec</div></div>
+    <div class="stat"><div class="v" id="s-rating">—</div><div class="l">rating</div></div>
+  </div>
+</div>
+
+<div class="results">
+  <h2>All scenarios</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Cells</th>
+        <th>Iters</th>
+        <th>Total ms</th>
+        <th>Avg ms/run</th>
+        <th>cells/sec</th>
+        <th>Per-cell μs</th>
+        <th>Visual</th>
+      </tr>
+    </thead>
+    <tbody id="results-body">
+      <tr><td colspan="8"><div class="empty">Run a scenario to see results.</div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="history">
+  <h3>Recent runs (last 30)</h3>
+  <div class="history-chart" id="chart">
+    <div class="empty" style="width:100%">No history yet. Run a scenario.</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Scenarios (per Kimi)
+// ─────────────────────────────────────────────────────────────────
+
+const SCENARIOS = [
+  {
+    id: 'scale',
+    name: 'Scale: many cells',
+    desc: '1000 cells, each with 1-2 dependencies. Spreadsheet-like workload.',
+    work: '1000 cells, 1-2 deps',
+    build() {
+      const cells = [];
+      // First 100 are value cells (the inputs)
+      for (let i = 0; i < 100; i++) {
+        cells.push({ path: `v${i}`, kind: 'value', value: i });
+      }
+      // Next 900 are formulas depending on random pairs
+      for (let i = 0; i < 900; i++) {
+        const a = Math.floor(Math.random() * 100);
+        const b = Math.floor(Math.random() * 100);
+        cells.push({ path: `f${i}`, kind: 'formula', fn: `(ctx) => ctx.v${a} + ctx.v${b}` });
+      }
+      return cells;
+    },
+  },
+  {
+    id: 'depth',
+    name: 'Depth: long chains',
+    desc: '100 cells, each with 5 deps, deep chains. Financial-model workload.',
+    work: '100 cells, 5 deps each',
+    build() {
+      const cells = [];
+      // 10 value cells
+      for (let i = 0; i < 10; i++) {
+        cells.push({ path: `v${i}`, kind: 'value', value: i });
+      }
+      // 90 formulas, each depending on 5 previous
+      for (let i = 0; i < 90; i++) {
+        const deps = [];
+        for (let d = 0; d < 5; d++) {
+          const idx = Math.floor(Math.random() * (i + 10));
+          deps.push(`ctx.${idx < 10 ? 'v' : 'f'}${idx < 10 ? idx : idx - 10}`);
+        }
+        cells.push({ path: `f${i}`, kind: 'formula', fn: `(ctx) => ${deps.join(' + ')}` });
+      }
+      return cells;
+    },
+  },
+  {
+    id: 'reactivity',
+    name: 'Reactivity: many listeners',
+    desc: '500 cells, 20% are listeners. Each triggers updates in 2-3 cells.',
+    work: '500 cells, 20% listeners',
+    build() {
+      const cells = [];
+      // 100 value cells
+      for (let i = 0; i < 100; i++) {
+        cells.push({ path: `v${i}`, kind: 'value', value: i });
+      }
+      // 300 formulas
+      for (let i = 0; i < 300; i++) {
+        const a = Math.floor(Math.random() * 100);
+        cells.push({ path: `f${i}`, kind: 'formula', fn: `(ctx) => ctx.v${a} * 2` });
+      }
+      // 100 listeners
+      for (let i = 0; i < 100; i++) {
+        const target = Math.floor(Math.random() * 100);
+        cells.push({
+          path: `l${i}`, kind: 'listener', listens: `v${target}`,
+          fn: `(ctx) => 'fired on v${target}'`,
+        });
+      }
+      return cells;
+    },
+  },
+  {
+    id: 'compute',
+    name: 'Compute: expensive formulas',
+    desc: '50 cells, each with deeply nested math. CPU-bound workload.',
+    work: '50 cells, complex math',
+    build() {
+      const cells = [];
+      for (let i = 0; i < 10; i++) {
+        cells.push({ path: `v${i}`, kind: 'value', value: i * 10 });
+      }
+      for (let i = 0; i < 40; i++) {
+        const a = i % 10;
+        const b = (i + 1) % 10;
+        cells.push({
+          path: `f${i}`,
+          kind: 'formula',
+          fn: `(ctx) => Math.pow(Math.sqrt(Math.abs(ctx.v${a} * ctx.v${b} + 1)) + Math.sin(ctx.v${a}) * Math.cos(ctx.v${b}), 2)`,
+        });
+      }
+      return cells;
+    },
+  },
+  {
+    id: 'mixed',
+    name: 'Mixed: realistic workload',
+    desc: '200 cells, mixed types, random dependencies. Realistic blend.',
+    work: '200 cells, mixed, random',
+    build() {
+      const cells = [];
+      for (let i = 0; i < 30; i++) {
+        cells.push({ path: `v${i}`, kind: 'value', value: Math.random() * 100 });
+      }
+      for (let i = 0; i < 140; i++) {
+        const a = Math.floor(Math.random() * 30);
+        const b = Math.floor(Math.random() * 30);
+        const op = ['+', '-', '*', '/'][i % 4];
+        cells.push({
+          path: `f${i}`, kind: 'formula',
+          fn: `(ctx) => ctx.v${a} ${op} ctx.v${b}`,
+        });
+      }
+      for (let i = 0; i < 30; i++) {
+        cells.push({
+          path: `l${i}`, kind: 'listener',
+          listens: `v${i % 30}`,
+          fn: `(ctx) => 'fired'`,
+        });
+      }
+      return cells;
+    },
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────
+//  Engine
+// ─────────────────────────────────────────────────────────────────
+
+class MiniEngine {
+  constructor(sheet) {
+    this.sheet = sheet;
+    this.state = new Map();
+  }
+  async run() {
+    this.state.clear();
+    for (const c of this.sheet.cells) {
+      if (c.kind === 'value') this.state.set(c.path, c.value);
+    }
+    for (const c of this.sheet.cells) {
+      if (c.kind === 'value') continue;
+      if (c.kind === 'formula' || c.kind === 'program') {
+        const ctx = Object.fromEntries(this.state);
+        const fn = new Function('ctx', `return (${c.fn})(ctx);`);
+        const result = await fn(ctx);
+        this.state.set(c.path, result);
+      } else if (c.kind === 'listener') {
+        this.state.set(c.path, c.listens);
+      }
+    }
+    return this.state;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+const selected = new Set(['scale', 'depth', 'reactivity', 'compute', 'mixed']);
+const results = [];
+const history = [];
+
+function renderScenarios() {
+  const el = document.getElementById('scenarios');
+  el.innerHTML = SCENARIOS.map((s) => `
+    <div class="scenario ${selected.has(s.id) ? 'sel' : ''}" data-id="${s.id}">
+      <div class="name">${s.name}</div>
+      <div class="desc">${s.desc}</div>
+      <div class="work">${s.work}</div>
+    </div>
+  `).join('');
+  el.querySelectorAll('.scenario').forEach((el) => {
+    el.addEventListener('click', () => {
+      if (selected.has(el.dataset.id)) selected.delete(el.dataset.id);
+      else selected.add(el.dataset.id);
+      renderScenarios();
+    });
+  });
+}
+
+function renderResults() {
+  const tbody = document.getElementById('results-body');
+  if (results.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty">Run a scenario to see results.</div></td></tr>';
+    return;
+  }
+  // Find max ms for bar scaling
+  const maxMs = Math.max(...results.map((r) => r.avgMs));
+  tbody.innerHTML = results.map((r) => {
+    const s = SCENARIOS.find((s) => s.id === r.scenario);
+    const cellsPerSec = (r.cells / (r.avgMs / 1000)).toFixed(0);
+    const perCellUs = (r.avgMs * 1000 / r.cells).toFixed(2);
+    const barW = maxMs > 0 ? (r.avgMs / maxMs * 100) : 0;
+    return `
+      <tr>
+        <td>${s?.name || r.scenario}</td>
+        <td class="num">${r.cells}</td>
+        <td class="num">${r.iters}</td>
+        <td class="num">${r.totalMs.toFixed(2)}</td>
+        <td class="num">${r.avgMs.toFixed(2)}</td>
+        <td class="num">${cellsPerSec}</td>
+        <td class="num">${perCellUs}</td>
+        <td class="bar-cell"><div class="bar"><div class="fill" style="width:${barW}%"></div></div></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderSummary(lastResult) {
+  const el = document.getElementById('summary');
+  el.style.display = 'block';
+  document.getElementById('s-cells').textContent = lastResult.cells;
+  document.getElementById('s-ms').textContent = lastResult.avgMs.toFixed(2);
+  const cps = (lastResult.cells / (lastResult.avgMs / 1000)).toFixed(0);
+  document.getElementById('s-cps').textContent = cps;
+  const us = (lastResult.avgMs * 1000 / lastResult.cells);
+  let rating, ratingClass;
+  if (us < 50) { rating = '⚡ excellent'; ratingClass = 'good'; }
+  else if (us < 200) { rating = '✓ good'; ratingClass = 'good'; }
+  else if (us < 1000) { rating = '⚠ ok'; ratingClass = 'mid'; }
+  else { rating = '✗ slow'; ratingClass = 'bad'; }
+  const r = document.getElementById('s-rating');
+  r.textContent = rating;
+  r.className = 'v ' + ratingClass;
+}
+
+function renderHistory() {
+  const el = document.getElementById('chart');
+  if (history.length === 0) {
+    el.innerHTML = '<div class="empty" style="width:100%">No history yet. Run a scenario.</div>';
+    return;
+  }
+  const max = Math.max(...history.map((h) => h.ms));
+  el.innerHTML = history.slice(-30).map((h) => {
+    const h2 = (h.ms / max * 100).toFixed(1);
+    return `<div class="history-bar" style="height:${h2}%" data-ms="${h.ms.toFixed(1)}ms (${h.scenario})"></div>`;
+  }).join('');
+}
+
+async function runScenario(scenarioId) {
+  const s = SCENARIOS.find((x) => x.id === scenarioId);
+  if (!s) return;
+  const iters = +document.getElementById('iters').value || 5;
+  const sheet = { name: s.id, cells: s.build() };
+  const engine = new MiniEngine(sheet);
+
+  // Warmup
+  await engine.run();
+
+  const start = performance.now();
+  for (let i = 0; i < iters; i++) {
+    await engine.run();
+  }
+  const totalMs = performance.now() - start;
+  const avgMs = totalMs / iters;
+
+  const result = {
+    scenario: s.id,
+    cells: sheet.cells.length,
+    iters,
+    totalMs,
+    avgMs,
+  };
+  // Replace any existing result for this scenario
+  const i = results.findIndex((r) => r.scenario === scenarioId);
+  if (i >= 0) results[i] = result; else results.push(result);
+  history.push({ scenario: s.id, ms: avgMs });
+
+  renderResults();
+  renderSummary(result);
+  renderHistory();
+}
+
+async function runSelected() {
+  if (selected.size === 0) return;
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true;
+  for (const id of selected) {
+    await runScenario(id);
+  }
+  btn.disabled = false;
+}
+
+async function runAll() {
+  for (const s of SCENARIOS) selected.add(s.id);
+  renderScenarios();
+  await runSelected();
+}
+
+// Wire up
+document.getElementById('run-btn').addEventListener('click', runSelected);
+document.getElementById('run-all-btn').addEventListener('click', runAll);
+document.getElementById('clear-btn').addEventListener('click', () => {
+  results.length = 0;
+  history.length = 0;
+  renderResults();
+  renderHistory();
+  document.getElementById('summary').style.display = 'none';
+});
+
+// Boot
+renderScenarios();
+</script>
+</body>
+</html>
