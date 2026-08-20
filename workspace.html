@@ -73,6 +73,7 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
   <a href="debugger.html">Inspector</a>
   <a href="from-react.html">From React</a>
   <a href="cell-game.html">Cell game</a>
+  <a href="infra.html">Infrastructure</a>
   <a href="templates/finance.html">Finance</a>
 </div>
 
@@ -296,6 +297,81 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
 </div>
 
 <div class="section">
+  <h2>🌐 Simulate &amp; deploy</h2>
+  <div class="tools">
+    <a class="tool" href="federation.html">
+      <div class="head">
+        <div class="icon">🌐</div>
+        <div class="name">Federation live</div>
+        <div class="tag">simulate</div>
+      </div>
+      <div class="desc">See cells propagate across 4 simulated instances with latency. Stress test, random events.</div>
+      <div class="meta"><span>4 instances</span><span>latency</span><span>subscriptions</span></div>
+    </a>
+
+    <a class="tool" href="scenario-simulator.html">
+      <div class="head">
+        <div class="icon">🎬</div>
+        <div class="name">Scenario simulator</div>
+        <div class="tag">simulate</div>
+      </div>
+      <div class="desc">Simulate a small fleet of Quilt instances. Watch propagation, stress test, view history.</div>
+      <div class="meta"><span>3 instances</span><span>events</span><span>history</span></div>
+    </a>
+
+    <a class="tool" href="deploy-preview.html">
+      <div class="head">
+        <div class="icon">🚀</div>
+        <div class="name">Deploy preview</div>
+        <div class="tag">demo</div>
+      </div>
+      <div class="desc">See hosted Quilt in action. CLI output, browser preview, metrics. Real deploy flow.</div>
+      <div class="meta"><span>CLI</span><span>preview</span><span>metrics</span></div>
+    </a>
+
+    <a class="tool" href="api-tester.html">
+      <div class="head">
+        <div class="icon">🔌</div>
+        <div class="name">API tester</div>
+        <div class="tag">test</div>
+      </div>
+      <div class="desc">Test Quilt REST endpoints. 16 endpoints, simulated responses, headers, body.</div>
+      <div class="meta"><span>16 endpoints</span><span>REST</span><span>simulated</span></div>
+    </a>
+
+    <a class="tool" href="fleet.html">
+      <div class="head">
+        <div class="icon">🚢</div>
+        <div class="name">Fleet</div>
+        <div class="tag">index</div>
+      </div>
+      <div class="desc">All 25 Quilt repos at a glance. Tier filter, language filter, test counts, links.</div>
+      <div class="meta"><span>25 repos</span><span>filter</span><span>summary</span></div>
+    </a>
+
+    <a class="tool" href="infra.html">
+      <div class="head">
+        <div class="icon">🏗️</div>
+        <div class="name">Infrastructure</div>
+        <div class="tag">infra</div>
+      </div>
+      <div class="desc">The 5 infrastructure repos: base, swarm, core-os, k3s, nomad. Splash images, demos, links.</div>
+      <div class="meta"><span>5 layers</span><span>3 demos</span><span>76 tests</span></div>
+    </a>
+
+    <a class="tool" href="registry.html">
+      <div class="head">
+        <div class="icon">📚</div>
+        <div class="name">Registry</div>
+        <div class="tag">index</div>
+      </div>
+      <div class="desc">Every tool indexed and searchable. Sortable, filterable, with size and LLM tags.</div>
+      <div class="meta"><span>33 tools</span><span>search</span><span>sort</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="section">
   <h2>📚 Learn</h2>
   <div class="tools">
     <a class="tool" href="from-react.html">
@@ -331,7 +407,7 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
 </div>
 
 <div class="section">
-  <h2>📝 Templates <span class="sub">— clone and use</span></h2>
+  <h2>📝 Templates <span class="sub">— 13 click-and-go apps</span></h2>
   <div class="tools">
     <a class="tool" href="templates/finance.html">
       <div class="head">
@@ -361,6 +437,56 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
       </div>
       <div class="desc">Multi-city weather. Add cities, see current conditions, hourly forecast.</div>
       <div class="meta"><span>multi-city</span><span>hourly</span><span>self-contained</span></div>
+    </a>
+
+    <a class="tool" href="templates/trading.html">
+      <div class="head">
+        <div class="icon">📈</div>
+        <div class="name">Trading</div>
+        <div class="tag">template</div>
+      </div>
+      <div class="desc">Paper trading simulator. Track positions, see P&L, chart performance.</div>
+      <div class="meta"><span>positions</span><span>P&amp;L</span><span>charts</span></div>
+    </a>
+
+    <a class="tool" href="templates/chat-chain.html">
+      <div class="head">
+        <div class="icon">💬</div>
+        <div class="name">Chat chain</div>
+        <div class="tag">template</div>
+      </div>
+      <div class="desc">Branchable chat. Each message can have child messages (branches). Visualize as a tree.</div>
+      <div class="meta"><span>branches</span><span>tree view</span><span>localStorage</span></div>
+    </a>
+
+    <a class="tool" href="templates/notes.html">
+      <div class="head">
+        <div class="icon">📝</div>
+        <div class="name">Notes</div>
+        <div class="tag">template</div>
+      </div>
+      <div class="desc">Note-taking app. Each note is a cell. Search by tag or content. Markdown-like formatting.</div>
+      <div class="meta"><span>cells</span><span>tags</span><span>search</span></div>
+    </a>
+
+    <a class="tool" href="templates/habit-tracker.html">
+      <div class="head">
+        <div class="icon">✅</div>
+        <div class="name">Habit tracker</div>
+        <div class="tag">template</div>
+      </div>
+      <div class="desc">Daily habit tracker. 7-day view, streak counter, completion rate. 5 sample habits.</div>
+      <div class="meta"><span>7-day</span><span>streaks</span><span>rate</span></div>
+    </a>
+
+    <a class="tool" href="templates/recipe.html">
+      <div class="head">
+        <div class="icon">🍳</div>
+        <div class="name">Recipe</div>
+        <div class="tag">template</div>
+      </div>
+      <div class="desc">Recipe calculator. Scale ingredients to different serving counts. Multiple recipes.</div>
+      <div class="meta"><span>scaling</span><span>multi-recipe</span><span>JSON</span></div>
     </a>
   </div>
 </div>

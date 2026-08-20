@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infrastructure — the 5 layers beneath Quilt</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.1rem;margin:18px 0 11px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:14px;margin-bottom:18px;font-size:.85rem;color:var(--td);line-height:1.6}
+.intro strong{color:var(--a3)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.repos{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:20px}
+.repo{background:var(--panel);border:1px solid var(--b);border-radius:12px;overflow:hidden;transition:.2s}
+.repo:hover{border-color:var(--a2)}
+.repo .splash{width:100%;height:auto;display:block;border-bottom:1px solid var(--b)}
+.repo .body{padding:18px}
+.repo .name{font-size:1.3rem;font-weight:800;color:var(--a3);margin-bottom:5px;font-family:'JetBrains Mono',monospace}
+.repo .tagline{font-size:1.05rem;color:var(--t);margin-bottom:11px;line-height:1.5;font-weight:500}
+.repo .why{color:var(--td);font-size:.85rem;margin-bottom:11px;line-height:1.6}
+.repo .links{display:flex;gap:7px;flex-wrap:wrap}
+.repo .links a{background:var(--pe);border:1px solid var(--b);color:var(--a2);padding:5px 11px;border-radius:5px;font-size:.74rem;text-decoration:none;font-family:'JetBrains Mono',monospace}
+.repo .links a:hover{border-color:var(--a2);background:rgba(124,58,237,.1)}
+.repo .links a.demo{background:rgba(16,185,129,.1);border-color:var(--a3);color:var(--a3)}
+.repo .links a.demo:hover{background:rgba(16,185,129,.2)}
+.philosophy{background:linear-gradient(135deg,rgba(124,58,237,.1) 0%,rgba(59,130,246,.1) 100%);border:1px solid var(--a1);border-radius:12px;padding:20px;margin-bottom:20px}
+.philosophy h2{color:var(--a3);margin-top:0}
+.philosophy .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+@media (max-width:700px){.philosophy .three{grid-template-columns:1fr}}
+.philosophy .pillar{background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:13px}
+.philosophy .pillar h3{font-size:.92rem;color:var(--a3);margin-bottom:5px}
+.philosophy .pillar p{font-size:.78rem;margin-bottom:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🏗️ <span class="accent">Infrastructure</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— the 5 layers beneath Quilt</span></h1>
+    <p style="margin-top:3px">The 5 new infrastructure repos that make Quilt <strong>solid, predictable, and resilient</strong>. Designed with <code>z.ai</code> and <code>Kimi</code>.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="chaos-test.html">Chaos test</a>
+  <a href="nomad-demo.html">Quilt+Nomad</a>
+  <a href="infra.html" class="cur">Infrastructure</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="intro">
+  <p>Every solid platform has layers beneath the surface. The <strong>5 infrastructure repos</strong> below are the foundation of Quilt: minimal container images, two embedded orchestrators, an immutable appliance, and a chaos testing framework. They were built from a conversation about <em>making orchestrators structurally solid, predictable, and resilient</em>. Each one has a splash image, a clear mission, and a working demo.</p>
+</div>
+
+<div class="philosophy">
+  <h2>The shared philosophy</h2>
+  <p>All 5 repos share three principles. They're not just technical choices — they're the design values that make Quilt feel like one platform instead of 25 loose tools.</p>
+  <div class="three">
+    <div class="pillar">
+      <h3>🎯 Zero-config defaults</h3>
+      <p>Every repo works out of the box with no setup beyond `npm install`. The defaults are the right choices for 90% of users. Power users can override anything, but they never have to.</p>
+    </div>
+    <div class="pillar">
+      <h3>🛡️ Solid by default</h3>
+      <p>Each repo is designed to be hard to break. Minimal CVE bases. Transactional updates. Chaos-tested recovery. Immutable appliances. Resilience isn't an afterthought.</p>
+    </div>
+    <div class="pillar">
+      <h3>🔌 Composable everywhere</h3>
+      <p>Each repo can be used standalone or composed with the others. quilt-base runs on quilt-core-os. quilt-k3s tests quilt-agent. The whole is more than the sum of parts.</p>
+    </div>
+  </div>
+</div>
+
+<h2>The 5 infrastructure repos</h2>
+<div class="repos">
+
+  <div class="repo">
+    <img class="splash" src="https://raw.githubusercontent.com/SuperInstance/quilt-base/main/assets/splash.png" alt="quilt-base">
+    <div class="body">
+      <div class="name">quilt-base</div>
+      <div class="tagline">The foundation layer. Every Quilt agent runs on a quilt-base image.</div>
+      <div class="why">
+        Minimal, hardened, auto-rebuilding, zero CVE. Four container variants (Alpine, Ubuntu, Distroless, Scratch) — 4MB to 28MB. Daily CVE scans with Trivy and Grype, SBOM generation with Syft, image signing with Cosign. Multi-arch (amd64 + arm64). Non-root user. The base you don't have to think about.
+      </div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-base" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-base/blob/main/README.md" target="_blank">README</a>
+        <a href="https://github.com/SuperInstance/quilt-base/tree/main/docker" target="_blank">Dockerfiles</a>
+        <a href="https://github.com/SuperInstance/quilt-base/tree/main/security" target="_blank">Security scripts</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="repo">
+    <img class="splash" src="https://raw.githubusercontent.com/SuperInstance/quilt-swarm/main/assets/splash.png" alt="quilt-swarm">
+    <div class="body">
+      <div class="name">quilt-swarm</div>
+      <div class="tagline">Quilt as a control plane for Docker Swarm. Edit a cell, the cluster reconfigures.</div>
+      <div class="why">
+        Encrypted overlay networking, service mesh, secret rotation without downtime. Map a Quilt cell to a Swarm service: value→count, formula→service spec, api→health check, listener→handler. 28 tests passing. Use this when you only need containers and want minimal infrastructure complexity.
+      </div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-swarm" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-swarm/blob/main/README.md" target="_blank">README</a>
+        <a href="https://github.com/SuperInstance/quilt-swarm/tree/main/src" target="_blank">Source</a>
+        <a href="https://github.com/SuperInstance/quilt-swarm/tree/main/test" target="_blank">Tests (28)</a>
+        <a class="demo" href="https://superinstance.dev/nomad-demo.html">Live demo</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="repo">
+    <img class="splash" src="https://raw.githubusercontent.com/SuperInstance/quilt-core-os/main/assets/splash.png" alt="quilt-core-os">
+    <div class="body">
+      <div class="name">quilt-core-os</div>
+      <div class="tagline">An immutable Ubuntu Core appliance. The OS you cannot break.</div>
+      <div class="why">
+        Read-only filesystem. Cryptographically signed system. Transactional OTA updates with automatic rollback. Survive a power loss mid-update. The kernel, the OS, the agent — each is an independent layer that can be rolled back without affecting the others. Pi 4, Pi 5, Jetson, x86. The edge device you can deploy and forget.
+      </div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-core-os" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-core-os/blob/main/README.md" target="_blank">README</a>
+        <a href="https://github.com/SuperInstance/quilt-core-os/tree/main/snap" target="_blank">Snap</a>
+        <a href="https://github.com/SuperInstance/quilt-core-os/tree/main/gadget" target="_blank">Gadgets</a>
+        <a href="https://github.com/SuperInstance/quilt-core-os/tree/main/docs" target="_blank">Docs</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="repo">
+    <img class="splash" src="https://raw.githubusercontent.com/SuperInstance/quilt-k3s/main/assets/splash.png" alt="quilt-k3s">
+    <div class="body">
+      <div class="name">quilt-k3s</div>
+      <div class="tagline">Chaos engineering for Quilt. 5 failure scenarios. Self-healing verification in under 30s.</div>
+      <div class="why">
+        Spins up a 3-node K3s cluster in CI. Injects failures. Verifies recovery. The 5 scenarios (node failure, network partition, disk full, API down, etcd down) and recovery thresholds are designed by <strong>Kimi moonshot-v1-8k</strong>. 34 tests passing. Catches resilience regressions before they reach production. The immune system of the Quilt platform.
+      </div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-k3s" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-k3s/blob/main/README.md" target="_blank">README</a>
+        <a href="https://github.com/SuperInstance/quilt-k3s/tree/main/scenarios" target="_blank">Scenarios</a>
+        <a href="https://github.com/SuperInstance/quilt-k3s/tree/main/test" target="_blank">Tests (34)</a>
+        <a class="demo" href="https://superinstance.dev/chaos-test.html">Live demo</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="repo">
+    <img class="splash" src="https://raw.githubusercontent.com/SuperInstance/quilt-nomad/main/assets/splash.png" alt="quilt-nomad">
+    <div class="body">
+      <div class="name">quilt-nomad</div>
+      <div class="tagline">Quilt as a control plane for HashiCorp Nomad. Cell → job, formula → task, api → http check.</div>
+      <div class="why">
+        Same idea as quilt-swarm, but for Nomad's multi-task scheduler. Containers, raw binaries, Java JARs, systemd services — all from one Quilt sheet. 6 Nomad API endpoints wrapped. Cell-to-Nomad mapping designed with <strong>z.ai GLM-4.5</strong>. 14 tests passing. Use this when you have a mixed workload on a small cluster.
+      </div>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-nomad" target="_blank">GitHub</a>
+        <a href="https://github.com/SuperInstance/quilt-nomad/blob/main/README.md" target="_blank">README</a>
+        <a href="https://github.com/SuperInstance/quilt-nomad/tree/main/src" target="_blank">Source</a>
+        <a href="https://github.com/SuperInstance/quilt-nomad/tree/main/test" target="_blank">Tests (14)</a>
+        <a class="demo" href="https://superinstance.dev/nomad-demo.html">Live demo</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>How they fit together</h2>
+<div class="intro">
+  <p>The 5 repos aren't 5 separate projects — they're 5 layers of one platform. <code>quilt-base</code> is the image. <code>quilt-core-os</code> is the appliance that runs the image. <code>quilt-swarm</code> and <code>quilt-nomad</code> are the orchestrators that schedule it. <code>quilt-k3s</code> is the chaos test framework that validates the whole stack. They cross-reference each other. The README of each one links to the others. They use the same engineering bar (Apache 2.0, GitHub Actions CI, CODEOWNERS, Dependabot, ESLint). They share the same philosophy (zero-config defaults, solid by default, composable everywhere).</p>
+  <p style="margin-bottom:0">The 5 layers form a self-reinforcing loop. The base image makes deployments predictable. The orchestrators make the deployments declarative. The immutable OS makes the deployments durable. The chaos tests make the deployments verified. Every layer makes the other layers possible.</p>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:30px 20px 20px;margin-top:40px;border-top:1px solid var(--b)">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank" style="background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px">☕ Buy Casey a Coffee — support the work</a>
+  <div style="margin-top:11px;color:var(--tf);font-size:.78rem">
+    5 new infrastructure repos. 76 new tests. Designed with z.ai + Kimi. Apache 2.0.
+  </div>
+</div>
+
+</body>
+</html>
