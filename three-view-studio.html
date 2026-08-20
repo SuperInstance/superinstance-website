@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quilt Studio · 3‑View</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0d1117;
+            color: #e6edf3;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── top bar ── */
+        .toolbar {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 8px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .toolbar .brand {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #58a6ff;
+            margin-right: 8px;
+        }
+
+        .toolbar button {
+            background: #21262d;
+            border: 1px solid #3d444d;
+            color: #c9d1d9;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .toolbar button:hover {
+            background: #30363d;
+            border-color: #8b949e;
+        }
+
+        .toolbar input[type="file"] {
+            display: none;
+        }
+
+        .save-status {
+            font-size: 12px;
+            color: #7d8590;
+            margin-left: auto;
+        }
+
+        /* ── main 3‑view grid ── */
+        .views-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.4fr;
+            gap: 8px;
+            flex: 1;
+            padding: 8px;
+            min-height: 0;
+            background: #010409;
+        }
+
+        .view-panel {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .view-header {
+            background: #161b22;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #30363d;
+            color: #8b949e;
+            letter-spacing: 0.3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-content {
+            flex: 1;
+            overflow: auto;
+            padding: 8px;
+            position: relative;
+        }
+
+        /* ── top view: spreadsheet ── */
+        .sheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .sheet-table th {
+            position: sticky;
+            top: 0;
+            background: #1c2128;
+            color: #8b949e;
+            text-align: left;
+            padding: 6px 8px;
+            border-bottom: 1px solid #30363d;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .sheet-table th:hover {
+            color: #58a6ff;
+        }
+
+        .sheet-table td {
+            padding: 4px 8px;
+            border-bottom: 1px solid #21262d;
+            white-space: nowrap;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sheet-table tr:hover td {
+            background: #161b22;
+        }
+
+        .filter-input {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #e6edf3;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        /* ── front view: dashboard widgets ── */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+        }
+
+        .widget {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .widget .kind {
+            font-size: 10px;
+            color: #7d8590;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .widget .path {
+            font-weight: 600;
+            font-size: 12px;
+            color: #e6edf3;
+            word-break: break-all;
+        }
+
+        .widget .value {
+            font-size: 18px;
+            font-weight: 500;
+            color: #58a6ff;
+        }
+
+        .widget .sub {
+            font-size: 10px;
+            color: #8b949e;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .pill.ok {
+            background: #1f6feb33;
+            color: #58a6ff;
+        }
+
+        .pill.warn {
+            background: #d2992233;
+            color: #e3b341;
+        }
+
+        .pill.error {
+            background: #f8514933;
+            color: #f85149;
+        }
+
+        /* ── side view: DAW timeline ── */
+        .daw-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #0a0e14;
+            border-radius: 6px;
+        }
+
+        .daw-toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 4px 8px;
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .daw-toolbar button {
+            background: #21262d;
+            border: 1px solid #3d444d;
+            color: #c9d1d9;
+            padding: 2px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .daw-toolbar .time-display {
+            color: #58a6ff;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .timeline-wrap {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ruler {
+            height: 24px;
+            background: #0d1117;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            align-items: flex-end;
+            padding-left: 140px; /* track label width */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ruler .tick {
+            position: absolute;
+            bottom: 0;
+            width: 1px;
+            background: #30363d;
+            height: 8px;
+        }
+
+        .ruler .tick-label {
+            position: absolute;
+            bottom: 2px;
+            font-size: 9px;
+            color: #7d8590;
+            transform: translateX(-50%);
+        }
+
+        .tracks-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .track-row {
+            display: flex;
+            height: 44px;
+            border-bottom: 1px solid #1c2128;
+            background: #0d1117;
+        }
+
+        .track-label {
+            width: 140px;
+            flex-shrink: 0;
+            background: #161b22;
+            border-right: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #c9d1d9;
+            gap: 4px;
+        }
+
+        .track-label .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #58a6ff;
+            margin-right: 6px;
+        }
+
+        .track-lane {
+            flex: 1;
+            position: relative;
+            background: #0d1117;
+            background-image: linear-gradient(to right, #1c2128 1px, transparent 1px);
+            background-size: 40px 100%;
+        }
+
+        .note {
+            position: absolute;
+            background: #1f6feb;
+            border-radius: 4px;
+            height: 24px;
+            top: 10px;
+            min-width: 12px;
+            padding: 0 6px;
+            color: white;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            cursor: pointer;
+            border-left: 2px solid #58a6ff;
+        }
+
+        .note.alt {
+            background: #2ea043;
+            border-left-color: #3fb950;
+        }
+
+        .playhead {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            background: #f85149;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+            box-shadow: 0 0 6px #f85149;
+        }
+
+        .loop-region {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            background: rgba(56, 139, 253, 0.08);
+            border-left: 1px solid #1f6feb;
+            border-right: 1px solid #1f6feb;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="toolbar">
+    <span class="brand">🧵 Quilt Studio</span>
+    <button id="saveBtn">💾 Save .qzt</button>
+    <button id="loadBtn">📂 Load .qzt</button>
+    <input type="file" id="fileInput" accept=".qzt">
+    <span class="save-status" id="statusText">sample loaded</span>
+</div>
+
+<div class="views-container">
+    <!-- TOP VIEW -->
+    <div class="view-panel">
+        <div class="view-header">📊 TOP · spreadsheet</div>
+        <div class="view-content">
+            <input type="text" class="filter-input" id="filterInput" placeholder="filter cells...">
+            <table class="sheet-table" id="sheetTable">
+                <thead><tr><th data-col="path">path</th><th data-col="kind">kind</th><th data-col="value">value</th><th data-col="depends_on">depends_on</th></tr></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FRONT VIEW -->
+    <div class="view-panel">
+        <div class="view-header">📈 FRONT · dashboard</div>
+        <div class="view-content" id="dashboardContent">
+            <div class="dashboard-grid" id="dashboardGrid"></div>
+        </div>
+    </div>
+
+    <!-- SIDE VIEW (DAW) -->
+    <div class="view-panel">
+        <div class="view-header">🎹 SIDE · timeline</div>
+        <div class="view-content" style="padding:0; display:flex; flex-direction:column;">
+            <div class="daw-container">
+                <div class="daw-toolbar">
+                    <button id="playBtn">▶ play</button>
+                    <button id="loopBtn">🔁 loop</button>
+                    <span class="time-display" id="timeDisplay">00:00.0</span>
+                </div>
+                <div class="timeline-wrap" id="timelineWrap">
+                    <div class="ruler" id="ruler"></div>
+                    <div class="tracks-area" id="tracksArea"></div>
+                    <div class="playhead" id="playhead" style="left:140px;"></div>
+                    <div class="loop-region" id="loopRegion" style="left:140px; width:200px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ── sample quilt cells ──
+        const initialCells = [
+            { path: 'sensor.gps', kind: 'VALUE', value: '48.2N 123.4W', depends_on: '' },
+            { path: 'sensor.depth', kind: 'SENSOR', value: '34 m', depends_on: '' },
+            { path: 'sensor.wind', kind: 'SENSOR', value: '12 kn', depends_on: '' },
+            { path: 'crew.cook.name', kind: 'VALUE', value: 'Maya', depends_on: '' },
+            { path: 'crew.cook.system', kind: 'VALUE', value: 'radio', depends_on: '' },
+            { path: 'fish_hold.port.species', kind: 'VALUE', value: 'chum', depends_on: '' },
+            { path: 'fish_hold.middle.species', kind: 'VALUE', value: 'pink', depends_on: '' },
+            { path: 'fish_hold.starboard.species', kind: 'VALUE', value: 'coho', depends_on: '' },
+            { path: 'fish_hold.port.count', kind: 'FORMULA', value: '=species_count(port)', depends_on: 'fish_hold.port.species' },
+            { path: 'director', kind: 'VALUE', value: 'captain', depends_on: '' },
+            { path: 'script', kind: 'AI', value: 'radio opening: "Mayday, mayday..."', depends_on: 'director' },
+            { path: 'tts.cook', kind: 'VALUE', value: 'voice_ready', depends_on: 'crew.cook.system' },
+            { path: 'tts.ensign', kind: 'VALUE', value: 'voice_ready', depends_on: '' },
+            { path: 'tts.bilge', kind: 'VALUE', value: 'voice_ready', depends_on: '' },
+            { path: 'bilge.pump', kind: 'PROGRAM', value: 'idle', depends_on: 'sensor.depth' },
+            { path: 'router.nav', kind: 'ROUTER', value: 'route_ok', depends_on: 'sensor.gps' },
+            { path: 'vector.memory', kind: 'VECTOR_STORE', value: '128 chunks', depends_on: 'script' },
+            { path: 'api.weather', kind: 'API', value: '200 OK', depends_on: 'sensor.wind' },
+        ];
+
+        // timeline events (tracks = characters/agents)
+        const initialEvents = [
+            { track: 'cook', time: 0.5, duration: 1.2, label: '🎙 intro', alt: false },
+            { track: 'ensign', time: 1.8, duration: 1.0, label: 'depth report', alt: true },
+            { track: 'bilge', time: 2.6, duration: 0.8, label: 'pump on', alt: false },
+            { track: 'cook', time: 3.2, duration: 1.5, label: 'radio call', alt: false },
+            { track: 'captain', time: 4.0, duration: 1.8, label: 'director', alt: true },
+            { track: 'bilge', time: 5.2, duration: 1.0, label: 'status', alt: true },
+            { track: 'ensign', time: 6.0, duration: 1.2, label: 'wind update', alt: false },
+            { track: 'cook', time: 7.0, duration: 1.4, label: 'fish hold', alt: true },
+        ];
+
+        // ── state ──
+        let cells = JSON.parse(JSON.stringify(initialCells));
+        let events = JSON.parse(JSON.stringify(initialEvents));
+        let filterText = '';
+        let sortCol = 'path';
+        let sortAsc = true;
+        let isPlaying = false;
+        let playheadTime = 0;
+        let loopEnabled = true;
+        let animationId = null;
+        const tracks = ['cook', 'ensign', 'bilge', 'captain']; // fixed order
+
+        // ── DOM refs ──
+        const tableBody = document.getElementById('tableBody');
+        const filterInput = document.getElementById('filterInput');
+        const dashboardGrid = document.getElementById('dashboardGrid');
+        const tracksArea = document.getElementById('tracksArea');
+        const ruler = document.getElementById('ruler');
+        const playhead = document.getElementById('playhead');
+        const loopRegion = document.getElementById('loopRegion');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const playBtn = document.getElementById('playBtn');
+        const loopBtn = document.getElementById('loopBtn');
+        const statusText = document.getElementById('statusText');
+        const fileInput = document.getElementById('fileInput');
+
+        // ── helpers ──
+        function getCell(path) {
+            return cells.find(c => c.path === path);
+        }
+
+        function updateCell(path, newValue) {
+            const cell = getCell(path);
+            if (cell) {
+                cell.value = newValue;
+                renderAll();
+            }
+        }
+
+        // compute formula (simple)
+        function computeFormula(cell) {
+            if (cell.kind === 'FORMULA' && cell.depends_on) {
+                const dep = getCell(cell.depends_on);
+                if (dep) {
+                    const species = dep.value;
+                    if (species === 'chum') return '12';
+                    if (species === 'pink') return '8';
+                    if (species === 'coho') return '15';
+                    return '?';
+                }
+            }
+            return cell.value;
+        }
+
+        // ── render: spreadsheet ──
+        function renderSheet() {
+            let filtered = cells.filter(c => {
+                if (!filterText) return true;
+                const t = filterText.toLowerCase();
+                return c.path.toLowerCase().includes(t) || c.kind.toLowerCase().includes(t) || c.value.toLowerCase().includes(t);
+            });
+            // sort
+            filtered.sort((a, b) => {
+                let va = a[sortCol] || '';
+                let vb = b[sortCol] || '';
+                if (sortCol === 'value') {
+                    va = computeFormula(a);
+                    vb = computeFormula(b);
+                }
+                if (typeof va === 'number' && typeof vb === 'number') return sortAsc ? va - vb : vb - va;
+                return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+            });
+
+            tableBody.innerHTML = '';
+            filtered.forEach(cell => {
+                const tr = document.createElement('tr');
+                const val = (cell.kind === 'FORMULA') ? computeFormula(cell) : cell.value;
+                tr.innerHTML = `<td>${cell.path}</td><td>${cell.kind}</td><td contenteditable="true" class="cell-value">${val}</td><td>${cell.depends_on || ''}</td>`;
+                const tdValue = tr.querySelector('.cell-value');
+                tdValue.addEventListener('blur', (e) => {
+                    const newVal = e.target.innerText.trim();
+                    updateCell(cell.path, newVal);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // ── render: dashboard ──
+        function renderDashboard() {
+            dashboardGrid.innerHTML = '';
+            cells.forEach(cell => {
+                const widget = document.createElement('div');
+                widget.className = 'widget';
+                let valueDisplay = '';
+                let sub = '';
+                const computed = (cell.kind === 'FORMULA') ? computeFormula(cell) : cell.value;
+                switch (cell.kind) {
+                    case 'VALUE': valueDisplay = computed; sub = 'text'; break;
+                    case 'FORMULA': valueDisplay = computed; sub = 'sparkline ▁▃▅'; break;
+                    case 'LISTENER': valueDisplay = '👂 '+computed; sub = 'events'; break;
+                    case 'API': valueDisplay = `<span class="pill ok">${computed}</span>`; sub = 'api'; break;
+                    case 'AI': valueDisplay = computed; sub = 'ai'; break;
+                    case 'PROGRAM': valueDisplay = computed; sub = 'exec'; break;
+                    case 'SENSOR': valueDisplay = computed; sub = 'live'; break;
+                    case 'ROUTER': valueDisplay = computed; sub = 'route'; break;
+                    case 'VECTOR_STORE': valueDisplay = computed; sub = 'vectors'; break;
+                    default: valueDisplay = computed;
+                }
+                widget.innerHTML = `<div class="kind">${cell.kind}</div><div class="path">${cell.path}</div><div class="value">${valueDisplay}</div><div class="sub">${sub}</div>`;
+                dashboardGrid.appendChild(widget);
+            });
+        }
+
+        // ── render: DAW timeline ──
+        function renderTimeline() {
+            // clear
+            tracksArea.innerHTML = '';
+            const totalWidth = 800; // virtual width
+            const pxPerSec = 40;
+            const trackHeight = 44;
+            const trackCount = tracks.length;
+
+            // build tracks
+            tracks.forEach(trackName => {
+                const row = document.createElement('div');
+                row.className = 'track-row';
+                const label = document.createElement('div');
+                label.className = 'track-label';
+                label.innerHTML = `<span class="dot"></span>${trackName}`;
+                const lane = document.createElement('div');
+                lane.className = 'track-lane';
+                lane.style.width = totalWidth + 'px';
+                // add notes
+                events.filter(e => e.track === trackName).forEach(ev => {
+                    const note = document.createElement('div');
+                    note.className = 'note' + (ev.alt ? ' alt' : '');
+                    note.style.left = (ev.time * pxPerSec) + 'px';
+                    note.style.width = (ev.duration * pxPerSec) + 'px';
+                    note.textContent = ev.label;
+                    note.title = `${ev.track} @ ${ev.time}s`;
+                    lane.appendChild(note);
+                });
+                row.appendChild(label);
+                row.appendChild(lane);
+                tracksArea.appendChild(row);
+            });
+
+            // ruler
+            ruler.innerHTML = '';
+            for (let i = 0; i <= 12; i++) {
+                const tick = document.createElement('div');
+                tick.className = 'tick';
+                tick.style.left = (140 + i * 40) + 'px';
+                const lbl = document.createElement('div');
+                lbl.className = 'tick-label';
+                lbl.style.left = (140 + i * 40) + 'px';
+                lbl.textContent = i + 's';
+                ruler.appendChild(tick);
+                ruler.appendChild(lbl);
+            }
+
+            // loop region (2s to 6s)
+            loopRegion.style.left = '140px';
+            loopRegion.style.width = '160px'; // 4s * 40
+
+            // playhead position
+            updatePlayhead();
+        }
+
+        function updatePlayhead() {
+            const x = 140 + playheadTime * 40;
+            playhead.style.left = x + 'px';
+            const secs = Math.floor(playheadTime);
+            const tenths = Math.floor((playheadTime - secs) * 10);
+            timeDisplay.textContent = `${String(secs).padStart(2,'0')}:00.${tenths}`;
+        }
+
+        function animationLoop() {
+            if (isPlaying) {
+                playheadTime += 0.016; // ~60fps
+                if (loopEnabled && playheadTime > 8) playheadTime = 0;
+                if (playheadTime > 10) playheadTime = 0;
+                updatePlayhead();
+            }
+            animationId = requestAnimationFrame(animationLoop);
+        }
+
+        // ── render all ──
+        function renderAll() {
+            renderSheet();
+            renderDashboard();
+            renderTimeline();
+        }
+
+        // ── events ──
+        // filter
+        filterInput.addEventListener('input', (e) => {
+            filterText = e.target.value;
+            renderSheet();
+        });
+
+        // sort
+        document.querySelectorAll('#sheetTable th').forEach(th => {
+            th.addEventListener('click', () => {
+                const col = th.dataset.col;
+                if (sortCol === col) sortAsc = !sortAsc;
+                else { sortCol = col; sortAsc = true; }
+                renderSheet();
+            });
+        });
+
+        // play / loop
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playBtn.textContent = isPlaying ? '⏸ pause' : '▶ play';
+        });
+
+        loopBtn.addEventListener('click', () => {
+            loopEnabled = !loopEnabled;
+            loopBtn.style.background = loopEnabled ? '#1f6feb' : '#21262d';
+        });
+
+        // save / load
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const data = JSON.stringify({ cells, events });
+            const blob = new Blob([data], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'studio.qzt';
+            a.click();
+            statusText.textContent = 'saved ✓';
+        });
+
+        document.getElementById('loadBtn').addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const parsed = JSON.parse(ev.target.result);
+                    if (parsed.cells && parsed.events) {
+                        cells = parsed.cells;
+                        events = parsed.events;
+                        renderAll();
+                        statusText.textContent = 'loaded ✓';
+                    }
+                } catch (err) {
+                    alert('invalid .qzt');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // live update simulation: sensor.depth every 2 sec
+        setInterval(() => {
+            const depth = getCell('sensor.depth');
+            if (depth) {
+                const val = (Math.random() * 30 + 20).toFixed(1) + ' m';
+                depth.value = val;
+                renderAll();
+            }
+        }, 3000);
+
+        // start animation
+        renderAll();
+        animationLoop();
+    })();
+</script>
+</body>
+</html>
