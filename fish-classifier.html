@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quilt · Fish Deck · Live ML pipeline</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #0b1a2a;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, monospace;
+      color: #d9e5f2;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #0e2237;
+      padding: 0.6rem 1.2rem;
+      border-bottom: 1px solid #2f4b66;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-weight: 500;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
+      color: #aaccee;
+    }
+
+    .header .badge {
+      background: #1f3a4f;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #b8d4f0;
+      border: 1px solid #3a5a77;
+    }
+
+    .workspace {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* LEFT: QUILT SHEET */
+    .quilt-sheet {
+      width: 44%;
+      min-width: 320px;
+      background: #102433;
+      border-right: 2px solid #2d4c66;
+      padding: 1rem 0.8rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .cell {
+      background: #152c3f;
+      border-radius: 8px;
+      border-left: 4px solid #3f7da0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      padding: 0.6rem 0.8rem;
+      transition: all 0.1s ease;
+    }
+
+    .cell-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7fa3c2;
+      margin-bottom: 0.2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .cell-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e1effa;
+      word-break: break-word;
+    }
+
+    .cell-small {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: #b7d0e8;
+      margin-top: 0.3rem;
+    }
+
+    .cell.fresh {
+      border-left-color: #6fd18c;
+      background: #193348;
+    }
+
+    .cell.a-b {
+      border-left-color: #c99b3f;
+    }
+
+    .cell.feedback {
+      border-left-color: #a05c7b;
+    }
+
+    .model-badge {
+      background: #0a1e2c;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      color: #8fc7ff;
+      border: 1px solid #2f5a7a;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: #1d3f57;
+      border: none;
+      color: white;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      border: 1px solid #3a6a8c;
+      transition: background 0.1s;
+    }
+
+    .btn:hover {
+      background: #2b5a7a;
+    }
+
+    .btn-trigger {
+      background: #2b4f6e;
+      border-color: #5b8db0;
+    }
+
+    .btn-trigger:hover {
+      background: #3f6b8f;
+    }
+
+    .btn-ab {
+      background: #6b4f2b;
+      border-color: #a07c3f;
+    }
+
+    .btn-ab:hover {
+      background: #8a6637;
+    }
+
+    .ref-grid {
+      display: flex;
+      gap: 0.3rem;
+      margin-top: 0.3rem;
+    }
+
+    .ref-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      background: #1b3142;
+      border: 1px solid #3a5c7a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #aac4dd;
+      background-size: cover;
+      background-position: center;
+      text-shadow: 0 0 4px black;
+    }
+
+    /* RIGHT panel: camera + classification */
+    .camera-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1.5rem;
+      background: #0d1f2e;
+      gap: 1rem;
+      overflow-y: auto;
+    }
+
+    .drop-zone {
+      border: 2px dashed #3f6d92;
+      background: #102a3c;
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.1s;
+      flex-shrink: 0;
+    }
+
+    .drop-zone.dragover {
+      border-color: #9fc9ff;
+      background: #1a3b52;
+    }
+
+    .preview-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 160px;
+      background: #0b1a26;
+      border-radius: 12px;
+      border: 1px solid #2b5068;
+      overflow: hidden;
+    }
+
+    .preview-box canvas {
+      max-width: 100%;
+      max-height: 220px;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .classify-result {
+      background: #142d41;
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      border-left: 8px solid #6fc2ff;
+    }
+
+    .species-name {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #c6e2ff;
+    }
+
+    .confidence {
+      color: #8cb3d9;
+      font-size: 0.8rem;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-speak {
+      background: #2c4b69;
+      border-radius: 30px;
+      padding: 0.4rem 1.2rem;
+      font-size: 0.8rem;
+      border: 1px solid #4a7b9e;
+    }
+
+    .feedback-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.3rem;
+    }
+
+    .feedback-btn {
+      background: #3a2e4e;
+      border: 1px solid #6d4f7a;
+      color: #dacfe0;
+    }
+
+    .log-line {
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: #8aa9c4;
+      background: #0a1822;
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+      margin-top: 0.3rem;
+    }
+
+    .flex-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    hr {
+      border: 0.5px solid #2d4b62;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2b4a64;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🐟 QUILT · FISH DECK</h1>
+    <span class="badge">⚙️ live pipeline · port / mid / starboard</span>
+  </div>
+
+  <div class="workspace">
+    <!-- LEFT: QUILT CELLS -->
+    <div class="quilt-sheet" id="quiltSheet">
+      <!-- cells injected by JS for clarity, but static skeleton for readability -->
+    </div>
+
+    <!-- RIGHT: CAMERA + CLASSIFICATION -->
+    <div class="camera-panel" id="cameraPanel">
+      <div class="drop-zone" id="dropZone">
+        <p style="font-size:1.1rem; margin-bottom:0.5rem;">📸 Drop camera image here</p>
+        <p style="font-size:0.8rem; color:#8db3d0;">or click to select · live from deck</p>
+        <input type="file" id="fileInput" accept="image/*" hidden>
+      </div>
+
+      <div class="preview-box" id="previewBox">
+        <canvas id="previewCanvas" width="320" height="180"></canvas>
+      </div>
+
+      <div class="classify-result" id="classifyResult">
+        <div class="cell-title">🟢 species output cell</div>
+        <div class="species-name" id="speciesName">—</div>
+        <div class="confidence" id="confidenceText">waiting for image</div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-speak" id="speakBtn">🔊 Call species</button>
+        <span style="flex:1"></span>
+        <button class="btn btn-trigger" id="trainOvernightBtn">🌙 Train overnight</button>
+        <button class="btn btn-ab" id="abTestBtn">🧪 A/B test models</button>
+      </div>
+
+      <div class="feedback-buttons">
+        <button class="btn feedback-btn" id="fbCorrect">✅ Correct</button>
+        <button class="btn feedback-btn" id="fbIncorrect">❌ Incorrect</button>
+        <span class="log-line" id="feedbackLog">feedback log: idle</span>
+      </div>
+
+      <div style="margin-top:0.5rem; font-size:0.7rem; color:#6f8ba3;">
+        <span>⚡ cell graph: camera → vision model → species ID · reference cells · train · A/B</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- QUILT STATE (simulated persistent cells) ----------
+      let quiltState = {
+        cameraFeed: { value: '📷 no image', ts: null },
+        visionModel: { value: 'heuristic-v1', trained: false },
+        speciesOutput: { value: '—', confidence: 0 },
+        refChum: 'chum_ref',
+        refPink: 'pink_ref',
+        refCoho: 'coho_ref',
+        trainCell: { lastTrigger: 'idle', status: 'standby' },
+        abTest: { active: false, winner: null, candidate: 'heuristic-v2' },
+        feedback: { last: 'none', correctCount: 0, incorrectCount: 0 }
+      };
+
+      // reference image data (simulated as gradients / colors)
+      const REF_IMAGES = {
+        chum: { label: 'chum', color: '#5b6e4f', desc: 'greenish-brown, bars' },
+        pink: { label: 'pink', color: '#b0b7bc', desc: 'silver, black spots' },
+        coho: { label: 'coho', color: '#8b9bb0', desc: 'silver, dark back' }
+      };
+
+      // DOM elements
+      const quiltSheet = document.getElementById('quiltSheet');
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const previewCanvas = document.getElementById('previewCanvas');
+      const ctx = previewCanvas.getContext('2d');
+      const speciesName = document.getElementById('speciesName');
+      const confidenceText = document.getElementById('confidenceText');
+      const feedbackLog = document.getElementById('feedbackLog');
+      const speakBtn = document.getElementById('speakBtn');
+      const trainBtn = document.getElementById('trainOvernightBtn');
+      const abBtn = document.getElementById('abTestBtn');
+      const fbCorrect = document.getElementById('fbCorrect');
+      const fbIncorrect = document.getElementById('fbIncorrect');
+
+      // current image data array (for classification)
+      let currentImageData = null;
+
+      // ---------- RENDER QUILT SHEET ----------
+      function renderQuilt() {
+        const s = quiltState;
+        let html = '';
+
+        // 1. Camera feed cell
+        html += `<div class="cell ${s.cameraFeed.value !== '📷 no image' ? 'fresh' : ''}">
+          <div class="cell-title">🎥 CAMERA FEED (input)</div>
+          <div class="cell-value">${s.cameraFeed.value}</div>
+          <div class="cell-small">${s.cameraFeed.ts ? 'updated: ' + s.cameraFeed.ts : 'waiting for image'}</div>
+        </div>`;
+
+        // 2. Vision model cell (formula)
+        html += `<div class="cell">
+          <div class="cell-title">🧠 VISION MODEL (formula)</div>
+          <div class="cell-value">${s.visionModel.value}</div>
+          <div class="cell-small">${s.visionModel.trained ? '✅ trained' : '⚡ heuristic'}</div>
+        </div>`;
+
+        // 3. Species output cell
+        html += `<div class="cell fresh">
+          <div class="cell-title">🏷️ SPECIES ID (output)</div>
+          <div class="cell-value">${s.speciesOutput.value}</div>
+          <div class="cell-small">confidence: ${Math.round(s.speciesOutput.confidence * 100)}%</div>
+        </div>`;
+
+        // 4. Reference images (training data)
+        html += `<div class="cell">
+          <div class="cell-title">📚 REFERENCE IMAGES (training data)</div>
+          <div class="ref-grid">
+            <div class="ref-thumb" style="background:${REF_IMAGES.chum.color}">chum</div>
+            <div class="ref-thumb" style="background:${REF_IMAGES.pink.color}">pink</div>
+            <div class="ref-thumb" style="background:${REF_IMAGES.coho.color}">coho</div>
+          </div>
+          <div class="cell-small">chum · pink · coho</div>
+        </div>`;
+
+        // 5. Individual image links to species (recent)
+        html += `<div class="cell">
+          <div class="cell-title">🔗 IMAGE → SPECIES LINK</div>
+          <div class="cell-small">last: ${s.cameraFeed.value} → ${s.speciesOutput.value}</div>
+        </div>`;
+
+        // 6. Training cell (overnight)
+        html += `<div class="cell">
+          <div class="cell-title">🌙 TRAINING CELL (overnight)</div>
+          <div class="cell-small">status: ${s.trainCell.status} · last: ${s.trainCell.lastTrigger}</div>
+          <div class="button-row">
+            <button class="btn btn-trigger" id="trainBtnSmall">▶ trigger training</button>
+          </div>
+        </div>`;
+
+        // 7. A/B test cells
+        html += `<div class="cell a-b">
+          <div class="cell-title">🧪 A/B TEST (old vs new)</div>
+          <div class="cell-small">current: ${s.abTest.active ? 'candidate: ' + s.abTest.candidate : 'inactive'}</div>
+          <div class="cell-small">winner: ${s.abTest.winner || '—'}</div>
+        </div>`;
+
+        // 8. Feedback cells
+        html += `<div class="cell feedback">
+          <div class="cell-title">📋 FEEDBACK CELLS</div>
+          <div class="cell-small">correct: ${s.feedback.correctCount} · incorrect: ${s.feedback.incorrectCount}</div>
+          <div class="cell-small">last: ${s.feedback.last}</div>
+        </div>`;
+
+        quiltSheet.innerHTML = html;
+
+        // attach event to dynamic train button
+        const trainBtnSmall = document.getElementById('trainBtnSmall');
+        if (trainBtnSmall) {
+          trainBtnSmall.addEventListener('click', () => {
+            triggerTraining();
+          });
+        }
+      }
+
+      // ---------- CLASSIFICATION (heuristic) ----------
+      function classifyImageData(imageData) {
+        if (!imageData) return { species: '—', confidence: 0 };
+
+        const data = imageData.data;
+        let rSum = 0, gSum = 0, bSum = 0;
+        const len = data.length;
+        for (let i = 0; i < len; i += 4) {
+          rSum += data[i];
+          gSum += data[i + 1];
+          bSum += data[i + 2];
+        }
+        const total = len / 4;
+        const rAvg = rSum / total;
+        const gAvg = gSum / total;
+        const bAvg = bSum / total;
+
+        // heuristic based on average color: 
+        // chum: greenish-brown (g > r, b low)
+        // pink: silver (high all, but b>r slight)
+        // coho: silver-blue (b high, r lower)
+        let species = 'coho';
+        let confidence = 0.4;
+
+        if (gAvg > rAvg && gAvg > bAvg && gAvg > 80) {
+          species = 'chum';
+          confidence = 0.6 + Math.random() * 0.2;
+        } else if (bAvg > rAvg && bAvg > gAvg && bAvg > 90) {
+          species = 'coho';
+          confidence = 0.6 + Math.random() * 0.2;
+        } else if (rAvg > 100 && gAvg > 100 && bAvg > 100) {
+          species = 'pink';
+          confidence = 0.5 + Math.random() * 0.2;
+        } else {
+          // fallback
+          species = 'pink';
+          confidence = 0.4;
+        }
+
+        // A/B test effect: if active, switch to "heuristic-v2" (just modify confidence)
+        if (quiltState.abTest.active) {
+          // pretend v2 is more confident
+          confidence = Math.min(0.95, confidence + 0.1);
+        }
+
+        return { species, confidence };
+      }
+
+      // ---------- UPDATE STATE FROM IMAGE ----------
+      function processImageFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            // draw to canvas
+            previewCanvas.width = img.width > 400 ? 400 : img.width;
+            previewCanvas.height = img.height > 300 ? 300 : img.height;
+            ctx.drawImage(img, 0, 0, previewCanvas.width, previewCanvas.height);
+            // get image data
+            try {
+              const imageData = ctx.getImageData(0, 0, previewCanvas.width, previewCanvas.height);
+              currentImageData = imageData;
+              // update quilt state
+              const now = new Date().toLocaleTimeString('en-US');
+              quiltState.cameraFeed = { value: `📷 ${file.name || 'cam'}`, ts: now };
+              const result = classifyImageData(imageData);
+              quiltState.speciesOutput = { value: result.species, confidence: result.confidence };
+              // update UI
+              speciesName.textContent = result.species.toUpperCase();
+              confidenceText.textContent = `confidence: ${Math.round(result.confidence * 100)}% · model: ${quiltState.visionModel.value}`;
+              renderQuilt();
+            } catch (err) {
+              console.warn('image data error', err);
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // ---------- FEEDBACK ----------
+      function sendFeedback(correct) {
+        if (correct) quiltState.feedback.correctCount++;
+        else quiltState.feedback.incorrectCount++;
+        quiltState.feedback.last = correct ? '✅ correct' : '❌ incorrect';
+        feedbackLog.textContent = `feedback: ${quiltState.feedback.last} (C:${quiltState.feedback.correctCount} / I:${quiltState.feedback.incorrectCount})`;
+        renderQuilt();
+      }
+
+      // ---------- TRAIN OVERNIGHT ----------
+      function triggerTraining() {
+        quiltState.trainCell.lastTrigger = new Date().toLocaleTimeString('en-US');
+        quiltState.trainCell.status = 'training…';
+        quiltState.visionModel.value = 'heuristic-v2 (trained)';
+        quiltState.visionModel.trained = true;
+        renderQuilt();
+        setTimeout(() => {
+          quiltState.trainCell.status = 'complete';
+          renderQuilt();
+        }, 800);
+      }
+
+      // ---------- A/B TEST ----------
+      function toggleAB() {
+        quiltState.abTest.active = !quiltState.abTest.active;
+        if (quiltState.abTest.active) {
+          quiltState.abTest.winner = 'heuristic-v2 (candidate)';
+          // switch model to v2
+          quiltState.visionModel.value = 'heuristic-v2 (A/B)';
+        } else {
+          quiltState.abTest.winner = null;
+          quiltState.visionModel.value = quiltState.visionModel.trained ? 'heuristic-v2 (trained)' : 'heuristic-v1';
+        }
+        renderQuilt();
+      }
+
+      // ---------- SPEECH ----------
+      function speakSpecies() {
+        const name = quiltState.speciesOutput.value;
+        if (name && name !== '—') {
+          const utterance = new SpeechSynthesisUtterance(`Species identified: ${name} salmon`);
+          utterance.rate = 0.9;
+          speechSynthesis.speak(utterance);
+        } else {
+          const utterance = new SpeechSynthesisUtterance('No fish detected');
+          speechSynthesis.speak(utterance);
+        }
+      }
+
+      // ---------- EVENT LISTENERS ----------
+      dropZone.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => processImageFile(e.target.files[0]));
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) processImageFile(file);
+      });
+
+      speakBtn.addEventListener('click', speakSpecies);
+      trainBtn.addEventListener('click', triggerTraining);
+      abBtn.addEventListener('click', toggleAB);
+      fbCorrect.addEventListener('click', () => sendFeedback(true));
+      fbIncorrect.addEventListener('click', () => sendFeedback(false));
+
+      // initial render
+      renderQuilt();
+
+      // set reference images (just for cell display)
+      // also fill some default log
+      feedbackLog.textContent = `feedback: idle (C:0 / I:0)`;
+    })();
+  </script>
+</body>
+</html>
