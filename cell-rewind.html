@@ -385,6 +385,7 @@
   </aside>
 </div>
 
+<script src="quilt-llm-client.js"></script>
 <script>
 // ============================================================================
 // Time-Travel DAW state
@@ -428,45 +429,24 @@ async function callLLM(prompt, systemPrompt, modelKey) {
   if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
   messages.push({ role: 'user', content: prompt });
 
-  if (modelKey === 'zai-glm-5' || modelKey === 'zai-glm-5.3') {
-    const m = modelKey === 'zai-glm-5.3' ? 'glm-5.3' : 'glm-5';
-    const resp = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + state.apiKeys.zai,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ model: m, messages, temperature: 0.9, max_tokens: 8000 }),
-    });
-    if (!resp.ok) throw new Error('z.ai HTTP ' + resp.status);
-    const data = await resp.json();
-    return data.choices[0].message.content;
-  } else if (modelKey === 'kimi-k3' || modelKey === 'kimi-v1-32k') {
-    const m = modelKey === 'kimi-k3' ? 'kimi-k3' : 'moonshot-v1-32k';
-    const resp = await fetch('https://api.moonshot.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + state.apiKeys.kimi,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ model: m, messages, temperature: 0.9, max_tokens: 4000 }),
-    });
-    if (!resp.ok) throw new Error('Kimi HTTP ' + resp.status);
-    const data = await resp.json();
-    return data.choices[0].message.content;
-  } else if (modelKey === 'deepseek-v3') {
-    const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + state.apiKeys.ds,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ model: 'deepseek-chat', messages, temperature: 0.9, max_tokens: 4000 }),
-    });
-    if (!resp.ok) throw new Error('DeepSeek HTTP ' + resp.status);
-    const data = await resp.json();
-    return data.choices[0].message.content;
-  }
+  // Map modelKey to provider + model
+  let provider, model, preferCheap = false;
+  if (modelKey === 'zai-glm-5') { provider = 'zai'; model = 'glm-5'; }
+  else if (modelKey === 'zai-glm-5.3') { provider = 'zai'; model = 'glm-5.3'; }
+  else if (modelKey === 'kimi-k3') { provider = 'kimi'; model = 'kimi-k3'; }
+  else if (modelKey === 'kimi-v1-32k') { provider = 'kimi'; model = 'moonshot-v1-32k'; }
+  else if (modelKey === 'deepseek-v3') { provider = 'deepseek'; model = 'deepseek-chat'; }
+  else { provider = 'workers-ai'; preferCheap = true; }
+
+  // Use the shared client (Worker if configured, else direct with stored keys)
+  const result = await quiltLLM.call(messages, {
+    provider, model,
+    max_tokens: provider === 'zai' ? 8000 : 4000,
+    temperature: 0.9,
+    prefer_cheap: preferCheap,
+    premium: !preferCheap,
+  });
+  return result.content;
 }
 
 // ============================================================================

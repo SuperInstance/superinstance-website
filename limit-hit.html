@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!--
+  limit-hit.html — Graceful degradation when the public LLM proxy is at its limit.
+
+  This is what users see when the Worker's per-IP or global daily cap is hit.
+  No 503 "service unavailable." No raw JSON. Just a clear page that:
+    1. Acknowledges the limit was hit
+    2. Shows what's possible (run your own)
+    3. Links to the self-host guide
+    4. Tells them when the limit resets (UTC midnight)
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Casey's free limit is used up — run your own</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.6; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .container {
+    max-width: 640px; margin: 2rem auto; padding: 2.5rem;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  }
+  h1 { margin: 0 0 0.5rem; font-size: 1.6rem; color: var(--warn); }
+  .lead { color: var(--muted); font-size: 1.05rem; margin: 1rem 0 1.5rem; }
+  .summary {
+    background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.8rem 1rem; font-family: ui-monospace, monospace; font-size: 0.85rem;
+    margin: 1rem 0;
+  }
+  .summary .row { display: flex; justify-content: space-between; margin: 0.3rem 0; }
+  .summary .row .label { color: var(--muted); }
+  .summary .row .val { color: var(--fg); }
+  .actions { margin: 1.5rem 0; }
+  .cta {
+    display: inline-block; background: #1f6feb; color: white; padding: 0.7rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 500;
+    margin: 0.3rem 0.3rem 0.3rem 0;
+  }
+  .cta:hover { background: #388bfd; }
+  .cta.secondary { background: #21262d; color: var(--fg); }
+  .cta.secondary:hover { background: #30363d; }
+  .reset {
+    color: var(--muted); font-size: 0.85rem; margin-top: 1rem;
+    font-style: italic;
+  }
+  .principle {
+    border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem;
+    color: var(--muted); font-size: 0.9rem;
+  }
+  .principle em { color: var(--fg); font-style: italic; }
+  .back {
+    text-align: center; margin-top: 1.5rem; font-size: 0.85rem;
+  }
+  .back a { color: var(--accent); text-decoration: none; }
+  .back a:hover { text-decoration: underline; }
+  code {
+    background: #21262d; padding: 0.15rem 0.4rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🤚 Casey's free limit is used up</h1>
+  <p class="lead">
+    You've reached today's free tier on the public LLM proxy.
+    Quilt is yours to take — you don't need Casey's dime to run it.
+  </p>
+
+  <div class="summary" id="summary">
+    <div class="row"><span class="label">Reason</span><span class="val" id="reason">—</span></div>
+    <div class="row"><span class="label">Limit</span><span class="val" id="limit">—</span></div>
+    <div class="row"><span class="label">Used today (your IP)</span><span class="val" id="used">—</span></div>
+    <div class="row"><span class="label">Resets</span><span class="val" id="resets">—</span></div>
+  </div>
+
+  <div class="actions">
+    <a class="cta" href="/self-host.html">🛠 Set up your own (15 min)</a>
+    <a class="cta secondary" href="/">← back to home</a>
+  </div>
+
+  <p class="reset">
+    Or wait until midnight UTC for the daily counter to reset. If you're a
+    developer, the fastest path is the <strong>Cloudflare Worker</strong> —
+    your keys stay server-side, your wallet stays yours.
+  </p>
+
+  <div class="principle">
+    <p>
+      The <em>watch</em> was never in Casey's hand. The watch is in yours. The
+      public Quilt pages on <code>superinstance.dev</code> are a demo, a
+      shared sketchpad, a conversation. The real Quilt is the one you run
+      yourself, on your own data, with your own limits, at your own cost.
+    </p>
+    <p>
+      That's the design. A demo you can leave behind. A tool you can pick up.
+      The cell model is open. The bridges are open. The Worker code is open.
+      Take it.
+    </p>
+  </div>
+
+  <div class="back">
+    <a href="/workspace.html">workspace</a> · <a href="/">home</a>
+  </div>
+</div>
+
+<script>
+// Parse the limit info from the URL hash or the referrer
+// Most callers reach here via a 429 redirect from the Worker.
+// We don't have the JSON body here (browsers strip it on navigation),
+// so we display generic info and link to self-host.
+const params = new URLSearchParams(window.location.search);
+
+document.getElementById('reason').textContent = params.get('reason') || 'daily_quota';
+document.getElementById('limit').textContent = params.get('limit') || '50/day';
+document.getElementById('used').textContent = params.get('used') || '50';
+
+// Compute next UTC midnight
+const now = new Date();
+const tomorrow = new Date(Date.UTC(
+  now.getUTCFullYear(),
+  now.getUTCMonth(),
+  now.getUTCDate() + 1,
+  0, 0, 0
+));
+const hoursUntil = Math.round((tomorrow - now) / 1000 / 3600 * 10) / 10;
+document.getElementById('resets').textContent =
+  `in ${hoursUntil}h (midnight UTC)`;
+</script>
+</body>
+</html>

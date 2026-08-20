@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<!--
+  self-host.html — Teach users to run their own Quilt.
+
+  When Casey's free tier is used up, this is where users land.
+  Three paths:
+    1. Local (Node.js / Python) — run on your laptop
+    2. Cloudflare Workers — proxy with your own keys + rate limits
+    3. Hybrid — local for dev, Cloudflare for production
+
+  Each path is copy-pasteable. Each step has a "what you should see"
+  expected output. Each step has a "if it fails" troubleshooting note.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Self-host Quilt — Run your own</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.6;
+  }
+  header {
+    padding: 2.5rem 1rem 1.5rem; text-align: center;
+    background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { margin: 0 0 0.5rem; font-size: 1.8rem; }
+  h2 { margin-top: 2.5rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+  h3 { margin-top: 1.5rem; }
+  .tagline { color: var(--muted); margin: 0; }
+  .container { max-width: 900px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+  .lead {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid var(--ok);
+  }
+  .lead p { margin: 0.5rem 0; }
+  .paths {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem; margin: 1.5rem 0;
+  }
+  .path {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.2rem;
+  }
+  .path h3 { margin: 0 0 0.5rem; color: var(--accent); }
+  .path .who { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.7rem; }
+  .path ul { padding-left: 1.2rem; margin: 0.5rem 0; font-size: 0.9rem; }
+  .path li { margin: 0.3rem 0; }
+  pre {
+    background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
+    padding: 1rem; overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.8rem; line-height: 1.5;
+  }
+  pre .comment { color: var(--muted); }
+  pre .ok { color: var(--ok); }
+  pre .cmd { color: var(--accent); }
+  pre .str { color: var(--orange); }
+  .step {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.2rem; margin: 1rem 0;
+  }
+  .step .num {
+    display: inline-block; background: var(--accent); color: var(--bg);
+    width: 24px; height: 24px; border-radius: 50%; text-align: center;
+    font-weight: bold; line-height: 24px; margin-right: 0.5rem;
+  }
+  .step h3 { display: inline-block; margin: 0; }
+  .step p { margin: 0.7rem 0; }
+  .step .expected {
+    background: #0d1117; border-left: 3px solid var(--ok);
+    padding: 0.5rem 0.7rem; margin: 0.5rem 0;
+    font-family: ui-monospace, monospace; font-size: 0.8rem;
+  }
+  .step .expected::before {
+    content: '✓ expected: '; color: var(--ok); font-weight: bold;
+  }
+  .step .trouble {
+    background: #0d1117; border-left: 3px solid var(--warn);
+    padding: 0.5rem 0.7rem; margin: 0.5rem 0;
+    font-size: 0.85rem;
+  }
+  .step .trouble::before {
+    content: '⚠ if it fails: '; color: var(--warn); font-weight: bold;
+  }
+  .tabs {
+    display: flex; gap: 0.3rem; margin: 1rem 0 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 0.6rem 1.2rem; cursor: pointer; color: var(--muted);
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .back-link {
+    text-align: center; margin: 2rem 0; font-size: 0.9rem;
+  }
+  .back-link a { color: var(--accent); text-decoration: none; }
+  .back-link a:hover { text-decoration: underline; }
+  code {
+    background: #21262d; padding: 0.15rem 0.4rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🛠 Self-host Quilt</h1>
+  <p class="tagline">Casey's free tier is yours to take. Three paths. Pick one.</p>
+</header>
+
+<div class="container">
+
+  <div class="lead">
+    <p>You hit the free limit. That's OK — it means Quilt works. Now you can run it yourself.</p>
+    <p>Three options, ordered by complexity. Pick the one that matches your situation:</p>
+  </div>
+
+  <div class="paths">
+    <div class="path">
+      <h3>🐍 Local Python</h3>
+      <div class="who">For: trying things on your laptop, no internet, learning</div>
+      <ul>
+        <li>5 minutes to set up</li>
+        <li>No API keys needed for many tools</li>
+        <li>Use your own z.ai / Kimi / DeepSeek keys</li>
+        <li>Works offline</li>
+      </ul>
+    </div>
+    <div class="path">
+      <h3>☁️ Cloudflare Worker</h3>
+      <div class="who">For: production use, your own domain, no abuse</div>
+      <ul>
+        <li>15 minutes to set up</li>
+        <li>Free tier: 100,000 requests/day</li>
+        <li>Rate-limit included</li>
+        <li>Workers AI included (Llama 3.1 8B)</li>
+        <li>Your own keys stay server-side</li>
+      </ul>
+    </div>
+    <div class="path">
+      <h3>🌐 Full Stack</h3>
+      <div class="who">For: serious deployments, custom domains, multi-user</div>
+      <ul>
+        <li>1 hour to set up</li>
+        <li>Cloudflare Pages + Workers + D1 + R2</li>
+        <li>Custom domain</li>
+        <li>Analytics, auth, persistence</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="local">🐍 Local Python</div>
+    <div class="tab" data-tab="worker">☁️ Cloudflare Worker</div>
+    <div class="tab" data-tab="full">🌐 Full Stack</div>
+  </div>
+
+  <!-- Local Python tab -->
+  <div class="tab-content active" data-tab="local">
+    <h2>Path 1: Local Python</h2>
+    <p>Run the Quilt Python tools on your own machine. No server. No deploy. Just Python.</p>
+
+    <div class="step">
+      <h3><span class="num">1</span>Install Python 3.11+</h3>
+      <p>Most systems already have it. Check with:</p>
+      <pre><span class="cmd">python3 --version</span></pre>
+      <div class="expected">Python 3.11.x or higher</div>
+      <div class="trouble">If not installed, get it from <code>python.org/downloads</code> or use <code>brew install python@3.11</code> (macOS) or <code>apt install python3.11</code> (Ubuntu).</div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">2</span>Clone the Quilt bridge repo</h3>
+      <pre><span class="cmd">git clone https://github.com/SuperInstance/quilt-cell-bridges.git
+cd quilt-cell-bridges</span></pre>
+      <div class="expected">Cloning into 'quilt-cell-bridges'... done.</div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">3</span>Run a bridge</h3>
+      <p>Each bridge converts an existing system into a Quilt sheet (.qzt file):</p>
+      <pre><span class="cmd">python3 vessel_to_quilt.py --out /tmp/eileen --duration-min 30
+python3 chart_room_to_quilt.py --out /tmp/chart --duration-min 30
+python3 slackwater_tminus_to_quilt.py --out /tmp/slackwater --duration-min 60
+python3 hermes_home_to_quilt.py --out /tmp/hermes</span></pre>
+      <div class="expected">Each prints "Cells: NN" and writes a .qzt file.</div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">4</span>Open the result in your browser</h3>
+      <p>Go to <a href="https://superinstance.dev/three-view-studio.html" style="color:var(--accent)">superinstance.dev/three-view-studio.html</a> and load the .qzt file. The 3-View Studio will render your data as a spreadsheet, a dashboard, and a DAW timeline.</p>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">5</span>(Optional) Add your own LLM API key</h3>
+      <p>To use the cell-rewind.html with your own models instead of Casey's:</p>
+      <pre><span class="cmd">export ZAI_TOKEN="your-key"
+export KIMI_TOKEN="your-key"
+export DEEPSEEK_TOKEN="your-key"</span></pre>
+      <p>Then in cell-rewind.html, paste your keys into the sidebar (they're stored in localStorage).</p>
+    </div>
+  </div>
+
+  <!-- Cloudflare Worker tab -->
+  <div class="tab-content" data-tab="worker">
+    <h2>Path 2: Cloudflare Worker</h2>
+    <p>Run your own LLM proxy with rate limits. Free tier covers 100,000 requests/day.</p>
+
+    <div class="step">
+      <h3><span class="num">1</span>Sign up for Cloudflare (free)</h3>
+      <p>You need a Cloudflare account. The free tier is enough.</p>
+      <pre><span class="cmd"># Go to: https://dash.cloudflare.com/sign-up</span></pre>
+      <div class="expected">You have a Cloudflare account and can log in to the dashboard.</div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">2</span>Install the Workers tooling</h3>
+      <pre><span class="cmd">npm install -g wrangler
+wrangler --version</span></pre>
+      <div class="expected">wrangler 3.x or higher</div>
+      <div class="trouble">If <code>wrangler</code> is not found, try <code>npx wrangler</code> instead.</div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">3</span>Clone the quilt-llm-worker repo</h3>
+      <pre><span class="cmd">git clone https://github.com/SuperInstance/quilt-llm-worker.git
+cd quilt-llm-worker
+npm install</span></pre>
+      <div class="expected">Dependencies installed.</div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">4</span>Log in to Cloudflare</h3>
+      <pre><span class="cmd">wrangler login</span></pre>
+      <div class="expected">Browser opens, you approve, terminal says "Successfully logged in."</div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">5</span>Create a KV namespace for rate limits</h3>
+      <pre><span class="cmd">wrangler kv:namespace create "QUILT_LIMITS"</span></pre>
+      <div class="expected">Output contains <code>id = "abc123def456..."</code></div>
+      <p>Copy the id and paste it into <code>wrangler.toml</code> replacing <code>REPLACE_WITH_YOUR_KV_NAMESPACE_ID</code>.</p>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">6</span>Add your API keys as secrets</h3>
+      <p>These stay on Cloudflare's servers. Your browser never sees them.</p>
+      <pre><span class="cmd">wrangler secret put ZAI_TOKEN
+<span class="comment"># paste your z.ai key, press Enter, Ctrl+D</span>
+
+wrangler secret put KIMI_TOKEN
+<span class="comment"># paste your Kimi key</span>
+
+wrangler secret put DEEPSEEK_TOKEN
+<span class="comment"># paste your DeepSeek key</span></span></pre>
+      <div class="expected">Each prints "Successfully created secret."</div>
+      <div class="trouble">Skip any provider you don't have. The Worker still works with just Workers AI (free) and the keys you do have.</div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">7</span>Deploy</h3>
+      <pre><span class="cmd">wrangler deploy</span></pre>
+      <div class="expected">Output includes <code>Published quilt-llm-worker</code> and a URL like <code>https://quilt-llm-worker.YOUR-SUBDOMAIN.workers.dev</code></div>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">8</span>Wire up the Quilt pages</h3>
+      <p>Open any Quilt page (e.g. <a href="/cell-rewind.html" style="color:var(--accent)">cell-rewind.html</a>), open the browser console, and set:</p>
+      <pre><span class="cmd">localStorage.setItem('quilt_worker_url', 'https://quilt-llm-worker.YOUR-SUBDOMAIN.workers.dev')</span></pre>
+      <p>Refresh the page. The Quilt page will now call your Worker instead of Casey's. Your keys, your limits, your cost.</p>
+    </div>
+
+    <div class="step">
+      <h3><span class="num">9</span>Test</h3>
+      <pre><span class="cmd">curl https://quilt-llm-worker.YOUR-SUBDOMAIN.workers.dev/status</span></pre>
+      <div class="expected">JSON with <code>usage</code> object showing zeros, and <code>providers</code> listing which keys you set.</div>
+    </div>
+  </div>
+
+  <!-- Full Stack tab -->
+  <div class="tab-content" data-tab="full">
+    <h2>Path 3: Full Stack</h2>
+    <p>Cloudflare Pages + Workers + D1 (database) + R2 (object storage) + Vectorize. Production-grade. Custom domain.</p>
+    <p><em>Coming soon</em> — full tutorial in <a href="https://github.com/SuperInstance/quilt" style="color:var(--accent)">quilt</a> repo under <code>docs/full-stack.md</code>.</p>
+
+    <h3>Quick checklist for now:</h3>
+    <ul>
+      <li>✅ Deploy the LLM Worker (Path 2 above)</li>
+      <li>🔜 Fork <a href="https://github.com/SuperInstance/superinstance-website" style="color:var(--accent)">superinstance-website</a> to your own Cloudflare Pages</li>
+      <li>🔜 Add D1 for persistent user state</li>
+      <li>🔜 Add R2 for asset storage (audio, images)</li>
+      <li>🔜 Add Vectorize for semantic search across .qzt files</li>
+      <li>🔜 Add your custom domain (e.g. <code>quilt.yourcompany.com</code>)</li>
+    </ul>
+  </div>
+
+  <h2>Which path is right for you?</h2>
+  <table style="width:100%; border-collapse:collapse; margin:1rem 0;">
+    <tr style="background:#161b22;">
+      <th style="text-align:left; padding:0.6rem; border:1px solid var(--border);">You want to...</th>
+      <th style="text-align:left; padding:0.6rem; border:1px solid var(--border);">Path</th>
+    </tr>
+    <tr><td style="padding:0.6rem; border:1px solid var(--border);">Try Quilt on your own data, no internet</td><td style="padding:0.6rem; border:1px solid var(--border);">🐍 Local Python</td></tr>
+    <tr><td style="padding:0.6rem; border:1px solid var(--border);">Share Quilt with your team, no abuse</td><td style="padding:0.6rem; border:1px solid var(--border);">☁️ Cloudflare Worker</td></tr>
+    <tr><td style="padding:0.6rem; border:1px solid var(--border);">Run a Quilt-based business on your own domain</td><td style="padding:0.6rem; border:1px solid var(--border);">🌐 Full Stack</td></tr>
+    <tr><td style="padding:0.6rem; border:1px solid var(--border);">Embed Quilt in your own product</td><td style="padding:0.6rem; border:1px solid var(--border);">☁️ Cloudflare Worker + iframe</td></tr>
+  </table>
+
+  <h2>The principle</h2>
+  <p>
+    Quilt is open source. The cell model is a public good. The Cloudflare Worker
+    that proxies the LLM calls is a public good. The Python bridges are a public
+    good. The 300+ repos in the SuperInstance org are a public good.
+  </p>
+  <p>
+    The only thing that costs money is the LLM calls themselves. And those calls
+    are commodity. If Casey's free tier is used up, you should be able to run
+    Quilt on your own with your own keys, your own limits, your own wallet.
+  </p>
+  <p>
+    The watch is not in Casey's hand. The watch is in yours. The watch was always
+    yours. <em>Take it.</em>
+  </p>
+
+  <div class="back-link">
+    <a href="/workspace.html">← back to workspace</a> · <a href="/">home</a>
+  </div>
+</div>
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+    document.querySelectorAll('.tab-content').forEach(c => {
+      c.classList.toggle('active', c.dataset.tab === target);
+    });
+  });
+});
+</script>
+</body>
+</html>
