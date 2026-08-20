@@ -6,10 +6,9 @@
 <title>Recipe Calculator — Quilt Click-and-Go Template</title>
 <meta name="description" content="A self-contained recipe calculator. Scale ingredients to any serving count. Multiple recipes.">
 <style>
-:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px}
-.m{font-family:'SF Mono','JetBrains Mono',monospace}
 .wrap{max-width:1200px;margin:0 auto;padding:20px}
 header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
 h1{font-size:1.6rem;font-weight:800}
@@ -28,7 +27,6 @@ h1 .accent{color:var(--a4)}
 .btn-pri:hover{filter:brightness(1.1)}
 .btn-bad{background:transparent;border:1px solid var(--b);color:var(--bad)}
 .btn-bad:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
-.btn-sm{padding:3px 8px;font-size:.7rem}
 .layout{display:grid;grid-template-columns:260px 1fr;gap:14px}
 @media(max-width:800px){.layout{grid-template-columns:1fr}}
 .sidebar{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:10px;max-height:75vh;overflow-y:auto}

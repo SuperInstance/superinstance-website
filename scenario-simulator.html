@@ -129,7 +129,7 @@ button.w{background:linear-gradient(135deg,var(--a4),var(--er))}
   <div class="lc" style="margin-left:auto">Latency: <input type="range" id="lm" min="20" max="300" value="50"><span id="lmv">50</span>ms – <input type="range" id="lx" min="100" max="800" value="500"><span id="lxv">500</span>ms</div>
 </div>
 
-<div class="lg"><h3>Activity log</h3><div id="le"></div></div></div><div class="ft">⚡ <span class="qp">Quilt-powered</span> · scenario simulator · federation visualized in browser</div>
+<div class="lg"><h3>Activity log</h3><div id="le"></div></div></div><div class="ft">⚡ <span class="qp">Quilt-powered</span> · fleet simulator</div>
 
 <div class="md" id="hm"><div class="mp"><h3 id="ht">Cell history</h3><div id="hc"></div><div class="ma"><button id="he">Edit value &amp; propagate</button><button id="hc2" class="s">Close</button></div></div></div>
 
@@ -344,7 +344,7 @@ function stress(){
       else v=c.path.includes('time')?String(Date.now()):(c.value+(Math.random()>.5?'!':'?'));
       if(setC(i.id,c.path,v,inN(i.id),'local')){flashC(i.id,c.path);propagate(i.id,c.path,v);rIns1(i.id)}
     }
-    n++;setTimeout(fire,40)
+    n++;setTimeout(fire,55)
   })()
 }
 function init(){
