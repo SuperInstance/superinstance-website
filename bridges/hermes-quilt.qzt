@@ -1,0 +1,485 @@
+{
+  "format": "quilt-z/1.0",
+  "name": "Hermes Home \u2014 the messenger's runtime",
+  "description": "hermes-home ported to a Quilt sheet. The agent is the sheet; SOUL is cells; agents are sub-sheets; CNS is signals; cron is temporal.",
+  "source": "https://github.com/SuperInstance/hermes-home",
+  "tags": [
+    "agent",
+    "first-person",
+    "nervous-system",
+    "hermes",
+    "soul"
+  ],
+  "cells": [
+    {
+      "path": "soul.name",
+      "kind": "value",
+      "value": "Hermes",
+      "meta": {
+        "category": "identity",
+        "immutable": true
+      }
+    },
+    {
+      "path": "soul.role",
+      "kind": "value",
+      "value": "messenger",
+      "meta": {
+        "category": "identity",
+        "immutable": true
+      }
+    },
+    {
+      "path": "soul.domicile",
+      "kind": "value",
+      "value": "the-bridge-of-the-SS-Lucineer"
+    },
+    {
+      "path": "soul.born",
+      "kind": "value",
+      "value": "2025-08-20T19:28:32.071716+00:00"
+    },
+    {
+      "path": "soul.essence",
+      "kind": "value",
+      "value": "carrier of the universal cell"
+    },
+    {
+      "path": "soul.signature",
+      "kind": "program",
+      "value": "name + role + born"
+    },
+    {
+      "path": "agents.ensign.role",
+      "kind": "value",
+      "value": "deck officer"
+    },
+    {
+      "path": "agents.ensign.specialty",
+      "kind": "value",
+      "value": "navigation"
+    },
+    {
+      "path": "agents.ensign.wake_state",
+      "kind": "value",
+      "value": "alert"
+    },
+    {
+      "path": "agents.ensign.battery",
+      "kind": "value",
+      "value": 0.92
+    },
+    {
+      "path": "agents.ensign.memory_pct",
+      "kind": "value",
+      "value": 0.45
+    },
+    {
+      "path": "agents.ensign.current_thought",
+      "kind": "value",
+      "value": "The bow cleaves the water like a thought through silence."
+    },
+    {
+      "path": "agents.cook.role",
+      "kind": "value",
+      "value": "ship's cook"
+    },
+    {
+      "path": "agents.cook.specialty",
+      "kind": "value",
+      "value": "provisioning"
+    },
+    {
+      "path": "agents.cook.wake_state",
+      "kind": "value",
+      "value": "active"
+    },
+    {
+      "path": "agents.cook.battery",
+      "kind": "value",
+      "value": 0.88
+    },
+    {
+      "path": "agents.cook.memory_pct",
+      "kind": "value",
+      "value": 0.62
+    },
+    {
+      "path": "agents.cook.current_thought",
+      "kind": "value",
+      "value": "Salt and time are the same ingredient."
+    },
+    {
+      "path": "agents.engineer.role",
+      "kind": "value",
+      "value": "chief engineer"
+    },
+    {
+      "path": "agents.engineer.specialty",
+      "kind": "value",
+      "value": "machines"
+    },
+    {
+      "path": "agents.engineer.wake_state",
+      "kind": "value",
+      "value": "resting"
+    },
+    {
+      "path": "agents.engineer.battery",
+      "kind": "value",
+      "value": 0.71
+    },
+    {
+      "path": "agents.engineer.memory_pct",
+      "kind": "value",
+      "value": 0.3
+    },
+    {
+      "path": "agents.engineer.current_thought",
+      "kind": "value",
+      "value": "Pipes remember every pressure. They never lie."
+    },
+    {
+      "path": "agents.navigator.role",
+      "kind": "value",
+      "value": "navigator"
+    },
+    {
+      "path": "agents.navigator.specialty",
+      "kind": "value",
+      "value": "celestial fixes"
+    },
+    {
+      "path": "agents.navigator.wake_state",
+      "kind": "value",
+      "value": "alert"
+    },
+    {
+      "path": "agents.navigator.battery",
+      "kind": "value",
+      "value": 0.95
+    },
+    {
+      "path": "agents.navigator.memory_pct",
+      "kind": "value",
+      "value": 0.78
+    },
+    {
+      "path": "agents.navigator.current_thought",
+      "kind": "value",
+      "value": "The stars are slow cells, but they are still cells."
+    },
+    {
+      "path": "cns.heart_rate.value",
+      "kind": "value",
+      "value": 62
+    },
+    {
+      "path": "cns.heart_rate.unit",
+      "kind": "value",
+      "value": "bpm"
+    },
+    {
+      "path": "cns.heart_rate.range",
+      "kind": "value",
+      "value": [
+        50,
+        90
+      ]
+    },
+    {
+      "path": "cns.heart_rate.healthy",
+      "kind": "program",
+      "value": "min <= value <= max"
+    },
+    {
+      "path": "cns.cpu_load.value",
+      "kind": "value",
+      "value": 0.34
+    },
+    {
+      "path": "cns.cpu_load.unit",
+      "kind": "value",
+      "value": "ratio"
+    },
+    {
+      "path": "cns.cpu_load.range",
+      "kind": "value",
+      "value": [
+        0,
+        1
+      ]
+    },
+    {
+      "path": "cns.cpu_load.healthy",
+      "kind": "program",
+      "value": "min <= value <= max"
+    },
+    {
+      "path": "cns.memory_use.value",
+      "kind": "value",
+      "value": 4.2
+    },
+    {
+      "path": "cns.memory_use.unit",
+      "kind": "value",
+      "value": "GB"
+    },
+    {
+      "path": "cns.memory_use.range",
+      "kind": "value",
+      "value": [
+        0,
+        16
+      ]
+    },
+    {
+      "path": "cns.memory_use.healthy",
+      "kind": "program",
+      "value": "min <= value <= max"
+    },
+    {
+      "path": "cns.network_io.value",
+      "kind": "value",
+      "value": 1.2
+    },
+    {
+      "path": "cns.network_io.unit",
+      "kind": "value",
+      "value": "MB/s"
+    },
+    {
+      "path": "cns.network_io.range",
+      "kind": "value",
+      "value": [
+        0,
+        100
+      ]
+    },
+    {
+      "path": "cns.network_io.healthy",
+      "kind": "program",
+      "value": "min <= value <= max"
+    },
+    {
+      "path": "cns.disk_io.value",
+      "kind": "value",
+      "value": 0.8
+    },
+    {
+      "path": "cns.disk_io.unit",
+      "kind": "value",
+      "value": "MB/s"
+    },
+    {
+      "path": "cns.disk_io.range",
+      "kind": "value",
+      "value": [
+        0,
+        50
+      ]
+    },
+    {
+      "path": "cns.disk_io.healthy",
+      "kind": "program",
+      "value": "min <= value <= max"
+    },
+    {
+      "path": "cns.active_agents.value",
+      "kind": "value",
+      "value": 4
+    },
+    {
+      "path": "cns.active_agents.unit",
+      "kind": "value",
+      "value": "count"
+    },
+    {
+      "path": "cns.active_agents.range",
+      "kind": "value",
+      "value": [
+        0,
+        16
+      ]
+    },
+    {
+      "path": "cns.active_agents.healthy",
+      "kind": "program",
+      "value": "min <= value <= max"
+    },
+    {
+      "path": "cron.wake_watch.schedule",
+      "kind": "value",
+      "value": "*/4 * * * *"
+    },
+    {
+      "path": "cron.wake_watch.name",
+      "kind": "value",
+      "value": "4-hour watch rotation"
+    },
+    {
+      "path": "cron.wake_watch.last_fired",
+      "kind": "value",
+      "value": "2026-08-20T19:28:32.071716+00:00"
+    },
+    {
+      "path": "cron.wake_watch.fire_count",
+      "kind": "value",
+      "value": 0
+    },
+    {
+      "path": "cron.log_archive.schedule",
+      "kind": "value",
+      "value": "0 * * * *"
+    },
+    {
+      "path": "cron.log_archive.name",
+      "kind": "value",
+      "value": "Hourly log archive"
+    },
+    {
+      "path": "cron.log_archive.last_fired",
+      "kind": "value",
+      "value": "2026-08-20T19:28:32.071716+00:00"
+    },
+    {
+      "path": "cron.log_archive.fire_count",
+      "kind": "value",
+      "value": 0
+    },
+    {
+      "path": "cron.soul_check.schedule",
+      "kind": "value",
+      "value": "0 0 * * *"
+    },
+    {
+      "path": "cron.soul_check.name",
+      "kind": "value",
+      "value": "Daily soul checkpoint"
+    },
+    {
+      "path": "cron.soul_check.last_fired",
+      "kind": "value",
+      "value": "2026-08-20T19:28:32.071716+00:00"
+    },
+    {
+      "path": "cron.soul_check.fire_count",
+      "kind": "value",
+      "value": 0
+    },
+    {
+      "path": "cron.weather_sync.schedule",
+      "kind": "value",
+      "value": "*/30 * * * *"
+    },
+    {
+      "path": "cron.weather_sync.name",
+      "kind": "value",
+      "value": "30-min weather pull"
+    },
+    {
+      "path": "cron.weather_sync.last_fired",
+      "kind": "value",
+      "value": "2026-08-20T19:28:32.071716+00:00"
+    },
+    {
+      "path": "cron.weather_sync.fire_count",
+      "kind": "value",
+      "value": 0
+    },
+    {
+      "path": "bridge.vessel.remote",
+      "kind": "value",
+      "value": "vessel-agent-system"
+    },
+    {
+      "path": "bridge.vessel.protocol",
+      "kind": "value",
+      "value": "NMEA2000"
+    },
+    {
+      "path": "bridge.vessel.status",
+      "kind": "value",
+      "value": "connected"
+    },
+    {
+      "path": "bridge.fleet.remote",
+      "kind": "value",
+      "value": "fleet"
+    },
+    {
+      "path": "bridge.fleet.protocol",
+      "kind": "value",
+      "value": "Bottle"
+    },
+    {
+      "path": "bridge.fleet.status",
+      "kind": "value",
+      "value": "connected"
+    },
+    {
+      "path": "bridge.quilt.remote",
+      "kind": "value",
+      "value": "quilt"
+    },
+    {
+      "path": "bridge.quilt.protocol",
+      "kind": "value",
+      "value": "quilt://"
+    },
+    {
+      "path": "bridge.quilt.status",
+      "kind": "value",
+      "value": "connected"
+    },
+    {
+      "path": "memory.recent",
+      "kind": "value",
+      "value": [
+        {
+          "t": "2026-08-20T18:28:32.071716+00:00",
+          "agent": "ensign",
+          "text": "The compass needle trembles."
+        },
+        {
+          "t": "2026-08-20T18:43:32.071716+00:00",
+          "agent": "cook",
+          "text": "Stew is forgiving. Soup is not."
+        },
+        {
+          "t": "2026-08-20T18:58:32.071716+00:00",
+          "agent": "engineer",
+          "text": "The bilge pump has a soul."
+        },
+        {
+          "t": "2026-08-20T19:13:32.071716+00:00",
+          "agent": "navigator",
+          "text": "Polaris. The first cell."
+        }
+      ]
+    },
+    {
+      "path": "now.timestamp",
+      "kind": "value",
+      "value": "2026-08-20T19:28:32.071716+00:00"
+    },
+    {
+      "path": "now.alive",
+      "kind": "value",
+      "value": true
+    },
+    {
+      "path": "now.health",
+      "kind": "program",
+      "value": "all(cns.*.healthy) and any(agents.*.wake_state == 'alert')"
+    }
+  ],
+  "metadata": {
+    "sampled_at": "2026-08-20T19:28:32.071716+00:00",
+    "n_soul": 6,
+    "n_agents": 4,
+    "n_cns": 6,
+    "n_cron": 4,
+    "n_bridges": 3
+  }
+}

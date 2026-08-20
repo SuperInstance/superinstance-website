@@ -724,9 +724,10 @@
             reader.onload = (ev) => {
                 try {
                     const parsed = JSON.parse(ev.target.result);
-                    if (parsed.cells && parsed.events) {
+                    if (parsed.cells) {
                         cells = parsed.cells;
-                        events = parsed.events;
+                        // If a bridge-style .qzt has tracks, use them
+                        events = parsed.tracks || parsed.events || generateEventsFromCells(cells);
                         renderAll();
                         statusText.textContent = 'loaded ✓';
                     }
@@ -736,6 +737,65 @@
             };
             reader.readAsText(file);
         });
+
+        // Auto-load from URL: ?load=ID (matches cell-bridges.html)
+        const params = new URLSearchParams(window.location.search);
+        const loadId = params.get('load');
+        if (loadId) {
+            fetch(`./bridges/${loadId}-quilt.qzt`)
+                .then(r => r.json())
+                .then(parsed => {
+                    if (parsed.cells) {
+                        cells = parsed.cells;
+                        events = parsed.tracks || parsed.events || generateEventsFromCells(cells);
+                        renderAll();
+                        statusText.textContent = `loaded from bridge: ${parsed.name} (${cells.length} cells)`;
+                    }
+                })
+                .catch(err => {
+                    statusText.textContent = 'bridge load failed: ' + err.message;
+                });
+        }
+
+        // Helper: if a .qzt has no tracks, derive synthetic events from cells
+        // so the SIDE view always has something to show.
+        function generateEventsFromCells(cells) {
+            // Look for any cell with "timeline" or "track" prefix
+            const tracks = [];
+            const trackGroups = {};
+            for (const c of cells) {
+                if (c.path.startsWith('timeline.') || c.path.startsWith('tracks.')) {
+                    if (Array.isArray(c.value)) {
+                        const tname = c.path.replace(/^(timeline|tracks)\./, '');
+                        if (c.value.length > 0 && typeof c.value[0] === 'object' && 'time' in c.value[0]) {
+                            // It's an event list
+                            tracks.push({
+                                name: tname,
+                                character: tname,
+                                voice: tname,
+                                events: c.value.map(e => ({
+                                    time: e.time || 0,
+                                    duration: e.duration || 2,
+                                    text: e.text || JSON.stringify(e.snapshot || e),
+                                })),
+                            });
+                        }
+                    }
+                }
+            }
+            if (tracks.length > 0) return tracks;
+            // Fallback: generate one event per "interesting" cell
+            return [{
+                name: 'sheet',
+                character: 'sheet',
+                voice: 'neutral',
+                events: cells.slice(0, 20).map((c, i) => ({
+                    time: i * 2,
+                    duration: 2,
+                    text: `${c.path} = ${typeof c.value === 'object' ? JSON.stringify(c.value).slice(0, 60) : c.value}`,
+                })),
+            }];
+        }
 
         // live update simulation: sensor.depth every 2 sec
         setInterval(() => {

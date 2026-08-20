@@ -1,0 +1,2149 @@
+{
+  "format": "quilt-z/1.0",
+  "name": "F/V EILEEN \u2014 Vessel Agent System (Quilt bridge)",
+  "description": "vessel-agent-system data ported to a Quilt sheet. 3-views: top (bathy), front (signals), side (timeline).",
+  "source": "https://github.com/SuperInstance/vessel-agent-system",
+  "tags": [
+    "vessel",
+    "marine",
+    "top-view",
+    "bathy",
+    "telemetry"
+  ],
+  "cells": [
+    {
+      "path": "vessel.lat",
+      "kind": "value",
+      "value": 56.962451,
+      "depends_on": [
+        "timeline.last.lat"
+      ]
+    },
+    {
+      "path": "vessel.lon",
+      "kind": "value",
+      "value": -132.866984,
+      "depends_on": [
+        "timeline.last.lon"
+      ]
+    },
+    {
+      "path": "vessel.sog_knots",
+      "kind": "value",
+      "value": 5.86,
+      "depends_on": [
+        "timeline.last.sog_knots"
+      ]
+    },
+    {
+      "path": "vessel.cog_deg",
+      "kind": "value",
+      "value": 152.9,
+      "depends_on": [
+        "timeline.last.cog_deg"
+      ]
+    },
+    {
+      "path": "vessel.heading_deg",
+      "kind": "value",
+      "value": 128.3,
+      "depends_on": [
+        "timeline.last.heading_deg"
+      ]
+    },
+    {
+      "path": "vessel.autopilot",
+      "kind": "value",
+      "value": "engaged"
+    },
+    {
+      "path": "env.depth_m",
+      "kind": "value",
+      "value": 59.4
+    },
+    {
+      "path": "env.wind_speed_kt",
+      "kind": "value",
+      "value": 7.0
+    },
+    {
+      "path": "env.wind_dir_deg",
+      "kind": "value",
+      "value": 211.5
+    },
+    {
+      "path": "env.water_temp_c",
+      "kind": "value",
+      "value": 8.95
+    },
+    {
+      "path": "env.sea_state",
+      "kind": "value",
+      "value": 2.3
+    },
+    {
+      "path": "engine.rpm",
+      "kind": "value",
+      "value": 1370.0
+    },
+    {
+      "path": "engine.fuel_pct",
+      "kind": "value",
+      "value": 80.2,
+      "depends_on": [
+        "engine.fuel_burn"
+      ]
+    },
+    {
+      "path": "engine.fuel_burn",
+      "kind": "value",
+      "value": -0.5,
+      "depends_on": [
+        "engine.rpm"
+      ]
+    },
+    {
+      "path": "holds.fish_kg",
+      "kind": "value",
+      "value": 2140.0,
+      "depends_on": [
+        "holds.catch_rate"
+      ]
+    },
+    {
+      "path": "holds.catch_rate",
+      "kind": "value",
+      "value": 0.5,
+      "depends_on": [
+        "holds.active_set"
+      ]
+    },
+    {
+      "path": "holds.active_set",
+      "kind": "value",
+      "value": true
+    },
+    {
+      "path": "crew.captain_ahab.shift_h",
+      "kind": "value",
+      "value": 4.5
+    },
+    {
+      "path": "crew.captain_ahab.alertness",
+      "kind": "value",
+      "value": "high"
+    },
+    {
+      "path": "crew.captain_ahab.role",
+      "kind": "value",
+      "value": "Captain"
+    },
+    {
+      "path": "crew.first_mate_sigrid.shift_h",
+      "kind": "value",
+      "value": 6.0
+    },
+    {
+      "path": "crew.first_mate_sigrid.alertness",
+      "kind": "value",
+      "value": "medium"
+    },
+    {
+      "path": "crew.first_mate_sigrid.role",
+      "kind": "value",
+      "value": "First Mate"
+    },
+    {
+      "path": "crew.deckhand_two.shift_h",
+      "kind": "value",
+      "value": 8.5
+    },
+    {
+      "path": "crew.deckhand_two.alertness",
+      "kind": "value",
+      "value": "low"
+    },
+    {
+      "path": "crew.deckhand_two.role",
+      "kind": "value",
+      "value": "Deckhand"
+    },
+    {
+      "path": "crew.engineer_ojo.shift_h",
+      "kind": "value",
+      "value": 2.0
+    },
+    {
+      "path": "crew.engineer_ojo.alertness",
+      "kind": "value",
+      "value": "high"
+    },
+    {
+      "path": "crew.engineer_ojo.role",
+      "kind": "value",
+      "value": "Engineer"
+    },
+    {
+      "path": "bathy.cell_-5_-5.depth",
+      "kind": "value",
+      "value": 48.5
+    },
+    {
+      "path": "bathy.cell_-5_-4.depth",
+      "kind": "value",
+      "value": 45.8
+    },
+    {
+      "path": "bathy.cell_-5_-3.depth",
+      "kind": "value",
+      "value": 43.5
+    },
+    {
+      "path": "bathy.cell_-5_-2.depth",
+      "kind": "value",
+      "value": 41.8
+    },
+    {
+      "path": "bathy.cell_-5_-1.depth",
+      "kind": "value",
+      "value": 40.6
+    },
+    {
+      "path": "bathy.cell_-5_+0.depth",
+      "kind": "value",
+      "value": 40.2
+    },
+    {
+      "path": "bathy.cell_-5_+1.depth",
+      "kind": "value",
+      "value": 40.6
+    },
+    {
+      "path": "bathy.cell_-5_+2.depth",
+      "kind": "value",
+      "value": 41.8
+    },
+    {
+      "path": "bathy.cell_-5_+3.depth",
+      "kind": "value",
+      "value": 43.5
+    },
+    {
+      "path": "bathy.cell_-5_+4.depth",
+      "kind": "value",
+      "value": 45.8
+    },
+    {
+      "path": "bathy.cell_-5_+5.depth",
+      "kind": "value",
+      "value": 48.5
+    },
+    {
+      "path": "bathy.cell_-4_-5.depth",
+      "kind": "value",
+      "value": 43.3
+    },
+    {
+      "path": "bathy.cell_-4_-4.depth",
+      "kind": "value",
+      "value": 40.4
+    },
+    {
+      "path": "bathy.cell_-4_-3.depth",
+      "kind": "value",
+      "value": 37.7
+    },
+    {
+      "path": "bathy.cell_-4_-2.depth",
+      "kind": "value",
+      "value": 35.6
+    },
+    {
+      "path": "bathy.cell_-4_-1.depth",
+      "kind": "value",
+      "value": 34.2
+    },
+    {
+      "path": "bathy.cell_-4_+0.depth",
+      "kind": "value",
+      "value": 33.7
+    },
+    {
+      "path": "bathy.cell_-4_+1.depth",
+      "kind": "value",
+      "value": 34.2
+    },
+    {
+      "path": "bathy.cell_-4_+2.depth",
+      "kind": "value",
+      "value": 35.6
+    },
+    {
+      "path": "bathy.cell_-4_+3.depth",
+      "kind": "value",
+      "value": 37.7
+    },
+    {
+      "path": "bathy.cell_-4_+4.depth",
+      "kind": "value",
+      "value": 40.4
+    },
+    {
+      "path": "bathy.cell_-4_+5.depth",
+      "kind": "value",
+      "value": 43.3
+    },
+    {
+      "path": "bathy.cell_-3_-5.depth",
+      "kind": "value",
+      "value": 40.3
+    },
+    {
+      "path": "bathy.cell_-3_-4.depth",
+      "kind": "value",
+      "value": 37.0
+    },
+    {
+      "path": "bathy.cell_-3_-3.depth",
+      "kind": "value",
+      "value": 34.0
+    },
+    {
+      "path": "bathy.cell_-3_-2.depth",
+      "kind": "value",
+      "value": 31.4
+    },
+    {
+      "path": "bathy.cell_-3_-1.depth",
+      "kind": "value",
+      "value": 29.7
+    },
+    {
+      "path": "bathy.cell_-3_+0.depth",
+      "kind": "value",
+      "value": 29.0
+    },
+    {
+      "path": "bathy.cell_-3_+1.depth",
+      "kind": "value",
+      "value": 29.7
+    },
+    {
+      "path": "bathy.cell_-3_+2.depth",
+      "kind": "value",
+      "value": 31.4
+    },
+    {
+      "path": "bathy.cell_-3_+3.depth",
+      "kind": "value",
+      "value": 34.0
+    },
+    {
+      "path": "bathy.cell_-3_+4.depth",
+      "kind": "value",
+      "value": 37.0
+    },
+    {
+      "path": "bathy.cell_-3_+5.depth",
+      "kind": "value",
+      "value": 40.3
+    },
+    {
+      "path": "bathy.cell_-2_-5.depth",
+      "kind": "value",
+      "value": 39.8
+    },
+    {
+      "path": "bathy.cell_-2_-4.depth",
+      "kind": "value",
+      "value": 36.2
+    },
+    {
+      "path": "bathy.cell_-2_-3.depth",
+      "kind": "value",
+      "value": 32.7
+    },
+    {
+      "path": "bathy.cell_-2_-2.depth",
+      "kind": "value",
+      "value": 29.6
+    },
+    {
+      "path": "bathy.cell_-2_-1.depth",
+      "kind": "value",
+      "value": 27.2
+    },
+    {
+      "path": "bathy.cell_-2_+0.depth",
+      "kind": "value",
+      "value": 26.3
+    },
+    {
+      "path": "bathy.cell_-2_+1.depth",
+      "kind": "value",
+      "value": 27.2
+    },
+    {
+      "path": "bathy.cell_-2_+2.depth",
+      "kind": "value",
+      "value": 29.6
+    },
+    {
+      "path": "bathy.cell_-2_+3.depth",
+      "kind": "value",
+      "value": 32.7
+    },
+    {
+      "path": "bathy.cell_-2_+4.depth",
+      "kind": "value",
+      "value": 36.2
+    },
+    {
+      "path": "bathy.cell_-2_+5.depth",
+      "kind": "value",
+      "value": 39.8
+    },
+    {
+      "path": "bathy.cell_-1_-5.depth",
+      "kind": "value",
+      "value": 41.6
+    },
+    {
+      "path": "bathy.cell_-1_-4.depth",
+      "kind": "value",
+      "value": 37.7
+    },
+    {
+      "path": "bathy.cell_-1_-3.depth",
+      "kind": "value",
+      "value": 33.8
+    },
+    {
+      "path": "bathy.cell_-1_-2.depth",
+      "kind": "value",
+      "value": 30.1
+    },
+    {
+      "path": "bathy.cell_-1_-1.depth",
+      "kind": "value",
+      "value": 26.8
+    },
+    {
+      "path": "bathy.cell_-1_+0.depth",
+      "kind": "value",
+      "value": 25.2
+    },
+    {
+      "path": "bathy.cell_-1_+1.depth",
+      "kind": "value",
+      "value": 26.8
+    },
+    {
+      "path": "bathy.cell_-1_+2.depth",
+      "kind": "value",
+      "value": 30.1
+    },
+    {
+      "path": "bathy.cell_-1_+3.depth",
+      "kind": "value",
+      "value": 33.8
+    },
+    {
+      "path": "bathy.cell_-1_+4.depth",
+      "kind": "value",
+      "value": 37.7
+    },
+    {
+      "path": "bathy.cell_-1_+5.depth",
+      "kind": "value",
+      "value": 41.6
+    },
+    {
+      "path": "bathy.cell_+0_-5.depth",
+      "kind": "value",
+      "value": 45.0
+    },
+    {
+      "path": "bathy.cell_+0_-4.depth",
+      "kind": "value",
+      "value": 41.0
+    },
+    {
+      "path": "bathy.cell_+0_-3.depth",
+      "kind": "value",
+      "value": 37.0
+    },
+    {
+      "path": "bathy.cell_+0_-2.depth",
+      "kind": "value",
+      "value": 33.0
+    },
+    {
+      "path": "bathy.cell_+0_-1.depth",
+      "kind": "value",
+      "value": 29.0
+    },
+    {
+      "path": "bathy.cell_+0_+0.depth",
+      "kind": "value",
+      "value": 25.0
+    },
+    {
+      "path": "bathy.cell_+0_+1.depth",
+      "kind": "value",
+      "value": 29.0
+    },
+    {
+      "path": "bathy.cell_+0_+2.depth",
+      "kind": "value",
+      "value": 33.0
+    },
+    {
+      "path": "bathy.cell_+0_+3.depth",
+      "kind": "value",
+      "value": 37.0
+    },
+    {
+      "path": "bathy.cell_+0_+4.depth",
+      "kind": "value",
+      "value": 41.0
+    },
+    {
+      "path": "bathy.cell_+0_+5.depth",
+      "kind": "value",
+      "value": 45.0
+    },
+    {
+      "path": "bathy.cell_+1_-5.depth",
+      "kind": "value",
+      "value": 49.2
+    },
+    {
+      "path": "bathy.cell_+1_-4.depth",
+      "kind": "value",
+      "value": 45.3
+    },
+    {
+      "path": "bathy.cell_+1_-3.depth",
+      "kind": "value",
+      "value": 41.5
+    },
+    {
+      "path": "bathy.cell_+1_-2.depth",
+      "kind": "value",
+      "value": 37.8
+    },
+    {
+      "path": "bathy.cell_+1_-1.depth",
+      "kind": "value",
+      "value": 34.5
+    },
+    {
+      "path": "bathy.cell_+1_+0.depth",
+      "kind": "value",
+      "value": 32.8
+    },
+    {
+      "path": "bathy.cell_+1_+1.depth",
+      "kind": "value",
+      "value": 34.5
+    },
+    {
+      "path": "bathy.cell_+1_+2.depth",
+      "kind": "value",
+      "value": 37.8
+    },
+    {
+      "path": "bathy.cell_+1_+3.depth",
+      "kind": "value",
+      "value": 41.5
+    },
+    {
+      "path": "bathy.cell_+1_+4.depth",
+      "kind": "value",
+      "value": 45.3
+    },
+    {
+      "path": "bathy.cell_+1_+5.depth",
+      "kind": "value",
+      "value": 49.2
+    },
+    {
+      "path": "bathy.cell_+2_-5.depth",
+      "kind": "value",
+      "value": 53.3
+    },
+    {
+      "path": "bathy.cell_+2_-4.depth",
+      "kind": "value",
+      "value": 49.6
+    },
+    {
+      "path": "bathy.cell_+2_-3.depth",
+      "kind": "value",
+      "value": 46.2
+    },
+    {
+      "path": "bathy.cell_+2_-2.depth",
+      "kind": "value",
+      "value": 43.0
+    },
+    {
+      "path": "bathy.cell_+2_-1.depth",
+      "kind": "value",
+      "value": 40.7
+    },
+    {
+      "path": "bathy.cell_+2_+0.depth",
+      "kind": "value",
+      "value": 39.7
+    },
+    {
+      "path": "bathy.cell_+2_+1.depth",
+      "kind": "value",
+      "value": 40.7
+    },
+    {
+      "path": "bathy.cell_+2_+2.depth",
+      "kind": "value",
+      "value": 43.0
+    },
+    {
+      "path": "bathy.cell_+2_+3.depth",
+      "kind": "value",
+      "value": 46.2
+    },
+    {
+      "path": "bathy.cell_+2_+4.depth",
+      "kind": "value",
+      "value": 49.6
+    },
+    {
+      "path": "bathy.cell_+2_+5.depth",
+      "kind": "value",
+      "value": 53.3
+    },
+    {
+      "path": "bathy.cell_+3_-5.depth",
+      "kind": "value",
+      "value": 56.3
+    },
+    {
+      "path": "bathy.cell_+3_-4.depth",
+      "kind": "value",
+      "value": 53.0
+    },
+    {
+      "path": "bathy.cell_+3_-3.depth",
+      "kind": "value",
+      "value": 50.0
+    },
+    {
+      "path": "bathy.cell_+3_-2.depth",
+      "kind": "value",
+      "value": 47.4
+    },
+    {
+      "path": "bathy.cell_+3_-1.depth",
+      "kind": "value",
+      "value": 45.6
+    },
+    {
+      "path": "bathy.cell_+3_+0.depth",
+      "kind": "value",
+      "value": 45.0
+    },
+    {
+      "path": "bathy.cell_+3_+1.depth",
+      "kind": "value",
+      "value": 45.6
+    },
+    {
+      "path": "bathy.cell_+3_+2.depth",
+      "kind": "value",
+      "value": 47.4
+    },
+    {
+      "path": "bathy.cell_+3_+3.depth",
+      "kind": "value",
+      "value": 50.0
+    },
+    {
+      "path": "bathy.cell_+3_+4.depth",
+      "kind": "value",
+      "value": 53.0
+    },
+    {
+      "path": "bathy.cell_+3_+5.depth",
+      "kind": "value",
+      "value": 56.3
+    },
+    {
+      "path": "bathy.cell_+4_-5.depth",
+      "kind": "value",
+      "value": 57.9
+    },
+    {
+      "path": "bathy.cell_+4_-4.depth",
+      "kind": "value",
+      "value": 54.9
+    },
+    {
+      "path": "bathy.cell_+4_-3.depth",
+      "kind": "value",
+      "value": 52.3
+    },
+    {
+      "path": "bathy.cell_+4_-2.depth",
+      "kind": "value",
+      "value": 50.2
+    },
+    {
+      "path": "bathy.cell_+4_-1.depth",
+      "kind": "value",
+      "value": 48.8
+    },
+    {
+      "path": "bathy.cell_+4_+0.depth",
+      "kind": "value",
+      "value": 48.3
+    },
+    {
+      "path": "bathy.cell_+4_+1.depth",
+      "kind": "value",
+      "value": 48.8
+    },
+    {
+      "path": "bathy.cell_+4_+2.depth",
+      "kind": "value",
+      "value": 50.2
+    },
+    {
+      "path": "bathy.cell_+4_+3.depth",
+      "kind": "value",
+      "value": 52.3
+    },
+    {
+      "path": "bathy.cell_+4_+4.depth",
+      "kind": "value",
+      "value": 54.9
+    },
+    {
+      "path": "bathy.cell_+4_+5.depth",
+      "kind": "value",
+      "value": 57.9
+    },
+    {
+      "path": "bathy.cell_+5_-5.depth",
+      "kind": "value",
+      "value": 58.1
+    },
+    {
+      "path": "bathy.cell_+5_-4.depth",
+      "kind": "value",
+      "value": 55.4
+    },
+    {
+      "path": "bathy.cell_+5_-3.depth",
+      "kind": "value",
+      "value": 53.1
+    },
+    {
+      "path": "bathy.cell_+5_-2.depth",
+      "kind": "value",
+      "value": 51.3
+    },
+    {
+      "path": "bathy.cell_+5_-1.depth",
+      "kind": "value",
+      "value": 50.2
+    },
+    {
+      "path": "bathy.cell_+5_+0.depth",
+      "kind": "value",
+      "value": 49.8
+    },
+    {
+      "path": "bathy.cell_+5_+1.depth",
+      "kind": "value",
+      "value": 50.2
+    },
+    {
+      "path": "bathy.cell_+5_+2.depth",
+      "kind": "value",
+      "value": 51.3
+    },
+    {
+      "path": "bathy.cell_+5_+3.depth",
+      "kind": "value",
+      "value": 53.1
+    },
+    {
+      "path": "bathy.cell_+5_+4.depth",
+      "kind": "value",
+      "value": 55.4
+    },
+    {
+      "path": "bathy.cell_+5_+5.depth",
+      "kind": "value",
+      "value": 58.1
+    },
+    {
+      "path": "timeline.t_0.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.0,
+        "lon": -132.85,
+        "sog_knots": 6.5,
+        "cog_deg": 135.0,
+        "heading_deg": 150.0,
+        "depth_m": 45.0,
+        "wind_speed_kt": 8.0,
+        "wind_dir_deg": 250.0,
+        "water_temp_c": 8.5,
+        "fuel_pct": 82.0,
+        "rpm": 1450.0,
+        "fish_hold_kg": 1240.0,
+        "crew_alert": "ok",
+        "sea_state": 2.0,
+        "autopilot": "standby"
+      }
+    },
+    {
+      "path": "timeline.t_60.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.028232,
+        "lon": -132.858733,
+        "sog_knots": 6.28,
+        "cog_deg": 137.8,
+        "heading_deg": 120.2,
+        "depth_m": 37.0,
+        "wind_speed_kt": 5.7,
+        "wind_dir_deg": 245.3,
+        "water_temp_c": 8.57,
+        "fuel_pct": 81.9,
+        "rpm": 1422.0,
+        "fish_hold_kg": 1270.0,
+        "crew_alert": "ok",
+        "sea_state": 2.7,
+        "autopilot": "standby"
+      }
+    },
+    {
+      "path": "timeline.t_120.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.046602,
+        "lon": -132.881882,
+        "sog_knots": 6.07,
+        "cog_deg": 129.4,
+        "heading_deg": 149.4,
+        "depth_m": 31.4,
+        "wind_speed_kt": 5.0,
+        "wind_dir_deg": 232.7,
+        "water_temp_c": 8.36,
+        "fuel_pct": 81.9,
+        "rpm": 1396.0,
+        "fish_hold_kg": 1300.0,
+        "crew_alert": "ok",
+        "sea_state": 1.0,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_180.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.048692,
+        "lon": -132.91136,
+        "sog_knots": 5.9,
+        "cog_deg": 143.2,
+        "heading_deg": 121.3,
+        "depth_m": 30.1,
+        "wind_speed_kt": 6.3,
+        "wind_dir_deg": 216.2,
+        "water_temp_c": 8.71,
+        "fuel_pct": 81.8,
+        "rpm": 1375.0,
+        "fish_hold_kg": 1330.0,
+        "crew_alert": "ok",
+        "sea_state": 2.8,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_240.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.033773,
+        "lon": -132.93687,
+        "sog_knots": 5.78,
+        "cog_deg": 124.3,
+        "heading_deg": 147.7,
+        "depth_m": 33.5,
+        "wind_speed_kt": 8.8,
+        "wind_dir_deg": 200.8,
+        "water_temp_c": 8.23,
+        "fuel_pct": 81.8,
+        "rpm": 1359.0,
+        "fish_hold_kg": 1360.0,
+        "crew_alert": "ok",
+        "sea_state": 1.8,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_300.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.007056,
+        "lon": -132.9495,
+        "sog_knots": 5.71,
+        "cog_deg": 148.0,
+        "heading_deg": 123.6,
+        "depth_m": 40.4,
+        "wind_speed_kt": 10.7,
+        "wind_dir_deg": 191.4,
+        "water_temp_c": 8.83,
+        "fuel_pct": 81.7,
+        "rpm": 1351.0,
+        "fish_hold_kg": 1390.0,
+        "crew_alert": "ok",
+        "sea_state": 1.5,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_360.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.977874,
+        "lon": -132.944838,
+        "sog_knots": 5.71,
+        "cog_deg": 120.0,
+        "heading_deg": 144.9,
+        "depth_m": 48.8,
+        "wind_speed_kt": 10.8,
+        "wind_dir_deg": 191.0,
+        "water_temp_c": 8.12,
+        "fuel_pct": 81.6,
+        "rpm": 1351.0,
+        "fish_hold_kg": 1420.0,
+        "crew_alert": "ok",
+        "sea_state": 3.0,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_420.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.956421,
+        "lon": -132.924513,
+        "sog_knots": 5.77,
+        "cog_deg": 151.7,
+        "heading_deg": 126.8,
+        "depth_m": 56.0,
+        "wind_speed_kt": 9.0,
+        "wind_dir_deg": 199.6,
+        "water_temp_c": 8.92,
+        "fuel_pct": 81.6,
+        "rpm": 1358.0,
+        "fish_hold_kg": 1450.0,
+        "crew_alert": "ok",
+        "sea_state": 1.1,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_480.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.950192,
+        "lon": -132.895625,
+        "sog_knots": 5.89,
+        "cog_deg": 116.9,
+        "heading_deg": 141.4,
+        "depth_m": 59.8,
+        "wind_speed_kt": 6.5,
+        "wind_dir_deg": 214.6,
+        "water_temp_c": 8.05,
+        "fuel_pct": 81.5,
+        "rpm": 1373.0,
+        "fish_hold_kg": 1480.0,
+        "crew_alert": "ok",
+        "sea_state": 2.3,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_540.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.961362,
+        "lon": -132.868265,
+        "sog_knots": 6.05,
+        "cog_deg": 154.1,
+        "heading_deg": 130.6,
+        "depth_m": 58.9,
+        "wind_speed_kt": 5.1,
+        "wind_dir_deg": 231.3,
+        "water_temp_c": 8.98,
+        "fuel_pct": 81.5,
+        "rpm": 1394.0,
+        "fish_hold_kg": 1510.0,
+        "crew_alert": "ok",
+        "sea_state": 2.4,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_600.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.986029,
+        "lon": -132.851991,
+        "sog_knots": 6.26,
+        "cog_deg": 115.2,
+        "heading_deg": 137.3,
+        "depth_m": 53.7,
+        "wind_speed_kt": 5.6,
+        "wind_dir_deg": 244.4,
+        "water_temp_c": 8.01,
+        "fuel_pct": 81.4,
+        "rpm": 1420.0,
+        "fish_hold_kg": 1540.0,
+        "crew_alert": "ok",
+        "sea_state": 1.1,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_660.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.015577,
+        "lon": -132.852488,
+        "sog_knots": 6.48,
+        "cog_deg": 155.0,
+        "heading_deg": 134.8,
+        "depth_m": 45.8,
+        "wind_speed_kt": 7.8,
+        "wind_dir_deg": 250.0,
+        "water_temp_c": 9.0,
+        "fuel_pct": 81.3,
+        "rpm": 1447.0,
+        "fish_hold_kg": 1570.0,
+        "crew_alert": "ok",
+        "sea_state": 3.0,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_720.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.039683,
+        "lon": -132.869582,
+        "sog_knots": 6.7,
+        "cog_deg": 115.2,
+        "heading_deg": 133.1,
+        "depth_m": 37.6,
+        "wind_speed_kt": 10.1,
+        "wind_dir_deg": 246.1,
+        "water_temp_c": 8.0,
+        "fuel_pct": 81.3,
+        "rpm": 1475.0,
+        "fish_hold_kg": 1600.0,
+        "crew_alert": "ok",
+        "sea_state": 1.5,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_780.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.049927,
+        "lon": -132.897302,
+        "sog_knots": 6.91,
+        "cog_deg": 154.3,
+        "heading_deg": 139.0,
+        "depth_m": 31.8,
+        "wind_speed_kt": 11.0,
+        "wind_dir_deg": 234.1,
+        "water_temp_c": 8.98,
+        "fuel_pct": 81.2,
+        "rpm": 1501.0,
+        "fish_hold_kg": 1630.0,
+        "crew_alert": "ok",
+        "sea_state": 1.8,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_840.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.04273,
+        "lon": -132.925964,
+        "sog_knots": 7.09,
+        "cog_deg": 116.7,
+        "heading_deg": 129.0,
+        "depth_m": 30.0,
+        "wind_speed_kt": 9.9,
+        "wind_dir_deg": 217.7,
+        "water_temp_c": 8.04,
+        "fuel_pct": 81.2,
+        "rpm": 1523.0,
+        "fish_hold_kg": 1660.0,
+        "crew_alert": "ok",
+        "sea_state": 2.8,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_900.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.020606,
+        "lon": -132.945557,
+        "sog_knots": 7.22,
+        "cog_deg": 152.0,
+        "heading_deg": 142.9,
+        "depth_m": 33.0,
+        "wind_speed_kt": 7.5,
+        "wind_dir_deg": 202.0,
+        "water_temp_c": 8.93,
+        "fuel_pct": 81.1,
+        "rpm": 1539.0,
+        "fish_hold_kg": 1690.0,
+        "crew_alert": "ok",
+        "sea_state": 1.0,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_960.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.991284,
+        "lon": -132.949234,
+        "sog_knots": 7.29,
+        "cog_deg": 119.6,
+        "heading_deg": 125.4,
+        "depth_m": 39.7,
+        "wind_speed_kt": 5.4,
+        "wind_dir_deg": 192.0,
+        "water_temp_c": 8.12,
+        "fuel_pct": 81.0,
+        "rpm": 1548.0,
+        "fish_hold_kg": 1720.0,
+        "crew_alert": "ok",
+        "sea_state": 2.6,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1020.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.965006,
+        "lon": -132.935713,
+        "sog_knots": 7.3,
+        "cog_deg": 148.4,
+        "heading_deg": 146.1,
+        "depth_m": 48.0,
+        "wind_speed_kt": 5.1,
+        "wind_dir_deg": 190.6,
+        "water_temp_c": 8.84,
+        "fuel_pct": 81.0,
+        "rpm": 1549.0,
+        "fish_hold_kg": 1750.0,
+        "crew_alert": "ok",
+        "sea_state": 2.0,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1080.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.950953,
+        "lon": -132.909716,
+        "sog_knots": 7.24,
+        "cog_deg": 123.8,
+        "heading_deg": 122.6,
+        "depth_m": 55.4,
+        "wind_speed_kt": 6.8,
+        "wind_dir_deg": 198.5,
+        "water_temp_c": 8.22,
+        "fuel_pct": 80.9,
+        "rpm": 1543.0,
+        "fish_hold_kg": 1780.0,
+        "crew_alert": "ok",
+        "sea_state": 1.3,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1140.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.954034,
+        "lon": -132.880325,
+        "sog_knots": 7.13,
+        "cog_deg": 143.7,
+        "heading_deg": 148.5,
+        "depth_m": 59.6,
+        "wind_speed_kt": 9.3,
+        "wind_dir_deg": 213.0,
+        "water_temp_c": 8.72,
+        "fuel_pct": 80.9,
+        "rpm": 1528.0,
+        "fish_hold_kg": 1810.0,
+        "crew_alert": "ok",
+        "sea_state": 3.0,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1200.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.973171,
+        "lon": -132.857807,
+        "sog_knots": 6.96,
+        "cog_deg": 128.9,
+        "heading_deg": 120.7,
+        "depth_m": 59.2,
+        "wind_speed_kt": 10.9,
+        "wind_dir_deg": 229.8,
+        "water_temp_c": 8.35,
+        "fuel_pct": 80.8,
+        "rpm": 1508.0,
+        "fish_hold_kg": 1840.0,
+        "crew_alert": "ok",
+        "sea_state": 1.2,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1260.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.001681,
+        "lon": -132.850028,
+        "sog_knots": 6.76,
+        "cog_deg": 138.3,
+        "heading_deg": 149.8,
+        "depth_m": 54.3,
+        "wind_speed_kt": 10.5,
+        "wind_dir_deg": 243.5,
+        "water_temp_c": 8.58,
+        "fuel_pct": 80.7,
+        "rpm": 1483.0,
+        "fish_hold_kg": 1870.0,
+        "crew_alert": "ok",
+        "sea_state": 2.1,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1320.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.029604,
+        "lon": -132.859706,
+        "sog_knots": 6.54,
+        "cog_deg": 134.5,
+        "heading_deg": 120.0,
+        "depth_m": 46.6,
+        "wind_speed_kt": 8.5,
+        "wind_dir_deg": 249.8,
+        "water_temp_c": 8.49,
+        "fuel_pct": 80.7,
+        "rpm": 1455.0,
+        "fish_hold_kg": 1900.0,
+        "crew_alert": "ok",
+        "sea_state": 2.6,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1380.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.047185,
+        "lon": -132.883459,
+        "sog_knots": 6.32,
+        "cog_deg": 132.7,
+        "heading_deg": 149.9,
+        "depth_m": 38.3,
+        "wind_speed_kt": 6.1,
+        "wind_dir_deg": 246.9,
+        "water_temp_c": 8.44,
+        "fuel_pct": 80.6,
+        "rpm": 1427.0,
+        "fish_hold_kg": 1930.0,
+        "crew_alert": "ok",
+        "sea_state": 1.0,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1440.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.048283,
+        "lon": -132.912991,
+        "sog_knots": 6.11,
+        "cog_deg": 140.1,
+        "heading_deg": 120.5,
+        "depth_m": 32.2,
+        "wind_speed_kt": 5.0,
+        "wind_dir_deg": 235.5,
+        "water_temp_c": 8.63,
+        "fuel_pct": 80.6,
+        "rpm": 1401.0,
+        "fish_hold_kg": 1960.0,
+        "crew_alert": "ok",
+        "sea_state": 2.9,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1500.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.032514,
+        "lon": -132.937984,
+        "sog_knots": 5.93,
+        "cog_deg": 127.2,
+        "heading_deg": 148.8,
+        "depth_m": 30.0,
+        "wind_speed_kt": 6.0,
+        "wind_dir_deg": 219.3,
+        "water_temp_c": 8.31,
+        "fuel_pct": 80.5,
+        "rpm": 1379.0,
+        "fish_hold_kg": 1990.0,
+        "crew_alert": "ok",
+        "sea_state": 1.7,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1560.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 57.005388,
+        "lon": -132.949709,
+        "sog_knots": 5.79,
+        "cog_deg": 145.3,
+        "heading_deg": 122.1,
+        "depth_m": 32.5,
+        "wind_speed_kt": 8.3,
+        "wind_dir_deg": 203.3,
+        "water_temp_c": 8.76,
+        "fuel_pct": 80.4,
+        "rpm": 1362.0,
+        "fish_hold_kg": 2020.0,
+        "crew_alert": "ok",
+        "sea_state": 1.6,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1620.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.976379,
+        "lon": -132.944069,
+        "sog_knots": 5.72,
+        "cog_deg": 122.4,
+        "heading_deg": 146.7,
+        "depth_m": 38.9,
+        "wind_speed_kt": 10.4,
+        "wind_dir_deg": 192.6,
+        "water_temp_c": 8.19,
+        "fuel_pct": 80.4,
+        "rpm": 1352.0,
+        "fish_hold_kg": 2050.0,
+        "crew_alert": "ok",
+        "sea_state": 2.9,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1680.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.955622,
+        "lon": -132.923034,
+        "sog_knots": 5.7,
+        "cog_deg": 149.7,
+        "heading_deg": 124.8,
+        "depth_m": 47.2,
+        "wind_speed_kt": 10.9,
+        "wind_dir_deg": 190.3,
+        "water_temp_c": 8.87,
+        "fuel_pct": 80.3,
+        "rpm": 1350.0,
+        "fish_hold_kg": 2080.0,
+        "crew_alert": "ok",
+        "sea_state": 1.1,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1740.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.950367,
+        "lon": -132.893953,
+        "sog_knots": 5.75,
+        "cog_deg": 118.6,
+        "heading_deg": 143.5,
+        "depth_m": 54.9,
+        "wind_speed_kt": 9.4,
+        "wind_dir_deg": 197.4,
+        "water_temp_c": 8.09,
+        "fuel_pct": 80.3,
+        "rpm": 1356.0,
+        "fish_hold_kg": 2110.0,
+        "crew_alert": "ok",
+        "sea_state": 2.5,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.t_1800.snapshot",
+      "kind": "value",
+      "value": {
+        "lat": 56.962451,
+        "lon": -132.866984,
+        "sog_knots": 5.86,
+        "cog_deg": 152.9,
+        "heading_deg": 128.3,
+        "depth_m": 59.4,
+        "wind_speed_kt": 7.0,
+        "wind_dir_deg": 211.5,
+        "water_temp_c": 8.95,
+        "fuel_pct": 80.2,
+        "rpm": 1370.0,
+        "fish_hold_kg": 2140.0,
+        "crew_alert": "ok",
+        "sea_state": 2.3,
+        "autopilot": "engaged"
+      }
+    },
+    {
+      "path": "timeline.last",
+      "kind": "value",
+      "value": {
+        "lat": 56.962451,
+        "lon": -132.866984,
+        "sog_knots": 5.86,
+        "cog_deg": 152.9,
+        "heading_deg": 128.3,
+        "depth_m": 59.4,
+        "wind_speed_kt": 7.0,
+        "wind_dir_deg": 211.5,
+        "water_temp_c": 8.95,
+        "fuel_pct": 80.2,
+        "rpm": 1370.0,
+        "fish_hold_kg": 2140.0,
+        "crew_alert": "ok",
+        "sea_state": 2.3,
+        "autopilot": "engaged"
+      },
+      "depends_on": [
+        "timeline.t_1800.snapshot"
+      ]
+    },
+    {
+      "path": "timeline.all",
+      "kind": "value",
+      "value": [
+        {
+          "time": 0.0,
+          "snapshot": {
+            "lat": 57.0,
+            "lon": -132.85,
+            "sog_knots": 6.5,
+            "cog_deg": 135.0,
+            "heading_deg": 150.0,
+            "depth_m": 45.0,
+            "wind_speed_kt": 8.0,
+            "wind_dir_deg": 250.0,
+            "water_temp_c": 8.5,
+            "fuel_pct": 82.0,
+            "rpm": 1450.0,
+            "fish_hold_kg": 1240.0,
+            "crew_alert": "ok",
+            "sea_state": 2.0,
+            "autopilot": "standby"
+          }
+        },
+        {
+          "time": 60.0,
+          "snapshot": {
+            "lat": 57.028232,
+            "lon": -132.858733,
+            "sog_knots": 6.28,
+            "cog_deg": 137.8,
+            "heading_deg": 120.2,
+            "depth_m": 37.0,
+            "wind_speed_kt": 5.7,
+            "wind_dir_deg": 245.3,
+            "water_temp_c": 8.57,
+            "fuel_pct": 81.9,
+            "rpm": 1422.0,
+            "fish_hold_kg": 1270.0,
+            "crew_alert": "ok",
+            "sea_state": 2.7,
+            "autopilot": "standby"
+          }
+        },
+        {
+          "time": 120.0,
+          "snapshot": {
+            "lat": 57.046602,
+            "lon": -132.881882,
+            "sog_knots": 6.07,
+            "cog_deg": 129.4,
+            "heading_deg": 149.4,
+            "depth_m": 31.4,
+            "wind_speed_kt": 5.0,
+            "wind_dir_deg": 232.7,
+            "water_temp_c": 8.36,
+            "fuel_pct": 81.9,
+            "rpm": 1396.0,
+            "fish_hold_kg": 1300.0,
+            "crew_alert": "ok",
+            "sea_state": 1.0,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 180.0,
+          "snapshot": {
+            "lat": 57.048692,
+            "lon": -132.91136,
+            "sog_knots": 5.9,
+            "cog_deg": 143.2,
+            "heading_deg": 121.3,
+            "depth_m": 30.1,
+            "wind_speed_kt": 6.3,
+            "wind_dir_deg": 216.2,
+            "water_temp_c": 8.71,
+            "fuel_pct": 81.8,
+            "rpm": 1375.0,
+            "fish_hold_kg": 1330.0,
+            "crew_alert": "ok",
+            "sea_state": 2.8,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 240.0,
+          "snapshot": {
+            "lat": 57.033773,
+            "lon": -132.93687,
+            "sog_knots": 5.78,
+            "cog_deg": 124.3,
+            "heading_deg": 147.7,
+            "depth_m": 33.5,
+            "wind_speed_kt": 8.8,
+            "wind_dir_deg": 200.8,
+            "water_temp_c": 8.23,
+            "fuel_pct": 81.8,
+            "rpm": 1359.0,
+            "fish_hold_kg": 1360.0,
+            "crew_alert": "ok",
+            "sea_state": 1.8,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 300.0,
+          "snapshot": {
+            "lat": 57.007056,
+            "lon": -132.9495,
+            "sog_knots": 5.71,
+            "cog_deg": 148.0,
+            "heading_deg": 123.6,
+            "depth_m": 40.4,
+            "wind_speed_kt": 10.7,
+            "wind_dir_deg": 191.4,
+            "water_temp_c": 8.83,
+            "fuel_pct": 81.7,
+            "rpm": 1351.0,
+            "fish_hold_kg": 1390.0,
+            "crew_alert": "ok",
+            "sea_state": 1.5,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 360.0,
+          "snapshot": {
+            "lat": 56.977874,
+            "lon": -132.944838,
+            "sog_knots": 5.71,
+            "cog_deg": 120.0,
+            "heading_deg": 144.9,
+            "depth_m": 48.8,
+            "wind_speed_kt": 10.8,
+            "wind_dir_deg": 191.0,
+            "water_temp_c": 8.12,
+            "fuel_pct": 81.6,
+            "rpm": 1351.0,
+            "fish_hold_kg": 1420.0,
+            "crew_alert": "ok",
+            "sea_state": 3.0,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 420.0,
+          "snapshot": {
+            "lat": 56.956421,
+            "lon": -132.924513,
+            "sog_knots": 5.77,
+            "cog_deg": 151.7,
+            "heading_deg": 126.8,
+            "depth_m": 56.0,
+            "wind_speed_kt": 9.0,
+            "wind_dir_deg": 199.6,
+            "water_temp_c": 8.92,
+            "fuel_pct": 81.6,
+            "rpm": 1358.0,
+            "fish_hold_kg": 1450.0,
+            "crew_alert": "ok",
+            "sea_state": 1.1,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 480.0,
+          "snapshot": {
+            "lat": 56.950192,
+            "lon": -132.895625,
+            "sog_knots": 5.89,
+            "cog_deg": 116.9,
+            "heading_deg": 141.4,
+            "depth_m": 59.8,
+            "wind_speed_kt": 6.5,
+            "wind_dir_deg": 214.6,
+            "water_temp_c": 8.05,
+            "fuel_pct": 81.5,
+            "rpm": 1373.0,
+            "fish_hold_kg": 1480.0,
+            "crew_alert": "ok",
+            "sea_state": 2.3,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 540.0,
+          "snapshot": {
+            "lat": 56.961362,
+            "lon": -132.868265,
+            "sog_knots": 6.05,
+            "cog_deg": 154.1,
+            "heading_deg": 130.6,
+            "depth_m": 58.9,
+            "wind_speed_kt": 5.1,
+            "wind_dir_deg": 231.3,
+            "water_temp_c": 8.98,
+            "fuel_pct": 81.5,
+            "rpm": 1394.0,
+            "fish_hold_kg": 1510.0,
+            "crew_alert": "ok",
+            "sea_state": 2.4,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 600.0,
+          "snapshot": {
+            "lat": 56.986029,
+            "lon": -132.851991,
+            "sog_knots": 6.26,
+            "cog_deg": 115.2,
+            "heading_deg": 137.3,
+            "depth_m": 53.7,
+            "wind_speed_kt": 5.6,
+            "wind_dir_deg": 244.4,
+            "water_temp_c": 8.01,
+            "fuel_pct": 81.4,
+            "rpm": 1420.0,
+            "fish_hold_kg": 1540.0,
+            "crew_alert": "ok",
+            "sea_state": 1.1,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 660.0,
+          "snapshot": {
+            "lat": 57.015577,
+            "lon": -132.852488,
+            "sog_knots": 6.48,
+            "cog_deg": 155.0,
+            "heading_deg": 134.8,
+            "depth_m": 45.8,
+            "wind_speed_kt": 7.8,
+            "wind_dir_deg": 250.0,
+            "water_temp_c": 9.0,
+            "fuel_pct": 81.3,
+            "rpm": 1447.0,
+            "fish_hold_kg": 1570.0,
+            "crew_alert": "ok",
+            "sea_state": 3.0,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 720.0,
+          "snapshot": {
+            "lat": 57.039683,
+            "lon": -132.869582,
+            "sog_knots": 6.7,
+            "cog_deg": 115.2,
+            "heading_deg": 133.1,
+            "depth_m": 37.6,
+            "wind_speed_kt": 10.1,
+            "wind_dir_deg": 246.1,
+            "water_temp_c": 8.0,
+            "fuel_pct": 81.3,
+            "rpm": 1475.0,
+            "fish_hold_kg": 1600.0,
+            "crew_alert": "ok",
+            "sea_state": 1.5,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 780.0,
+          "snapshot": {
+            "lat": 57.049927,
+            "lon": -132.897302,
+            "sog_knots": 6.91,
+            "cog_deg": 154.3,
+            "heading_deg": 139.0,
+            "depth_m": 31.8,
+            "wind_speed_kt": 11.0,
+            "wind_dir_deg": 234.1,
+            "water_temp_c": 8.98,
+            "fuel_pct": 81.2,
+            "rpm": 1501.0,
+            "fish_hold_kg": 1630.0,
+            "crew_alert": "ok",
+            "sea_state": 1.8,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 840.0,
+          "snapshot": {
+            "lat": 57.04273,
+            "lon": -132.925964,
+            "sog_knots": 7.09,
+            "cog_deg": 116.7,
+            "heading_deg": 129.0,
+            "depth_m": 30.0,
+            "wind_speed_kt": 9.9,
+            "wind_dir_deg": 217.7,
+            "water_temp_c": 8.04,
+            "fuel_pct": 81.2,
+            "rpm": 1523.0,
+            "fish_hold_kg": 1660.0,
+            "crew_alert": "ok",
+            "sea_state": 2.8,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 900.0,
+          "snapshot": {
+            "lat": 57.020606,
+            "lon": -132.945557,
+            "sog_knots": 7.22,
+            "cog_deg": 152.0,
+            "heading_deg": 142.9,
+            "depth_m": 33.0,
+            "wind_speed_kt": 7.5,
+            "wind_dir_deg": 202.0,
+            "water_temp_c": 8.93,
+            "fuel_pct": 81.1,
+            "rpm": 1539.0,
+            "fish_hold_kg": 1690.0,
+            "crew_alert": "ok",
+            "sea_state": 1.0,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 960.0,
+          "snapshot": {
+            "lat": 56.991284,
+            "lon": -132.949234,
+            "sog_knots": 7.29,
+            "cog_deg": 119.6,
+            "heading_deg": 125.4,
+            "depth_m": 39.7,
+            "wind_speed_kt": 5.4,
+            "wind_dir_deg": 192.0,
+            "water_temp_c": 8.12,
+            "fuel_pct": 81.0,
+            "rpm": 1548.0,
+            "fish_hold_kg": 1720.0,
+            "crew_alert": "ok",
+            "sea_state": 2.6,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1020.0,
+          "snapshot": {
+            "lat": 56.965006,
+            "lon": -132.935713,
+            "sog_knots": 7.3,
+            "cog_deg": 148.4,
+            "heading_deg": 146.1,
+            "depth_m": 48.0,
+            "wind_speed_kt": 5.1,
+            "wind_dir_deg": 190.6,
+            "water_temp_c": 8.84,
+            "fuel_pct": 81.0,
+            "rpm": 1549.0,
+            "fish_hold_kg": 1750.0,
+            "crew_alert": "ok",
+            "sea_state": 2.0,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1080.0,
+          "snapshot": {
+            "lat": 56.950953,
+            "lon": -132.909716,
+            "sog_knots": 7.24,
+            "cog_deg": 123.8,
+            "heading_deg": 122.6,
+            "depth_m": 55.4,
+            "wind_speed_kt": 6.8,
+            "wind_dir_deg": 198.5,
+            "water_temp_c": 8.22,
+            "fuel_pct": 80.9,
+            "rpm": 1543.0,
+            "fish_hold_kg": 1780.0,
+            "crew_alert": "ok",
+            "sea_state": 1.3,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1140.0,
+          "snapshot": {
+            "lat": 56.954034,
+            "lon": -132.880325,
+            "sog_knots": 7.13,
+            "cog_deg": 143.7,
+            "heading_deg": 148.5,
+            "depth_m": 59.6,
+            "wind_speed_kt": 9.3,
+            "wind_dir_deg": 213.0,
+            "water_temp_c": 8.72,
+            "fuel_pct": 80.9,
+            "rpm": 1528.0,
+            "fish_hold_kg": 1810.0,
+            "crew_alert": "ok",
+            "sea_state": 3.0,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1200.0,
+          "snapshot": {
+            "lat": 56.973171,
+            "lon": -132.857807,
+            "sog_knots": 6.96,
+            "cog_deg": 128.9,
+            "heading_deg": 120.7,
+            "depth_m": 59.2,
+            "wind_speed_kt": 10.9,
+            "wind_dir_deg": 229.8,
+            "water_temp_c": 8.35,
+            "fuel_pct": 80.8,
+            "rpm": 1508.0,
+            "fish_hold_kg": 1840.0,
+            "crew_alert": "ok",
+            "sea_state": 1.2,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1260.0,
+          "snapshot": {
+            "lat": 57.001681,
+            "lon": -132.850028,
+            "sog_knots": 6.76,
+            "cog_deg": 138.3,
+            "heading_deg": 149.8,
+            "depth_m": 54.3,
+            "wind_speed_kt": 10.5,
+            "wind_dir_deg": 243.5,
+            "water_temp_c": 8.58,
+            "fuel_pct": 80.7,
+            "rpm": 1483.0,
+            "fish_hold_kg": 1870.0,
+            "crew_alert": "ok",
+            "sea_state": 2.1,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1320.0,
+          "snapshot": {
+            "lat": 57.029604,
+            "lon": -132.859706,
+            "sog_knots": 6.54,
+            "cog_deg": 134.5,
+            "heading_deg": 120.0,
+            "depth_m": 46.6,
+            "wind_speed_kt": 8.5,
+            "wind_dir_deg": 249.8,
+            "water_temp_c": 8.49,
+            "fuel_pct": 80.7,
+            "rpm": 1455.0,
+            "fish_hold_kg": 1900.0,
+            "crew_alert": "ok",
+            "sea_state": 2.6,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1380.0,
+          "snapshot": {
+            "lat": 57.047185,
+            "lon": -132.883459,
+            "sog_knots": 6.32,
+            "cog_deg": 132.7,
+            "heading_deg": 149.9,
+            "depth_m": 38.3,
+            "wind_speed_kt": 6.1,
+            "wind_dir_deg": 246.9,
+            "water_temp_c": 8.44,
+            "fuel_pct": 80.6,
+            "rpm": 1427.0,
+            "fish_hold_kg": 1930.0,
+            "crew_alert": "ok",
+            "sea_state": 1.0,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1440.0,
+          "snapshot": {
+            "lat": 57.048283,
+            "lon": -132.912991,
+            "sog_knots": 6.11,
+            "cog_deg": 140.1,
+            "heading_deg": 120.5,
+            "depth_m": 32.2,
+            "wind_speed_kt": 5.0,
+            "wind_dir_deg": 235.5,
+            "water_temp_c": 8.63,
+            "fuel_pct": 80.6,
+            "rpm": 1401.0,
+            "fish_hold_kg": 1960.0,
+            "crew_alert": "ok",
+            "sea_state": 2.9,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1500.0,
+          "snapshot": {
+            "lat": 57.032514,
+            "lon": -132.937984,
+            "sog_knots": 5.93,
+            "cog_deg": 127.2,
+            "heading_deg": 148.8,
+            "depth_m": 30.0,
+            "wind_speed_kt": 6.0,
+            "wind_dir_deg": 219.3,
+            "water_temp_c": 8.31,
+            "fuel_pct": 80.5,
+            "rpm": 1379.0,
+            "fish_hold_kg": 1990.0,
+            "crew_alert": "ok",
+            "sea_state": 1.7,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1560.0,
+          "snapshot": {
+            "lat": 57.005388,
+            "lon": -132.949709,
+            "sog_knots": 5.79,
+            "cog_deg": 145.3,
+            "heading_deg": 122.1,
+            "depth_m": 32.5,
+            "wind_speed_kt": 8.3,
+            "wind_dir_deg": 203.3,
+            "water_temp_c": 8.76,
+            "fuel_pct": 80.4,
+            "rpm": 1362.0,
+            "fish_hold_kg": 2020.0,
+            "crew_alert": "ok",
+            "sea_state": 1.6,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1620.0,
+          "snapshot": {
+            "lat": 56.976379,
+            "lon": -132.944069,
+            "sog_knots": 5.72,
+            "cog_deg": 122.4,
+            "heading_deg": 146.7,
+            "depth_m": 38.9,
+            "wind_speed_kt": 10.4,
+            "wind_dir_deg": 192.6,
+            "water_temp_c": 8.19,
+            "fuel_pct": 80.4,
+            "rpm": 1352.0,
+            "fish_hold_kg": 2050.0,
+            "crew_alert": "ok",
+            "sea_state": 2.9,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1680.0,
+          "snapshot": {
+            "lat": 56.955622,
+            "lon": -132.923034,
+            "sog_knots": 5.7,
+            "cog_deg": 149.7,
+            "heading_deg": 124.8,
+            "depth_m": 47.2,
+            "wind_speed_kt": 10.9,
+            "wind_dir_deg": 190.3,
+            "water_temp_c": 8.87,
+            "fuel_pct": 80.3,
+            "rpm": 1350.0,
+            "fish_hold_kg": 2080.0,
+            "crew_alert": "ok",
+            "sea_state": 1.1,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1740.0,
+          "snapshot": {
+            "lat": 56.950367,
+            "lon": -132.893953,
+            "sog_knots": 5.75,
+            "cog_deg": 118.6,
+            "heading_deg": 143.5,
+            "depth_m": 54.9,
+            "wind_speed_kt": 9.4,
+            "wind_dir_deg": 197.4,
+            "water_temp_c": 8.09,
+            "fuel_pct": 80.3,
+            "rpm": 1356.0,
+            "fish_hold_kg": 2110.0,
+            "crew_alert": "ok",
+            "sea_state": 2.5,
+            "autopilot": "engaged"
+          }
+        },
+        {
+          "time": 1800.0,
+          "snapshot": {
+            "lat": 56.962451,
+            "lon": -132.866984,
+            "sog_knots": 5.86,
+            "cog_deg": 152.9,
+            "heading_deg": 128.3,
+            "depth_m": 59.4,
+            "wind_speed_kt": 7.0,
+            "wind_dir_deg": 211.5,
+            "water_temp_c": 8.95,
+            "fuel_pct": 80.2,
+            "rpm": 1370.0,
+            "fish_hold_kg": 2140.0,
+            "crew_alert": "ok",
+            "sea_state": 2.3,
+            "autopilot": "engaged"
+          }
+        }
+      ]
+    },
+    {
+      "path": "nav.waypoint.thomas_bay",
+      "kind": "value",
+      "value": {
+        "name": "Thomas Bay",
+        "lat": 57.05,
+        "lon": -132.95,
+        "eta_min": 0
+      }
+    },
+    {
+      "path": "nav.waypoint.pt._astley",
+      "kind": "value",
+      "value": {
+        "name": "Pt. Astley",
+        "lat": 57.1,
+        "lon": -132.85,
+        "eta_min": 35
+      }
+    },
+    {
+      "path": "nav.waypoint.morse_cove",
+      "kind": "value",
+      "value": {
+        "name": "Morse Cove",
+        "lat": 57.2,
+        "lon": -132.7,
+        "eta_min": 95
+      }
+    },
+    {
+      "path": "nav.waypoint.spruce_island",
+      "kind": "value",
+      "value": {
+        "name": "Spruce Island",
+        "lat": 57.35,
+        "lon": -132.55,
+        "eta_min": 180
+      }
+    },
+    {
+      "path": "nav.next_waypoint",
+      "kind": "value",
+      "value": "pt_astley",
+      "depends_on": [
+        "vessel.lat",
+        "vessel.lon",
+        "nav.waypoint.thomas_bay"
+      ]
+    }
+  ],
+  "metadata": {
+    "sampled_at": "2026-08-20T19:28:31.891396+00:00",
+    "n_samples": 31,
+    "duration_s": 1800.0,
+    "dt_s": 60.0
+  }
+}

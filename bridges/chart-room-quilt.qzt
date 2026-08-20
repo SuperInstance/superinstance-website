@@ -1,0 +1,1445 @@
+{
+  "format": "quilt-z/1.0",
+  "name": "Chart Room \u2014 Four Panels, One Truth",
+  "description": "chart-room (1995 architecture) ported to a Quilt sheet. The single TruthCell feeds all four panels.",
+  "source": "https://github.com/SuperInstance/chart-room",
+  "tags": [
+    "chart-room",
+    "multi-panel",
+    "3-views",
+    "vessel",
+    "telemetry"
+  ],
+  "cells": [
+    {
+      "path": "truth.now",
+      "kind": "value",
+      "value": {
+        "vessel_id": "F/V EILEEN",
+        "timestamp": "2026-08-20T19:28:31.942344+00:00",
+        "position": {
+          "lat": 56.92490127532283,
+          "lon": -132.8339683291756
+        },
+        "course": {
+          "cog_deg": 152.87993327201116,
+          "heading_deg": 128.27889575806245,
+          "sog_knots": 5.859077891412936
+        },
+        "environment": {
+          "depth_m": 59.383735851214595,
+          "wind_kt": 6.96022128687034,
+          "sea_state": 2.253823362762036
+        },
+        "engine": {
+          "rpm": 1370,
+          "fuel_pct": 80.2,
+          "oil_temp_c": 80.68198999080167
+        },
+        "tactical": {
+          "threat_level": "orange",
+          "closest_vessel_nm": 3.4,
+          "alert_count": 2
+        },
+        "sonar": {
+          "fish_density": 0.14,
+          "depth_to_fish_m": 39.6,
+          "school_size_kg": 431.0
+        }
+      }
+    },
+    {
+      "path": "truth.source",
+      "kind": "value",
+      "value": "chart-room:four-panels-one-truth"
+    },
+    {
+      "path": "nav.lat",
+      "kind": "value",
+      "value": 56.92490127532283,
+      "depends_on": [
+        "truth.now"
+      ]
+    },
+    {
+      "path": "nav.lon",
+      "kind": "value",
+      "value": -132.8339683291756,
+      "depends_on": [
+        "truth.now"
+      ]
+    },
+    {
+      "path": "nav.cog_deg",
+      "kind": "value",
+      "value": 152.87993327201116
+    },
+    {
+      "path": "nav.heading_deg",
+      "kind": "value",
+      "value": 128.27889575806245
+    },
+    {
+      "path": "nav.sog_knots",
+      "kind": "value",
+      "value": 5.859077891412936
+    },
+    {
+      "path": "nav.vessel_id",
+      "kind": "value",
+      "value": "F/V EILEEN"
+    },
+    {
+      "path": "eng.rpm",
+      "kind": "value",
+      "value": 1370
+    },
+    {
+      "path": "eng.fuel_pct",
+      "kind": "value",
+      "value": 80.2,
+      "depends_on": [
+        "eng.fuel_burn"
+      ]
+    },
+    {
+      "path": "eng.fuel_burn",
+      "kind": "value",
+      "value": -0.5,
+      "depends_on": [
+        "eng.rpm"
+      ]
+    },
+    {
+      "path": "eng.oil_temp_c",
+      "kind": "value",
+      "value": 80.68198999080167
+    },
+    {
+      "path": "eng.healthy",
+      "kind": "program",
+      "value": "fuel_pct > 5 and oil_temp_c < 95"
+    },
+    {
+      "path": "tac.threat_level",
+      "kind": "value",
+      "value": "orange"
+    },
+    {
+      "path": "tac.closest_vessel_nm",
+      "kind": "value",
+      "value": 3.4
+    },
+    {
+      "path": "tac.alert_count",
+      "kind": "value",
+      "value": 2
+    },
+    {
+      "path": "son.fish_density",
+      "kind": "value",
+      "value": 0.14
+    },
+    {
+      "path": "son.depth_to_fish_m",
+      "kind": "value",
+      "value": 39.6
+    },
+    {
+      "path": "son.school_size_kg",
+      "kind": "value",
+      "value": 431.0
+    },
+    {
+      "path": "timeline.nav",
+      "kind": "value",
+      "value": [
+        {
+          "time": 0.0,
+          "lat": 57.0,
+          "lon": -132.8,
+          "cog": 135.0
+        },
+        {
+          "time": 60.0,
+          "lat": 57.056464247339505,
+          "lon": -132.81746643850903,
+          "cog": 137.82240016119735
+        },
+        {
+          "time": 120.0,
+          "lat": 57.09320390859672,
+          "lon": -132.86376422455234,
+          "cog": 129.41169003602147
+        },
+        {
+          "time": 180.0,
+          "lat": 57.09738476308782,
+          "lon": -132.9227202094693,
+          "cog": 143.24236970483514
+        },
+        {
+          "time": 240.0,
+          "lat": 57.067546318055115,
+          "lon": -132.97373937155413,
+          "cog": 124.2685416399913
+        },
+        {
+          "time": 300.0,
+          "lat": 57.01411200080599,
+          "lon": -132.99899924966005,
+          "cog": 148.00575680314233
+        },
+        {
+          "time": 360.0,
+          "lat": 56.95574795567052,
+          "lon": -132.9896758416334,
+          "cog": 119.98025506456648
+        },
+        {
+          "time": 420.0,
+          "lat": 56.912842422758644,
+          "lon": -132.94902608213408,
+          "cog": 151.7331127707211
+        },
+        {
+          "time": 480.0,
+          "lat": 56.90038353911642,
+          "lon": -132.89125010165606,
+          "cog": 116.88843275986753
+        },
+        {
+          "time": 540.0,
+          "lat": 56.9227235512444,
+          "lon": -132.83653071240573,
+          "cog": 154.12751856809007
+        },
+        {
+          "time": 600.0,
+          "lat": 56.97205845018011,
+          "lon": -132.80398297133496,
+          "cog": 115.23936751814276
+        },
+        {
+          "time": 660.0,
+          "lat": 57.03115413635134,
+          "lon": -132.80497674080416,
+          "cog": 154.99823720214533
+        },
+        {
+          "time": 720.0,
+          "lat": 57.07936678638492,
+          "lon": -132.8391648685468,
+          "cog": 115.1644229311377
+        },
+        {
+          "time": 780.0,
+          "lat": 57.09985433453746,
+          "lon": -132.89460445794373,
+          "cog": 154.27590772568175
+        },
+        {
+          "time": 840.0,
+          "lat": 57.08545989080883,
+          "lon": -132.95192886541167,
+          "cog": 116.66956904168732
+        },
+        {
+          "time": 900.0,
+          "lat": 57.04121184852418,
+          "lon": -132.9911130261885,
+          "cog": 152.01807049068236
+        },
+        {
+          "time": 960.0,
+          "lat": 56.9825673218777,
+          "lon": -132.9984687855794,
+          "cog": 119.63490677352667
+        },
+        {
+          "time": 1020.0,
+          "lat": 56.93001253124064,
+          "lon": -132.97142656520273,
+          "cog": 148.4045835168675
+        },
+        {
+          "time": 1080.0,
+          "lat": 56.90190637699335,
+          "lon": -132.91943299064553,
+          "cog": 123.82421902296767
+        },
+        {
+          "time": 1140.0,
+          "lat": 56.908067147433535,
+          "lon": -132.86065091336522,
+          "cog": 143.7232951049565
+        },
+        {
+          "time": 1200.0,
+          "lat": 56.94634270819996,
+          "lon": -132.81561460412675,
+          "cog": 128.90378757795565
+        },
+        {
+          "time": 1260.0,
+          "lat": 57.00336230472212,
+          "lon": -132.80005654144992,
+          "cog": 138.34711400605613
+        },
+        {
+          "time": 1320.0,
+          "lat": 57.059207351470725,
+          "lon": -132.81941160423597,
+          "cog": 134.46897691952066
+        },
+        {
+          "time": 1380.0,
+          "lat": 57.09436956694441,
+          "lon": -132.8669185122051,
+          "cog": 132.70430372433626
+        },
+        {
+          "time": 1440.0,
+          "lat": 57.09656577765493,
+          "lon": -132.92598173562138,
+          "cog": 140.07646725524071
+        },
+        {
+          "time": 1500.0,
+          "lat": 57.06502878401571,
+          "lon": -132.97596879128588,
+          "cog": 127.24436729181139
+        },
+        {
+          "time": 1560.0,
+          "lat": 57.01077536522995,
+          "lon": -132.9994177625184,
+          "cog": 145.2795691197507
+        },
+        {
+          "time": 1620.0,
+          "lat": 56.95275780136015,
+          "lon": -132.98813724903624,
+          "cog": 122.40224011451092
+        },
+        {
+          "time": 1680.0,
+          "lat": 56.91124329664185,
+          "lon": -132.94606785874115,
+          "cog": 149.66380640146585
+        },
+        {
+          "time": 1740.0,
+          "lat": 56.90073406195294,
+          "lon": -132.88790564000715,
+          "cog": 118.56364326738355
+        },
+        {
+          "time": 1800.0,
+          "lat": 56.92490127532283,
+          "lon": -132.8339683291756,
+          "cog": 152.87993327201116
+        }
+      ]
+    },
+    {
+      "path": "timeline.eng",
+      "kind": "value",
+      "value": [
+        {
+          "time": 0.0,
+          "rpm": 1450,
+          "fuel": 82.0
+        },
+        {
+          "time": 60.0,
+          "rpm": 1423,
+          "fuel": 81.94
+        },
+        {
+          "time": 120.0,
+          "rpm": 1397,
+          "fuel": 81.88
+        },
+        {
+          "time": 180.0,
+          "rpm": 1375,
+          "fuel": 81.82
+        },
+        {
+          "time": 240.0,
+          "rpm": 1360,
+          "fuel": 81.76
+        },
+        {
+          "time": 300.0,
+          "rpm": 1352,
+          "fuel": 81.7
+        },
+        {
+          "time": 360.0,
+          "rpm": 1351,
+          "fuel": 81.64
+        },
+        {
+          "time": 420.0,
+          "rpm": 1359,
+          "fuel": 81.58
+        },
+        {
+          "time": 480.0,
+          "rpm": 1374,
+          "fuel": 81.52
+        },
+        {
+          "time": 540.0,
+          "rpm": 1395,
+          "fuel": 81.46
+        },
+        {
+          "time": 600.0,
+          "rpm": 1420,
+          "fuel": 81.4
+        },
+        {
+          "time": 660.0,
+          "rpm": 1448,
+          "fuel": 81.34
+        },
+        {
+          "time": 720.0,
+          "rpm": 1475,
+          "fuel": 81.28
+        },
+        {
+          "time": 780.0,
+          "rpm": 1501,
+          "fuel": 81.22
+        },
+        {
+          "time": 840.0,
+          "rpm": 1523,
+          "fuel": 81.16
+        },
+        {
+          "time": 900.0,
+          "rpm": 1539,
+          "fuel": 81.1
+        },
+        {
+          "time": 960.0,
+          "rpm": 1548,
+          "fuel": 81.04
+        },
+        {
+          "time": 1020.0,
+          "rpm": 1549,
+          "fuel": 80.98
+        },
+        {
+          "time": 1080.0,
+          "rpm": 1542,
+          "fuel": 80.92
+        },
+        {
+          "time": 1140.0,
+          "rpm": 1528,
+          "fuel": 80.86
+        },
+        {
+          "time": 1200.0,
+          "rpm": 1508,
+          "fuel": 80.8
+        },
+        {
+          "time": 1260.0,
+          "rpm": 1482,
+          "fuel": 80.74
+        },
+        {
+          "time": 1320.0,
+          "rpm": 1455,
+          "fuel": 80.68
+        },
+        {
+          "time": 1380.0,
+          "rpm": 1428,
+          "fuel": 80.62
+        },
+        {
+          "time": 1440.0,
+          "rpm": 1401,
+          "fuel": 80.56
+        },
+        {
+          "time": 1500.0,
+          "rpm": 1379,
+          "fuel": 80.5
+        },
+        {
+          "time": 1560.0,
+          "rpm": 1362,
+          "fuel": 80.44
+        },
+        {
+          "time": 1620.0,
+          "rpm": 1353,
+          "fuel": 80.38
+        },
+        {
+          "time": 1680.0,
+          "rpm": 1351,
+          "fuel": 80.32
+        },
+        {
+          "time": 1740.0,
+          "rpm": 1357,
+          "fuel": 80.26
+        },
+        {
+          "time": 1800.0,
+          "rpm": 1370,
+          "fuel": 80.2
+        }
+      ]
+    },
+    {
+      "path": "timeline.tac",
+      "kind": "value",
+      "value": [
+        {
+          "time": 0.0,
+          "threat": "green",
+          "alert": 0
+        },
+        {
+          "time": 60.0,
+          "threat": "green",
+          "alert": 0
+        },
+        {
+          "time": 120.0,
+          "threat": "green",
+          "alert": 0
+        },
+        {
+          "time": 180.0,
+          "threat": "green",
+          "alert": 0
+        },
+        {
+          "time": 240.0,
+          "threat": "green",
+          "alert": 0
+        },
+        {
+          "time": 300.0,
+          "threat": "green",
+          "alert": 1
+        },
+        {
+          "time": 360.0,
+          "threat": "green",
+          "alert": 1
+        },
+        {
+          "time": 420.0,
+          "threat": "green",
+          "alert": 1
+        },
+        {
+          "time": 480.0,
+          "threat": "green",
+          "alert": 1
+        },
+        {
+          "time": 540.0,
+          "threat": "green",
+          "alert": 1
+        },
+        {
+          "time": 600.0,
+          "threat": "yellow",
+          "alert": 2
+        },
+        {
+          "time": 660.0,
+          "threat": "yellow",
+          "alert": 2
+        },
+        {
+          "time": 720.0,
+          "threat": "yellow",
+          "alert": 2
+        },
+        {
+          "time": 780.0,
+          "threat": "yellow",
+          "alert": 2
+        },
+        {
+          "time": 840.0,
+          "threat": "yellow",
+          "alert": 2
+        },
+        {
+          "time": 900.0,
+          "threat": "yellow",
+          "alert": 3
+        },
+        {
+          "time": 960.0,
+          "threat": "yellow",
+          "alert": 3
+        },
+        {
+          "time": 1020.0,
+          "threat": "yellow",
+          "alert": 3
+        },
+        {
+          "time": 1080.0,
+          "threat": "yellow",
+          "alert": 3
+        },
+        {
+          "time": 1140.0,
+          "threat": "yellow",
+          "alert": 3
+        },
+        {
+          "time": 1200.0,
+          "threat": "orange",
+          "alert": 0
+        },
+        {
+          "time": 1260.0,
+          "threat": "orange",
+          "alert": 0
+        },
+        {
+          "time": 1320.0,
+          "threat": "orange",
+          "alert": 0
+        },
+        {
+          "time": 1380.0,
+          "threat": "orange",
+          "alert": 0
+        },
+        {
+          "time": 1440.0,
+          "threat": "orange",
+          "alert": 0
+        },
+        {
+          "time": 1500.0,
+          "threat": "orange",
+          "alert": 1
+        },
+        {
+          "time": 1560.0,
+          "threat": "orange",
+          "alert": 1
+        },
+        {
+          "time": 1620.0,
+          "threat": "orange",
+          "alert": 1
+        },
+        {
+          "time": 1680.0,
+          "threat": "orange",
+          "alert": 1
+        },
+        {
+          "time": 1740.0,
+          "threat": "orange",
+          "alert": 1
+        },
+        {
+          "time": 1800.0,
+          "threat": "orange",
+          "alert": 2
+        }
+      ]
+    },
+    {
+      "path": "timeline.son",
+      "kind": "value",
+      "value": [
+        {
+          "time": 0.0,
+          "density": 0.3,
+          "size_kg": 500.0
+        },
+        {
+          "time": 60.0,
+          "density": 0.24,
+          "size_kg": 350.0
+        },
+        {
+          "time": 120.0,
+          "density": 0.19,
+          "size_kg": 302.0
+        },
+        {
+          "time": 180.0,
+          "density": 0.15,
+          "size_kg": 388.0
+        },
+        {
+          "time": 240.0,
+          "density": 0.12,
+          "size_kg": 551.0
+        },
+        {
+          "time": 300.0,
+          "density": 0.1,
+          "size_kg": 679.0
+        },
+        {
+          "time": 360.0,
+          "density": 0.1,
+          "size_kg": 685.0
+        },
+        {
+          "time": 420.0,
+          "density": 0.12,
+          "size_kg": 566.0
+        },
+        {
+          "time": 480.0,
+          "density": 0.15,
+          "size_kg": 402.0
+        },
+        {
+          "time": 540.0,
+          "density": 0.19,
+          "size_kg": 304.0
+        },
+        {
+          "time": 600.0,
+          "density": 0.24,
+          "size_kg": 340.0
+        },
+        {
+          "time": 660.0,
+          "density": 0.29,
+          "size_kg": 484.0
+        },
+        {
+          "time": 720.0,
+          "density": 0.35,
+          "size_kg": 639.0
+        },
+        {
+          "time": 780.0,
+          "density": 0.4,
+          "size_kg": 700.0
+        },
+        {
+          "time": 840.0,
+          "density": 0.45,
+          "size_kg": 625.0
+        },
+        {
+          "time": 900.0,
+          "density": 0.48,
+          "size_kg": 465.0
+        },
+        {
+          "time": 960.0,
+          "density": 0.5,
+          "size_kg": 329.0
+        },
+        {
+          "time": 1020.0,
+          "density": 0.5,
+          "size_kg": 309.0
+        },
+        {
+          "time": 1080.0,
+          "density": 0.49,
+          "size_kg": 419.0
+        },
+        {
+          "time": 1140.0,
+          "density": 0.46,
+          "size_kg": 584.0
+        },
+        {
+          "time": 1200.0,
+          "density": 0.42,
+          "size_kg": 692.0
+        },
+        {
+          "time": 1260.0,
+          "density": 0.37,
+          "size_kg": 669.0
+        },
+        {
+          "time": 1320.0,
+          "density": 0.31,
+          "size_kg": 532.0
+        },
+        {
+          "time": 1380.0,
+          "density": 0.25,
+          "size_kg": 373.0
+        },
+        {
+          "time": 1440.0,
+          "density": 0.2,
+          "size_kg": 300.0
+        },
+        {
+          "time": 1500.0,
+          "density": 0.16,
+          "size_kg": 363.0
+        },
+        {
+          "time": 1560.0,
+          "density": 0.12,
+          "size_kg": 519.0
+        },
+        {
+          "time": 1620.0,
+          "density": 0.1,
+          "size_kg": 662.0
+        },
+        {
+          "time": 1680.0,
+          "density": 0.1,
+          "size_kg": 695.0
+        },
+        {
+          "time": 1740.0,
+          "density": 0.11,
+          "size_kg": 595.0
+        },
+        {
+          "time": 1800.0,
+          "density": 0.14,
+          "size_kg": 431.0
+        }
+      ]
+    },
+    {
+      "path": "chart.bathy_-5_-5.depth",
+      "kind": "value",
+      "value": 48.5
+    },
+    {
+      "path": "chart.bathy_-5_-4.depth",
+      "kind": "value",
+      "value": 45.8
+    },
+    {
+      "path": "chart.bathy_-5_-3.depth",
+      "kind": "value",
+      "value": 43.5
+    },
+    {
+      "path": "chart.bathy_-5_-2.depth",
+      "kind": "value",
+      "value": 41.8
+    },
+    {
+      "path": "chart.bathy_-5_-1.depth",
+      "kind": "value",
+      "value": 40.6
+    },
+    {
+      "path": "chart.bathy_-5_+0.depth",
+      "kind": "value",
+      "value": 40.2
+    },
+    {
+      "path": "chart.bathy_-5_+1.depth",
+      "kind": "value",
+      "value": 40.6
+    },
+    {
+      "path": "chart.bathy_-5_+2.depth",
+      "kind": "value",
+      "value": 41.8
+    },
+    {
+      "path": "chart.bathy_-5_+3.depth",
+      "kind": "value",
+      "value": 43.5
+    },
+    {
+      "path": "chart.bathy_-5_+4.depth",
+      "kind": "value",
+      "value": 45.8
+    },
+    {
+      "path": "chart.bathy_-5_+5.depth",
+      "kind": "value",
+      "value": 48.5
+    },
+    {
+      "path": "chart.bathy_-4_-5.depth",
+      "kind": "value",
+      "value": 43.3
+    },
+    {
+      "path": "chart.bathy_-4_-4.depth",
+      "kind": "value",
+      "value": 40.4
+    },
+    {
+      "path": "chart.bathy_-4_-3.depth",
+      "kind": "value",
+      "value": 37.7
+    },
+    {
+      "path": "chart.bathy_-4_-2.depth",
+      "kind": "value",
+      "value": 35.6
+    },
+    {
+      "path": "chart.bathy_-4_-1.depth",
+      "kind": "value",
+      "value": 34.2
+    },
+    {
+      "path": "chart.bathy_-4_+0.depth",
+      "kind": "value",
+      "value": 33.7
+    },
+    {
+      "path": "chart.bathy_-4_+1.depth",
+      "kind": "value",
+      "value": 34.2
+    },
+    {
+      "path": "chart.bathy_-4_+2.depth",
+      "kind": "value",
+      "value": 35.6
+    },
+    {
+      "path": "chart.bathy_-4_+3.depth",
+      "kind": "value",
+      "value": 37.7
+    },
+    {
+      "path": "chart.bathy_-4_+4.depth",
+      "kind": "value",
+      "value": 40.4
+    },
+    {
+      "path": "chart.bathy_-4_+5.depth",
+      "kind": "value",
+      "value": 43.3
+    },
+    {
+      "path": "chart.bathy_-3_-5.depth",
+      "kind": "value",
+      "value": 40.3
+    },
+    {
+      "path": "chart.bathy_-3_-4.depth",
+      "kind": "value",
+      "value": 37.0
+    },
+    {
+      "path": "chart.bathy_-3_-3.depth",
+      "kind": "value",
+      "value": 34.0
+    },
+    {
+      "path": "chart.bathy_-3_-2.depth",
+      "kind": "value",
+      "value": 31.4
+    },
+    {
+      "path": "chart.bathy_-3_-1.depth",
+      "kind": "value",
+      "value": 29.7
+    },
+    {
+      "path": "chart.bathy_-3_+0.depth",
+      "kind": "value",
+      "value": 29.0
+    },
+    {
+      "path": "chart.bathy_-3_+1.depth",
+      "kind": "value",
+      "value": 29.7
+    },
+    {
+      "path": "chart.bathy_-3_+2.depth",
+      "kind": "value",
+      "value": 31.4
+    },
+    {
+      "path": "chart.bathy_-3_+3.depth",
+      "kind": "value",
+      "value": 34.0
+    },
+    {
+      "path": "chart.bathy_-3_+4.depth",
+      "kind": "value",
+      "value": 37.0
+    },
+    {
+      "path": "chart.bathy_-3_+5.depth",
+      "kind": "value",
+      "value": 40.3
+    },
+    {
+      "path": "chart.bathy_-2_-5.depth",
+      "kind": "value",
+      "value": 39.8
+    },
+    {
+      "path": "chart.bathy_-2_-4.depth",
+      "kind": "value",
+      "value": 36.2
+    },
+    {
+      "path": "chart.bathy_-2_-3.depth",
+      "kind": "value",
+      "value": 32.7
+    },
+    {
+      "path": "chart.bathy_-2_-2.depth",
+      "kind": "value",
+      "value": 29.6
+    },
+    {
+      "path": "chart.bathy_-2_-1.depth",
+      "kind": "value",
+      "value": 27.2
+    },
+    {
+      "path": "chart.bathy_-2_+0.depth",
+      "kind": "value",
+      "value": 26.3
+    },
+    {
+      "path": "chart.bathy_-2_+1.depth",
+      "kind": "value",
+      "value": 27.2
+    },
+    {
+      "path": "chart.bathy_-2_+2.depth",
+      "kind": "value",
+      "value": 29.6
+    },
+    {
+      "path": "chart.bathy_-2_+3.depth",
+      "kind": "value",
+      "value": 32.7
+    },
+    {
+      "path": "chart.bathy_-2_+4.depth",
+      "kind": "value",
+      "value": 36.2
+    },
+    {
+      "path": "chart.bathy_-2_+5.depth",
+      "kind": "value",
+      "value": 39.8
+    },
+    {
+      "path": "chart.bathy_-1_-5.depth",
+      "kind": "value",
+      "value": 41.6
+    },
+    {
+      "path": "chart.bathy_-1_-4.depth",
+      "kind": "value",
+      "value": 37.7
+    },
+    {
+      "path": "chart.bathy_-1_-3.depth",
+      "kind": "value",
+      "value": 33.8
+    },
+    {
+      "path": "chart.bathy_-1_-2.depth",
+      "kind": "value",
+      "value": 30.1
+    },
+    {
+      "path": "chart.bathy_-1_-1.depth",
+      "kind": "value",
+      "value": 26.8
+    },
+    {
+      "path": "chart.bathy_-1_+0.depth",
+      "kind": "value",
+      "value": 25.2
+    },
+    {
+      "path": "chart.bathy_-1_+1.depth",
+      "kind": "value",
+      "value": 26.8
+    },
+    {
+      "path": "chart.bathy_-1_+2.depth",
+      "kind": "value",
+      "value": 30.1
+    },
+    {
+      "path": "chart.bathy_-1_+3.depth",
+      "kind": "value",
+      "value": 33.8
+    },
+    {
+      "path": "chart.bathy_-1_+4.depth",
+      "kind": "value",
+      "value": 37.7
+    },
+    {
+      "path": "chart.bathy_-1_+5.depth",
+      "kind": "value",
+      "value": 41.6
+    },
+    {
+      "path": "chart.bathy_+0_-5.depth",
+      "kind": "value",
+      "value": 45.0
+    },
+    {
+      "path": "chart.bathy_+0_-4.depth",
+      "kind": "value",
+      "value": 41.0
+    },
+    {
+      "path": "chart.bathy_+0_-3.depth",
+      "kind": "value",
+      "value": 37.0
+    },
+    {
+      "path": "chart.bathy_+0_-2.depth",
+      "kind": "value",
+      "value": 33.0
+    },
+    {
+      "path": "chart.bathy_+0_-1.depth",
+      "kind": "value",
+      "value": 29.0
+    },
+    {
+      "path": "chart.bathy_+0_+0.depth",
+      "kind": "value",
+      "value": 25.0
+    },
+    {
+      "path": "chart.bathy_+0_+1.depth",
+      "kind": "value",
+      "value": 29.0
+    },
+    {
+      "path": "chart.bathy_+0_+2.depth",
+      "kind": "value",
+      "value": 33.0
+    },
+    {
+      "path": "chart.bathy_+0_+3.depth",
+      "kind": "value",
+      "value": 37.0
+    },
+    {
+      "path": "chart.bathy_+0_+4.depth",
+      "kind": "value",
+      "value": 41.0
+    },
+    {
+      "path": "chart.bathy_+0_+5.depth",
+      "kind": "value",
+      "value": 45.0
+    },
+    {
+      "path": "chart.bathy_+1_-5.depth",
+      "kind": "value",
+      "value": 49.2
+    },
+    {
+      "path": "chart.bathy_+1_-4.depth",
+      "kind": "value",
+      "value": 45.3
+    },
+    {
+      "path": "chart.bathy_+1_-3.depth",
+      "kind": "value",
+      "value": 41.5
+    },
+    {
+      "path": "chart.bathy_+1_-2.depth",
+      "kind": "value",
+      "value": 37.8
+    },
+    {
+      "path": "chart.bathy_+1_-1.depth",
+      "kind": "value",
+      "value": 34.5
+    },
+    {
+      "path": "chart.bathy_+1_+0.depth",
+      "kind": "value",
+      "value": 32.8
+    },
+    {
+      "path": "chart.bathy_+1_+1.depth",
+      "kind": "value",
+      "value": 34.5
+    },
+    {
+      "path": "chart.bathy_+1_+2.depth",
+      "kind": "value",
+      "value": 37.8
+    },
+    {
+      "path": "chart.bathy_+1_+3.depth",
+      "kind": "value",
+      "value": 41.5
+    },
+    {
+      "path": "chart.bathy_+1_+4.depth",
+      "kind": "value",
+      "value": 45.3
+    },
+    {
+      "path": "chart.bathy_+1_+5.depth",
+      "kind": "value",
+      "value": 49.2
+    },
+    {
+      "path": "chart.bathy_+2_-5.depth",
+      "kind": "value",
+      "value": 53.3
+    },
+    {
+      "path": "chart.bathy_+2_-4.depth",
+      "kind": "value",
+      "value": 49.6
+    },
+    {
+      "path": "chart.bathy_+2_-3.depth",
+      "kind": "value",
+      "value": 46.2
+    },
+    {
+      "path": "chart.bathy_+2_-2.depth",
+      "kind": "value",
+      "value": 43.0
+    },
+    {
+      "path": "chart.bathy_+2_-1.depth",
+      "kind": "value",
+      "value": 40.7
+    },
+    {
+      "path": "chart.bathy_+2_+0.depth",
+      "kind": "value",
+      "value": 39.7
+    },
+    {
+      "path": "chart.bathy_+2_+1.depth",
+      "kind": "value",
+      "value": 40.7
+    },
+    {
+      "path": "chart.bathy_+2_+2.depth",
+      "kind": "value",
+      "value": 43.0
+    },
+    {
+      "path": "chart.bathy_+2_+3.depth",
+      "kind": "value",
+      "value": 46.2
+    },
+    {
+      "path": "chart.bathy_+2_+4.depth",
+      "kind": "value",
+      "value": 49.6
+    },
+    {
+      "path": "chart.bathy_+2_+5.depth",
+      "kind": "value",
+      "value": 53.3
+    },
+    {
+      "path": "chart.bathy_+3_-5.depth",
+      "kind": "value",
+      "value": 56.3
+    },
+    {
+      "path": "chart.bathy_+3_-4.depth",
+      "kind": "value",
+      "value": 53.0
+    },
+    {
+      "path": "chart.bathy_+3_-3.depth",
+      "kind": "value",
+      "value": 50.0
+    },
+    {
+      "path": "chart.bathy_+3_-2.depth",
+      "kind": "value",
+      "value": 47.4
+    },
+    {
+      "path": "chart.bathy_+3_-1.depth",
+      "kind": "value",
+      "value": 45.6
+    },
+    {
+      "path": "chart.bathy_+3_+0.depth",
+      "kind": "value",
+      "value": 45.0
+    },
+    {
+      "path": "chart.bathy_+3_+1.depth",
+      "kind": "value",
+      "value": 45.6
+    },
+    {
+      "path": "chart.bathy_+3_+2.depth",
+      "kind": "value",
+      "value": 47.4
+    },
+    {
+      "path": "chart.bathy_+3_+3.depth",
+      "kind": "value",
+      "value": 50.0
+    },
+    {
+      "path": "chart.bathy_+3_+4.depth",
+      "kind": "value",
+      "value": 53.0
+    },
+    {
+      "path": "chart.bathy_+3_+5.depth",
+      "kind": "value",
+      "value": 56.3
+    },
+    {
+      "path": "chart.bathy_+4_-5.depth",
+      "kind": "value",
+      "value": 57.9
+    },
+    {
+      "path": "chart.bathy_+4_-4.depth",
+      "kind": "value",
+      "value": 54.9
+    },
+    {
+      "path": "chart.bathy_+4_-3.depth",
+      "kind": "value",
+      "value": 52.3
+    },
+    {
+      "path": "chart.bathy_+4_-2.depth",
+      "kind": "value",
+      "value": 50.2
+    },
+    {
+      "path": "chart.bathy_+4_-1.depth",
+      "kind": "value",
+      "value": 48.8
+    },
+    {
+      "path": "chart.bathy_+4_+0.depth",
+      "kind": "value",
+      "value": 48.3
+    },
+    {
+      "path": "chart.bathy_+4_+1.depth",
+      "kind": "value",
+      "value": 48.8
+    },
+    {
+      "path": "chart.bathy_+4_+2.depth",
+      "kind": "value",
+      "value": 50.2
+    },
+    {
+      "path": "chart.bathy_+4_+3.depth",
+      "kind": "value",
+      "value": 52.3
+    },
+    {
+      "path": "chart.bathy_+4_+4.depth",
+      "kind": "value",
+      "value": 54.9
+    },
+    {
+      "path": "chart.bathy_+4_+5.depth",
+      "kind": "value",
+      "value": 57.9
+    },
+    {
+      "path": "chart.bathy_+5_-5.depth",
+      "kind": "value",
+      "value": 58.1
+    },
+    {
+      "path": "chart.bathy_+5_-4.depth",
+      "kind": "value",
+      "value": 55.4
+    },
+    {
+      "path": "chart.bathy_+5_-3.depth",
+      "kind": "value",
+      "value": 53.1
+    },
+    {
+      "path": "chart.bathy_+5_-2.depth",
+      "kind": "value",
+      "value": 51.3
+    },
+    {
+      "path": "chart.bathy_+5_-1.depth",
+      "kind": "value",
+      "value": 50.2
+    },
+    {
+      "path": "chart.bathy_+5_+0.depth",
+      "kind": "value",
+      "value": 49.8
+    },
+    {
+      "path": "chart.bathy_+5_+1.depth",
+      "kind": "value",
+      "value": 50.2
+    },
+    {
+      "path": "chart.bathy_+5_+2.depth",
+      "kind": "value",
+      "value": 51.3
+    },
+    {
+      "path": "chart.bathy_+5_+3.depth",
+      "kind": "value",
+      "value": 53.1
+    },
+    {
+      "path": "chart.bathy_+5_+4.depth",
+      "kind": "value",
+      "value": 55.4
+    },
+    {
+      "path": "chart.bathy_+5_+5.depth",
+      "kind": "value",
+      "value": 58.1
+    }
+  ],
+  "metadata": {
+    "sampled_at": "2026-08-20T19:28:31.943051+00:00",
+    "n_samples": 31,
+    "duration_s": 1800.0,
+    "panels": [
+      "nav",
+      "eng",
+      "tac",
+      "son"
+    ]
+  }
+}

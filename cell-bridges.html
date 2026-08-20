@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<!--
+  cell-bridges.html — Discover the 300-repo ecosystem through Quilt bridges.
+  
+  The SuperInstance org has 300+ repos. Many of them are already expressing
+  the cell model in different forms. This page is the discovery surface:
+  pick an existing system, see how it ports to a Quilt sheet, and load it
+  in the 3-View Studio.
+  
+  Author: Mavis
+  Date: 2026-08-20
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cell Bridges — Port the 300-repo ecosystem to Quilt</title>
+<style>
+  :root {
+    --bg: #0a0e14; --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.6;
+  }
+  header {
+    padding: 2rem 1rem 1rem; text-align: center;
+    background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid #21262d;
+  }
+  h1 { margin: 0 0 0.5rem; font-size: 1.8rem; }
+  .tagline { color: var(--muted); margin: 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+  .intro {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 1.5rem; margin: 1rem 0;
+  }
+  .intro h2 { margin-top: 0; }
+  .bridges {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem; margin: 1rem 0;
+  }
+  .bridge {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 1.25rem; transition: transform 0.1s, border-color 0.2s;
+  }
+  .bridge:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .bridge h3 { margin: 0 0 0.5rem; color: var(--accent); font-size: 1.1rem; }
+  .bridge .view-tag {
+    display: inline-block; background: #21262d; color: var(--fg);
+    padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem;
+    margin-right: 0.4rem; margin-bottom: 0.5rem;
+  }
+  .bridge p { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0; }
+  .bridge .source { font-size: 0.8rem; color: var(--muted); }
+  .bridge .source a { color: var(--accent); text-decoration: none; }
+  .bridge .source a:hover { text-decoration: underline; }
+  .bridge .actions { margin-top: 1rem; display: flex; gap: 0.5rem; }
+  .bridge button {
+    background: #21262d; color: var(--fg); border: 1px solid #30363d;
+    padding: 0.5rem 0.9rem; border-radius: 6px; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.2s;
+  }
+  .bridge button:hover { background: #30363d; border-color: var(--accent); }
+  .bridge button.primary { background: #1f6feb; border-color: #1f6feb; }
+  .bridge button.primary:hover { background: #388bfd; }
+  .status {
+    margin-top: 0.5rem; font-size: 0.8rem; min-height: 1.2em;
+  }
+  .status.loading { color: var(--warn); }
+  .status.ok { color: var(--ok); }
+  .status.err { color: var(--err); }
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem; margin: 1.5rem 0;
+  }
+  .stat {
+    background: #161b22; border: 1px solid #30363d; border-radius: 6px;
+    padding: 1rem; text-align: center;
+  }
+  .stat .num { font-size: 1.8rem; font-weight: bold; color: var(--accent); }
+  .stat .label { color: var(--muted); font-size: 0.8rem; }
+  .more-coming {
+    background: #161b22; border: 1px dashed #30363d; border-radius: 8px;
+    padding: 1.5rem; text-align: center; color: var(--muted);
+    margin: 1.5rem 0;
+  }
+  .more-coming code {
+    background: #21262d; padding: 0.15rem 0.4rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Cell Bridges</h1>
+  <p class="tagline">300 repos. Many already cell-shaped. Pick one, see it as cells.</p>
+</header>
+
+<div class="container">
+  <div class="intro">
+    <h2>What is this?</h2>
+    <p>
+      The SuperInstance org has 300+ GitHub repos. Many of them were built
+      long before Quilt existed — but they were already expressing the
+      cell model in different forms. A vessel-agent-system's digital twin
+      is a graph of cells. A chart-room's four panels are four views of
+      the same cells. A slackwater-tminus's coordination primitives are
+      temporal cells.
+    </p>
+    <p>
+      This page is the <strong>discovery surface</strong>. Pick a system
+      below, click <em>Generate Quilt sheet</em>, and watch it become a
+      Quilt cell graph. Then load it in the
+      <a href="./three-view-studio.html" style="color:var(--accent)">3-View Studio</a>
+      to see the same data as a top view, a front view, and a side view.
+    </p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num">300+</div><div class="label">repos scouted</div></div>
+    <div class="stat"><div class="num">37</div><div class="label">Quilt ecosystem</div></div>
+    <div class="stat"><div class="num">12</div><div class="label">polyformalism langs</div></div>
+    <div class="stat"><div class="num">4</div><div class="label">bridges live</div></div>
+  </div>
+
+  <h2>Live bridges</h2>
+
+  <div class="bridges" id="bridges-grid">
+    <!-- Bridges are populated by the script below -->
+  </div>
+
+  <div class="more-coming">
+    <p>
+      <strong>More bridges coming.</strong> Next up:
+      <code>wesley</code> (the ensign as a cell),
+      <code>othismos-reef</code> (knowledge graph as cells),
+      <code>ternary-fleet-packing</code> (ternary encodings as cells),
+      <code>provenance-log</code> (time as a hash-chained cell),
+      <code>colony-cell</code> (filesystem sandbox as cells),
+      <code>quilt-ai</code> (4 providers × 8 cell kinds),
+      and <code>quilt-rag</code> (the RAG pipeline as a cell chain).
+    </p>
+    <p>
+      Want a different repo bridged? Open an issue at
+      <a href="https://github.com/SuperInstance/SuperInstance-Quilt" style="color:var(--accent)">
+        SuperInstance/SuperInstance-Quilt</a>.
+    </p>
+  </div>
+</div>
+
+<script>
+// -----------------------------------------------------------------------------
+// Bridge definitions
+// -----------------------------------------------------------------------------
+const BRIDGES = [
+  {
+    id: "vessel",
+    name: "vessel-agent-system",
+    desc: "F/V EILEEN's digital twin. GPS, depth, course, fish holds, crew — all as cells. This is the user's own vessel OS ported to Quilt.",
+    views: ["TOP", "FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/vessel-agent-system",
+    github: "SuperInstance/vessel-agent-system",
+    api: "vessel_to_quilt.py",
+    duration: 30,
+    dt: 60,
+  },
+  {
+    id: "chart-room",
+    name: "chart-room",
+    desc: "Four panels, four perspectives, one truth. The 3-views architecture in 1995. Each panel reads from a single TruthCell.",
+    views: ["TOP", "FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/chart-room",
+    github: "SuperInstance/chart-room",
+    api: "chart_room_to_quilt.py",
+    duration: 30,
+    dt: 60,
+  },
+  {
+    id: "slackwater",
+    name: "slackwater-tminus",
+    desc: "Time-shaped coordination: predict-and-confirm, deadlines, BPM clocks, cron. The perfect side-view bridge — every cell is temporal.",
+    views: ["SIDE", "FRONT"],
+    source: "https://github.com/SuperInstance/slackwater-tminus",
+    github: "SuperInstance/slackwater-tminus",
+    api: "slackwater_tminus_to_quilt.py",
+    duration: 60,
+    dt: 60,
+  },
+  {
+    id: "hermes",
+    name: "hermes-home",
+    desc: "Hermes's runtime home: SOUL, agents, CNS monitors, cron bridges. The agent IS a sheet. First-person architecture as cells.",
+    views: ["FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/hermes-home",
+    github: "SuperInstance/hermes-home",
+    api: "hermes_home_to_quilt.py",
+    duration: null,  // static
+    dt: null,
+  },
+];
+
+// -----------------------------------------------------------------------------
+// Generate bridge cards
+// -----------------------------------------------------------------------------
+const grid = document.getElementById('bridges-grid');
+for (const b of BRIDGES) {
+  const card = document.createElement('div');
+  card.className = 'bridge';
+  card.dataset.id = b.id;
+  card.innerHTML = `
+    <h3>${b.name}</h3>
+    <div>
+      ${b.views.map(v => `<span class="view-tag">${v}</span>`).join('')}
+    </div>
+    <p>${b.desc}</p>
+    <div class="source">
+      Source: <a href="${b.source}" target="_blank">${b.github}</a>
+    </div>
+    <div class="actions">
+      <button class="primary" data-action="generate">Generate .qzt</button>
+      <button data-action="view-source" data-source="${b.source}">View repo</button>
+    </div>
+    <div class="status" data-status></div>
+  `;
+  grid.appendChild(card);
+}
+
+// -----------------------------------------------------------------------------
+// Click handlers
+// -----------------------------------------------------------------------------
+grid.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  const card = btn.closest('.bridge');
+  const id = card.dataset.id;
+  const bridge = BRIDGES.find(b => b.id === id);
+  const status = card.querySelector('.status');
+
+  if (btn.dataset.action === 'view-source') {
+    window.open(btn.dataset.source, '_blank');
+    return;
+  }
+
+  if (btn.dataset.action === 'generate') {
+    status.textContent = 'Generating .qzt ...';
+    status.className = 'status loading';
+
+    // For this static demo, we can't actually run Python on the server.
+    // We pre-generate the .qzt files via the Python bridges and serve them
+    // as static JSON. In production, these would be regenerated server-side.
+    try {
+      const url = `./bridges/${id}-quilt.qzt`;
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const text = await resp.text();
+      const sheet = JSON.parse(text);
+
+      // Save to localStorage
+      localStorage.setItem('quilt_sheet', JSON.stringify(sheet));
+      localStorage.setItem('quilt_sheet_name', sheet.name);
+      localStorage.setItem('quilt_sheet_source', sheet.source);
+
+      const n = sheet.cells.length;
+      const dur = sheet.metadata?.duration_s || 'static';
+      status.textContent = `✓ ${n} cells, duration ${dur}s. Open 3-View Studio.`;
+      status.className = 'status ok';
+
+      // Auto-navigate after 1 second
+      setTimeout(() => {
+        window.location.href = './three-view-studio.html?load=' + id;
+      }, 1200);
+    } catch (err) {
+      status.textContent = '✗ Generation failed: ' + err.message;
+      status.className = 'status err';
+    }
+  }
+});
+
+// -----------------------------------------------------------------------------
+// On load, check for ?load= in URL
+// -----------------------------------------------------------------------------
+const params = new URLSearchParams(window.location.search);
+const loadId = params.get('load');
+if (loadId) {
+  // Find and click the generate button for the requested bridge
+  setTimeout(() => {
+    const card = document.querySelector(`.bridge[data-id="${loadId}"]`);
+    if (card) card.querySelector('button.primary').click();
+  }, 500);
+}
+</script>
+</body>
+</html>
