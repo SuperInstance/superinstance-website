@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pincher — reflex engine demo</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;--warm:#fbbf24;
+  --fast:#10b981;--med:#f59e0b;--slow:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1200px;margin:0 auto;padding:20px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.05rem;margin:18px 0 10px;color:var(--a3)}
+p{color:var(--td);margin-bottom:12px}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 13px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:20px}
+.intro p{font-size:.86rem;margin-bottom:0}
+.diagram{background:var(--pe);border:1px solid var(--b);border-radius:8px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--td);overflow-x:auto;margin-bottom:18px;line-height:1.55}
+.diagram .yellow{color:var(--a4)}
+.diagram .blue{color:var(--a2)}
+.diagram .green{color:var(--a3)}
+.diagram .purple{color:var(--a1)}
+.diagram .red{color:var(--err)}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media (max-width:800px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:16px}
+.panel h3{font-size:.95rem;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.panel h3 .tier{padding:3px 8px;border-radius:4px;font-size:.65rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.tier.fast{background:var(--fast);color:#0a0a14}
+.tier.med{background:var(--med);color:#0a0a14}
+.tier.slow{background:var(--slow);color:#fff}
+.input-area{display:flex;gap:7px;margin-bottom:13px}
+input[type=text]{flex:1;background:var(--bg);color:var(--t);border:1px solid var(--bs);border-radius:6px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:.8rem}
+input[type=text]:focus{outline:none;border-color:var(--a2)}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:9px 16px;border-radius:6px;font-weight:700;cursor:pointer;font-size:.8rem}
+button:hover{filter:brightness(1.1)}
+button:disabled{background:var(--b);cursor:not-allowed}
+.suggestions{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
+.suggestion{background:var(--pe);border:1px solid var(--b);color:var(--td);padding:4px 8px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.suggestion:hover{border-color:var(--a2);color:var(--t)}
+.log{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:9px;font-family:'JetBrains Mono',monospace;font-size:.72rem;height:280px;overflow-y:auto;margin-bottom:9px;line-height:1.5}
+.log .entry{padding:4px 0;border-bottom:1px dashed var(--b);display:flex;gap:8px;align-items:flex-start}
+.log .entry:last-child{border-bottom:0}
+.log .ts{color:var(--tf);flex-shrink:0}
+.log .msg{flex:1}
+.log .hit{color:var(--fast)}
+.log .confirm{color:var(--med)}
+.log .compiled{color:var(--slow)}
+.log .vetoed{color:var(--err)}
+.log .empty{color:var(--tf);font-style:italic;text-align:center;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:13px}
+.stat{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:9px;text-align:center}
+.stat .num{font-size:1.4rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.stat .lbl{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.stat.fast .num{color:var(--fast)}
+.stat.med .num{color:var(--med)}
+.stat.slow .num{color:var(--slow)}
+.stat.total .num{color:var(--a3)}
+.db{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;margin-top:9px;max-height:200px;overflow-y:auto}
+.db-row{display:grid;grid-template-columns:1fr 60px 60px;gap:7px;padding:4px 0;border-bottom:1px dashed var(--b);font-family:'JetBrains Mono',monospace;font-size:.7rem;align-items:center}
+.db-row:last-child{border-bottom:0}
+.db-row .intent{color:var(--t)}
+.db-row .conf{color:var(--a3);text-align:right;font-weight:700}
+.db-row .hits{color:var(--td);text-align:right}
+.db-empty{color:var(--tf);font-style:italic;text-align:center;padding:14px;font-family:'JetBrains Mono',monospace;font-size:.72rem}
+.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:11px;font-size:.78rem;color:var(--td);margin-top:18px}
+.note code{background:var(--bg);padding:1px 4px;border-radius:3px}
+.platforms{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}
+@media (max-width:700px){.platforms{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+.platform{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:12px}
+.platform .name{font-weight:700;font-size:.85rem;margin-bottom:4px}
+.platform .desc{font-size:.72rem;color:var(--td)}
+.coffee-bottom{text-align:center;padding:30px 20px 20px;margin-top:40px;border-top:1px solid var(--b)}
+.coffee-bottom a{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.coffee-bottom a:hover{filter:brightness(1.1);color:#422006}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🦀 <span class="accent">Pincher</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— reflex engine as Quilt cells</span></h1>
+    <p style="margin-top:4px">A pinch in. A reflex out. <50ms, no LLM, zero marginal cost. Federates across <strong>cloud, workstation, ESP32</strong>.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="intro">
+  <p><strong>Pincher</strong> is a reflex engine — it sits between an agent's intent and the world, intercepting patterns before they reach expensive machinery. <strong>quilt-pincher</strong> is a from-the-ground-up Quilt-synergistic version where <em>every layer</em> of the engine is a Quilt cell: the pinch is a <code>formula</code> cell, the match is a <code>program</code> cell, the store is a <code>vector_store</code> cell, the veto is a <code>listener</code> cell, the LLM compiler is an <code>ai</code> cell.</p>
+</div>
+
+<div class="diagram">
+<span class="yellow">┌─ Quilt cells ──────────────────────────────────────────────────────┐</span>
+│                                                                       │
+│   <span class="green">pinch</span>(formula) ──▶ <span class="blue">match</span>(program) ──▶ score ≥ 0.80? ──▶ <span class="green">execute</span>(program)
+│       │                            │                                  │
+│       │                            │ 0.55 ≤ score < 0.80              │
+│       │                            ▼                                  │
+│       │                  <span class="yellow">confirm</span> + execute (listener)                  │
+│       │                            │                                  │
+│       │                            │ score < 0.55                      │
+│       │                            ▼                                  │
+│       │                  <span class="purple">compile</span>(ai) → new reflex                      │
+│       │                            │                                  │
+│       │                            ▼                                  │
+│       └──────────────────▶ <span class="green">veto</span>(listener) ──▶ <span class="green">store</span>(vector_store) ──┘
+│                                                                       │
+<span class="yellow">└─────────────────────────────────────────────────────────────────────┘</span>
+</div>
+
+<h2>Three platforms, one engine</h2>
+<div class="platforms">
+  <div class="platform">
+    <div class="name">☁️ Cloud</div>
+    <div class="desc">Browser, Node, Cloudflare Workers. Full features: real embedders, LLM compiler, federated storage, R2 mirror.</div>
+  </div>
+  <div class="platform">
+    <div class="name">💻 Workstation</div>
+    <div class="desc">Node + SQLite + sqlite-vec. Persistent reflexes that survive restarts.</div>
+  </div>
+  <div class="platform">
+    <div class="name">🔌 ESP32</div>
+    <div class="desc">no_std Rust. Subset: in-memory, no LLM, reflexes loaded from pre-compiled <code>.nail</code> bundle.</div>
+  </div>
+</div>
+
+<!-- Live demo -->
+<div class="layout">
+  <div class="panel">
+    <h3>Pinch something <span class="tier" id="tier-pill">—</span></h3>
+
+    <div class="input-area">
+      <input type="text" id="pinch-input" placeholder="what do you want to do?" value="list running containers">
+      <button id="pinch-btn">Pinch</button>
+    </div>
+
+    <div class="suggestions">
+      <span class="suggestion" data-trigger="list running containers">list running containers</span>
+      <span class="suggestion" data-trigger="show me containers">show me containers</span>
+      <span class="suggestion" data-trigger="what's running on the host">what's running on the host</span>
+      <span class="suggestion" data-trigger="check disk space">check disk space</span>
+      <span class="suggestion" data-trigger="how much disk free">how much disk free</span>
+      <span class="suggestion" data-trigger="show memory usage">show memory usage</span>
+      <span class="suggestion" data-trigger="deploy the service">deploy the service</span>
+      <span class="suggestion" data-trigger="restart the api">restart the api</span>
+      <span class="suggestion" data-trigger="view logs">view logs</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat fast"><div class="num" id="stat-fast">0</div><div class="lbl">fast</div></div>
+      <div class="stat med"><div class="num" id="stat-med">0</div><div class="lbl">medium</div></div>
+      <div class="stat slow"><div class="num" id="stat-slow">0</div><div class="lbl">slow</div></div>
+      <div class="stat total"><div class="num" id="stat-total">0</div><div class="lbl">reflexes</div></div>
+    </div>
+
+    <h3 style="margin-top:13px">Reflex database</h3>
+    <div class="db" id="db">
+      <div class="db-empty">No reflexes yet. Pinch something new to compile one.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Execution log</h3>
+    <div class="log" id="log">
+      <div class="empty">Pinches will appear here. <strong>Fast</strong> = direct hit, no LLM. <strong>Medium</strong> = confirm + execute. <strong>Slow</strong> = LLM compile new reflex.</div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>How it works:</strong> each pinch embeds the trigger into a 384-dimensional vector, queries the in-memory store for top-K reflexes, and dispatches to the appropriate tier. <strong>Fast tier</strong> (&lt;50ms): direct hit, no LLM, no thinking. <strong>Medium tier</strong> (~1s): confirm + execute, slight overhead from confirmation. <strong>Slow tier</strong> (~5s): LLM compiles a brand-new reflex, which is then stored for next time. The whole engine is a Quilt sheet — the same code runs on cloud, workstation, and ESP32. View the source on <a href="https://github.com/SuperInstance/quilt-pincher" target="_blank">github.com/SuperInstance/quilt-pincher</a>.
+</div>
+
+</div>
+
+<div class="coffee-bottom">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee — support the work</a>
+  <div style="margin-top:9px;color:var(--tf);font-size:.74rem">
+    Reflexes get faster the more you use them.
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  The Pincher engine (in-browser, JS port of quilt-pincher)
+// ─────────────────────────────────────────────────────────────────
+
+const STORAGE_KEY = 'quilt-pincher-v1';
+
+class HashEmbedder {
+  constructor(public dimensions = 384) {}
+  async embed(text) {
+    const v = new Array(this.dimensions).fill(0);
+    for (let i = 0; i < text.length; i++) {
+      v[i % this.dimensions] += text.charCodeAt(i) / 1000;
+    }
+    const norm = Math.sqrt(v.reduce((s, x) => s + x * x, 0)) || 1;
+    return v.map(x => x / norm);
+  }
+}
+
+class MemoryReflexStore {
+  constructor() { this.entries = []; }
+  async insert(reflex) {
+    const i = this.entries.findIndex(e => e.reflex.id === reflex.id);
+    if (i >= 0) this.entries[i] = { reflex, embedding: reflex.embedding };
+    else this.entries.push({ reflex, embedding: reflex.embedding });
+  }
+  async query(embedding, k) {
+    const scored = this.entries.map(e => ({
+      reflex: e.reflex,
+      score: this.cosine(embedding, e.embedding),
+    }));
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, k);
+  }
+  async get(id) { return this.entries.find(e => e.reflex.id === id)?.reflex; }
+  async count() { return this.entries.length; }
+  async all() { return this.entries.map(e => e.reflex); }
+  cosine(a, b) {
+    let dot = 0, na = 0, nb = 0;
+    for (let i = 0; i < a.length; i++) {
+      dot += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(na) * Math.sqrt(nb) || 1);
+  }
+}
+
+class DefaultVeto {
+  async check(reflex, pinch) {
+    if (pinch.safety?.network === 'any' && reflex.safety.network !== 'any')
+      return { ok: false, reason: 'pinch wants any-network but reflex is restricted' };
+    return { ok: true };
+  }
+}
+
+class PincherEngine {
+  constructor(config) {
+    this.embedder = config.embedder;
+    this.store = config.store;
+    this.compiler = config.compiler;
+    this.veto = config.veto;
+    this.hitThreshold = config.hitThreshold ?? 0.80;
+    this.confirmThreshold = config.confirmThreshold ?? 0.55;
+    this.stats = { fast: 0, med: 0, slow: 0 };
+  }
+
+  async run(pinch) {
+    const t0 = Date.now();
+    const embedding = await this.embedder.embed(pinch.trigger);
+    const matches = await this.store.query(embedding, 5);
+
+    if (matches.length === 0 || matches[0].score < this.confirmThreshold) {
+      // Slow tier — compile
+      this.stats.slow++;
+      if (!this.compiler) {
+        return { kind: 'error', error: 'no compiler', latencyMs: Date.now() - t0, embedding };
+      }
+      const compiled = await this.compiler.compile(pinch);
+      const reflex = {
+        id: `r-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        embedding,
+        intent: compiled.intent,
+        action: compiled.action,
+        safety: pinch.safety || {},
+        confidence: 0.5,
+        hits: 0,
+        createdAt: Date.now(),
+        lastHitAt: 0,
+      };
+      await this.store.insert(reflex);
+      return { kind: 'compiled', reflex, output: compiled, latencyMs: Date.now() - t0 };
+    }
+
+    const top = matches[0];
+    if (top.score >= this.hitThreshold) {
+      // Fast tier
+      this.stats.fast++;
+      await this.bumpHit(top.reflex.id);
+      return { kind: 'hit', reflex: top.reflex, score: top.score, latencyMs: Date.now() - t0 };
+    }
+    // Medium tier
+    this.stats.med++;
+    await this.bumpHit(top.reflex.id);
+    return { kind: 'confirm', reflex: top.reflex, score: top.score, latencyMs: Date.now() - t0 };
+  }
+
+  async bumpHit(id) {
+    const r = await this.store.get(id);
+    if (!r) return;
+    r.hits += 1;
+    r.lastHitAt = Date.now();
+    r.confidence = Math.min(0.99, 0.5 + 0.49 * Math.log10(1 + r.hits));
+    await this.store.insert(r);
+  }
+
+  async size() { return this.store.count(); }
+  async all() { return this.store.all(); }
+  async addReflex(r) { return this.store.insert(r); }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Compiler — uses z.ai (or fallback to local stub)
+// ─────────────────────────────────────────────────────────────────
+
+const COMPILER_PROMPT = (trigger) => `You are a DevOps reflex compiler. Given the trigger below, return ONLY a JSON object with two fields:
+{
+  "intent": "<one-sentence intent>",
+  "action": "<JavaScript code that returns a result for this trigger>"
+}
+
+The action should be a simple return statement. Examples:
+  trigger: "list running containers"
+  output: {"intent": "List running Docker containers", "action": "return { containers: ['api', 'db', 'worker'] };"}
+
+  trigger: "check disk space"
+  output: {"intent": "Check disk space on host", "action": "return { used: '42%', free: '120GB' };"}
+
+Now compile this:
+  trigger: "${trigger}"
+
+Output ONLY the JSON object, no markdown, no prose.`;
+
+class ZaiCompiler {
+  constructor(token) { this.token = token; }
+  async compile(pinch) {
+    if (!this.token) return this.fallback(pinch);
+    try {
+      const r = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${this.token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'glm-4.5',
+          messages: [{ role: 'user', content: COMPILER_PROMPT(pinch.trigger) }],
+          max_tokens: 200,
+          temperature: 0.2,
+        }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const j = await r.json();
+      const text = j.choices?.[0]?.message?.content || '';
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) return JSON.parse(match[0]);
+      return this.fallback(pinch);
+    } catch (e) {
+      return this.fallback(pinch);
+    }
+  }
+  fallback(pinch) {
+    return {
+      intent: `devops: ${pinch.trigger}`,
+      action: `return { ok: true, message: 'compiled for ${pinch.trigger}' };`,
+    };
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Boot
+// ─────────────────────────────────────────────────────────────────
+
+const embedder = new HashEmbedder(64);  // smaller for browser
+const store = new MemoryReflexStore();
+const compiler = new ZaiCompiler(null);  // set to real token to use z.ai
+const veto = new DefaultVeto();
+const engine = new PincherEngine({ embedder, store, compiler, veto });
+
+// Load from localStorage if present
+async function load() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const reflexes = JSON.parse(saved);
+      for (const r of reflexes) {
+        // Re-embed on load
+        r.embedding = await embedder.embed(r.intent);
+        await store.insert(r);
+      }
+    }
+  } catch (e) { /* ignore */ }
+}
+
+async function save() {
+  const reflexes = await engine.all();
+  // Strip embeddings to save space
+  const stripped = reflexes.map(({ embedding, ...rest }) => rest);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  UI
+// ─────────────────────────────────────────────────────────────────
+
+const $input = document.getElementById('pinch-input');
+const $btn = document.getElementById('pinch-btn');
+const $log = document.getElementById('log');
+const $db = document.getElementById('db');
+const $tier = document.getElementById('tier-pill');
+const $statFast = document.getElementById('stat-fast');
+const $statMed = document.getElementById('stat-med');
+const $statSlow = document.getElementById('stat-slow');
+const $statTotal = document.getElementById('stat-total');
+
+function logEntry(msg, kind) {
+  const ts = new Date().toLocaleTimeString();
+  const $entry = document.createElement('div');
+  $entry.className = 'entry';
+  $entry.innerHTML = `<span class="ts">${ts}</span><span class="msg ${kind}">${msg}</span>`;
+  $log.appendChild($entry);
+  $log.scrollTop = $log.scrollHeight;
+  if ($log.children.length === 1 || $log.firstElementChild?.classList.contains('empty')) {
+    $log.innerHTML = '';
+    $log.appendChild($entry);
+  }
+}
+
+async function renderDB() {
+  const reflexes = await engine.all();
+  reflexes.sort((a, b) => b.confidence - a.confidence);
+  if (reflexes.length === 0) {
+    $db.innerHTML = '<div class="db-empty">No reflexes yet. Pinch something new to compile one.</div>';
+  } else {
+    $db.innerHTML = reflexes.map(r => `
+      <div class="db-row">
+        <span class="intent">${r.intent}</span>
+        <span class="conf">${(r.confidence * 100).toFixed(0)}%</span>
+        <span class="hits">×${r.hits}</span>
+      </div>
+    `).join('');
+  }
+  $statFast.textContent = engine.stats.fast;
+  $statMed.textContent = engine.stats.med;
+  $statSlow.textContent = engine.stats.slow;
+  $statTotal.textContent = reflexes.length;
+}
+
+async function pinch() {
+  const trigger = $input.value.trim();
+  if (!trigger) return;
+  $btn.disabled = true;
+  $tier.textContent = '…';
+  $tier.style.background = 'var(--b)';
+
+  const r = await engine.run({ trigger });
+
+  if (r.kind === 'hit') {
+    logEntry(`HIT (${r.latencyMs}ms, score ${r.score.toFixed(2)}): ${r.reflex.intent}`, 'hit');
+    $tier.textContent = 'fast';
+    $tier.className = 'tier fast';
+  } else if (r.kind === 'confirm') {
+    logEntry(`CONFIRM (${r.latencyMs}ms, score ${r.score.toFixed(2)}): ${r.reflex.intent}`, 'confirm');
+    $tier.textContent = 'medium';
+    $tier.className = 'tier med';
+  } else if (r.kind === 'compiled') {
+    logEntry(`COMPILED (${r.latencyMs}ms): ${r.reflex.intent}`, 'compiled');
+    $tier.textContent = 'slow';
+    $tier.className = 'tier slow';
+  } else if (r.kind === 'vetoed') {
+    logEntry(`VETOED: ${r.reason}`, 'vetoed');
+  } else {
+    logEntry(`ERROR: ${r.error}`, 'vetoed');
+  }
+
+  await renderDB();
+  await save();
+  $btn.disabled = false;
+  $input.focus();
+}
+
+$btn.addEventListener('click', pinch);
+$input.addEventListener('keydown', (e) => { if (e.key === 'Enter') pinch(); });
+document.querySelectorAll('.suggestion').forEach((el) => {
+  el.addEventListener('click', () => {
+    $input.value = el.dataset.trigger;
+    pinch();
+  });
+});
+
+load().then(renderDB);
+$input.focus();
+</script>
+</body>
+</html>
