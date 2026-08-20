@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chaos test — K3s-based resilience validation</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --ok:#10b981;--warn:#fbbf24;--bad:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.controls{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:8px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.scenarios{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:11px;margin-bottom:14px}
+.scenario{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;border-top:3px solid var(--b)}
+.scenario.run{background:rgba(245,158,11,.05);border-top-color:var(--warn)}
+.scenario.pass{background:rgba(16,185,129,.05);border-top-color:var(--ok)}
+.scenario.fail{background:rgba(255,107,107,.05);border-top-color:var(--bad)}
+.scenario.pending{opacity:.6}
+.scenario .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.scenario .name{font-weight:700;font-size:.92rem}
+.scenario .badge{padding:2px 7px;border-radius:3px;font-size:.62rem;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+.badge.pending{background:var(--b);color:var(--td)}
+.badge.running{background:var(--warn);color:#0a0a14}
+.badge.pass{background:var(--ok);color:#0a0a14}
+.badge.fail{background:var(--bad);color:#fff}
+.scenario .what{font-size:.7rem;color:var(--td);margin-bottom:7px;line-height:1.4}
+.scenario .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;font-size:.7rem}
+.scenario .meta > div{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:5px}
+.scenario .meta .l{color:var(--td);font-size:.6rem;text-transform:uppercase}
+.scenario .meta .v{color:var(--t);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.78rem}
+.scenario .meta .v.good{color:var(--ok)}
+.scenario .meta .v.warn{color:var(--warn)}
+.scenario .meta .v.bad{color:var(--bad)}
+.summary{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(124,58,237,.1) 100%);border:1px solid var(--a3);border-radius:9px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.summary .stat{text-align:center}
+.summary .v{font-size:1.6rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.summary .v.good{color:var(--ok)}
+.summary .v.warn{color:var(--warn)}
+.summary .v.bad{color:var(--bad)}
+.summary .l{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.log{background:#0a0a0f;border:1px solid var(--b);border-radius:9px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.6;max-height:280px;overflow-y:auto}
+.log .line{padding:1px 0;white-space:pre-wrap;word-break:break-word}
+.log .ts{color:var(--tf);margin-right:7px}
+.log .ok{color:var(--ok)}
+.log .err{color:var(--bad)}
+.log .warn{color:var(--warn)}
+.log .info{color:var(--a2)}
+.log .cmd{color:var(--t)}
+.thresholds{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px}
+.thresholds h3{font-size:.92rem;color:var(--a3);margin-bottom:9px}
+.thresholds table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.thresholds th,thresholds td{padding:5px 7px;text-align:left;border-bottom:1px solid var(--b)}
+.thresholds th{color:var(--td);font-weight:700;text-transform:uppercase;font-size:.6rem;letter-spacing:.04em}
+.thresholds td{color:var(--t)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🧪 <span class="accent">Chaos test</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— K3s-based resilience validation</span></h1>
+    <p style="margin-top:3px">Run 5 chaos scenarios against a 3-node simulated K3s cluster. Per <strong>Kimi moonshot-v1-8k</strong> with recovery time thresholds.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="federation.html">Federation</a>
+  <a href="chaos-test.html" class="cur">Chaos test</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="inspector.html">Inspector</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="ai-sheet.html">AI sheet</a>
+</div>
+
+<div class="intro">
+  <p>Simulated K3s chaos engineering. Injects failures, validates recovery, reports. The same 5 scenarios as <code>quilt-k3s</code> (new repo, 22nd in ecosystem).</p>
+</div>
+
+<div class="controls">
+  <button id="run-btn">▶ Run all scenarios</button>
+  <button class="secondary" id="reset-btn">Reset cluster</button>
+  <span style="margin-left:auto;color:var(--td);font-size:.72rem" id="status">Idle</span>
+</div>
+
+<div class="summary" id="summary">
+  <div class="stat"><div class="v" id="s-cluster">0/3</div><div class="l">cluster nodes</div></div>
+  <div class="stat"><div class="v" id="s-pass">0</div><div class="l">scenarios passed</div></div>
+  <div class="stat"><div class="v" id="s-fail">0</div><div class="l">scenarios failed</div></div>
+  <div class="stat"><div class="v" id="s-time">0ms</div><div class="l">total recovery</div></div>
+</div>
+
+<h2>Scenarios</h2>
+<div class="scenarios" id="scenarios"></div>
+
+<h2>Recovery thresholds <span style="color:var(--td);font-size:.7rem;font-weight:400">— per Kimi</span></h2>
+<div class="thresholds">
+  <table>
+    <thead>
+      <tr><th>Scenario</th><th>Threshold</th><th>Justification</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Node failure</td><td style="color:var(--ok)">30s</td><td>Remaining nodes rebalance within 30s</td></tr>
+      <tr><td>Network partition</td><td style="color:var(--ok)">60s</td><td>Detection + recovery within 1 min</td></tr>
+      <tr><td>Disk failure</td><td style="color:var(--ok)">120s</td><td>Identify + migrate to other node</td></tr>
+      <tr><td>API server down</td><td style="color:var(--ok)">90s</td><td>Retries + fallback within 1.5 min</td></tr>
+      <tr><td>Etcd down</td><td style="color:var(--ok)">180s</td><td>Detect + switch to backup, 3 min</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>Event log</h2>
+<div class="log" id="log">
+  <div class="line"><span class="info">i</span> <span class="cmd">No events yet. Click "Run all scenarios" to start.</span></div>
+</div>
+
+</div>
+
+<script>
+const SCENARIOS = [
+  {
+    id: 'node-failure',
+    name: '1. Node failure',
+    what: 'One of 3 nodes is cordoned and drained',
+    inject: 'kubectl cordon node-1 && kubectl drain node-1',
+    expect: 'Pods reschedule to remaining 2 nodes within 30s',
+    threshold: 30000,
+    duration: 4000,
+  },
+  {
+    id: 'network-partition',
+    name: '2. Network partition',
+    what: 'iptables block between 2 nodes',
+    inject: 'iptables -A INPUT -s node-2 -j DROP',
+    expect: 'Services remain available, partition detected, recovery within 60s',
+    threshold: 60000,
+    duration: 5000,
+  },
+  {
+    id: 'disk-failure',
+    name: '3. Disk full',
+    what: 'fallocate fill disk on node-2',
+    inject: 'fallocate -l 100G /tmp/bigfile',
+    expect: 'Identify full disk, migrate workloads, recover within 120s',
+    threshold: 120000,
+    duration: 6000,
+  },
+  {
+    id: 'api-failure',
+    name: '4. API server down',
+    what: 'kube-apiserver unresponsive for 30s',
+    inject: 'systemctl stop kube-apiserver',
+    expect: 'System degrades gracefully, recovers when API returns',
+    threshold: 90000,
+    duration: 7000,
+  },
+  {
+    id: 'etcd-failure',
+    name: '5. Etcd down',
+    what: 'etcd unavailable for 30s',
+    inject: 'systemctl stop etcd',
+    expect: 'Detect unavailability, switch to backup, recover within 180s',
+    threshold: 180000,
+    duration: 8000,
+  },
+];
+
+let results = {};
+let running = false;
+let logLines = [];
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderScenarios() {
+  const el = document.getElementById('scenarios');
+  el.innerHTML = SCENARIOS.map((s) => {
+    const r = results[s.id];
+    let cls = 'pending';
+    if (r) cls = r.passed ? 'pass' : 'fail';
+    if (r && r.running) cls = 'run';
+    let badge = '<span class="badge pending">pending</span>';
+    if (r) {
+      if (r.running) badge = '<span class="badge running">running…</span>';
+      else if (r.passed) badge = `<span class="badge pass">✓ pass</span>`;
+      else badge = `<span class="badge fail">✗ fail</span>`;
+    }
+    return `<div class="scenario ${cls}">
+      <div class="head">
+        <div class="name">${s.name}</div>
+        ${badge}
+      </div>
+      <div class="what">${s.what}</div>
+      <div class="meta">
+        <div><div class="l">injection</div><div class="v" style="font-size:.65rem">${escapeHtml(s.inject)}</div></div>
+        <div><div class="l">expect</div><div class="v" style="font-size:.7rem">${escapeHtml(s.expect)}</div></div>
+        <div><div class="l">threshold</div><div class="v">${s.threshold / 1000}s</div></div>
+        <div><div class="l">recovery</div><div class="v ${r ? (r.passed ? 'good' : 'bad') : ''}">${r && !r.running ? (r.recoveryMs + 'ms') : '—'}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addLog(kind, text) {
+  const ts = new Date().toLocaleTimeString();
+  logLines.unshift({ kind, text, ts });
+  if (logLines.length > 100) logLines = logLines.slice(0, 100);
+  const el = document.getElementById('log');
+  el.innerHTML = logLines.map((l) => `<div class="line"><span class="ts">${l.ts}</span><span class="${l.kind}">${l.kind === 'info' ? 'i' : l.kind === 'cmd' ? '$' : l.kind === 'ok' ? '✓' : l.kind === 'err' ? '✗' : '!'}</span> <span class="cmd">${escapeHtml(l.text)}</span></div>`).join('');
+}
+
+async function runScenario(s) {
+  results[s.id] = { running: true, passed: false, recoveryMs: 0 };
+  renderScenarios();
+  addLog('info', `Starting scenario: ${s.name}`);
+  await new Promise((r) => setTimeout(r, 500));
+  addLog('cmd', s.inject);
+  // Simulate failure injection and recovery
+  const recoveryMs = Math.floor(s.threshold * (0.5 + Math.random() * 0.4));
+  await new Promise((r) => setTimeout(r, 800));
+  addLog('warn', 'Failure detected, attempting recovery…');
+  await new Promise((r) => setTimeout(r, recoveryMs));
+  const passed = recoveryMs <= s.threshold;
+  results[s.id] = { running: false, passed, recoveryMs };
+  addLog(passed ? 'ok' : 'err', `Scenario ${s.id}: ${passed ? 'recovered' : 'failed'} in ${recoveryMs}ms (threshold ${s.threshold}ms)`);
+  renderScenarios();
+  updateSummary();
+}
+
+async function runAll() {
+  if (running) return;
+  running = true;
+  document.getElementById('run-btn').disabled = true;
+  document.getElementById('status').textContent = 'Running 5 scenarios…';
+  results = {};
+  renderScenarios();
+  for (const s of SCENARIOS) {
+    await runScenario(s);
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  running = false;
+  document.getElementById('run-btn').disabled = false;
+  const passed = Object.values(results).filter((r) => r.passed).length;
+  const failed = Object.values(results).filter((r) => !r.passed).length;
+  document.getElementById('status').textContent = `Done — ${passed} passed, ${failed} failed`;
+}
+
+function resetCluster() {
+  results = {};
+  logLines = [];
+  renderScenarios();
+  document.getElementById('log').innerHTML = '<div class="line"><span class="info">i</span> <span class="cmd">Cluster reset. No events yet.</span></div>';
+  document.getElementById('status').textContent = 'Idle';
+  updateSummary();
+}
+
+function updateSummary() {
+  const passed = Object.values(results).filter((r) => r.passed).length;
+  const failed = Object.values(results).filter((r) => !r.passed).length;
+  const totalMs = Object.values(results).reduce((s, r) => s + (r.recoveryMs || 0), 0);
+  document.getElementById('s-cluster').textContent = '3/3';
+  document.getElementById('s-pass').textContent = passed;
+  document.getElementById('s-fail').textContent = failed;
+  document.getElementById('s-time').textContent = totalMs + 'ms';
+}
+
+// Wire up
+document.getElementById('run-btn').addEventListener('click', runAll);
+document.getElementById('reset-btn').addEventListener('click', resetCluster);
+
+// Boot
+renderScenarios();
+</script>
+</body>
+</html>

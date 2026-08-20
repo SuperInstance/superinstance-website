@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec explorer — Quilt cell kinds reference</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --k1:#7c3aed;--k2:#3b82f6;--k3:#10b981;--k4:#f59e0b;--k5:#ff6b6b;--k6:#06b6d4;--k7:#ec4899;--k8:#fbbf24;--k9:#a3a3a3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.kinds{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:11px;margin-bottom:14px}
+.kind{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;cursor:pointer;transition:.2s;border-top:3px solid var(--b)}
+.kind:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.kind.k-value{border-top-color:var(--k3)}
+.kind.k-formula{border-top-color:var(--k1)}
+.kind.k-program{border-top-color:var(--k2)}
+.kind.k-listener{border-top-color:var(--k4)}
+.kind.k-api{border-top-color:var(--k5)}
+.kind.k-ai{border-top-color:var(--k6)}
+.kind.k-sensor{border-top-color:var(--k7)}
+.kind.k-router{border-top-color:var(--k8)}
+.kind.k-vector_store{border-top-color:var(--k9)}
+.kind .head{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.kind .badge{padding:3px 9px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;color:#fff}
+.k-value .badge{background:var(--k3)}
+.k-formula .badge{background:var(--k1)}
+.k-program .badge{background:var(--k2)}
+.k-listener .badge{background:var(--k4)}
+.k-api .badge{background:var(--k5)}
+.k-ai .badge{background:var(--k6)}
+.k-sensor .badge{background:var(--k7)}
+.k-router .badge{background:var(--k8)}
+.k-vector_store .badge{background:var(--k9)}
+.kind .name{font-weight:800;font-size:.95rem;font-family:'JetBrains Mono',monospace}
+.kind .what{color:var(--td);font-size:.78rem;margin-bottom:7px;line-height:1.4}
+.kind .when{font-size:.7rem;color:var(--a4);font-family:'JetBrains Mono',monospace;background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:5px 7px;margin-bottom:7px}
+.kind .example{background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:7px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--a3);white-space:pre;overflow-x:auto}
+.kind .props{font-size:.7rem;color:var(--td);font-family:'JetBrains Mono',monospace;margin-top:5px}
+.kind .props .k{color:var(--a4)}
+.kind .props .v{color:var(--a3)}
+.detail{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;margin-bottom:14px;display:none}
+.detail.show{display:block}
+.detail h3{font-size:1.05rem;color:var(--a3);margin-bottom:9px}
+.detail pre{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.6;overflow-x:auto;white-space:pre}
+.detail .key{color:var(--a4)}
+.detail .str{color:var(--a3)}
+.detail .num{color:var(--a2)}
+.detail .bool{color:var(--a1)}
+.detail .null{color:var(--tf)}
+.toc{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px}
+.toc h3{font-size:.85rem;color:var(--a3);margin-bottom:9px}
+.toc-row{display:grid;grid-template-columns:90px 1fr 60px;gap:9px;padding:4px 0;border-bottom:1px dashed var(--b);font-size:.74rem;font-family:'JetBrains Mono',monospace;align-items:center}
+.toc-row:last-child{border-bottom:0}
+.toc-row .kind{font-weight:700;padding:1px 5px;border-radius:3px;text-align:center;color:#fff}
+.toc-row .what{color:var(--td);font-family:inherit}
+.toc-row .tier{color:var(--a3);text-align:right}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>📖 <span class="accent">Spec explorer</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— Quilt cell kinds reference</span></h1>
+    <p style="margin-top:3px">All 9 cell kinds. Each one with description, when to use, code example, full property schema. Click a card for the full spec.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="inspector.html">Inspector</a>
+  <a href="spec-explorer.html" class="cur">Spec</a>
+  <a href="ai-sheet.html">AI sheet</a>
+  <a href="lint.html">Lint</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="intro">
+  <p>9 cell kinds, 5 tiers (cloud → workstation → codespace → jetson → esp32). Each kind has properties for evaluation strategy, persistence, federation, and observability.</p>
+</div>
+
+<div class="toc">
+  <h3>Index</h3>
+  <div id="toc"></div>
+</div>
+
+<h2>Cell kinds</h2>
+<div class="kinds" id="kinds"></div>
+
+<div class="detail" id="detail">
+  <h3 id="detail-name">—</h3>
+  <pre id="detail-spec"></pre>
+</div>
+
+</div>
+
+<script>
+const KINDS = [
+  {
+    id: 'value',
+    name: 'value',
+    color: 'k-value',
+    what: 'A constant or starting value. The simplest cell. Just data, no computation.',
+    when: 'Use for: inputs, configuration, starting state, cached results.',
+    tier: 'all',
+    example: `{ "path": "count", "kind": "value", "value": 0 }`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'value'],
+      properties: {
+        path: { type: 'string', description: 'Dot-notation path (e.g. "user.name")' },
+        kind: { const: 'value' },
+        value: { description: 'Any JSON-serializable value' },
+        description: { type: 'string', description: 'Optional human-readable description' },
+        tags: { type: 'array', items: { type: 'string' } },
+      },
+    },
+  },
+  {
+    id: 'formula',
+    name: 'formula',
+    color: 'k-formula',
+    what: 'A derived value. JavaScript function evaluated when its dependencies change.',
+    when: 'Use for: computations, transforms, aggregations, anything pure.',
+    tier: 'cloud+',
+    example: `{
+  "path": "total",
+  "kind": "formula",
+  "fn": "(ctx) => ctx.price * ctx.quantity"
+}`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'fn'],
+      properties: {
+        path: { type: 'string' },
+        kind: { const: 'formula' },
+        fn: { type: 'string', description: 'JavaScript arrow function. Receives ctx, returns value.' },
+        memoize: { type: 'boolean', default: true },
+        description: { type: 'string' },
+      },
+    },
+  },
+  {
+    id: 'program',
+    name: 'program',
+    color: 'k-program',
+    what: 'A side-effecting computation. Like a formula but can do I/O.',
+    when: 'Use for: logging, file writes, network calls (with permission).',
+    tier: 'cloud+',
+    example: `{
+  "path": "save",
+  "kind": "program",
+  "fn": "async (ctx) => { await fs.writeFile('/tmp/x', ctx.data); }"
+}`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'fn'],
+      properties: {
+        path: { type: 'string' },
+        kind: { const: 'program' },
+        fn: { type: 'string' },
+        async: { type: 'boolean', default: true },
+        timeout: { type: 'number', description: 'ms before kill' },
+        description: { type: 'string' },
+      },
+    },
+  },
+  {
+    id: 'listener',
+    name: 'listener',
+    color: 'k-listener',
+    what: 'Reactive: fires when another cell changes. Like an event handler.',
+    when: 'Use for: reactions to changes, side effects on data updates, alerts.',
+    tier: 'all',
+    example: `{
+  "path": "onCountChange",
+  "kind": "listener",
+  "listens": "count",
+  "fn": "(ctx) => console.log('count is now', ctx.count)"
+}`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'listens', 'fn'],
+      properties: {
+        path: { type: 'string' },
+        kind: { const: 'listener' },
+        listens: { type: 'string', description: 'Path of the cell to watch' },
+        fn: { type: 'string' },
+        throttle: { type: 'number', description: 'Min ms between fires' },
+        description: { type: 'string' },
+      },
+    },
+  },
+  {
+    id: 'api',
+    name: 'api',
+    color: 'k-api',
+    what: 'A typed API call. Wraps a REST/GraphQL endpoint with schema and auth.',
+    when: 'Use for: third-party API calls, authenticated requests, rate-limited APIs.',
+    tier: 'cloud+',
+    example: `{
+  "path": "weather",
+  "kind": "api",
+  "endpoint": "https://api.weather.com/current",
+  "method": "GET",
+  "auth": "bearer:env.WEATHER_TOKEN"
+}`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'endpoint'],
+      properties: {
+        path: { type: 'string' },
+        kind: { const: 'api' },
+        endpoint: { type: 'string', description: 'Full URL' },
+        method: { enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] },
+        auth: { type: 'string', description: 'bearer:env.X, basic:env.X, or api_key:name' },
+        cache: { type: 'number', description: 'TTL in seconds' },
+        retry: { type: 'number', default: 3 },
+        description: { type: 'string' },
+      },
+    },
+  },
+  {
+    id: 'ai',
+    name: 'ai',
+    color: 'k-ai',
+    what: 'A cell that calls an LLM. The result is the model output.',
+    when: 'Use for: natural language tasks, generation, classification, reasoning.',
+    tier: 'cloud+',
+    example: `{
+  "path": "summary",
+  "kind": "ai",
+  "provider": "zai",
+  "model": "glm-4.5",
+  "prompt": "Summarize: \${ctx.text}"
+}`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'provider', 'prompt'],
+      properties: {
+        path: { type: 'string' },
+        kind: { const: 'ai' },
+        provider: { enum: ['zai', 'kimi', 'deepseek', 'openai', 'anthropic', 'cloudflare'] },
+        model: { type: 'string' },
+        prompt: { type: 'string', description: 'Template with ctx references' },
+        system: { type: 'string' },
+        maxTokens: { type: 'number', default: 1000 },
+        temperature: { type: 'number', default: 0.3 },
+        description: { type: 'string' },
+      },
+    },
+  },
+  {
+    id: 'sensor',
+    name: 'sensor',
+    color: 'k-sensor',
+    what: 'Hardware input: GPIO, I2C, SPI, ADC. Read physical sensors.',
+    when: 'Use for: IoT, embedded, robotics, anything that reads hardware.',
+    tier: 'esp32+jetson',
+    example: `{
+  "path": "temperature",
+  "kind": "sensor",
+  "pin": "DHT22",
+  "interval": 1000
+}`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'pin'],
+      properties: {
+        path: { type: 'string' },
+        kind: { const: 'sensor' },
+        pin: { type: 'string' },
+        interval: { type: 'number', description: 'ms between reads' },
+        driver: { type: 'string' },
+        description: { type: 'string' },
+      },
+    },
+  },
+  {
+    id: 'router',
+    name: 'router',
+    color: 'k-router',
+    what: 'Routes data to a downstream cell based on rules. Like a switch.',
+    when: 'Use for: conditional logic, A/B routing, traffic splitting.',
+    tier: 'cloud+',
+    example: `{
+  "path": "router",
+  "kind": "router",
+  "rules": [
+    { "if": "ctx.user.tier === 'pro'", "to": "proHandler" },
+    { "if": "default", "to": "freeHandler" }
+  ]
+}`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'rules'],
+      properties: {
+        path: { type: 'string' },
+        kind: { const: 'router' },
+        rules: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              if: { type: 'string', description: 'JS expression' },
+              to: { type: 'string', description: 'Path to route to' },
+            },
+          },
+        },
+        description: { type: 'string' },
+      },
+    },
+  },
+  {
+    id: 'vector_store',
+    name: 'vector_store',
+    color: 'k-vector_store',
+    what: 'A vector database cell. Embeds text, queries by similarity.',
+    when: 'Use for: RAG, semantic search, recommendations, deduplication.',
+    tier: 'cloud+workstation',
+    example: `{
+  "path": "docs",
+  "kind": "vector_store",
+  "embedder": "@cf/baai/bge-small-en-v1.5",
+  "backend": "memory"
+}`,
+    schema: {
+      type: 'object',
+      required: ['path', 'kind', 'backend'],
+      properties: {
+        path: { type: 'string' },
+        kind: { const: 'vector_store' },
+        embedder: { type: 'string', description: 'Embedder identifier' },
+        backend: { enum: ['memory', 'sqlite-vec', 'vectorize', 'pgvector', 'pinecone'] },
+        dimensions: { type: 'number', default: 384 },
+        description: { type: 'string' },
+      },
+    },
+  },
+];
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function syntaxHL(json) {
+  return json
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (m) => {
+      if (/^"/.test(m)) return /:$/.test(m) ? `<span class="key">${m}</span>` : `<span class="str">${m}</span>`;
+      if (/true|false/.test(m)) return `<span class="bool">${m}</span>`;
+      if (/null/.test(m)) return `<span class="null">${m}</span>`;
+      return `<span class="num">${m}</span>`;
+    });
+}
+
+function render() {
+  // TOC
+  const toc = document.getElementById('toc');
+  toc.innerHTML = KINDS.map((k) => `
+    <div class="toc-row">
+      <div class="kind" style="background:var(--${k.id === 'vector_store' ? 'k9' : 'k' + (KINDS.findIndex((x) => x.id === k.id) + 1)})">${k.name}</div>
+      <div class="what">${k.what}</div>
+      <div class="tier">${k.tier}</div>
+    </div>
+  `).join('');
+  // Kinds
+  const el = document.getElementById('kinds');
+  el.innerHTML = KINDS.map((k) => `
+    <div class="kind ${k.color}" data-id="${k.id}">
+      <div class="head">
+        <div class="badge">${k.name}</div>
+        <div class="name">${k.name}</div>
+      </div>
+      <div class="what">${k.what}</div>
+      <div class="when">when: ${k.when}</div>
+      <div class="example">${escapeHtml(k.example)}</div>
+    </div>
+  `).join('');
+  el.querySelectorAll('.kind').forEach((el) => {
+    el.addEventListener('click', () => showDetail(el.dataset.id));
+  });
+}
+
+function showDetail(id) {
+  const k = KINDS.find((x) => x.id === id);
+  if (!k) return;
+  const $d = document.getElementById('detail');
+  $d.classList.add('show');
+  document.getElementById('detail-name').textContent = `${k.name} — full schema`;
+  document.getElementById('detail-spec').innerHTML = syntaxHL(JSON.stringify(k.schema, null, 2));
+  $d.scrollIntoView({ behavior: 'smooth' });
+}
+
+render();
+</script>
+</body>
+</html>
