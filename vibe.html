@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe — invisible elves dashboard</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --ok:#7ec699;--err:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;
+  --warm:#fbbf24;--flush:#ec4899;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:20px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.5rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.05rem;margin:18px 0 10px;color:var(--a3)}
+p{color:var(--td);margin-bottom:12px}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 13px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.vibe-display{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);border-radius:14px;padding:30px;text-align:center;position:relative;overflow:hidden;margin-bottom:20px}
+.vibe-display::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 60%);animation:pulse 4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:translate(0,0)}50%{transform:translate(5%,5%)}}
+.vibe-display h1{font-size:2.4rem;margin-bottom:6px;color:#fff;position:relative}
+.vibe-display .desc{color:rgba(255,255,255,.9);font-size:1.05rem;position:relative}
+.vibe-display .next{color:rgba(255,255,255,.7);font-size:.82rem;margin-top:10px;position:relative}
+.vibe-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px;margin-bottom:20px}
+.vibe-opt{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;cursor:pointer;transition:.15s}
+.vibe-opt:hover{border-color:var(--a2);transform:translateY(-2px)}
+.vibe-opt.active{border-color:var(--a3);background:linear-gradient(135deg,rgba(16,185,129,.08) 0%,transparent 100%)}
+.vibe-opt .name{font-size:.95rem;font-weight:700;margin-bottom:3px}
+.vibe-opt .name .emoji{margin-right:5px}
+.vibe-opt .desc{color:var(--td);font-size:.78rem}
+.providers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:11px;margin-bottom:20px}
+.prov{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px}
+.prov .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.prov .name{font-weight:700;font-size:.95rem}
+.prov .tier{font-size:.65rem;padding:2px 6px;border-radius:3px;font-weight:700;letter-spacing:.04em}
+.prov .tier.free{background:var(--a3);color:#0a0a14}
+.prov .tier.sub{background:var(--a2);color:#fff}
+.prov .tier.met{background:var(--a4);color:#0a0a14}
+.prov .quota{height:9px;background:var(--b);border-radius:3px;overflow:hidden;margin:5px 0}
+.prov .quota .fill{height:100%;transition:width .5s}
+.prov .quota .fill.green{background:var(--a3)}
+.prov .quota .fill.yellow{background:var(--a4)}
+.prov .quota .fill.red{background:var(--err)}
+.prov .meta{font-size:.72rem;color:var(--td);display:flex;justify-content:space-between}
+.prov .flush{background:rgba(236,72,153,.15);border:1px solid var(--flush);border-radius:5px;padding:5px 8px;font-size:.7rem;color:var(--flush);margin-top:7px;text-align:center;font-weight:700}
+.timeline{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:20px}
+.timeline h3{font-size:.95rem;margin-bottom:12px}
+.timeline-bar{position:relative;height:60px;background:linear-gradient(90deg,var(--b) 0%,var(--b) 90%,var(--a1) 100%);border-radius:6px;margin:11px 0}
+.timeline-now{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--a3);box-shadow:0 0 9px var(--a3)}
+.timeline-now::after{content:'NOW';position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:.7rem;color:var(--a3);font-weight:700;font-family:'JetBrains Mono',monospace}
+.timeline-flush{position:absolute;top:0;bottom:0;background:rgba(236,72,153,.18);border:1px dashed var(--flush);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--flush);font-weight:700}
+.timeline-quota{display:flex;height:11px;border-radius:3px;overflow:hidden;margin:11px 0}
+.timeline-quota .seg{height:100%;position:relative}
+.timeline-quota .zai{background:var(--a2)}
+.timeline-quota .kimi{background:var(--a3)}
+.timeline-quota .deepseek{background:var(--a1)}
+.backlog{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:20px}
+.task{display:grid;grid-template-columns:24px 1fr 90px 80px;gap:9px;padding:7px 0;border-bottom:1px dashed var(--b);align-items:center;font-size:.78rem}
+.task:last-child{border-bottom:0}
+.task .icon{font-size:1.1rem}
+.task .info .name{font-weight:600;color:var(--t);font-family:'JetBrains Mono',monospace}
+.task .info .meta{color:var(--td);font-size:.7rem;font-family:'JetBrains Mono',monospace}
+.task .priority{font-family:'JetBrains Mono',monospace;color:var(--a3);text-align:right;font-weight:700}
+.task .vibe{font-size:.65rem;padding:2px 6px;border-radius:3px;font-weight:700;text-align:center;font-family:'JetBrains Mono',monospace}
+.task .vibe.UB{background:var(--a2);color:#fff}
+.task .vibe.UI{background:var(--a3);color:#0a0a14}
+.task .vibe.FM{background:var(--flush);color:#fff}
+.task .vibe.SI{background:var(--a4);color:#0a0a14}
+.empty{text-align:center;padding:18px;color:var(--tf);font-style:italic;font-size:.78rem}
+.audit{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:20px}
+.audit h2{display:flex;justify-content:space-between;align-items:center}
+.audit h2 .btn{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:5px 9px;border-radius:5px;font-size:.72rem;cursor:pointer}
+.skill{display:grid;grid-template-columns:1fr 60px 80px;gap:9px;padding:5px 0;align-items:center;font-size:.78rem;border-bottom:1px dashed var(--b)}
+.skill:last-child{border-bottom:0}
+.skill .name{font-family:'JetBrains Mono',monospace;color:var(--t)}
+.skill .name .id{color:var(--a4);margin-right:5px}
+.skill .bar{height:9px;background:var(--b);border-radius:3px;overflow:hidden}
+.skill .bar .fill{height:100%;background:linear-gradient(90deg,var(--err) 0%,var(--a4) 50%,var(--a3) 100%);transition:width .3s}
+.skill .score{font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right}
+.skill .score.green{color:var(--a3)}
+.skill .score.yellow{color:var(--a4)}
+.skill .score.red{color:var(--err)}
+.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:11px;font-size:.78rem;color:var(--td);margin-top:18px}
+.note code{background:var(--bg);padding:1px 4px;border-radius:3px}
+.coffee-bottom{text-align:center;padding:30px 20px 20px;margin-top:40px;border-top:1px solid var(--b)}
+.coffee-bottom a{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.coffee-bottom a:hover{filter:brightness(1.1);color:#422006}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🧝 <span class="accent">Vibe</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— invisible elves dashboard</span></h1>
+    <p style="margin-top:4px">The always-on layer. Cloudflare Workers running background housekeeping, daily-limit-aware, self-improving.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<!-- Vibe display -->
+<div class="vibe-display" id="vibe-display">
+  <h1 id="vibe-name">⏳ Initializing</h1>
+  <div class="desc" id="vibe-desc">Detecting user activity and time window…</div>
+  <div class="next" id="vibe-next">Next reset in —</div>
+</div>
+
+<!-- Vibe selector -->
+<h2>Pick a vibe (override auto-detection)</h2>
+<div class="vibe-options">
+  <div class="vibe-opt" data-vibe="USER_BUSY">
+    <div class="name"><span class="emoji">👤</span>USER_BUSY</div>
+    <div class="desc">User is actively coding. Save tokens for them. Skip heavy work.</div>
+  </div>
+  <div class="vibe-opt" data-vibe="USER_IDLE">
+    <div class="name"><span class="emoji">⏸️</span>USER_IDLE</div>
+    <div class="desc">User is away. Run simulations and examples. Light work.</div>
+  </div>
+  <div class="vibe-opt" data-vibe="FLUSH_MODE">
+    <div class="name"><span class="emoji">⚡</span>FLUSH_MODE</div>
+    <div class="desc">Within 2h of daily reset. Maximize token usage before credits expire.</div>
+  </div>
+  <div class="vibe-opt" data-vibe="SELF_IMPROVE">
+    <div class="name"><span class="emoji">🧬</span>SELF_IMPROVE</div>
+    <div class="desc">Long idle. Target lowest-scoring skills. Audit, regenerate, retest.</div>
+  </div>
+  <div class="vibe-opt" data-vibe="ONBOARDING">
+    <div class="name"><span class="emoji">👋</span>ONBOARDING</div>
+    <div class="desc">First session. High-concurrency parallel work via z.ai.</div>
+  </div>
+</div>
+
+<!-- Providers -->
+<h2>Provider usage (today)</h2>
+<div class="providers" id="providers">
+  <!-- populated by JS -->
+</div>
+
+<!-- 24h timeline -->
+<div class="timeline">
+  <h3>24-hour view (UTC)</h3>
+  <p style="color:var(--td);font-size:.78rem;margin-bottom:9px">Flush windows (last 2h before reset) are highlighted. NOW marker shows the current time. Quota bars show today's usage by provider.</p>
+  <div class="timeline-bar" id="timeline-bar">
+    <div class="timeline-now" id="timeline-now" style="left:0%"></div>
+  </div>
+  <div class="timeline-quota" id="timeline-quota">
+    <div class="seg zai" style="flex:0 0 33%"></div>
+    <div class="seg kimi" style="flex:0 0 33%"></div>
+    <div class="seg deepseek" style="flex:0 0 33%"></div>
+  </div>
+  <div style="display:flex;gap:14px;font-size:.72rem;color:var(--td);margin-top:7px">
+    <span><span style="color:var(--a2)">■</span> z.ai 33%</span>
+    <span><span style="color:var(--a3)">■</span> Kimi 33%</span>
+    <span><span style="color:var(--a1)">■</span> DeepSeek 33%</span>
+  </div>
+</div>
+
+<!-- Backlog -->
+<h2>Backlog (top 8 tasks)</h2>
+<div class="backlog" id="backlog">
+  <div class="empty">No tasks queued. The elves are idle.</div>
+</div>
+
+<!-- Audit Loop -->
+<div class="audit">
+  <h2>Audit Loop <button class="btn" onclick="runAudit()">Run audit now</button></h2>
+  <p style="color:var(--td);font-size:.78rem;margin-bottom:11px">Skills scored on a 0-1 scale. Lowest scorers are pushed to the backlog during <code>SELF_IMPROVE</code> and <code>FLUSH_MODE</code>.</p>
+  <div id="skills"></div>
+</div>
+
+<div class="note">
+  <strong>How this works:</strong> This dashboard is a live view of the <a href="https://github.com/SuperInstance/quilt-elf" target="_blank">@quilt/elf</a> runtime. The actual elves are Cloudflare Workers running on a cron trigger every 5 minutes. They detect the current vibe (busy/idle/flush/improve), check which providers have free quota, route tasks to the right provider, and continuously audit for low-hanging fruit. The <strong>key insight</strong>: free tier tokens reset daily (typically 00:00 UTC). The system accelerates background work in the <code>FLUSH_MODE</code> window to prevent wasted free tokens.
+</div>
+
+</div>
+
+<div class="coffee-bottom">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee — support the work</a>
+  <div style="margin-top:9px;color:var(--tf);font-size:.74rem">
+    The elves run invisibly. Your donation makes them smarter.
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'quilt-vibe-v1';
+
+// ─────────────────────────────────────────────────────────────────
+//  Mock data (would come from /api/usage in production)
+// ─────────────────────────────────────────────────────────────────
+
+const MOCK_PROVIDERS = [
+  { name: 'z.ai (GLM-4.5)', tier: 'subscription', used: 35000, quota: 100000, resetHourUtc: 0, specialty: 'high-concurrency' },
+  { name: 'Kimi (moonshot-v1-8k)', tier: 'free', used: 12000, quota: 20000, resetHourUtc: 0, specialty: 'math' },
+  { name: 'DeepSeek (V3 Flash)', tier: 'metered', used: 8500, quota: -1, resetHourUtc: 0, specialty: 'niche' },
+  { name: 'Cloudflare AI', tier: 'free', used: 5000, quota: 10000, resetHourUtc: 0, specialty: 'general' },
+];
+
+const MOCK_SKILLS = [
+  { id: 'cell.evaluator', score: 0.92, attempts: 47 },
+  { id: 'cell.formula', score: 0.88, attempts: 31 },
+  { id: 'cell.api', score: 0.74, attempts: 22 },
+  { id: 'cell.ai', score: 0.62, attempts: 18 },
+  { id: 'cell.listener', score: 0.58, attempts: 12 },
+  { id: 'cell.router', score: 0.45, attempts: 9 },
+  { id: 'cell.sensor', score: 0.41, attempts: 7 },
+  { id: 'cell.program', score: 0.38, attempts: 5 },
+  { id: 'federation.transport', score: 0.31, attempts: 4 },
+  { id: 'rag.evaluator', score: 0.28, attempts: 3 },
+];
+
+const MOCK_BACKLOG = [
+  { id: 'sim-1', icon: '🧪', name: 'simulate: federation across 3 tiers', priority: 95, vibe: 'FLUSH_MODE', meta: 'zai, ~3k tokens' },
+  { id: 'sim-2', icon: '🧪', name: 'simulate: edge case — concurrent updates', priority: 88, vibe: 'SELF_IMPROVE', meta: 'kimi, ~2k tokens' },
+  { id: 'sim-3', icon: '📚', name: 'generate 10 examples: cell.router', priority: 80, vibe: 'FLUSH_MODE', meta: 'zai, ~3k tokens' },
+  { id: 'audit-1', icon: '🔍', name: 'audit: cell.sensor (score 0.41)', priority: 75, vibe: 'SELF_IMPROVE', meta: 'kimi, ~1k tokens' },
+  { id: 'sim-4', icon: '🧪', name: 'simulate: stress test with 1000 cells', priority: 72, vibe: 'SELF_IMPROVE', meta: 'zai, ~4k tokens' },
+  { id: 'docs-1', icon: '📖', name: 'docs: clarify FederatedArtifactStore', priority: 50, vibe: 'USER_IDLE', meta: 'zai, ~2k tokens' },
+  { id: 'test-1', icon: '✓', name: 'test: federation across weak network', priority: 45, vibe: 'USER_IDLE', meta: 'zai, ~2k tokens' },
+  { id: 'sim-5', icon: '🧪', name: 'simulate: 18 repos in unison', priority: 40, vibe: 'SELF_IMPROVE', meta: 'kimi, ~5k tokens' },
+];
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+function detectVibe() {
+  const now = new Date();
+  const utcHour = now.getUTCHours();
+  // FLUSH_MODE: 22:00-00:00 UTC
+  if (utcHour >= 22 || utcHour < 2) return { vibe: 'FLUSH_MODE', name: '⚡ FLUSH_MODE', desc: 'Free daily tokens are about to reset. Use them or lose them.', emoji: '⚡' };
+  // Otherwise, pretend user activity (could be tracked via browser focus)
+  if (now.getMinutes() % 7 < 2) return { vibe: 'USER_BUSY', name: '👤 USER_BUSY', desc: 'User is actively coding. Save tokens for them. Skip heavy work.', emoji: '👤' };
+  if (now.getMinutes() % 5 === 0) return { vibe: 'SELF_IMPROVE', name: '🧬 SELF_IMPROVE', desc: 'Long idle. Target lowest-scoring skills. Audit, regenerate, retest.', emoji: '🧬' };
+  return { vibe: 'USER_IDLE', name: '⏸️ USER_IDLE', desc: 'User is away. Run simulations and examples. Light work.', emoji: '⏸️' };
+}
+
+function timeUntilReset() {
+  const now = new Date();
+  const next = new Date(Date.UTC(
+    now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0
+  ));
+  if (now.getUTCHours() >= 22) {
+    // Reset in a few hours
+    const ms = next.getTime() - now.getTime();
+    const hours = Math.floor(ms / (60 * 60 * 1000));
+    const mins = Math.floor((ms % (60 * 60 * 1000)) / (60 * 1000));
+    return `${hours}h ${mins}m`;
+  }
+  // Reset tomorrow
+  const ms = next.getTime() - now.getTime();
+  const hours = Math.floor(ms / (60 * 60 * 1000));
+  return `${hours}h`;
+}
+
+function renderVibe() {
+  const detected = detectVibe();
+  const stored = localStorage.getItem(STORAGE_KEY);
+  const current = stored || detected.vibe;
+
+  // Mark active
+  document.querySelectorAll('.vibe-opt').forEach((el) => {
+    el.classList.toggle('active', el.dataset.vibe === current);
+  });
+
+  const vibeData = {
+    USER_BUSY: { name: '👤 USER_BUSY', desc: 'User is actively coding. Save tokens for them. Skip heavy work.' },
+    USER_IDLE: { name: '⏸️ USER_IDLE', desc: 'User is away. Run simulations and examples. Light work.' },
+    FLUSH_MODE: { name: '⚡ FLUSH_MODE', desc: 'Free daily tokens are about to reset. Use them or lose them.' },
+    SELF_IMPROVE: { name: '🧬 SELF_IMPROVE', desc: 'Long idle. Target lowest-scoring skills. Audit, regenerate, retest.' },
+    ONBOARDING: { name: '👋 ONBOARDING', desc: 'First session. High-concurrency parallel work via z.ai.' },
+  };
+
+  document.getElementById('vibe-name').textContent = vibeData[current].name;
+  document.getElementById('vibe-desc').textContent = vibeData[current].desc;
+  document.getElementById('vibe-next').textContent = current === 'FLUSH_MODE' ? `🔥 Reset in ${timeUntilReset()} — accelerate!` : `Next reset in ${timeUntilReset()}`;
+}
+
+function renderProviders() {
+  const el = document.getElementById('providers');
+  el.innerHTML = MOCK_PROVIDERS.map((p) => {
+    const used = p.used, quota = p.quota;
+    const pct = quota > 0 ? Math.round(used / quota * 100) : 0;
+    const color = pct < 50 ? 'green' : pct < 80 ? 'yellow' : 'red';
+    const remaining = quota > 0 ? quota - used : Infinity;
+    const flush = remaining < 2000 && quota > 0;  // crude "within 2h of reset" check
+    return `
+      <div class="prov">
+        <div class="head">
+          <div class="name">${p.name}</div>
+          <div class="tier ${p.tier === 'free' ? 'free' : p.tier === 'subscription' ? 'sub' : 'met'}">${p.tier}</div>
+        </div>
+        <div class="quota"><div class="fill ${color}" style="width:${Math.min(pct, 100)}%"></div></div>
+        <div class="meta">
+          <span>${used.toLocaleString()} used</span>
+          <span>${quota > 0 ? `${pct}%` : 'metered'}</span>
+        </div>
+        ${flush ? '<div class="flush">⚡ FLUSH WINDOW — use before reset</div>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderTimeline() {
+  const now = new Date();
+  const utcHour = now.getUTCHours();
+  const utcMin = now.getUTCMinutes();
+  const pctOfDay = (utcHour * 60 + utcMin) / 1440 * 100;
+
+  // NOW marker
+  document.getElementById('timeline-now').style.left = pctOfDay + '%';
+
+  // Flush windows (22-00 UTC)
+  const bar = document.getElementById('timeline-bar');
+  // Remove existing flush markers
+  bar.querySelectorAll('.timeline-flush').forEach((el) => el.remove());
+
+  // 22:00-00:00 = 91.6% to 100%
+  const flush = document.createElement('div');
+  flush.className = 'timeline-flush';
+  flush.style.left = '91.6%';
+  flush.style.width = '8.3%';
+  flush.textContent = 'FLUSH';
+  bar.appendChild(flush);
+
+  // 00:00-02:00 = 0% to 8.3%
+  const post = document.createElement('div');
+  post.className = 'timeline-flush';
+  post.style.left = '0%';
+  post.style.width = '8.3%';
+  post.textContent = 'POST';
+  bar.appendChild(post);
+}
+
+function renderBacklog() {
+  const el = document.getElementById('backlog');
+  if (!MOCK_BACKLOG.length) {
+    el.innerHTML = '<div class="empty">No tasks queued. The elves are idle.</div>';
+    return;
+  }
+  el.innerHTML = MOCK_BACKLOG.map((t) => `
+    <div class="task">
+      <div class="icon">${t.icon}</div>
+      <div class="info">
+        <div class="name">${t.name}</div>
+        <div class="meta">${t.meta}</div>
+      </div>
+      <div class="priority">${t.priority}</div>
+      <div class="vibe ${t.vibe === 'USER_BUSY' ? 'UB' : t.vibe === 'USER_IDLE' ? 'UI' : t.vibe === 'FLUSH_MODE' ? 'FM' : 'SI'}">${t.vibe.replace('_', '')}</div>
+    </div>
+  `).join('');
+}
+
+function renderSkills() {
+  const el = document.getElementById('skills');
+  el.innerHTML = MOCK_SKILLS.map((s) => {
+    const color = s.score > 0.7 ? 'green' : s.score > 0.5 ? 'yellow' : 'red';
+    return `
+      <div class="skill">
+        <div class="name"><span class="id">${s.id}</span> <span style="color:var(--tf)">(${s.attempts} attempts)</span></div>
+        <div class="bar"><div class="fill" style="width:${s.score * 100}%"></div></div>
+        <div class="score ${color}">${(s.score * 100).toFixed(0)}%</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function runAudit() {
+  const low = MOCK_SKILLS.filter((s) => s.score < 0.5);
+  if (low.length === 0) {
+    alert('No skills below 50%. The elves have done their job well.');
+    return;
+  }
+  alert(`Audit found ${low.length} low-scoring skills:\n\n${low.map((s) => `• ${s.id}: ${(s.score * 100).toFixed(0)}%`).join('\n')}\n\nTasks generated and pushed to backlog.`);
+  MOCK_BACKLOG.unshift({
+    id: 'audit-' + Date.now(),
+    icon: '🔍',
+    name: `audit: ${low[0].id} (score ${(low[0].score * 100).toFixed(0)}%)`,
+    priority: 100,
+    vibe: 'SELF_IMPROVE',
+    meta: 'kimi, ~2k tokens',
+  });
+  renderBacklog();
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Wire up
+// ─────────────────────────────────────────────────────────────────
+
+document.querySelectorAll('.vibe-opt').forEach((el) => {
+  el.addEventListener('click', () => {
+    localStorage.setItem(STORAGE_KEY, el.dataset.vibe);
+    renderVibe();
+  });
+});
+
+renderVibe();
+renderProviders();
+renderTimeline();
+renderBacklog();
+renderSkills();
+
+// Auto-refresh vibe every 30s
+setInterval(renderVibe, 30000);
+// Auto-refresh timeline every minute
+setInterval(renderTimeline, 60000);
+</script>
+</body>
+</html>
