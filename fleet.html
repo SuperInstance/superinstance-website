@@ -89,8 +89,8 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
 </div>
 
 <div class="summary">
-  <div class="stat"><div class="v good" id="s-repos">20</div><div class="l">repos</div></div>
-  <div class="stat"><div class="v good" id="s-tests">136+</div><div class="l">tests</div></div>
+  <div class="stat"><div class="v good" id="s-repos">25</div><div class="l">repos</div></div>
+  <div class="stat"><div class="v good" id="s-tests">180+</div><div class="l">tests</div></div>
   <div class="stat"><div class="v good" id="s-llms">3</div><div class="l">LLM APIs</div></div>
   <div class="stat"><div class="v good" id="s-tools">21+</div><div class="l">web tools</div></div>
   <div class="stat"><div class="v good" id="s-platforms">5</div><div class="l">platforms</div></div>
@@ -150,6 +150,11 @@ const REPOS = [
   // Infra
   { name: 'quilt-elf', icon: '🧝', tier: 'infra', lang: 'ts', desc: 'Invisible elves. Daily-limit-aware background workers.', tests: 28, size: '22KB', deps: 3, version: '0.1.0' },
   { name: 'quilt-pincher', icon: '🦀', tier: 'infra', lang: 'ts', desc: 'Reflex engine as Quilt cells. Cloud/workstation/ESP32.', tests: 12, size: '28KB', deps: 4, version: '0.1.0' },
+  { name: 'quilt-base', icon: '📦', tier: 'infra', lang: 'ts', desc: 'Minimal Alpine/Ubuntu/Distroless base images. Zero CVE, auto-rebuilding.', tests: 0, size: '20KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-swarm', icon: '🐳', tier: 'infra', lang: 'ts', desc: 'Quilt as control plane over Docker Swarm. Encrypted overlay networking.', tests: 28, size: '26KB', deps: 1, version: '0.1.0' },
+  { name: 'quilt-core-os', icon: '🛡️', tier: 'infra', lang: 'ts', desc: 'Immutable Ubuntu Core appliance. Atomic OS updates with instant rollback.', tests: 0, size: '21KB', deps: 2, version: '0.1.0' },
+  { name: 'quilt-k3s', icon: '🧪', tier: 'infra', lang: 'ts', desc: 'K3s-based chaos testing. 5 scenarios. Self-healing verification in under 30s.', tests: 34, size: '29KB', deps: 2, version: '0.1.0' },
+  { name: 'quilt-nomad', icon: '🏔️', tier: 'infra', lang: 'ts', desc: 'Quilt as control plane for HashiCorp Nomad. Cell→job, formula→task, api→http check.', tests: 14, size: '15KB', deps: 2, version: '0.1.0' },
 ];
 
 // ─────────────────────────────────────────────────────────────────

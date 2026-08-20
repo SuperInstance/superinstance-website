@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quilt + Nomad — control plane demo</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --nomad:#60dea8;--quilt:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--quilt) 0%,var(--nomad) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+.panel h3{font-size:.92rem;color:var(--a3);margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.cells{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;max-height:380px;overflow-y:auto;margin-bottom:11px}
+.cell{background:var(--pe);border:1px solid var(--b);border-radius:6px;padding:9px;margin-bottom:7px;font-size:.74rem}
+.cell .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.cell .path{font-family:'JetBrains Mono',monospace;color:var(--a3);font-weight:700;font-size:.85rem}
+.cell .kind{padding:2px 6px;border-radius:3px;font-size:.62rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:#fff}
+.kind.value{background:var(--a3);color:#0a0a14}
+.kind.formula{background:var(--a1)}
+.kind.api{background:var(--err)}
+.kind.listener{background:var(--a4);color:#0a0a14}
+.cell .value{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:5px 7px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--a3);margin-top:5px}
+.cell input{background:var(--bg);color:var(--t);border:1px solid var(--bs);border-radius:4px;padding:3px 5px;font-family:'JetBrains Mono',monospace;font-size:.72rem;width:100%}
+.cell input:focus{outline:none;border-color:var(--a2)}
+.jobs{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;max-height:380px;overflow-y:auto}
+.job{background:var(--pe);border:1px solid var(--b);border-radius:6px;padding:9px;margin-bottom:7px;font-size:.74rem}
+.job .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.job .name{font-family:'JetBrains Mono',monospace;color:var(--nomad);font-weight:700;font-size:.85rem}
+.job .replicas{font-family:'JetBrains Mono',monospace;color:var(--a3);font-size:.74rem;font-weight:700;background:rgba(16,185,129,.1);padding:2px 7px;border-radius:3px}
+.job .status{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:2px 7px;border-radius:3px;font-weight:700}
+.job .status.running{background:var(--a3);color:#0a0a14}
+.job .status.pending{background:var(--a4);color:#0a0a14}
+.job .status.failed{background:var(--err);color:#fff}
+.job .config{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:5px 7px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--a3);margin-top:5px;white-space:pre;overflow-x:auto}
+.controls{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+button{background:linear-gradient(135deg,var(--quilt) 0%,var(--nomad) 100%);color:#0a0a14;border:0;padding:8px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+.event-log{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px;max-height:280px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.55}
+.event{padding:4px 0;border-bottom:1px dashed var(--b);display:grid;grid-template-columns:90px 70px 1fr;gap:7px;align-items:center}
+.event:last-child{border-bottom:0}
+.event .ts{color:var(--tf)}
+.event .who{padding:1px 5px;border-radius:3px;font-size:.62rem;font-weight:700;text-align:center;color:#fff}
+.event .who.quilt{background:var(--quilt)}
+.event .who.nomad{background:var(--nomad);color:#0a0a14}
+.event .what{color:var(--t)}
+.mapping{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px}
+.mapping table{width:100%;border-collapse:collapse;font-size:.74rem}
+.mapping th,.mapping td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--b)}
+.mapping th{color:var(--td);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.04em}
+.mapping td{font-family:'JetBrains Mono',monospace;font-size:.72rem}
+.mapping td .quilt{color:var(--quilt)}
+.mapping td .arrow{color:var(--a3);margin:0 7px}
+.mapping td .nomad{color:var(--nomad)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🏔️ <span class="accent">Quilt + Nomad</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— control plane demo</span></h1>
+    <p style="margin-top:3px">Edit a Quilt cell on the left. Watch the Nomad job reconfigure on the right. <em>Demo of the new <code>quilt-nomad</code> repo (25th in the ecosystem).</em></p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="federation.html">Federation</a>
+  <a href="chaos-test.html">Chaos test</a>
+  <a href="nomad-demo.html" class="cur">Quilt+Nomad</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="ai-sheet.html">AI sheet</a>
+</div>
+
+<div class="intro">
+  <p>Quilt compiles cell changes into Nomad job specs and applies them via the Nomad API. value → variable, formula → task, api → http check, listener → watch. Designed with <strong>z.ai GLM-4.5</strong>.</p>
+</div>
+
+<h2>Cell-to-Nomad mapping</h2>
+<div class="mapping">
+  <table>
+    <thead>
+      <tr><th>Quilt cell kind</th><th></th><th>Nomad concept</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="quilt">value</span></td><td class="arrow">→</td><td><span class="nomad">variable { ... }</span></td></tr>
+      <tr><td><span class="quilt">formula</span></td><td class="arrow">→</td><td><span class="nomad">task { config = ... }</span></td></tr>
+      <tr><td><span class="quilt">api</span></td><td class="arrow">→</td><td><span class="nomad">service { check { http {} } }</span></td></tr>
+      <tr><td><span class="quilt">listener</span></td><td class="arrow">→</td><td><span class="nomad">watch { ... }</span></td></tr>
+      <tr><td><span class="quilt">program</span></td><td class="arrow">→</td><td><span class="nomad">task { exec = ... }</span></td></tr>
+      <tr><td><span class="quilt">sensor</span></td><td class="arrow">→</td><td><span class="nomad">volume { mount } + template {}</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="controls">
+  <button id="apply-btn">▶ Apply to Nomad</button>
+  <button class="secondary" id="scale-btn">Scale web to 7</button>
+  <button class="secondary" id="add-api-btn">+ Add API check</button>
+  <button class="secondary" id="reset-btn">Reset</button>
+  <span style="margin-left:auto;color:var(--td);font-size:.72rem" id="status">Idle</span>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Quilt sheet <span style="font-size:.65rem;color:var(--td)">— edit a value</span></h3>
+    <div class="cells" id="cells"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Nomad cluster <span style="font-size:.65rem;color:var(--td)">— reconfigured</span></h3>
+    <div class="jobs" id="jobs"></div>
+  </div>
+</div>
+
+<h2>Event log</h2>
+<div class="event-log" id="event-log">
+  <div style="color:var(--tf);font-style:italic;text-align:center;padding:14px">Click "Apply to Nomad" to start.</div>
+</div>
+
+</div>
+
+<script>
+const SHEET = {
+  name: 'demo',
+  cells: [
+    { path: 'image', kind: 'value', value: 'nginx:1.27' },
+    { path: 'replicas', kind: 'value', value: 3 },
+    { path: 'port', kind: 'value', value: 8080 },
+    {
+      path: 'web', kind: 'formula',
+      fn: '(ctx) => ({ Job: { Name: "web", TaskGroups: [{ Name: "web", Count: ctx.replicas, Tasks: [{ Name: "nginx", Driver: "docker", Config: { image: ctx.image, ports: [`${ctx.port}`] } }] }] } })',
+    },
+    {
+      path: 'health', kind: 'api',
+      endpoint: 'http://web:8080/health', method: 'GET', interval: 10,
+    },
+    {
+      path: 'onChange', kind: 'listener',
+      listens: 'replicas', fn: '/usr/local/bin/handle-scale.sh',
+    },
+  ],
+};
+
+let jobs = [
+  { name: 'web', status: 'pending', replicas: 3, image: 'nginx:1.27', port: 8080, config: 'image: nginx:1.27\nports: ["8080"]\nreplicas: 3' },
+];
+let events = [];
+
+function renderCells() {
+  const el = document.getElementById('cells');
+  el.innerHTML = SHEET.cells.map((c, i) => {
+    const isInteractive = c.kind === 'value';
+    return `<div class="cell">
+      <div class="head">
+        <div class="path">${c.path}</div>
+        <div class="kind ${c.kind}">${c.kind}</div>
+      </div>
+      ${isInteractive
+        ? `<div class="value"><input data-i="${i}" data-k="value" value="${c.value}" /></div>`
+        : c.fn
+          ? `<div class="value" style="font-size:.65rem;color:var(--a4)">${escapeHtml(c.fn.slice(0, 80))}${c.fn.length > 80 ? '...' : ''}</div>`
+          : (c.endpoint ? `<div class="value" style="font-size:.7rem">${escapeHtml(c.endpoint)}</div>` : '')}
+    </div>`;
+  }).join('');
+  el.querySelectorAll('input').forEach((inp) => {
+    inp.addEventListener('input', () => {
+      const i = +inp.dataset.i;
+      const k = inp.dataset.k;
+      const v = inp.type === 'number' ? +inp.value : inp.value;
+      SHEET.cells[i][k] = v;
+    });
+  });
+}
+
+function renderJobs() {
+  const el = document.getElementById('jobs');
+  el.innerHTML = jobs.map((j) => `
+    <div class="job">
+      <div class="head">
+        <div class="name">${j.name}</div>
+        <div class="replicas">${j.replicas}×</div>
+        <div class="status ${j.status}">${j.status}</div>
+      </div>
+      <div class="config">${escapeHtml(j.config)}</div>
+    </div>
+  `).join('') || '<div style="text-align:center;padding:30px;color:var(--tf)">No jobs. Click "Apply".</div>';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function compileJob() {
+  // Find the formula cell
+  const formulaCell = SHEET.cells.find((c) => c.kind === 'formula');
+  const valueCells = SHEET.cells.filter((c) => c.kind === 'value');
+  const ctx = Object.fromEntries(valueCells.map((c) => [c.path, c.value]));
+  try {
+    const fn = new Function('ctx', `return (${formulaCell.fn})(ctx);`);
+    const result = fn(ctx);
+    return result;
+  } catch (e) {
+    return null;
+  }
+}
+
+function addEvent(who, what) {
+  const ts = new Date().toLocaleTimeString();
+  events.unshift({ who, what, ts });
+  if (events.length > 50) events = events.slice(0, 50);
+  const el = document.getElementById('event-log');
+  if (events.length === 1) el.innerHTML = '';
+  el.innerHTML = events.map((e) => `<div class="event">
+    <div class="ts">${e.ts}</div>
+    <div class="who ${e.who}">${e.who}</div>
+    <div class="what">${e.what}</div>
+  </div>`).join('');
+}
+
+async function apply() {
+  document.getElementById('status').textContent = 'Compiling…';
+  addEvent('quilt', 'Compiling sheet to Nomad job spec…');
+  await new Promise((r) => setTimeout(r, 200));
+  const compiled = compileJob();
+  if (!compiled) {
+    addEvent('quilt', 'Compile failed');
+    document.getElementById('status').textContent = 'Error';
+    return;
+  }
+  const tg = compiled.Job?.TaskGroups?.[0] ?? compiled.TaskGroups?.[0];
+  const replicas = tg?.Count ?? 1;
+  const image = tg?.Tasks?.[0]?.Config?.image ?? '?';
+  const port = tg?.Tasks?.[0]?.Config?.ports?.[0] ?? '?';
+  addEvent('quilt', `Compiled: job="web", replicas=${replicas}, image=${image}, port=${port}`);
+  await new Promise((r) => setTimeout(r, 300));
+  addEvent('nomad', 'POST /v1/jobs (job registration)');
+  await new Promise((r) => setTimeout(r, 200));
+  addEvent('nomad', 'eval-eval-1234 created');
+  await new Promise((r) => setTimeout(r, 200));
+  // Update jobs
+  const existing = jobs.find((j) => j.name === 'web');
+  if (existing) {
+    existing.replicas = replicas;
+    existing.image = image;
+    existing.port = port;
+    existing.config = `image: ${image}\nports: ["${port}"]\nreplicas: ${replicas}`;
+    existing.status = 'running';
+  } else {
+    jobs.push({
+      name: 'web', status: 'running', replicas, image, port,
+      config: `image: ${image}\nports: ["${port}"]\nreplicas: ${replicas}`,
+    });
+  }
+  // API check
+  const apiCell = SHEET.cells.find((c) => c.kind === 'api');
+  if (apiCell) {
+    addEvent('nomad', `GET ${apiCell.endpoint} — 200 OK`);
+  }
+  // Listener
+  const listener = SHEET.cells.find((c) => c.kind === 'listener');
+  if (listener && listener.listens === 'replicas') {
+    addEvent('nomad', `Watch armed: replicas → ${listener.fn}`);
+  }
+  renderJobs();
+  document.getElementById('status').textContent = 'Applied';
+}
+
+function scale() {
+  const replicasCell = SHEET.cells.find((c) => c.path === 'replicas');
+  if (replicasCell) {
+    replicasCell.value = 7;
+    addEvent('quilt', 'Setting replicas = 7');
+  }
+  apply();
+}
+
+function addApi() {
+  if (SHEET.cells.find((c) => c.path === 'metrics')) {
+    addEvent('quilt', 'metrics check already exists');
+    return;
+  }
+  SHEET.cells.push({
+    path: 'metrics', kind: 'api',
+    endpoint: 'http://web:8080/metrics', method: 'GET', interval: 30,
+  });
+  addEvent('quilt', 'Added api cell: metrics check');
+  jobs.push({
+    name: 'metrics-check', status: 'pending', replicas: 1, image: 'check', port: 9090,
+    config: 'check: /metrics\ninterval: 30s',
+  });
+  renderCells();
+  renderJobs();
+  apply();
+}
+
+function reset() {
+  SHEET.cells.find((c) => c.path === 'replicas').value = 3;
+  SHEET.cells.find((c) => c.path === 'image').value = 'nginx:1.27';
+  jobs = [{
+    name: 'web', status: 'pending', replicas: 3, image: 'nginx:1.27', port: 8080,
+    config: 'image: nginx:1.27\nports: ["8080"]\nreplicas: 3',
+  }];
+  events = [];
+  document.getElementById('event-log').innerHTML = '<div style="color:var(--tf);font-style:italic;text-align:center;padding:14px">Reset. Click "Apply" to start.</div>';
+  renderCells();
+  renderJobs();
+  document.getElementById('status').textContent = 'Idle';
+}
+
+document.getElementById('apply-btn').addEventListener('click', apply);
+document.getElementById('scale-btn').addEventListener('click', scale);
+document.getElementById('add-api-btn').addEventListener('click', addApi);
+document.getElementById('reset-btn').addEventListener('click', reset);
+
+renderCells();
+renderJobs();
+</script>
+</body>
+</html>
