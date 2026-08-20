@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<!--
+  cell-rewind.html — The Time-Travel DAW for cellular scenes.
+
+  THE BREAKTHROUGH: The SIDE view (through-time) isn't just for display.
+  It's a *debugging tool* for AI-generated content. When a model
+  iterates the scene in a way that breaks the direction, the user can:
+
+    1. Rewind to the last good beat
+    2. See the cascade of what would have happened
+    3. Regenerate from that beat using a different model
+    4. Watch the downstream re-render
+    5. Switch to FRONT view and listen to the result as a radio-theater
+    6. Use live STT to interrupt and steer
+    7. Use live TTS to play the scene as it unfolds
+
+  This is the openMAIC integration. Granular cell-level control over
+  AI generations. The DAW is the cursor; the cell graph is the document.
+
+  Author: Mavis
+  Date: 2026-08-20
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Time-Travel DAW — Cell Rewind & Cascade</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  h1 { margin: 0; font-size: 1.4rem; }
+  .subtitle { color: var(--muted); font-size: 0.85rem; }
+  .toolbar {
+    display: flex; gap: 0.4rem; flex-wrap: wrap;
+  }
+  button, select, input[type="text"] {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer;
+    font-size: 0.85rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  button.primary:hover { background: #388bfd; }
+  button.warn { background: #d29922; border-color: #d29922; color: #0d1117; }
+  button.warn:hover { background: #e3a936; }
+  button.danger { background: #f85149; border-color: #f85149; color: white; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .container { display: grid; grid-template-columns: 240px 1fr 320px; height: calc(100vh - 70px); }
+  .sidebar {
+    background: #0d1117; border-right: 1px solid var(--border);
+    padding: 1rem; overflow-y: auto;
+  }
+  .sidebar h3 { margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .scene-list { margin: 0 0 1.5rem 0; padding: 0; list-style: none; }
+  .scene-list li {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem 0.7rem; margin-bottom: 0.4rem;
+    cursor: pointer; font-size: 0.85rem;
+  }
+  .scene-list li:hover { border-color: var(--accent); }
+  .scene-list li.active { border-color: var(--accent); background: #1f2937; }
+  .main { display: flex; flex-direction: column; overflow: hidden; }
+  .view-tabs {
+    display: flex; gap: 0.2rem; padding: 0.5rem;
+    background: #0d1117; border-bottom: 1px solid var(--border);
+  }
+  .view-tab {
+    padding: 0.4rem 0.9rem; cursor: pointer; border-radius: 4px;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  .view-tab.active { background: var(--panel); color: var(--fg); }
+  .view-tab:hover { background: var(--panel); }
+  .view-area { flex: 1; overflow: auto; padding: 1rem; }
+  .right-pane {
+    background: #0d1117; border-left: 1px solid var(--border);
+    padding: 1rem; overflow-y: auto;
+  }
+  /* DAW view */
+  .daw-view { position: relative; }
+  .daw-controls {
+    display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem;
+    padding: 0.7rem; background: var(--panel); border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .daw-controls .spacer { flex: 1; }
+  .daw-track {
+    display: grid; grid-template-columns: 180px 1fr;
+    margin-bottom: 0.5rem; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 4px;
+    min-height: 80px;
+  }
+  .daw-track-header {
+    padding: 0.6rem; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .daw-track-header .name { font-weight: bold; font-size: 0.9rem; }
+  .daw-track-header .character { color: var(--muted); font-size: 0.75rem; }
+  .daw-track-timeline {
+    position: relative; padding: 0.5rem; min-height: 80px;
+    background: linear-gradient(90deg, #0d1117 0%, #0d1117 100%);
+    background-size: 25% 100%;
+  }
+  .event {
+    position: absolute; top: 8px; height: 64px;
+    background: var(--accent); border-radius: 3px;
+    padding: 0.3rem 0.5rem; font-size: 0.7rem;
+    cursor: pointer; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: transform 0.1s;
+  }
+  .event:hover { transform: scale(1.05); z-index: 10; }
+  .event.good { background: #1f6feb; }
+  .event.broken { background: var(--err); }
+  .event.regenerated { background: var(--ok); }
+  .event.cascade { background: var(--purple); opacity: 0.7; }
+  .playhead {
+    position: absolute; top: 0; bottom: 0; width: 2px;
+    background: var(--orange); pointer-events: none;
+    box-shadow: 0 0 8px var(--orange);
+    z-index: 5;
+  }
+  .time-marker {
+    position: absolute; top: 0; bottom: 0; width: 1px;
+    background: rgba(255,255,255,0.05);
+  }
+  .time-marker.major { background: rgba(255,255,255,0.15); }
+  .rewind-bookmark {
+    position: absolute; top: 0; bottom: 0; width: 4px;
+    background: var(--warn); cursor: pointer; z-index: 4;
+  }
+  .rewind-bookmark:hover { background: var(--orange); }
+  .rewind-bookmark::after {
+    content: '★'; position: absolute; top: 2px; left: -8px;
+    color: var(--warn); font-size: 14px;
+  }
+  /* Cascade preview */
+  .cascade-preview {
+    position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%);
+    background: var(--panel); border: 2px solid var(--purple);
+    border-radius: 8px; padding: 1rem 1.5rem;
+    max-width: 600px; z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  }
+  .cascade-preview h4 { margin: 0 0 0.5rem; color: var(--purple); }
+  .cascade-preview .events {
+    display: flex; gap: 0.4rem; flex-wrap: wrap; max-height: 120px; overflow-y: auto;
+  }
+  .cascade-event {
+    background: var(--purple); padding: 0.3rem 0.6rem; border-radius: 4px;
+    font-size: 0.75rem;
+  }
+  .hidden { display: none !important; }
+  /* Front view (radio-theater mode) */
+  .front-view {
+    background: #0d1117; padding: 2rem; border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .front-view h2 { margin-top: 0; }
+  .speaker {
+    margin: 1rem 0; padding: 1rem;
+    background: var(--panel); border-left: 4px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+  }
+  .speaker.cook { border-color: #f0883e; }
+  .speaker.ensign { border-color: var(--accent); }
+  .speaker.engineer { border-color: var(--ok); }
+  .speaker.navigator { border-color: var(--purple); }
+  .speaker .name { font-weight: bold; margin-bottom: 0.3rem; }
+  .speaker .text { font-style: italic; }
+  /* Top view (spatial) */
+  .top-view { background: #0d1117; padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+  .top-view h2 { margin-top: 0; }
+  .grid {
+    display: grid; grid-template-columns: repeat(20, 1fr);
+    gap: 1px; background: var(--border); border: 1px solid var(--border);
+  }
+  .grid-cell {
+    aspect-ratio: 1; background: var(--panel); display: flex;
+    align-items: center; justify-content: center; font-size: 0.7rem;
+    cursor: pointer;
+  }
+  .grid-cell.high { background: var(--ok); }
+  .grid-cell.med { background: var(--warn); }
+  .grid-cell.low { background: var(--err); }
+  .grid-cell.empty { background: #0d1117; }
+  .grid-cell.active { box-shadow: 0 0 8px var(--accent); }
+  /* Status */
+  .status-bar {
+    padding: 0.5rem 1rem; background: #0d1117;
+    border-top: 1px solid var(--border); font-size: 0.8rem;
+    color: var(--muted); display: flex; gap: 1rem;
+  }
+  .status-bar .ok { color: var(--ok); }
+  .status-bar .warn { color: var(--warn); }
+  .status-bar .err { color: var(--err); }
+  /* STT */
+  .stt-box {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.7rem; margin-top: 1rem;
+  }
+  .stt-box .label { color: var(--muted); font-size: 0.75rem; margin-bottom: 0.3rem; }
+  .stt-box .transcript {
+    min-height: 50px; max-height: 120px; overflow-y: auto;
+    font-size: 0.85rem; padding: 0.4rem; background: #0d1117;
+    border-radius: 4px; font-style: italic;
+  }
+  .stt-box .transcript.listening { border: 1px solid var(--err); }
+  /* Modals */
+  .modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .modal-content {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 2rem; max-width: 500px;
+  }
+  .modal h2 { margin-top: 0; }
+  .form-group { margin: 1rem 0; }
+  .form-group label { display: block; margin-bottom: 0.3rem; color: var(--muted); font-size: 0.85rem; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; background: #0d1117; color: var(--fg);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.5rem; font-family: inherit; font-size: 0.9rem;
+  }
+  .form-group textarea { min-height: 80px; resize: vertical; }
+  .api-keys {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.7rem; margin-bottom: 1rem;
+  }
+  .api-keys .row { display: flex; gap: 0.3rem; align-items: center; margin: 0.3rem 0; }
+  .api-keys input { flex: 1; background: #0d1117; border: 1px solid var(--border); color: var(--fg); border-radius: 4px; padding: 0.3rem; font-size: 0.75rem; }
+  .api-keys label { width: 60px; font-size: 0.75rem; color: var(--muted); }
+  .legend { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+  .legend span { display: inline-block; margin-right: 0.8rem; }
+  .legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.2rem; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>⏪ Time-Travel DAW</h1>
+    <div class="subtitle">Rewind AI generations. Regenerate. Cascade. The DAW is a debugging tool for cellular scenes.</div>
+  </div>
+  <div class="toolbar">
+    <button class="primary" id="loadBtn">Load scene</button>
+    <button id="seedBtn">Generate from seed</button>
+    <button id="playBtn" disabled>▶ Play</button>
+    <button id="stopBtn" disabled>⏹ Stop</button>
+    <button id="bookmarkBtn" disabled>★ Bookmark</button>
+    <button class="warn" id="rewindBtn" disabled>⏪ Rewind</button>
+    <button class="primary" id="regenBtn" disabled>🔄 Regenerate</button>
+    <select id="modelSelect">
+      <option value="zai-glm-5">z.ai GLM-5 (flagship)</option>
+      <option value="zai-glm-5.3">z.ai GLM-5.3 (premium)</option>
+      <option value="kimi-k3">Kimi K3</option>
+      <option value="deepseek-v3">DeepSeek V3</option>
+      <option value="kimi-v1-32k">Kimi v1-32k</option>
+    </select>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Left sidebar: scenes + settings -->
+  <aside class="sidebar">
+    <h3>Scenes</h3>
+    <ul class="scene-list" id="sceneList">
+      <li data-scene="lucineer">The Lucineer's Grind (3 chars)</li>
+      <li data-scene="manifest">The Manifest Mystery (4 chars)</li>
+      <li data-scene="cook">The Cook's Confession (2 chars)</li>
+    </ul>
+
+    <h3>API Keys</h3>
+    <div class="api-keys">
+      <div class="row">
+        <label>z.ai</label>
+        <input type="password" id="zaiKey" placeholder="ZAI_TOKEN" />
+      </div>
+      <div class="row">
+        <label>Kimi</label>
+        <input type="password" id="kimiKey" placeholder="KIMI_TOKEN" />
+      </div>
+      <div class="row">
+        <label>DeepSeek</label>
+        <input type="password" id="dsKey" placeholder="DEEPSEEK_TOKEN" />
+      </div>
+    </div>
+
+    <h3>View</h3>
+    <div class="view-tabs" style="display: flex; flex-direction: column; gap: 0.3rem;">
+      <div class="view-tab active" data-view="daw">⏪ DAW (time)</div>
+      <div class="view-tab" data-view="front">📻 Front (theater)</div>
+      <div class="view-tab" data-view="top">🗺 Top (spatial)</div>
+    </div>
+
+    <h3>STT / TTS</h3>
+    <div class="stt-box">
+      <div class="label">🎤 Live transcript</div>
+      <div class="transcript" id="sttTranscript">Click "🎤 Listen" to enable voice steering.</div>
+      <button id="sttBtn" style="margin-top: 0.4rem; width: 100%;">🎤 Listen</button>
+    </div>
+  </aside>
+
+  <!-- Main: view area -->
+  <main class="main">
+    <div class="view-tabs">
+      <div class="view-tab active" data-view="daw">⏪ DAW — Through-time</div>
+      <div class="view-tab" data-view="front">📻 Front — Radio Theater</div>
+      <div class="view-tab" data-view="top">🗺 Top — Spatial chart</div>
+    </div>
+    <div class="view-area" id="viewArea">
+      <div class="daw-view" id="dawView">
+        <div class="daw-controls">
+          <button id="playheadLeft">⏮</button>
+          <button id="playheadRight">⏭</button>
+          <span class="subtitle">Time: <span id="currentTime">0.0s</span> / <span id="totalTime">0.0s</span></span>
+          <span class="spacer"></span>
+          <span class="subtitle">Bookmark: <span id="bookmarkTime">none</span></span>
+          <button id="clearBookmarkBtn" class="danger" disabled>Clear bookmark</button>
+        </div>
+        <div class="legend">
+          <span><span class="swatch" style="background:#1f6feb"></span>original</span>
+          <span><span class="swatch" style="background:#f85149"></span>broken</span>
+          <span><span class="swatch" style="background:#3fb950"></span>regenerated</span>
+          <span><span class="swatch" style="background:#a371f7"></span>cascade</span>
+          <span><span class="swatch" style="background:#d29922"></span>bookmark</span>
+        </div>
+        <div id="dawTracks"></div>
+      </div>
+
+      <div class="front-view hidden" id="frontView">
+        <h2>📻 Radio Theater Mode</h2>
+        <p class="subtitle">Same scene, played as a radio broadcast. The cells render as voices in time.</p>
+        <div id="theaterOutput"></div>
+      </div>
+
+      <div class="top-view hidden" id="topView">
+        <h2>🗺 Spatial View</h2>
+        <p class="subtitle">Each cell is a point on a 2D map. The scene is the vessel's position over time.</p>
+        <div class="grid" id="spatialGrid"></div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span id="statusMain">Ready. Load or generate a scene to begin.</span>
+      <span class="spacer" style="flex:1"></span>
+      <span id="statusApi"></span>
+      <span id="statusModel"></span>
+    </div>
+  </main>
+
+  <!-- Right pane: cell inspector + cascade -->
+  <aside class="right-pane">
+    <h3>🎯 Selected cell</h3>
+    <div id="cellInspector" class="api-keys">
+      <div class="subtitle">Click an event in the DAW to inspect.</div>
+    </div>
+
+    <h3>🌊 Cascade preview</h3>
+    <div id="cascadeBox" class="api-keys">
+      <div class="subtitle">Click "⏪ Rewind" to see what would have happened downstream.</div>
+    </div>
+
+    <h3>📊 Scene stats</h3>
+    <div id="sceneStats" class="api-keys">
+      <div>Events: <span id="statEvents">0</span></div>
+      <div>Tracks: <span id="statTracks">0</span></div>
+      <div>Duration: <span id="statDuration">0</span>s</div>
+      <div>Bookmark: <span id="statBookmark">none</span></div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ============================================================================
+// Time-Travel DAW state
+// ============================================================================
+const state = {
+  scene: null,        // current scene: { tracks, cells, metadata }
+  view: 'daw',        // daw | front | top
+  currentTime: 0,     // playhead position in seconds
+  bookmarkTime: null, // rewind bookmark
+  selectedEvent: null,
+  isPlaying: false,
+  apiKeys: { zai: '', kimi: '', ds: '' },
+  brokenEvents: new Set(),  // which events are flagged as "broken"
+  regenerated: new Map(),   // which events have been regenerated, and to what
+  cascadePreview: null,
+  sttRecognition: null,
+  isListening: false,
+};
+
+// Scene seeds
+const SCENES = {
+  lucineer: {
+    seed: "3 characters on SS Lucineer at 0300: the Cook (philosophical, dry), the Ensign (anxious, young), the Bilge Pump (ancient, broken). The cook is making coffee.",
+    character: ['cook', 'ensign', 'bilge'],
+  },
+  manifest: {
+    seed: "4 characters on SS Lucineer: the Captain (steady, laconic), the Cook (philosophical), the Ensign (anxious), the Engineer (literal). Manifest says 5 holds of fish but only 4 are accounted for.",
+    character: ['captain', 'cook', 'ensign', 'engineer'],
+  },
+  cook: {
+    seed: "2 characters: the Cook (philosophical) and the Cook's apprentice. The apprentice has burned the soup. The Cook is deciding whether to be kind or honest.",
+    character: ['cook', 'apprentice'],
+  },
+};
+
+// ============================================================================
+// Model API calls
+// ============================================================================
+async function callLLM(prompt, systemPrompt, modelKey) {
+  const messages = [];
+  if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+  messages.push({ role: 'user', content: prompt });
+
+  if (modelKey === 'zai-glm-5' || modelKey === 'zai-glm-5.3') {
+    const m = modelKey === 'zai-glm-5.3' ? 'glm-5.3' : 'glm-5';
+    const resp = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + state.apiKeys.zai,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ model: m, messages, temperature: 0.9, max_tokens: 8000 }),
+    });
+    if (!resp.ok) throw new Error('z.ai HTTP ' + resp.status);
+    const data = await resp.json();
+    return data.choices[0].message.content;
+  } else if (modelKey === 'kimi-k3' || modelKey === 'kimi-v1-32k') {
+    const m = modelKey === 'kimi-k3' ? 'kimi-k3' : 'moonshot-v1-32k';
+    const resp = await fetch('https://api.moonshot.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + state.apiKeys.kimi,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ model: m, messages, temperature: 0.9, max_tokens: 4000 }),
+    });
+    if (!resp.ok) throw new Error('Kimi HTTP ' + resp.status);
+    const data = await resp.json();
+    return data.choices[0].message.content;
+  } else if (modelKey === 'deepseek-v3') {
+    const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + state.apiKeys.ds,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ model: 'deepseek-chat', messages, temperature: 0.9, max_tokens: 4000 }),
+    });
+    if (!resp.ok) throw new Error('DeepSeek HTTP ' + resp.status);
+    const data = await resp.json();
+    return data.choices[0].message.content;
+  }
+}
+
+// ============================================================================
+// Scene generation
+// ============================================================================
+async function generateScene(seed, characters, modelKey) {
+  const sys = `You are a multi-model AI orchestrator. Generate a scene as a JSON object with this exact shape:
+{
+  "name": "short title",
+  "bpm": <number, 50-120>,
+  "tracks": [
+    {
+      "name": "track name",
+      "character": "lowercase role",
+      "voice": "description of voice/tone (1 sentence)",
+      "events": [
+        {"time": <seconds>, "duration": <seconds>, "type": "dialogue|action|ambient", "text": "spoken or action text"}
+      ]
+    }
+  ]
+}
+Generate 3-6 events per track. Times are in seconds, in chronological order, all >= 0. Return ONLY the JSON.`;
+
+  const text = await callLLM(seed, sys, modelKey);
+
+  // Parse — strip code fences if present
+  let clean = text.trim();
+  if (clean.startsWith('```')) clean = clean.replace(/^```[a-z]*\n?/, '').replace(/```\s*$/, '');
+  const start = clean.indexOf('{');
+  const end = clean.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('No JSON in LLM response');
+  return JSON.parse(clean.slice(start, end + 1));
+}
+
+// ============================================================================
+// Cascade prediction: given scene + time, what would happen from this point?
+// ============================================================================
+async function predictCascade(scene, fromTime, modelKey) {
+  const upcoming = [];
+  for (const track of scene.tracks) {
+    for (const ev of track.events) {
+      if (ev.time >= fromTime - 0.1) {
+        upcoming.push({ ...ev, track: track.character, trackName: track.name });
+      }
+    }
+  }
+  upcoming.sort((a, b) => a.time - b.time);
+
+  const prompt = `Given this scene so far (events BEFORE ${fromTime.toFixed(1)}s), generate 3-5 cascading events that would happen at or after ${fromTime.toFixed(1)}s.
+
+Scene: ${scene.name}
+BPM: ${scene.bpm}
+
+Past context (do not regenerate these):
+${
+  scene.tracks.flatMap(t => t.events.filter(e => e.time < fromTime).map(e => `${e.time.toFixed(1)}s [${t.character}]: ${e.text}`)).join('\n') || '(no prior events)'
+}
+
+Upcoming events to replace:
+${upcoming.map(e => `${e.time.toFixed(1)}s [${e.track}]: ${e.text}`).join('\n')}
+
+Return ONLY a JSON array of {time, duration, type, text, character}. Times should be >= ${fromTime.toFixed(1)}.`;
+
+  const sys = `You are the cascade predictor. Given prior events, predict the natural downstream cascade. Return ONLY the JSON array.`;
+  const text = await callLLM(prompt, sys, modelKey);
+
+  let clean = text.trim();
+  if (clean.startsWith('```')) clean = clean.replace(/^```[a-z]*\n?/, '').replace(/```\s*$/, '');
+  const start = clean.indexOf('[');
+  const end = clean.lastIndexOf(']');
+  if (start === -1 || end === -1) return [];
+  try {
+    return JSON.parse(clean.slice(start, end + 1));
+  } catch (e) {
+    console.warn('cascade parse failed:', e);
+    return [];
+  }
+}
+
+// ============================================================================
+// Rendering
+// ============================================================================
+function getSceneDuration() {
+  if (!state.scene) return 0;
+  let max = 0;
+  for (const t of state.scene.tracks) {
+    for (const e of t.events) {
+      max = Math.max(max, e.time + (e.duration || 2));
+    }
+  }
+  return max;
+}
+
+function renderDAW() {
+  if (!state.scene) return;
+  const tracks = state.scene.tracks;
+  const duration = getSceneDuration();
+  document.getElementById('totalTime').textContent = duration.toFixed(1) + 's';
+
+  // Update time markers
+  const container = document.getElementById('dawTracks');
+  container.innerHTML = '';
+
+  for (const track of tracks) {
+    const trackEl = document.createElement('div');
+    trackEl.className = 'daw-track';
+
+    const header = document.createElement('div');
+    header.className = 'daw-track-header';
+    header.innerHTML = `
+      <div>
+        <div class="name">${track.name}</div>
+        <div class="character">${track.character} · ${track.voice || ''}</div>
+      </div>
+    `;
+
+    const timeline = document.createElement('div');
+    timeline.className = 'daw-track-timeline';
+    timeline.dataset.track = track.character;
+
+    // Time markers (every 5s major, every 1s minor)
+    for (let t = 0; t <= duration; t += 1) {
+      const marker = document.createElement('div');
+      marker.className = 'time-marker' + (t % 5 === 0 ? ' major' : '');
+      marker.style.left = `${(t / duration) * 100}%`;
+      timeline.appendChild(marker);
+    }
+
+    // Bookmark
+    if (state.bookmarkTime !== null) {
+      const bm = document.createElement('div');
+      bm.className = 'rewind-bookmark';
+      bm.style.left = `${(state.bookmarkTime / duration) * 100}%`;
+      bm.title = `Bookmark at ${state.bookmarkTime.toFixed(1)}s — click to rewind`;
+      bm.onclick = () => rewindToBookmark();
+      timeline.appendChild(bm);
+    }
+
+    // Events
+    for (const ev of track.events) {
+      const evEl = document.createElement('div');
+      let cls = 'event good';
+      if (state.brokenEvents.has(`${track.character}-${ev.time}-${(ev.text||'').slice(0,20)}`)) {
+        cls = 'event broken';
+      } else if (state.regenerated.has(`${track.character}-${ev.time}`)) {
+        cls = 'event regenerated';
+      } else if (ev.time < state.currentTime) {
+        cls = 'event';  // past
+      }
+      evEl.className = cls;
+      const left = (ev.time / duration) * 100;
+      const width = ((ev.duration || 2) / duration) * 100;
+      evEl.style.left = `${left}%`;
+      evEl.style.width = `${Math.max(width, 2)}%`;
+      evEl.textContent = (ev.text || '').slice(0, 30);
+      evEl.title = `${ev.time.toFixed(1)}s — ${ev.text}`;
+      evEl.onclick = () => selectEvent(track, ev);
+      timeline.appendChild(evEl);
+    }
+
+    // Playhead
+    const playhead = document.createElement('div');
+    playhead.className = 'playhead';
+    playhead.style.left = `${(state.currentTime / duration) * 100}%`;
+    timeline.appendChild(playhead);
+
+    // Click on timeline to seek
+    timeline.onclick = (e) => {
+      if (e.target.classList.contains('event') || e.target.classList.contains('rewind-bookmark')) return;
+      const rect = timeline.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const t = (x / rect.width) * duration;
+      state.currentTime = Math.max(0, Math.min(duration, t));
+      renderDAW();
+    };
+
+    trackEl.appendChild(header);
+    trackEl.appendChild(timeline);
+    container.appendChild(trackEl);
+  }
+
+  // Update stats
+  document.getElementById('statEvents').textContent = tracks.reduce((s, t) => s + t.events.length, 0);
+  document.getElementById('statTracks').textContent = tracks.length;
+  document.getElementById('statDuration').textContent = duration.toFixed(1);
+  document.getElementById('statBookmark').textContent = state.bookmarkTime === null ? 'none' : state.bookmarkTime.toFixed(1) + 's';
+  document.getElementById('currentTime').textContent = state.currentTime.toFixed(1) + 's';
+  document.getElementById('bookmarkTime').textContent = state.bookmarkTime === null ? 'none' : state.bookmarkTime.toFixed(1) + 's';
+}
+
+function renderFrontView() {
+  if (!state.scene) return;
+  const out = document.getElementById('theaterOutput');
+  out.innerHTML = '';
+
+  // Collect all events, sorted by time
+  const all = [];
+  for (const t of state.scene.tracks) {
+    for (const e of t.events) {
+      all.push({ ...e, track: t.character, name: t.name, voice: t.voice });
+    }
+  }
+  all.sort((a, b) => a.time - b.time);
+
+  // Show events up to currentTime (or all if not playing)
+  const visible = state.isPlaying ? all.filter(e => e.time <= state.currentTime) : all;
+  for (const e of visible) {
+    const sp = document.createElement('div');
+    sp.className = 'speaker ' + e.track;
+    sp.innerHTML = `
+      <div class="name">${e.name} <span class="subtitle">@ ${e.time.toFixed(1)}s</span></div>
+      <div class="text">${e.text || ''}</div>
+    `;
+    out.appendChild(sp);
+  }
+
+  if (visible.length === 0) {
+    out.innerHTML = '<p class="subtitle">No events yet. Generate a scene or click play.</p>';
+  }
+}
+
+function renderTopView() {
+  if (!state.scene) return;
+  const grid = document.getElementById('spatialGrid');
+  grid.innerHTML = '';
+  const all = [];
+  for (const t of state.scene.tracks) {
+    for (const e of t.events) {
+      all.push({ ...e, track: t.character });
+    }
+  }
+
+  // Hash each event's time to a position
+  for (let i = 0; i < 200; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'grid-cell empty';
+
+    // Find events that hash to this cell
+    const cellIdx = i;
+    const events = all.filter(e => {
+      const h = (Math.abs(((e.time * 17 + e.track.length * 31) | 0) % 200));
+      return h === cellIdx;
+    });
+
+    if (events.length > 0) {
+      const avgImportance = events.length;
+      cell.classList.remove('empty');
+      if (avgImportance >= 3) cell.classList.add('high');
+      else if (avgImportance >= 2) cell.classList.add('med');
+      else cell.classList.add('low');
+      cell.textContent = events[0].track[0].toUpperCase();
+      cell.title = events.map(e => `${e.track}@${e.time.toFixed(1)}s: ${e.text}`).join('\n');
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function renderAll() {
+  if (state.view === 'daw') renderDAW();
+  else if (state.view === 'front') renderFrontView();
+  else if (state.view === 'top') renderTopView();
+}
+
+function selectEvent(track, ev) {
+  state.selectedEvent = { track, ev };
+  const insp = document.getElementById('cellInspector');
+  insp.innerHTML = `
+    <div><b>${track.name}</b> <span class="subtitle">(${track.character})</span></div>
+    <div class="subtitle">@ ${ev.time.toFixed(1)}s · ${ev.duration}s · ${ev.type}</div>
+    <div style="margin: 0.4rem 0; padding: 0.4rem; background:#0d1117; border-radius:3px; font-size:0.85rem;">
+      ${ev.text || '(no text)'}
+    </div>
+    <div style="display:flex; gap:0.3rem; margin-top:0.4rem;">
+      <button class="danger" id="flagBrokenBtn" style="flex:1;">⚐ Flag as broken</button>
+      <button class="primary" id="speakBtn" style="flex:1;">🔊 Speak</button>
+    </div>
+  `;
+  document.getElementById('flagBrokenBtn').onclick = () => flagEventAsBroken(track, ev);
+  document.getElementById('speakBtn').onclick = () => speakText(`${track.name}: ${ev.text}`, track.voice);
+  document.getElementById('regenBtn').disabled = false;
+  document.getElementById('rewindBtn').disabled = state.bookmarkTime === null;
+}
+
+function flagEventAsBroken(track, ev) {
+  const key = `${track.character}-${ev.time}-${(ev.text||'').slice(0,20)}`;
+  state.brokenEvents.add(key);
+  document.getElementById('statusMain').textContent = `⚐ Flagged ${track.character}@${ev.time.toFixed(1)}s as broken. Bookmark a good moment, then rewind.`;
+  document.getElementById('statusMain').className = 'warn';
+  renderDAW();
+}
+
+// ============================================================================
+// Rewind & regenerate
+// ============================================================================
+function setBookmark() {
+  if (!state.scene) return;
+  state.bookmarkTime = state.currentTime;
+  document.getElementById('statusMain').textContent = `★ Bookmarked at ${state.currentTime.toFixed(1)}s`;
+  document.getElementById('statusMain').className = 'ok';
+  document.getElementById('rewindBtn').disabled = false;
+  document.getElementById('clearBookmarkBtn').disabled = false;
+  renderDAW();
+}
+
+async function rewindToBookmark() {
+  if (state.bookmarkTime === null) return;
+  state.currentTime = state.bookmarkTime;
+  document.getElementById('statusMain').textContent = `⏪ Rewound to ${state.bookmarkTime.toFixed(1)}s. Click "Regenerate" to see what would happen from here.`;
+  document.getElementById('statusMain').className = 'warn';
+  document.getElementById('regenBtn').disabled = false;
+  renderDAW();
+}
+
+async function regenerateFromBookmark() {
+  if (state.bookmarkTime === null) return;
+  const modelKey = document.getElementById('modelSelect').value;
+  const modelName = document.getElementById('modelSelect').selectedOptions[0].text;
+  document.getElementById('statusMain').textContent = `🔄 Regenerating cascade from ${state.bookmarkTime.toFixed(1)}s with ${modelName}...`;
+  document.getElementById('statusMain').className = 'warn';
+  document.getElementById('statusApi').textContent = '⏳ calling ' + modelKey;
+
+  try {
+    const cascade = await predictCascade(state.scene, state.bookmarkTime, modelKey);
+    document.getElementById('statusApi').textContent = '';
+
+    // Show cascade preview
+    const box = document.getElementById('cascadeBox');
+    box.innerHTML = `
+      <div style="color: var(--purple); font-weight: bold;">🌊 Cascade preview (${cascade.length} events)</div>
+      <div class="subtitle">${modelName} would generate these from t=${state.bookmarkTime.toFixed(1)}s:</div>
+      <div class="events">
+        ${cascade.map(e => `<div class="cascade-event"><b>${e.character || '?'}</b>@${e.time.toFixed(1)}s: ${(e.text || '').slice(0, 40)}</div>`).join('')}
+      </div>
+      <button class="primary" id="acceptCascadeBtn" style="margin-top: 0.5rem; width: 100%;">✓ Accept cascade (replace events)</button>
+      <button id="rejectCascadeBtn" style="margin-top: 0.3rem; width: 100%;">✗ Reject</button>
+    `;
+    document.getElementById('acceptCascadeBtn').onclick = () => acceptCascade(cascade, modelName);
+    document.getElementById('rejectCascadeBtn').onclick = () => {
+      box.innerHTML = '<div class="subtitle">Cascade rejected.</div>';
+    };
+  } catch (e) {
+    document.getElementById('statusMain').textContent = '✗ Cascade failed: ' + e.message;
+    document.getElementById('statusMain').className = 'err';
+    document.getElementById('statusApi').textContent = '';
+  }
+}
+
+function acceptCascade(cascade, modelName) {
+  if (!cascade || cascade.length === 0) return;
+  // Group by character
+  const byChar = {};
+  for (const e of cascade) {
+    const c = e.character || 'narrator';
+    if (!byChar[c]) byChar[c] = [];
+    byChar[c].push(e);
+  }
+  // Replace events for each track that has cascade events
+  for (const track of state.scene.tracks) {
+    if (byChar[track.character]) {
+      // Remove events at or after bookmarkTime, add cascade
+      track.events = track.events.filter(e => e.time < state.bookmarkTime - 0.05);
+      for (const e of byChar[track.character]) {
+        track.events.push({
+          time: e.time,
+          duration: e.duration || 2,
+          type: e.type || 'dialogue',
+          text: e.text,
+        });
+      }
+      track.events.sort((a, b) => a.time - b.time);
+    }
+  }
+  // If cascade has events for a character not in tracks, add them
+  for (const [c, evs] of Object.entries(byChar)) {
+    if (!state.scene.tracks.find(t => t.character === c)) {
+      state.scene.tracks.push({
+        name: c.charAt(0).toUpperCase() + c.slice(1),
+        character: c,
+        voice: 'newly added by ' + modelName,
+        events: evs.map(e => ({ time: e.time, duration: e.duration || 2, type: e.type || 'dialogue', text: e.text })),
+      });
+    }
+  }
+  document.getElementById('statusMain').textContent = `✓ Cascade accepted. ${cascade.length} new events from ${modelName}.`;
+  document.getElementById('statusMain').className = 'ok';
+  document.getElementById('cascadeBox').innerHTML = '<div class="subtitle">Cascade applied. Re-rendering...</div>';
+  renderAll();
+}
+
+// ============================================================================
+// Playback (radio-theater mode with TTS)
+// ============================================================================
+let playbackTimer = null;
+function playScene() {
+  if (!state.scene) return;
+  state.isPlaying = true;
+  document.getElementById('playBtn').disabled = true;
+  document.getElementById('stopBtn').disabled = false;
+  switchView('front');
+
+  const duration = getSceneDuration();
+  const startTime = performance.now() - state.currentTime * 1000;
+  const startAt = state.currentTime;
+
+  // Pre-collect events in time order
+  const events = [];
+  for (const t of state.scene.tracks) {
+    for (const e of t.events) {
+      if (e.time >= startAt) events.push({ ...e, character: t.character, name: t.name, voice: t.voice });
+    }
+  }
+  events.sort((a, b) => a.time - b.time);
+
+  let nextEventIdx = 0;
+  function tick() {
+    if (!state.isPlaying) return;
+    const elapsed = (performance.now() - startTime) / 1000;
+    state.currentTime = Math.min(duration, startAt + elapsed);
+
+    // Speak any events that have just become due
+    while (nextEventIdx < events.length && events[nextEventIdx].time <= state.currentTime) {
+      const e = events[nextEventIdx];
+      if (e.text) speakText(`${e.name}: ${e.text}`, e.voice);
+      nextEventIdx++;
+    }
+
+    renderFrontView();
+    if (state.currentTime < duration) {
+      playbackTimer = requestAnimationFrame(tick);
+    } else {
+      stopScene();
+    }
+  }
+  tick();
+}
+
+function stopScene() {
+  state.isPlaying = false;
+  if (playbackTimer) cancelAnimationFrame(playbackTimer);
+  playbackTimer = null;
+  document.getElementById('playBtn').disabled = false;
+  document.getElementById('stopBtn').disabled = true;
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  renderAll();
+}
+
+function speakText(text, voice) {
+  if (!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  // Vary pitch/rate per character
+  const v = (voice || '').toLowerCase();
+  if (v.includes('deep') || v.includes('low')) { u.pitch = 0.7; u.rate = 0.85; }
+  else if (v.includes('bright') || v.includes('high')) { u.pitch = 1.3; u.rate = 1.1; }
+  else if (v.includes('ancient') || v.includes('rust')) { u.pitch = 0.5; u.rate = 0.7; }
+  else if (v.includes('anxious') || v.includes('young')) { u.pitch = 1.15; u.rate = 1.15; }
+  else if (v.includes('philosophical') || v.includes('dry')) { u.pitch = 0.9; u.rate = 0.95; }
+  else { u.pitch = 1.0; u.rate = 1.0; }
+  speechSynthesis.speak(u);
+}
+
+// ============================================================================
+// STT (live voice steering)
+// ============================================================================
+function toggleSTT() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    document.getElementById('sttTranscript').textContent = 'STT not supported in this browser.';
+    return;
+  }
+  if (state.isListening) {
+    state.sttRecognition.stop();
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const rec = new SR();
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.lang = 'en-US';
+  rec.onresult = (event) => {
+    let final = '';
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) final += event.results[i][0].transcript;
+      else interim += event.results[i][0].transcript;
+    }
+    const box = document.getElementById('sttTranscript');
+    box.textContent = (final + ' ' + interim).trim();
+    box.classList.add('listening');
+
+    // If user says "rewind" or "regenerate", trigger
+    const t = (final + interim).toLowerCase();
+    if (t.includes('rewind')) {
+      rewindToBookmark();
+    } else if (t.includes('regenerate') || t.includes('redo')) {
+      regenerateFromBookmark();
+    } else if (t.includes('bookmark') || t.includes('mark this')) {
+      setBookmark();
+    } else if (t.includes('play')) {
+      playScene();
+    } else if (t.includes('stop')) {
+      stopScene();
+    }
+  };
+  rec.onend = () => {
+    state.isListening = false;
+    document.getElementById('sttBtn').textContent = '🎤 Listen';
+    document.getElementById('sttTranscript').classList.remove('listening');
+  };
+  rec.onerror = (e) => {
+    document.getElementById('sttTranscript').textContent = 'STT error: ' + e.error;
+  };
+  rec.start();
+  state.sttRecognition = rec;
+  state.isListening = true;
+  document.getElementById('sttBtn').textContent = '⏹ Stop listening';
+  document.getElementById('sttTranscript').textContent = 'Listening... (say "rewind", "regenerate", "bookmark", "play", "stop")';
+  document.getElementById('sttTranscript').classList.add('listening');
+}
+
+// ============================================================================
+// View switching
+// ============================================================================
+function switchView(view) {
+  state.view = view;
+  document.querySelectorAll('.view-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === view);
+  });
+  document.getElementById('dawView').classList.toggle('hidden', view !== 'daw');
+  document.getElementById('frontView').classList.toggle('hidden', view !== 'front');
+  document.getElementById('topView').classList.toggle('hidden', view !== 'top');
+  renderAll();
+}
+
+// ============================================================================
+// Wire up events
+// ============================================================================
+window.addEventListener('DOMContentLoaded', () => {
+  // Load API keys from localStorage
+  state.apiKeys.zai = localStorage.getItem('zai_key') || '';
+  state.apiKeys.kimi = localStorage.getItem('kimi_key') || '';
+  state.apiKeys.ds = localStorage.getItem('ds_key') || '';
+  document.getElementById('zaiKey').value = state.apiKeys.zai;
+  document.getElementById('kimiKey').value = state.apiKeys.kimi;
+  document.getElementById('dsKey').value = state.apiKeys.ds;
+
+  document.getElementById('zaiKey').addEventListener('change', (e) => {
+    state.apiKeys.zai = e.target.value; localStorage.setItem('zai_key', e.target.value);
+  });
+  document.getElementById('kimiKey').addEventListener('change', (e) => {
+    state.apiKeys.kimi = e.target.value; localStorage.setItem('kimi_key', e.target.value);
+  });
+  document.getElementById('dsKey').addEventListener('change', (e) => {
+    state.apiKeys.ds = e.target.value; localStorage.setItem('ds_key', e.target.value);
+  });
+
+  // Load prebuilt scene
+  document.getElementById('loadBtn').onclick = async () => {
+    const id = prompt('Scene id (lucineer | manifest | cook) or URL of .qzt', 'lucineer');
+    if (!id) return;
+    if (id.startsWith('http')) {
+      const resp = await fetch(id);
+      state.scene = await resp.json();
+    } else {
+      const seed = SCENES[id] || SCENES.lucineer;
+      document.getElementById('statusMain').textContent = `Generating ${id} scene...`;
+      const modelKey = document.getElementById('modelSelect').value;
+      try {
+        state.scene = await generateScene(seed.seed, seed.character, modelKey);
+      } catch (e) {
+        document.getElementById('statusMain').textContent = '✗ ' + e.message;
+        return;
+      }
+    }
+    state.currentTime = 0;
+    state.bookmarkTime = null;
+    state.brokenEvents.clear();
+    state.regenerated.clear();
+    document.getElementById('playBtn').disabled = false;
+    document.getElementById('bookmarkBtn').disabled = false;
+    document.getElementById('statusMain').textContent = `✓ Loaded "${state.scene.name}" — ${state.scene.tracks.length} tracks`;
+    document.getElementById('statusMain').className = 'ok';
+    renderAll();
+  };
+
+  // Scene list
+  document.querySelectorAll('.scene-list li').forEach(li => {
+    li.onclick = () => {
+      document.querySelectorAll('.scene-list li').forEach(x => x.classList.remove('active'));
+      li.classList.add('active');
+      document.getElementById('loadBtn').onclick();
+    };
+  });
+
+  document.getElementById('seedBtn').onclick = () => {
+    const seed = prompt('Scene seed (describe the situation, characters, time)');
+    if (!seed) return;
+    const modelKey = document.getElementById('modelSelect').value;
+    document.getElementById('statusMain').textContent = 'Generating from seed...';
+    generateScene(seed, [], modelKey).then(scene => {
+      state.scene = scene;
+      state.currentTime = 0;
+      state.bookmarkTime = null;
+      state.brokenEvents.clear();
+      state.regenerated.clear();
+      document.getElementById('playBtn').disabled = false;
+      document.getElementById('bookmarkBtn').disabled = false;
+      document.getElementById('statusMain').textContent = `✓ Generated "${scene.name}" — ${scene.tracks.length} tracks`;
+      document.getElementById('statusMain').className = 'ok';
+      renderAll();
+    }).catch(e => {
+      document.getElementById('statusMain').textContent = '✗ ' + e.message;
+    });
+  };
+
+  document.getElementById('playBtn').onclick = playScene;
+  document.getElementById('stopBtn').onclick = stopScene;
+  document.getElementById('bookmarkBtn').onclick = setBookmark;
+  document.getElementById('rewindBtn').onclick = rewindToBookmark;
+  document.getElementById('regenBtn').onclick = regenerateFromBookmark;
+  document.getElementById('clearBookmarkBtn').onclick = () => {
+    state.bookmarkTime = null;
+    document.getElementById('clearBookmarkBtn').disabled = true;
+    document.getElementById('rewindBtn').disabled = true;
+    renderDAW();
+  };
+  document.getElementById('sttBtn').onclick = toggleSTT;
+
+  // View tabs
+  document.querySelectorAll('.view-tab').forEach(t => {
+    t.onclick = () => switchView(t.dataset.view);
+  });
+
+  // Playhead controls
+  document.getElementById('playheadLeft').onclick = () => {
+    state.currentTime = Math.max(0, state.currentTime - 1);
+    renderDAW();
+  };
+  document.getElementById('playheadRight').onclick = () => {
+    state.currentTime = Math.min(getSceneDuration(), state.currentTime + 1);
+    renderDAW();
+  };
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === ' ') { e.preventDefault(); state.isPlaying ? stopScene() : playScene(); }
+    else if (e.key === 'b') setBookmark();
+    else if (e.key === 'r' && state.bookmarkTime !== null) rewindToBookmark();
+    else if (e.key === 'g' && state.bookmarkTime !== null) regenerateFromBookmark();
+    else if (e.key === 'ArrowLeft') { state.currentTime = Math.max(0, state.currentTime - 1); renderDAW(); }
+    else if (e.key === 'ArrowRight') { state.currentTime = Math.min(getSceneDuration(), state.currentTime + 1); renderDAW(); }
+    else if (e.key === '1') switchView('daw');
+    else if (e.key === '2') switchView('front');
+    else if (e.key === '3') switchView('top');
+  });
+});
+</script>
+</body>
+</html>
