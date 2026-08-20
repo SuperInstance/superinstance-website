@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quilt Studio · sheet editor</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #1e1f2b;
+      color: #e5e7eb;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    header {
+      background: #2a2b3c;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #3d3f52;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+    header h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #c7d2fe;
+      margin-right: 8px;
+    }
+    .btn {
+      background: #3a3b4e;
+      border: 1px solid #4f5168;
+      color: #e0e2f0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover {
+      background: #4a4c66;
+      border-color: #6b6e8f;
+    }
+    .btn.primary {
+      background: #4f46e5;
+      border-color: #6c63ff;
+      color: white;
+    }
+    .btn.primary:hover {
+      background: #5f57ea;
+    }
+    .btn.danger {
+      color: #fca5a5;
+    }
+    .btn.danger:hover {
+      background: #4a2c2c;
+      border-color: #b91c1c;
+    }
+    .spacer {
+      flex: 1;
+    }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 240px 1fr 320px;
+      gap: 0;
+      min-height: 0;
+    }
+    .panel {
+      background: #232433;
+      overflow-y: auto;
+      padding: 12px;
+      border-right: 1px solid #33344a;
+    }
+    .panel:last-child {
+      border-right: none;
+      border-left: 1px solid #33344a;
+    }
+    .panel h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #9da0b9;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #3d3f52;
+      padding-bottom: 6px;
+    }
+    /* left cell list */
+    .cell-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cell-item {
+      background: #2e2f42;
+      border: 1px solid #3d3f52;
+      padding: 8px 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .cell-item.active {
+      border-color: #818cf8;
+      background: #3b3c58;
+      box-shadow: 0 0 0 1px #6366f1;
+    }
+    .cell-item .name {
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+    .badge {
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 20px;
+      background: #4b4d6a;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge.value { background: #2d6a4f; }
+    .badge.formula { background: #5f0f40; }
+    .badge.listener { background: #9c4a1c; }
+    .badge.api { background: #1e3a8a; }
+    .badge.ai { background: #6b21a8; }
+    .badge.program { background: #4a3f35; }
+    .badge.sensor { background: #0f766e; }
+    .badge.router { background: #b45309; }
+    .badge.vector_store { background: #a21caf; }
+    .cell-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .icon-btn:hover { background: #4b4d6a; color: white; }
+    .add-cell {
+      margin-top: 12px;
+      width: 100%;
+    }
+    /* center editor */
+    .editor-area {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-group label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #a5a8c5;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .field-group input, .field-group textarea, .field-group select {
+      background: #1b1c2b;
+      border: 1px solid #3d3f52;
+      color: #e5e7eb;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+    .field-group textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+    .field-group input:focus, .field-group textarea:focus, .field-group select:focus {
+      outline: 2px solid #6366f1;
+      border-color: transparent;
+    }
+    .depends-input {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .dep-tag {
+      background: #393b54;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dep-tag button {
+      background: none;
+      border: none;
+      color: #f87171;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .dep-input-row {
+      display: flex;
+      gap: 4px;
+    }
+    .dep-input-row input {
+      flex: 1;
+    }
+    .preview-box {
+      background: #1b1c2b;
+      border: 1px dashed #4f5168;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    /* graph */
+    .graph-container {
+      width: 100%;
+      height: 100%;
+      background: #1a1b28;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    #graphCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .graph-legend {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: #2a2b3c;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      color: #b9bcd6;
+      display: flex;
+      gap: 12px;
+      border: 1px solid #3d3f52;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+    .dirty { fill: #fbbf24; }
+    .evaluating { fill: #f87171; }
+    .normal { fill: #34d399; }
+    .edge { stroke: #6b7280; stroke-width: 1.5; }
+    .edge-dirty { stroke: #fbbf24; stroke-width: 2.5; }
+    .node-text { fill: #e5e7eb; font-size: 10px; text-anchor: middle; }
+    .node-rect { fill: #2e2f42; stroke: #4f5168; stroke-width: 1.5; rx: 4; }
+    .node-rect.dirty { stroke: #fbbf24; }
+    .node-rect.evaluating { stroke: #f87171; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>🧵 Quilt Studio</h1>
+  <button class="btn" id="addValueBtn">+ value</button>
+  <button class="btn" id="addFormulaBtn">+ formula</button>
+  <button class="btn" id="addListenerBtn">+ listener</button>
+  <button class="btn" id="addApiBtn">+ api</button>
+  <button class="btn" id="addAiBtn">+ ai</button>
+  <button class="btn" id="addProgramBtn">+ program</button>
+  <button class="btn" id="addSensorBtn">+ sensor</button>
+  <button class="btn" id="addRouterBtn">+ router</button>
+  <button class="btn" id="addVectorBtn">+ vector</button>
+  <span class="spacer"></span>
+  <button class="btn" id="runBtn">▶ run</button>
+  <button class="btn" id="saveBtn">💾 save .qzt</button>
+  <button class="btn" id="loadBtn">📂 load</button>
+  <button class="btn" id="exportJsonBtn">📄 json</button>
+  <input type="file" id="fileInput" accept=".qzt,.json" style="display: none;">
+</header>
+<main>
+  <!-- LEFT -->
+  <div class="panel" style="display: flex; flex-direction: column;">
+    <h3>📋 cells</h3>
+    <div class="cell-list" id="cellList"></div>
+    <button class="btn add-cell" id="addCellBtn">+ new cell</button>
+  </div>
+  <!-- CENTER -->
+  <div class="panel" style="flex: 1; border-right: 1px solid #33344a;">
+    <h3>✏️ editor</h3>
+    <div class="editor-area" id="editorArea">
+      <div style="color:#9da0b9; font-size:0.9rem; padding:20px; text-align:center;">select a cell from the left<br>or create a new one</div>
+    </div>
+  </div>
+  <!-- RIGHT -->
+  <div class="panel" style="padding: 8px;">
+    <h3>🕸️ live graph</h3>
+    <div class="graph-container">
+      <canvas id="graphCanvas" width="600" height="500"></canvas>
+      <div class="graph-legend">
+        <span><span class="legend-dot normal"></span>normal</span>
+        <span><span class="legend-dot dirty"></span>dirty</span>
+        <span><span class="legend-dot evaluating"></span>eval</span>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  (function(){
+    // ---------- state ----------
+    let cells = {};  // id -> cell object
+    let order = [];  // array of ids for stable list
+    let selectedId = null;
+    let dirtySet = new Set();
+    let evaluatingSet = new Set();
+
+    // ---------- utils ----------
+    function uid() { return 'c' + Math.random().toString(36).substr(2, 8) + Date.now().toString(36).slice(-4); }
+    function defaultCell(kind) {
+      const base = { id: uid(), kind, name: kind.slice(0,3)+Math.floor(Math.random()*100) };
+      switch(kind) {
+        case 'value': return { ...base, type: 'text', value: '' };
+        case 'formula': return { ...base, body: 'return 1;', depends_on: [] };
+        case 'listener': return { ...base, listens: '', fn: 'console.log("hi")' };
+        case 'api': return { ...base, endpoint: 'https://api.example.com', interval: 60, method: 'GET' };
+        case 'ai': return { ...base, prompt: 'Explain', system: 'You are helpful', model: 'gpt-4o', response_model: 'text' };
+        case 'program': return { ...base, program: 'print("hello")' };
+        case 'sensor': return { ...base, sensor_type: 'temperature', sample_rate: 1.0 };
+        case 'router': return { ...base, routes: '{"default": "c1"}' };
+        case 'vector_store': return { ...base, collection: 'docs', dimensions: 128 };
+        default: return { ...base };
+      }
+    }
+
+    // ---------- persistence ----------
+    function saveToStorage() {
+      localStorage.setItem('quilt_sheet', JSON.stringify({ cells, order }));
+    }
+    function loadFromStorage() {
+      const raw = localStorage.getItem('quilt_sheet');
+      if (raw) {
+        try { const data = JSON.parse(raw); cells = data.cells || {}; order = data.order || Object.keys(cells); 
+          if(order.length===0) order = Object.keys(cells);
+          // ensure all ids in order
+          order = order.filter(id => cells[id]);
+          Object.keys(cells).forEach(id => { if(!order.includes(id)) order.push(id); });
+        } catch(e){}
+      }
+      if (!order.length) {
+        // seed with a few cells
+        const c1 = defaultCell('value'); c1.name='greeting'; c1.value='hello quilt';
+        const c2 = defaultCell('formula'); c2.name='shout'; c2.body='return depends_on[0].toUpperCase()'; c2.depends_on=['greeting'];
+        cells[c1.id]=c1; cells[c2.id]=c2; order=[c1.id,c2.id];
+      }
+    }
+    // ---------- graph rendering ----------
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+    window.addEventListener('resize', () => { resizeCanvas(); drawGraph(); });
+
+    function drawGraph() {
+      resizeCanvas();
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+      const ids = order;
+      if (ids.length === 0) return;
+      const w = canvas.width, h = canvas.height;
+      const positions = {};
+      const cols = Math.ceil(Math.sqrt(ids.length));
+      const rows = Math.ceil(ids.length / cols);
+      const cellW = Math.min(120, w/(cols+1));
+      const cellH = 40;
+      ids.forEach((id, idx) => {
+        const col = idx % cols;
+        const row = Math.floor(idx / cols);
+        const x = 30 + col * (w-60)/Math.max(1,cols-1) + (cols===1? w/2-50:0);
+        const y = 30 + row * (h-60)/Math.max(1,rows-1);
+        positions[id] = { x, y };
+      });
+      // edges
+      ctx.lineWidth = 1.5;
+      ids.forEach(id => {
+        const cell = cells[id];
+        if (!cell) return;
+        let deps = [];
+        if (cell.kind === 'formula' && Array.isArray(cell.depends_on)) deps = cell.depends_on;
+        if (cell.kind === 'listener' && cell.listens) deps = [cell.listens];
+        deps.forEach(dep => {
+          if (!cells[dep]) return;
+          const from = positions[dep];
+          const to = positions[id];
+          if (!from || !to) return;
+          const dirtyEdge = dirtySet.has(dep) || dirtySet.has(id);
+          ctx.beginPath();
+          ctx.strokeStyle = dirtyEdge ? '#fbbf24' : '#6b7280';
+          ctx.lineWidth = dirtyEdge ? 2.5 : 1.5;
+          ctx.moveTo(from.x, from.y);
+          ctx.lineTo(to.x, to.y);
+          ctx.stroke();
+        });
+      });
+      // nodes
+      ids.forEach(id => {
+        const pos = positions[id];
+        const cell = cells[id];
+        if (!pos || !cell) return;
+        const wNode = 100, hNode = 30;
+        const x = pos.x - wNode/2, y = pos.y - hNode/2;
+        let cls = 'normal';
+        if (dirtySet.has(id)) cls = 'dirty';
+        if (evaluatingSet.has(id)) cls = 'evaluating';
+        ctx.fillStyle = cls === 'dirty' ? '#fbbf24' : (cls==='evaluating' ? '#f87171' : '#34d399');
+        ctx.strokeStyle = cls === 'dirty' ? '#fbbf24' : (cls==='evaluating' ? '#f87171' : '#4f5168');
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x, y, wNode, hNode, 6);
+        ctx.fillStyle = '#2e2f42';
+        ctx.fill();
+        ctx.stroke();
+        // small status dot
+        ctx.beginPath();
+        ctx.arc(x+8, y+8, 4, 0, 2*Math.PI);
+        ctx.fillStyle = cls === 'dirty' ? '#fbbf24' : (cls==='evaluating' ? '#f87171' : '#34d399');
+        ctx.fill();
+        ctx.strokeStyle = '#1a1b28';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        // label
+        ctx.fillStyle = '#e5e7eb';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(cell.name || id, x + wNode/2, y + hNode/2);
+      });
+    }
+
+    // ---------- reactive engine (simplified) ----------
+    function computeCell(id, visited = new Set()) {
+      const cell = cells[id];
+      if (!cell) return undefined;
+      if (visited.has(id)) return undefined;
+      visited.add(id);
+      evaluatingSet.add(id);
+      dirtySet.delete(id);
+      drawGraph();
+      try {
+        if (cell.kind === 'value') return cell.value;
+        if (cell.kind === 'formula') {
+          const deps = (cell.depends_on || []).map(dep => computeCell(dep, visited));
+          // eslint-disable-next-line no-new-func
+          const fn = new Function('depends_on', `"use strict"; ${cell.body}`);
+          return fn(deps);
+        }
+        if (cell.kind === 'listener') {
+          // just run fn (side effect)
+          try { new Function('value', cell.fn)(computeCell(cell.listens, visited)); } catch(e){}
+          return undefined;
+        }
+        if (cell.kind === 'api') {
+          return `[api:${cell.endpoint}]`;
+        }
+        if (cell.kind === 'ai') return `[ai:${cell.model}]`;
+        if (cell.kind === 'program') return `[program]`;
+        if (cell.kind === 'sensor') return `[sensor:${cell.sensor_type}]`;
+        if (cell.kind === 'router') return `[router]`;
+        if (cell.kind === 'vector_store') return `[vector:${cell.collection}]`;
+      } finally {
+        evaluatingSet.delete(id);
+      }
+      return undefined;
+    }
+
+    function runSheet() {
+      dirtySet.clear();
+      evaluatingSet.clear();
+      // mark all as dirty first
+      order.forEach(id => dirtySet.add(id));
+      // evaluate all
+      order.forEach(id => {
+        computeCell(id);
+      });
+      dirtySet.clear();
+      evaluatingSet.clear();
+      drawGraph();
+      renderEditor();
+    }
+
+    // ---------- UI rendering ----------
+    function renderCellList() {
+      const list = document.getElementById('cellList');
+      list.innerHTML = '';
+      order.forEach(id => {
+        const cell = cells[id];
+        if (!cell) return;
+        const div = document.createElement('div');
+        div.className = 'cell-item' + (selectedId === id ? ' active' : '');
+        div.dataset.id = id;
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'name';
+        nameSpan.textContent = cell.name || id;
+        const badge = document.createElement('span');
+        badge.className = `badge ${cell.kind}`;
+        badge.textContent = cell.kind;
+        const actions = document.createElement('span');
+        actions.className = 'cell-actions';
+        const delBtn = document.createElement('button');
+        delBtn.className = 'icon-btn';
+        delBtn.textContent = '🗑️';
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteCell(id);
+        });
+        actions.appendChild(delBtn);
+        div.appendChild(nameSpan);
+        div.appendChild(badge);
+        div.appendChild(actions);
+        div.addEventListener('click', () => {
+          selectedId = id;
+          renderCellList();
+          renderEditor();
+          drawGraph();
+        });
+        list.appendChild(div);
+      });
+    }
+
+    function deleteCell(id) {
+      // remove from graph
+      delete cells[id];
+      order = order.filter(x => x !== id);
+      if (selectedId === id) selectedId = null;
+      // clean depends_on references
+      Object.values(cells).forEach(c => {
+        if (c.depends_on) c.depends_on = c.depends_on.filter(d => d !== id);
+        if (c.listens === id) c.listens = '';
+      });
+      saveToStorage();
+      renderCellList();
+      renderEditor();
+      drawGraph();
+    }
+
+    function renderEditor() {
+      const area = document.getElementById('editorArea');
+      if (!selectedId || !cells[selectedId]) {
+        area.innerHTML = `<div style="color:#9da0b9; padding:20px; text-align:center;">select a cell</div>`;
+        return;
+      }
+      const cell = cells[selectedId];
+      const kind = cell.kind;
+      let html = `<div class="field-group"><label>name</label><input id="cellName" value="${cell.name || ''}"></div>`;
+      html += `<div class="field-group"><label>kind</label><span class="badge ${kind}">${kind}</span></div>`;
+
+      if (kind === 'value') {
+        html += `<div class="field-group"><label>type</label><select id="valueType"><option value="text" ${cell.type==='text'?'selected':''}>text</option><option value="number" ${cell.type==='number'?'selected':''}>number</option></select></div>`;
+        html += `<div class="field-group"><label>value</label><textarea id="valueField" rows="2">${cell.value || ''}</textarea></div>`;
+      } else if (kind === 'formula') {
+        html += `<div class="field-group"><label>depends_on (comma separated ids)</label><div class="depends-input" id="dependsContainer"></div><div class="dep-input-row"><input id="newDep" placeholder="cell id"><button class="btn" id="addDepBtn">+ add</button></div></div>`;
+        html += `<div class="field-group"><label>function body (use depends_on array)</label><textarea id="formulaBody" rows="4">${cell.body || ''}</textarea></div>`;
+      } else if (kind === 'listener') {
+        html += `<div class="field-group"><label>listens to (cell id)</label><input id="listensField" value="${cell.listens || ''}"></div>`;
+        html += `<div class="field-group"><label>fn body (value param)</label><textarea id="listenerFn" rows="3">${cell.fn || ''}</textarea></div>`;
+      } else if (kind === 'api') {
+        html += `<div class="field-group"><label>endpoint</label><input id="apiEndpoint" value="${cell.endpoint || ''}"></div>`;
+        html += `<div class="field-group"><label>interval (s)</label><input id="apiInterval" type="number" value="${cell.interval || 60}"></div>`;
+        html += `<div class="field-group"><label>method</label><select id="apiMethod"><option ${cell.method==='GET'?'selected':''}>GET</option><option ${cell.method==='POST'?'selected':''}>POST</option></select></div>`;
+      } else if (kind === 'ai') {
+        html += `<div class="field-group"><label>prompt</label><textarea id="aiPrompt" rows="2">${cell.prompt || ''}</textarea></div>`;
+        html += `<div class="field-group"><label>system</label><input id="aiSystem" value="${cell.system || ''}"></div>`;
+        html += `<div class="field-group"><label>model</label><input id="aiModel" value="${cell.model || 'gpt-4o'}"></div>`;
+        html += `<div class="field-group"><label>response model</label><input id="aiResp" value="${cell.response_model || 'text'}"></div>`;
+      } else if (kind === 'program') {
+        html += `<div class="field-group"><label>program</label><textarea id="programField" rows="5">${cell.program || ''}</textarea></div>`;
+      } else if (kind === 'sensor') {
+        html += `<div class="field-group"><label>sensor type</label><input id="sensorType" value="${cell.sensor_type || ''}"></div>`;
+        html += `<div class="field-group"><label>sample rate</label><input id="sensorRate" type="number" step="0.1" value="${cell.sample_rate || 1}"></div>`;
+      } else if (kind === 'router') {
+        html += `<div class="field-group"><label>routes (JSON)</label><textarea id="routerRoutes" rows="4">${cell.routes || '{}'}</textarea></div>`;
+      } else if (kind === 'vector_store') {
+        html += `<div class="field-group"><label>collection</label><input id="vectorCol" value="${cell.collection || ''}"></div>`;
+        html += `<div class="field-group"><label>dimensions</label><input id="vectorDim" type="number" value="${cell.dimensions || 128}"></div>`;
+      }
+      html += `<div style="margin-top:16px; display:flex; gap:8px;"><button class="btn primary" id="applyBtn">apply changes</button><button class="btn" id="previewBtn">preview</button></div>`;
+      html += `<div class="preview-box" id="previewBox" style="margin-top:12px;">preview</div>`;
+      area.innerHTML = html;
+
+      // depends_on rendering
+      if (kind === 'formula') {
+        const container = document.getElementById('dependsContainer');
+        (cell.depends_on || []).forEach(dep => {
+          const tag = document.createElement('span');
+          tag.className = 'dep-tag';
+          tag.innerHTML = `${dep} <button data-dep="${dep}">✕</button>`;
+          tag.querySelector('button').addEventListener('click', (e) => {
+            cell.depends_on = cell.depends_on.filter(x => x !== dep);
+            renderEditor();
+          });
+          container.appendChild(tag);
+        });
+        document.getElementById('addDepBtn').addEventListener('click', () => {
+          const inp = document.getElementById('newDep');
+          if (inp.value.trim()) {
+            if (!cell.depends_on) cell.depends_on = [];
+            if (!cell.depends_on.includes(inp.value.trim())) cell.depends_on.push(inp.value.trim());
+            renderEditor();
+          }
+        });
+      }
+
+      document.getElementById('applyBtn').addEventListener('click', () => {
+        applyChanges(cell);
+        saveToStorage();
+        renderCellList();
+        renderEditor();
+        drawGraph();
+      });
+      document.getElementById('previewBtn').addEventListener('click', () => {
+        applyChanges(cell);
+        const val = computeCell(cell.id);
+        document.getElementById('previewBox').textContent = (val === undefined ? 'undefined' : JSON.stringify(val));
+        drawGraph();
+      });
+    }
+
+    function applyChanges(cell) {
+      const get = (id) => document.getElementById(id);
+      if (get('cellName')) cell.name = get('cellName').value;
+      if (cell.kind === 'value') {
+        if (get('valueType')) cell.type = get('valueType').value;
+        if (get('valueField')) cell.value = get('valueField').value;
+      } else if (cell.kind === 'formula') {
+        if (get('formulaBody')) cell.body = get('formulaBody').value;
+      } else if (cell.kind === 'listener') {
+        if (get('listensField')) cell.listens = get('listensField').value;
+        if (get('listenerFn')) cell.fn = get('listenerFn').value;
+      } else if (cell.kind === 'api') {
+        if (get('apiEndpoint')) cell.endpoint = get('apiEndpoint').value;
+        if (get('apiInterval')) cell.interval = parseFloat(get('apiInterval').value) || 60;
+        if (get('apiMethod')) cell.method = get('apiMethod').value;
+      } else if (cell.kind === 'ai') {
+        if (get('aiPrompt')) cell.prompt = get('aiPrompt').value;
+        if (get('aiSystem')) cell.system = get('aiSystem').value;
+        if (get('aiModel')) cell.model = get('aiModel').value;
+        if (get('aiResp')) cell.response_model = get('aiResp').value;
+      } else if (cell.kind === 'program') {
+        if (get('programField')) cell.program = get('programField').value;
+      } else if (cell.kind === 'sensor') {
+        if (get('sensorType')) cell.sensor_type = get('sensorType').value;
+        if (get('sensorRate')) cell.sample_rate = parseFloat(get('sensorRate').value) || 1;
+      } else if (cell.kind === 'router') {
+        if (get('routerRoutes')) cell.routes = get('routerRoutes').value;
+      } else if (cell.kind === 'vector_store') {
+        if (get('vectorCol')) cell.collection = get('vectorCol').value;
+        if (get('vectorDim')) cell.dimensions = parseInt(get('vectorDim').value) || 128;
+      }
+    }
+
+    // ---------- create & add ----------
+    function addCell(kind) {
+      const cell = defaultCell(kind);
+      cells[cell.id] = cell;
+      order.push(cell.id);
+      selectedId = cell.id;
+      saveToStorage();
+      renderCellList();
+      renderEditor();
+      drawGraph();
+    }
+
+    // ---------- export / import ----------
+    function exportJSON() {
+      const data = { cells, order };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'quilt_sheet.qzt';
+      a.click(); URL.revokeObjectURL(url);
+    }
+    function importJSON(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.cells && data.order) {
+            cells = data.cells; order = data.order.filter(id => cells[id]);
+            selectedId = null;
+            saveToStorage();
+            renderCellList(); renderEditor(); drawGraph();
+          } else { alert('invalid quilt file'); }
+        } catch(err) { alert('parse error'); }
+      };
+      reader.readAsText(file);
+    }
+
+    // ---------- wire events ----------
+    document.getElementById('addCellBtn').addEventListener('click', () => addCell('value'));
+    document.getElementById('addValueBtn').addEventListener('click', () => addCell('value'));
+    document.getElementById('addFormulaBtn').addEventListener('click', () => addCell('formula'));
+    document.getElementById('addListenerBtn').addEventListener('click', () => addCell('listener'));
+    document.getElementById('addApiBtn').addEventListener('click', () => addCell('api'));
+    document.getElementById('addAiBtn').addEventListener('click', () => addCell('ai'));
+    document.getElementById('addProgramBtn').addEventListener('click', () => addCell('program'));
+    document.getElementById('addSensorBtn').addEventListener('click', () => addCell('sensor'));
+    document.getElementById('addRouterBtn').addEventListener('click', () => addCell('router'));
+    document.getElementById('addVectorBtn').addEventListener('click', () => addCell('vector_store'));
+    document.getElementById('runBtn').addEventListener('click', runSheet);
+    document.getElementById('saveBtn').addEventListener('click', exportJSON);
+    document.getElementById('exportJsonBtn').addEventListener('click', exportJSON);
+    document.getElementById('loadBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      if (e.target.files[0]) importJSON(e.target.files[0]);
+      e.target.value = '';
+    });
+
+    // init
+    loadFromStorage();
+    if (order.length > 0) selectedId = order[0];
+    renderCellList();
+    renderEditor();
+    drawGraph();
+  })();
+</script>
+</body>
+</html>
