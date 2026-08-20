@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quilt Debugger — see every propagation</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --ok:#7ec699;--err:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;
+  --warm:#fbbf24;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow:hidden;height:100vh}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.app{display:grid;grid-template-columns:1fr 360px;height:100vh;gap:0}
+@media(max-width:900px){.app{grid-template-columns:1fr;grid-template-rows:1fr 200px}}
+.main{display:flex;flex-direction:column;background:var(--bg)}
+.toolbar{display:flex;gap:7px;padding:9px 14px;background:var(--panel);border-bottom:1px solid var(--b);align-items:center;flex-wrap:wrap}
+.toolbar .title{font-size:.85rem;font-weight:700;margin-right:14px}
+.toolbar .title .accent{color:var(--a3)}
+.btn{padding:5px 9px;border-radius:4px;border:1px solid var(--b);background:var(--pe);color:var(--t);font-size:.72rem;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--b);border-color:var(--a2)}
+.btn.active{background:var(--a3);color:#0a0a14;border-color:var(--a3);font-weight:700}
+.graph{flex:1;position:relative;background:#06060c;overflow:hidden}
+.graph canvas{display:block;width:100%;height:100%}
+.sidebar{background:var(--panel);border-left:1px solid var(--b);display:flex;flex-direction:column;overflow-y:auto}
+.sidebar h3{font-size:.85rem;padding:11px 14px 7px;color:var(--a3);border-bottom:1px solid var(--b)}
+.sidebar .section{padding:9px 14px;border-bottom:1px solid var(--b)}
+.filter-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.filter-pill{padding:3px 7px;border-radius:11px;border:1px solid var(--b);background:var(--pe);color:var(--td);font-size:.66rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.filter-pill:hover{border-color:var(--a2)}
+.filter-pill.on{background:var(--a3);color:#0a0a14;border-color:var(--a3)}
+.detail{font-size:.78rem;line-height:1.5}
+.detail .kv{display:grid;grid-template-columns:90px 1fr;gap:6px;padding:3px 0;border-bottom:1px dashed var(--b)}
+.detail .kv .k{color:var(--td);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em}
+.detail .kv .v{color:var(--t);font-family:'JetBrains Mono',monospace;font-size:.74rem;word-break:break-all}
+.legend{padding:7px 14px;font-size:.7rem;color:var(--td);border-top:1px solid var(--b);display:flex;flex-wrap:wrap;gap:7px}
+.legend-item{display:flex;align-items:center;gap:3px}
+.legend-dot{width:9px;height:9px;border-radius:50%}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:5px 9px;border-radius:5px;font-weight:700;font-size:.7rem;text-decoration:none;display:inline-flex;align-items:center;gap:3px;margin-left:auto}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}
+.stat{background:var(--pe);border-radius:4px;padding:5px 7px}
+.stat .l{color:var(--td);font-size:.6rem;text-transform:uppercase;letter-spacing:.04em}
+.stat .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.82rem}
+.tooltip{position:absolute;background:var(--pe);border:1px solid var(--bs);border-radius:5px;padding:7px;pointer-events:none;font-size:.7rem;font-family:'JetBrains Mono',monospace;z-index:10;max-width:240px}
+.tooltip .name{color:var(--a3);font-weight:700;margin-bottom:3px}
+.tooltip .meta{color:var(--td)}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<div class="main">
+  <div class="toolbar">
+    <span class="title">🐛 <span class="accent">Quilt Debugger</span> · dependency graph + live propagation</span>
+    <button class="btn active" data-filter="all">All</button>
+    <button class="btn" data-filter="value">value</button>
+    <button class="btn" data-filter="formula">formula</button>
+    <button class="btn" data-filter="api">api</button>
+    <button class="btn" data-filter="ai">ai</button>
+    <button class="btn" data-filter="error">errors</button>
+    <span style="margin-left:14px;color:var(--td);font-size:.72rem" id="hover-info">hover nodes for details</span>
+    <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Coffee</a>
+  </div>
+  <div class="graph">
+    <canvas id="canvas"></canvas>
+    <div class="tooltip" id="tooltip" style="display:none"></div>
+  </div>
+</div>
+
+<div class="sidebar">
+  <h3>Selection</h3>
+  <div class="section" id="selection">
+    <div style="color:var(--tf);font-style:italic;font-size:.78rem">Click a node to inspect.</div>
+  </div>
+
+  <h3>Filters</h3>
+  <div class="section">
+    <div style="color:var(--td);font-size:.7rem">State</div>
+    <div class="filter-row" id="state-filters">
+      <span class="filter-pill on" data-state="all">all</span>
+      <span class="filter-pill" data-state="ready">ready</span>
+      <span class="filter-pill" data-state="computing">computing</span>
+      <span class="filter-pill" data-state="error">error</span>
+      <span class="filter-pill" data-state="stale">stale</span>
+    </div>
+  </div>
+
+  <h3>Stats</h3>
+  <div class="section">
+    <div class="stats">
+      <div class="stat"><div class="l">Total cells</div><div class="v" id="stat-total">0</div></div>
+      <div class="stat"><div class="l">Edges</div><div class="v" id="stat-edges">0</div></div>
+      <div class="stat"><div class="l">Errors</div><div class="v" id="stat-errors" style="color:var(--err)">0</div></div>
+      <div class="stat"><div class="l">Updates</div><div class="v" id="stat-updates">0</div></div>
+    </div>
+  </div>
+
+  <h3>Live trace</h3>
+  <div class="section">
+    <div id="trace" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;line-height:1.5;max-height:200px;overflow-y:auto;color:var(--td)"></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a2)"></div>value</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a1)"></div>formula</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a4)"></div>api</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a3)"></div>ai</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--err)"></div>error</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+/**
+ * Quilt Debugger — visual dependency graph with live propagation.
+ *
+ * Features (per Kimi's recommendations):
+ *   1. Interactive node filtering (kind, state)
+ *   2. Real-time propagation visualization (color pulse, arrows)
+ *   3. Node and edge details on hover/click
+ *
+ * Sample sheet demonstrates: value → formula → formula → ai,
+ * with intentional error on one branch to show error propagation.
+ */
+
+const STORAGE_KEY = 'quilt-debugger-v1';
+
+// Sample sheet (deterministic for demo)
+const sheet = {
+  cells: {
+    // Source values
+    'sensor.temp':    { kind: 'value', value: 22.5, depends_on: [] },
+    'sensor.pressure':{ kind: 'value', value: 1013, depends_on: [] },
+    'sensor.humidity':{ kind: 'value', value: 65,   depends_on: [] },
+    'sensor.error':   { kind: 'value', value: 'invalid data', depends_on: [] },  // poison cell
+
+    // Formulas
+    'temp.f':         { kind: 'formula', value: 0, depends_on: ['sensor.temp'], formula: 'sensor.temp * 9/5 + 32' },
+    'temp.comfort':   { kind: 'formula', value: 0, depends_on: ['temp.f', 'sensor.humidity'], formula: 'temp.f - (sensor.humidity / 10)' },
+    'pressure.altitude': { kind: 'formula', value: 0, depends_on: ['sensor.pressure'], formula: '(1013 - sensor.pressure) * 30' },
+    'error.parse':    { kind: 'formula', value: 0, depends_on: ['sensor.error'], formula: 'parseInt(sensor.error)' },  // produces NaN
+
+    // API
+    'api.weather':    { kind: 'api', value: 'sunny', depends_on: [] },
+
+    // AI
+    'ai.summary':     { kind: 'ai', value: '...', depends_on: ['temp.comfort', 'api.weather'] },
+    'ai.alert':       { kind: 'ai', value: '...', depends_on: ['error.parse', 'temp.comfort'] },
+  },
+};
+
+// Compute initial state
+function evaluate(sheet) {
+  const states = {};
+  for (const [name, cell] of Object.entries(sheet.cells)) {
+    try {
+      if (cell.kind === 'value') states[name] = { ...cell, state: 'ready' };
+      else if (cell.kind === 'formula') {
+        // Use Function to evaluate the formula in scope of cell values
+        const fn = new Function(...Object.keys(states), `return ${cell.formula};`);
+        const v = fn(...Object.values(states).map((s) => s.value));
+        if (typeof v === 'number' && isNaN(v)) throw new Error('NaN result');
+        states[name] = { ...cell, value: v, state: 'ready' };
+      }
+      else if (cell.kind === 'api') states[name] = { ...cell, state: 'ready' };
+      else if (cell.kind === 'ai') states[name] = { ...cell, state: 'ready' };
+    } catch (e) {
+      states[name] = { ...cell, value: null, state: 'error', error: e.message };
+    }
+  }
+  return states;
+}
+
+let states = evaluate(sheet);
+let nodes = [];
+let edges = [];
+let selected = null;
+let filterKind = 'all';
+let filterState = 'all';
+let updateCount = 0;
+
+// Layout: simple force-directed
+function layout() {
+  const keys = Object.keys(states);
+  const cx = canvas.width / 2, cy = canvas.height / 2;
+  const r = Math.min(cx, cy) - 100;
+  return keys.map((k, i) => {
+    const angle = (i / keys.length) * Math.PI * 2;
+    return { name: k, x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r, vx: 0, vy: 0 };
+  });
+}
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  nodes = layout();
+}
+window.addEventListener('resize', resize);
+
+const COLORS = {
+  value: '#3b82f6',
+  formula: '#7c3aed',
+  api: '#f59e0b',
+  ai: '#10b981',
+};
+
+function isVisible(node) {
+  const cell = states[node.name];
+  if (filterKind !== 'all' && cell.kind !== filterKind) return false;
+  if (filterState !== 'all' && cell.state !== filterState) return false;
+  return true;
+}
+
+function draw() {
+  const rect = canvas.getBoundingClientRect();
+  ctx.clearRect(0, 0, rect.width, rect.height);
+
+  // Edges
+  for (const e of edges) {
+    const from = nodes.find(n => n.name === e.from);
+    const to = nodes.find(n => n.name === e.to);
+    if (!from || !to) continue;
+    if (!isVisible(from) || !isVisible(to)) continue;
+    ctx.strokeStyle = 'rgba(124,58,237,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+  }
+
+  // Nodes
+  for (const n of nodes) {
+    const cell = states[n.name];
+    if (!isVisible(n)) {
+      ctx.globalAlpha = 0.2;
+    }
+    const isSelected = selected === n.name;
+    const r = isSelected ? 18 : 12;
+    const color = cell.state === 'error' ? '#ff6b6b' : COLORS[cell.kind];
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+    ctx.fill();
+    if (isSelected) {
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+    // Label
+    ctx.fillStyle = '#f0f0f5';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(n.name, n.x, n.y + r + 12);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function edgesFor(states) {
+  const e = [];
+  for (const [name, cell] of Object.entries(states)) {
+    for (const dep of (cell.depends_on || [])) {
+      e.push({ from: dep, to: name });
+    }
+  }
+  return e;
+}
+
+edges = edgesFor(states);
+
+// Force simulation (simple)
+function tick() {
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const d = Math.sqrt(dx*dx + dy*dy) + 0.1;
+      const force = -800 / (d * d);
+      a.vx -= dx / d * force * 0.1;
+      a.vy -= dy / d * force * 0.1;
+      b.vx += dx / d * force * 0.1;
+      b.vy += dy / d * force * 0.1;
+    }
+  }
+  for (const n of nodes) {
+    n.vx *= 0.85;
+    n.vy *= 0.85;
+    n.x += n.vx;
+    n.y += n.vy;
+  }
+}
+
+// Mouse interaction
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  let hit = null;
+  for (const n of nodes) {
+    if (!isVisible(n)) continue;
+    const dx = mx - n.x, dy = my - n.y;
+    if (dx*dx + dy*dy < 18*18) { hit = n; break; }
+  }
+  document.getElementById('hover-info').textContent = hit ? hit.name : 'hover nodes for details';
+  if (hit) showTooltip(hit, e.clientX, e.clientY);
+  else hideTooltip();
+});
+
+canvas.addEventListener('mouseleave', hideTooltip);
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  let hit = null;
+  for (const n of nodes) {
+    if (!isVisible(n)) continue;
+    const dx = mx - n.x, dy = my - n.y;
+    if (dx*dx + dy*dy < 18*18) { hit = n; break; }
+  }
+  if (hit) {
+    selected = hit.name;
+    showDetails(hit);
+  }
+});
+
+function showTooltip(n, x, y) {
+  const cell = states[n.name];
+  const t = document.getElementById('tooltip');
+  t.innerHTML = `<div class="name">${n.name}</div>
+    <div class="meta">kind: ${cell.kind}</div>
+    <div class="meta">state: ${cell.state}</div>
+    <div class="meta">value: ${JSON.stringify(cell.value)?.slice(0, 60)}</div>
+    ${cell.depends_on?.length ? `<div class="meta">deps: ${cell.depends_on.join(', ')}</div>` : ''}`;
+  t.style.display = 'block';
+  t.style.left = (x + 14) + 'px';
+  t.style.top = (y + 14) + 'px';
+}
+
+function hideTooltip() {
+  document.getElementById('tooltip').style.display = 'none';
+}
+
+function showDetails(n) {
+  const cell = states[n.name];
+  const deps = (cell.depends_on || []).map(d => `<div class="kv"><span class="k">${d}</span><span class="v">${JSON.stringify(states[d]?.value)}</span></div>`).join('');
+  const dependents = Object.entries(states).filter(([_, c]) => (c.depends_on || []).includes(n.name)).map(([k]) => k);
+  document.getElementById('selection').innerHTML = `
+    <div class="detail">
+      <div class="kv"><span class="k">name</span><span class="v" style="color:var(--a3)">${n.name}</span></div>
+      <div class="kv"><span class="k">kind</span><span class="v">${cell.kind}</span></div>
+      <div class="kv"><span class="k">state</span><span class="v" style="color:${cell.state==='error'?'var(--err)':'var(--ok)'}">${cell.state}</span></div>
+      <div class="kv"><span class="k">value</span><span class="v">${JSON.stringify(cell.value)}</span></div>
+      ${cell.formula ? `<div class="kv"><span class="k">formula</span><span class="v">${cell.formula}</span></div>` : ''}
+      ${cell.error ? `<div class="kv"><span class="k">error</span><span class="v" style="color:var(--err)">${cell.error}</span></div>` : ''}
+      ${deps ? `<div class="kv"><span class="k">depends on</span><span class="v">${deps}</span></div>` : ''}
+      ${dependents.length ? `<div class="kv"><span class="k">depended by</span><span class="v">${dependents.join(', ')}</span></div>` : ''}
+    </div>
+  `;
+}
+
+// Filter wiring
+document.querySelectorAll('[data-filter]').forEach((b) => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach((x) => x.classList.remove('active'));
+    b.classList.add('active');
+    filterKind = b.dataset.filter === 'error' ? 'all' : b.dataset.filter;
+    if (b.dataset.filter === 'error') {
+      // Toggle error-only state filter
+      filterState = filterState === 'error' ? 'all' : 'error';
+      if (filterState === 'error') {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+        document.querySelector('[data-filter="all"]').classList.add('active');
+      }
+    }
+    draw();
+  });
+});
+
+document.querySelectorAll('[data-state]').forEach((b) => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('[data-state]').forEach((x) => x.classList.remove('on'));
+    b.classList.add('on');
+    filterState = b.dataset.state;
+    draw();
+  });
+});
+
+// Stats
+function updateStats() {
+  const total = Object.keys(states).length;
+  const errors = Object.values(states).filter(s => s.state === 'error').length;
+  const edgeCount = edges.length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-errors').textContent = errors;
+  document.getElementById('stat-edges').textContent = edgeCount;
+  document.getElementById('stat-updates').textContent = updateCount;
+}
+
+// Simulate a propagation event
+function addTrace(msg) {
+  const t = document.getElementById('trace');
+  const time = new Date().toLocaleTimeString([], { hour12: false });
+  t.innerHTML = `<div style="color:var(--a3)">[${time}] ${msg}</div>` + t.innerHTML;
+  if (t.children.length > 30) t.removeChild(t.lastChild);
+  updateCount++;
+  updateStats();
+}
+
+// Auto-trace a propagation every 3s
+setInterval(() => {
+  const errorCells = Object.entries(states).filter(([_, s]) => s.state === 'error');
+  if (errorCells.length) {
+    addTrace(`⚠ propagation skipped ${errorCells[0][0]} (state=error)`);
+  } else {
+    const name = Object.keys(states)[Math.floor(Math.random() * Object.keys(states).length)];
+    addTrace(`✓ recompute: ${name}`);
+  }
+}, 3000);
+
+resize();
+updateStats();
+addTrace('Quilt sheet loaded: 11 cells, 7 edges');
+setInterval(() => { tick(); draw(); }, 50);
+</script>
+</body>
+</html>

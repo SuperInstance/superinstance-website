@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From React to Quilt — the bridge</title>
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--ok:#7ec699;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.65;font-size:15px}
+.m{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1000px;margin:0 auto;padding:22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.7rem;font-weight:800}
+h2{font-size:1.3rem;margin:32px 0 12px;color:var(--a3)}
+h3{font-size:1.05rem;margin:20px 0 8px;color:var(--a4)}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:1.1rem;color:var(--td);max-width:780px;margin-bottom:24px}
+p{margin-bottom:14px;color:var(--td)}
+ul,ol{margin:0 0 14px 24px;color:var(--td)}
+li{margin-bottom:6px}
+code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--pe);padding:1px 5px;border-radius:3px;color:var(--a3)}
+pre{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px;overflow-x:auto;font-size:.82rem;line-height:1.5;color:var(--td);margin:14px 0}
+pre code{background:none;padding:0;color:inherit}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+@media(max-width:700px){.compare{grid-template-columns:1fr}}
+.cmp{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px}
+.cmp h4{color:var(--a1);margin-bottom:8px;font-size:.9rem}
+.cmp.react h4{color:var(--a2)}
+.cmp pre{margin:0}
+.callout{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:14px;margin:18px 0;color:var(--td)}
+.callout strong{color:var(--a1)}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 13px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.coffee-bottom{text-align:center;padding:30px 20px 20px;margin-top:50px;border-top:1px solid var(--b)}
+.coffee-bottom a{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.coffee-bottom a:hover{filter:brightness(1.1);color:#422006}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>From <span style="color:var(--a2)">React</span> to <span class="accent">Quilt</span></h1>
+    <p class="lead">You know React. You know props, hooks, and the data flow. Quilt is the same idea scaled up — instead of components, you have <strong>cells</strong>. And instead of "lift state up", the state lives in the cell itself.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="callout">
+  <strong>The mental model:</strong> A Quilt cell is a "Smart Component" that acts like a mini-app. It owns its data fetching, state, and logic internally. You compose cells just like React components, but they manage their own lifecycle and dependencies. Think of it as a <code>useEffect</code> + <code>useState</code> bundle, encapsulated in a deployable silo.
+</div>
+
+<h2>The basic patterns</h2>
+
+<h3>1. A value cell is like a <code>useState</code></h3>
+
+<div class="compare">
+  <div class="cmp react">
+    <h4>React</h4>
+    <pre><code>function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;div&gt;
+      {count}
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+        +
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  </div>
+  <div class="cmp">
+    <h4>Quilt</h4>
+    <pre><code>cells:
+  count:
+    kind: value
+    value: 0
+  message:
+    kind: formula
+    formula: '"Count is " + count'</code></pre>
+  </div>
+</div>
+
+<p>In React, the value lives in component state. In Quilt, it lives in a cell. The cell is the source of truth, addressable by name, and any formula referencing it will update when it changes.</p>
+
+<h3>2. A formula cell is like a <code>useMemo</code></h3>
+
+<div class="compare">
+  <div class="cmp react">
+    <h4>React</h4>
+    <pre><code>function Display({ count }) {
+  const doubled = useMemo(
+    () =&gt; count * 2, [count]
+  );
+  return &lt;div&gt;{doubled}&lt;/div&gt;;
+}</code></pre>
+  </div>
+  <div class="cmp">
+    <h4>Quilt</h4>
+    <pre><code>cells:
+  count:
+    kind: value
+    value: 0
+  doubled:
+    kind: formula
+    formula: "count * 2"</code></pre>
+  </div>
+</div>
+
+<p>Same semantics — the formula re-evaluates when its dependencies change. But in Quilt, the formula is a cell, not a function call. You can address it from anywhere, subscribe to it, persist it.</p>
+
+<h3>3. An api cell is like a <code>useEffect</code> with fetch</h3>
+
+<div class="compare">
+  <div class="cmp react">
+    <h4>React</h4>
+    <pre><code>function User({ id }) {
+  const [user, setUser] = useState(null);
+  useEffect(() =&gt; {
+    fetch(`/api/users/${id}`)
+      .then(r =&gt; r.json())
+      .then(setUser);
+  }, [id]);
+  if (!user) return &lt;Loading/&gt;;
+  return &lt;div&gt;{user.name}&lt;/div&gt;;
+}</code></pre>
+  </div>
+  <div class="cmp">
+    <h4>Quilt</h4>
+    <pre><code>cells:
+  user:
+    kind: api
+    url: "https://api.example.com/users/{{id}}"
+    cache_ttl: 60000
+  user.name:
+    kind: formula
+    formula: "user.name"</code></pre>
+  </div>
+</div>
+
+<p>The Quilt api cell has caching, error handling, and dependency tracking built in. The same URL with the same parameters is a content-addressed value — you can subscribe to it from anywhere in your app.</p>
+
+<h2>What Quilt adds that React doesn't</h2>
+
+<table style="width:100%;border-collapse:collapse;margin:18px 0;font-size:.85rem">
+<tr><th style="background:var(--pe);padding:8px 10px;text-align:left;color:var(--td)">Concept</th><th style="background:var(--pe);padding:8px 10px;text-align:left;color:var(--td)">React</th><th style="background:var(--pe);padding:8px 10px;text-align:left;color:var(--td)">Quilt</th></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">State location</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Component tree</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">A cell, addressable by name</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Data flow</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Props down, callbacks up</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Reactive propagation through the cell graph</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Async data</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">useEffect + fetch + useState</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">One <code>api</code> cell</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Derived state</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">useMemo + dependencies array</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">A <code>formula</code> cell — deps are auto-discovered</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Side effects</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">useEffect with deps</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">A <code>listener</code> cell — fires when upstream changes</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">LLM calls</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Custom hook with provider abstraction</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">An <code>ai</code> cell with built-in caching, content addressing</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Cross-app sharing</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Context, Redux, Zustand</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Subscribe to any cell by URI, across tiers, across processes</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Persistence</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">localStorage, IndexedDB, server DB</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)"><code>FederatedArtifactStore</code> — 3-tier cache + R2 canonical</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Reactivity</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Built into React, but stateful</td><td style="padding:7px 10px;border-bottom:1px solid var(--b)">Pure: cells have values, propagation is deterministic</td></tr>
+</table>
+
+<h2>The mental shift</h2>
+
+<p>In React, you think <em>components</em>. In Quilt, you think <strong>cells</strong>. The component model assumes a tree; the cell model assumes a graph. The component model assumes render; the cell model assumes propagation. The component model assumes local state; the cell model assumes addressable state.</p>
+
+<p>When you start a Quilt project, you don't reach for a component. You reach for a cell:</p>
+
+<pre><code>// React: a component with state, props, effects
+&lt;UserProfile userId={42} onLogout={handleLogout} /&gt;
+
+// Quilt: a graph of cells, all addressable
+cells:
+  user:
+    kind: api
+    url: "https://api.example.com/users/42"
+  user.name:
+    kind: formula
+    formula: "user.name"
+  is_logged_in:
+    kind: formula
+    formula: "user != null"
+  on_logout:
+    kind: listener
+    depends_on: [is_logged_in]
+    fn: "if (!is_logged_in) clearSession()"</code></pre>
+
+<p>You don't pass props. You address cells by name. The graph IS the app. The propagation IS the render. The subscription IS the re-render.</p>
+
+<h2>When to use which</h2>
+
+<p>Quilt isn't a React replacement. They have different sweet spots:</p>
+
+<ul>
+  <li><strong>React</strong> wins for component trees, declarative UI, complex local state. Most apps.</li>
+  <li><strong>Quilt</strong> wins for cross-tier data flow, federated systems, AI agents, embedded control loops, anything that needs addressable, subscribable, persistent state across boundaries.</li>
+</ul>
+
+<p>You can also use both: render Quilt cells as React props.</p>
+
+<pre><code>// In a React component
+import { useCell } from '@quilt/react';
+
+function Profile() {
+  const user = useCell('user');
+  return &lt;div&gt;{user.name}&lt;/div&gt;;  // re-renders when the user cell changes
+}</code></pre>
+
+<p>(<code>@quilt/react</code> is a thin adapter: <code>useCell = cell =&gt; useState + useEffect subscribe</code>.)</p>
+
+<h2>Try it</h2>
+
+<p>Open <a href="quilt-live.html">Quilt Live</a> in your browser — a self-contained 70KB React-free Quilt runtime. Or run <code>npm install @quilt/core</code> and try the patterns above in your own app.</p>
+
+</div>
+
+<div class="coffee-bottom">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee — support the work</a>
+  <div style="margin-top:9px;color:var(--tf);font-size:.78rem">Quilt is Apache 2.0. The cell model is the substrate.</div>
+</div>
+
+</body>
+</html>
