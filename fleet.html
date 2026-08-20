@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fleet — all 20 Quilt repos at a glance</title>
+<title>Fleet — all 35 Quilt repos at a glance</title>
 <style>
 :root{
   --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
@@ -64,7 +64,7 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
 
 <div class="top">
   <div>
-    <h1>🚢 <span class="accent">Fleet</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— all 20 Quilt repos</span></h1>
+    <h1>🚢 <span class="accent">Fleet</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— all 35 Quilt repos</span></h1>
     <p style="margin-top:3px">A single page showing every Quilt repo: tier, language, dependencies, test counts, links. Click a card to open the repo.</p>
   </div>
   <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
@@ -81,16 +81,17 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
   <a href="ai-sheet.html">AI sheet</a>
   <a href="pincher.html">Pincher</a>
   <a href="vibe.html">Vibe</a>
+  <a href="polyformalism.html">Polyformalism</a>
   <a href="fleet.html" class="cur">Fleet</a>
 </div>
 
 <div class="intro">
-  <p>All 20 Quilt repos, live. Click any card to open the repo on GitHub. Filter by tier or language.</p>
+  <p>All 35 Quilt repos, live. <strong>12-language polyformalism</strong> added — same model expressed in TypeScript, Tutor, Pydantic-AI, Mojo, Julia, Chapel, COBOL, C, C++, C#, Metal, Swift. <a href="polyformalism.html" style="color:var(--a3)">See the comparison →</a></p>
 </div>
 
 <div class="summary">
-  <div class="stat"><div class="v good" id="s-repos">25</div><div class="l">repos</div></div>
-  <div class="stat"><div class="v good" id="s-tests">180+</div><div class="l">tests</div></div>
+  <div class="stat"><div class="v good" id="s-repos">35</div><div class="l">repos</div></div>
+  <div class="stat"><div class="v good" id="s-tests">253+</div><div class="l">tests</div></div>
   <div class="stat"><div class="v good" id="s-llms">3</div><div class="l">LLM APIs</div></div>
   <div class="stat"><div class="v good" id="s-tools">21+</div><div class="l">web tools</div></div>
   <div class="stat"><div class="v good" id="s-platforms">5</div><div class="l">platforms</div></div>
@@ -107,10 +108,12 @@ p{color:var(--td);margin-bottom:11px;font-size:.85rem}
   <span class="chip" data-tier="edge">edge</span>
   <span class="chip" data-tier="hardware">hardware</span>
   <span class="chip" data-tier="infra">infra</span>
+  <span class="chip" data-tier="polyformalism">polyformalism</span>
   <span style="margin-left:11px" class="lbl">Lang:</span>
   <span class="chip on" data-lang="all">all</span>
   <span class="chip" data-lang="ts">TypeScript</span>
   <span class="chip" data-lang="rs">Rust</span>
+  <span class="chip" data-lang="py">Python</span>
 </div>
 
 <div class="repos" id="repos"></div>
@@ -155,6 +158,18 @@ const REPOS = [
   { name: 'quilt-core-os', icon: '🛡️', tier: 'infra', lang: 'ts', desc: 'Immutable Ubuntu Core appliance. Atomic OS updates with instant rollback.', tests: 0, size: '21KB', deps: 2, version: '0.1.0' },
   { name: 'quilt-k3s', icon: '🧪', tier: 'infra', lang: 'ts', desc: 'K3s-based chaos testing. 5 scenarios. Self-healing verification in under 30s.', tests: 34, size: '29KB', deps: 2, version: '0.1.0' },
   { name: 'quilt-nomad', icon: '🏔️', tier: 'infra', lang: 'ts', desc: 'Quilt as control plane for HashiCorp Nomad. Cell→job, formula→task, api→http check.', tests: 14, size: '15KB', deps: 2, version: '0.1.0' },
+  // Polyformalism — 12 languages, one model
+  { name: 'quilt-tutor', icon: '📜', tier: 'polyformalism', lang: 'tutor', desc: 'PLATO Tutor (1970). The foundational polyformalism port. Multi-user cells, Fortran backend.', tests: 0, size: '15KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-pydantic-ai', icon: '🐍', tier: 'polyformalism', lang: 'py', desc: 'Pydantic-AI. Type-safe agents, modern descendant of Tutor. LINQ-style queries, decorators.', tests: 41, size: '12KB', deps: 1, version: '0.2.0' },
+  { name: 'quilt-mojo', icon: '🔥', tier: 'polyformalism', lang: 'mojo', desc: 'Mojo. Cells as types, SIMD-friendly formulas, compile-time reactivity.', tests: 0, size: '14KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-julia', icon: '🟣', tier: 'polyformalism', lang: 'jl', desc: 'Julia. Multiple dispatch = cell kinds. The reactive engine IS the type system.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-chapel', icon: '🏔️', tier: 'polyformalism', lang: 'chpl', desc: 'Chapel. Distributed cell evaluation across locales. Cells are inherently parallel.', tests: 0, size: '15KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-cobol', icon: '🏛️', tier: 'polyformalism', lang: 'cobol', desc: 'COBOL. The cell model is older than spreadsheets. Four divisions = layered cells.', tests: 0, size: '17KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-c', icon: '⚙️', tier: 'polyformalism', lang: 'c', desc: 'C. The mathematical core. Cells = structs, formulas = functions, no sugar.', tests: 0, size: '15KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-cpp', icon: '➕', tier: 'polyformalism', lang: 'cpp', desc: 'C++. Templates reveal the cell kind lattice. std::variant for any cell value.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-csharp', icon: '🎯', tier: 'polyformalism', lang: 'cs', desc: 'C#. Records, delegates, events, LINQ. All the pieces already exist.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-metal', icon: '🖥️', tier: 'polyformalism', lang: 'metal', desc: 'Metal. GPU-evaluated cells. Kernels = formulas, buffers = cell values.', tests: 0, size: '14KB', deps: 0, version: '0.1.0' },
+  { name: 'quilt-swift', icon: '🦅', tier: 'polyformalism', lang: 'swift', desc: 'Swift. @Published is exactly a ValueCell. Combine is exactly a reactive engine.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
 ];
 
 // ─────────────────────────────────────────────────────────────────
@@ -195,6 +210,7 @@ function render() {
         ${r.tier === 'core' ? '<a href="https://superinstance.dev/quilt.html">Demo</a>' : ''}
         ${r.name === 'quilt-pincher' ? '<a href="https://superinstance.dev/pincher.html">Demo</a>' : ''}
         ${r.name === 'quilt-elf' ? '<a href="https://superinstance.dev/vibe.html">Demo</a>' : ''}
+        ${r.tier === 'polyformalism' ? '<a href="https://superinstance.dev/polyformalism.html">All languages</a>' : ''}
       </div>
     </div>`;
   }).join('');
