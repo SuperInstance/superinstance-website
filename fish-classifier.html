@@ -1,634 +1,710 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quilt · Fish Deck · Live ML pipeline</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: #0b1a2a;
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, monospace;
-      color: #d9e5f2;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .header {
-      background: #0e2237;
-      padding: 0.6rem 1.2rem;
-      border-bottom: 1px solid #2f4b66;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .header h1 {
-      font-weight: 500;
-      font-size: 1.2rem;
-      letter-spacing: 0.5px;
-      color: #aaccee;
-    }
-
-    .header .badge {
-      background: #1f3a4f;
-      padding: 0.2rem 0.8rem;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      color: #b8d4f0;
-      border: 1px solid #3a5a77;
-    }
-
-    .workspace {
-      display: flex;
-      flex: 1;
-      min-height: 0;
-    }
-
-    /* LEFT: QUILT SHEET */
-    .quilt-sheet {
-      width: 44%;
-      min-width: 320px;
-      background: #102433;
-      border-right: 2px solid #2d4c66;
-      padding: 1rem 0.8rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .cell {
-      background: #152c3f;
-      border-radius: 8px;
-      border-left: 4px solid #3f7da0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-      padding: 0.6rem 0.8rem;
-      transition: all 0.1s ease;
-    }
-
-    .cell-title {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #7fa3c2;
-      margin-bottom: 0.2rem;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .cell-value {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #e1effa;
-      word-break: break-word;
-    }
-
-    .cell-small {
-      font-size: 0.8rem;
-      font-weight: 400;
-      color: #b7d0e8;
-      margin-top: 0.3rem;
-    }
-
-    .cell.fresh {
-      border-left-color: #6fd18c;
-      background: #193348;
-    }
-
-    .cell.a-b {
-      border-left-color: #c99b3f;
-    }
-
-    .cell.feedback {
-      border-left-color: #a05c7b;
-    }
-
-    .model-badge {
-      background: #0a1e2c;
-      padding: 2px 8px;
-      border-radius: 30px;
-      font-size: 0.7rem;
-      color: #8fc7ff;
-      border: 1px solid #2f5a7a;
-    }
-
-    .button-row {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: #1d3f57;
-      border: none;
-      color: white;
-      padding: 0.2rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      cursor: pointer;
-      border: 1px solid #3a6a8c;
-      transition: background 0.1s;
-    }
-
-    .btn:hover {
-      background: #2b5a7a;
-    }
-
-    .btn-trigger {
-      background: #2b4f6e;
-      border-color: #5b8db0;
-    }
-
-    .btn-trigger:hover {
-      background: #3f6b8f;
-    }
-
-    .btn-ab {
-      background: #6b4f2b;
-      border-color: #a07c3f;
-    }
-
-    .btn-ab:hover {
-      background: #8a6637;
-    }
-
-    .ref-grid {
-      display: flex;
-      gap: 0.3rem;
-      margin-top: 0.3rem;
-    }
-
-    .ref-thumb {
-      width: 40px;
-      height: 40px;
-      border-radius: 6px;
-      background: #1b3142;
-      border: 1px solid #3a5c7a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-      color: #aac4dd;
-      background-size: cover;
-      background-position: center;
-      text-shadow: 0 0 4px black;
-    }
-
-    /* RIGHT panel: camera + classification */
-    .camera-panel {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 1rem 1.5rem;
-      background: #0d1f2e;
-      gap: 1rem;
-      overflow-y: auto;
-    }
-
-    .drop-zone {
-      border: 2px dashed #3f6d92;
-      background: #102a3c;
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.1s;
-      flex-shrink: 0;
-    }
-
-    .drop-zone.dragover {
-      border-color: #9fc9ff;
-      background: #1a3b52;
-    }
-
-    .preview-box {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 160px;
-      background: #0b1a26;
-      border-radius: 12px;
-      border: 1px solid #2b5068;
-      overflow: hidden;
-    }
-
-    .preview-box canvas {
-      max-width: 100%;
-      max-height: 220px;
-      border-radius: 8px;
-      display: block;
-    }
-
-    .classify-result {
-      background: #142d41;
-      padding: 0.8rem 1.2rem;
-      border-radius: 12px;
-      border-left: 8px solid #6fc2ff;
-    }
-
-    .species-name {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #c6e2ff;
-    }
-
-    .confidence {
-      color: #8cb3d9;
-      font-size: 0.8rem;
-    }
-
-    .action-row {
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .btn-speak {
-      background: #2c4b69;
-      border-radius: 30px;
-      padding: 0.4rem 1.2rem;
-      font-size: 0.8rem;
-      border: 1px solid #4a7b9e;
-    }
-
-    .feedback-buttons {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.3rem;
-    }
-
-    .feedback-btn {
-      background: #3a2e4e;
-      border: 1px solid #6d4f7a;
-      color: #dacfe0;
-    }
-
-    .log-line {
-      font-family: monospace;
-      font-size: 0.7rem;
-      color: #8aa9c4;
-      background: #0a1822;
-      padding: 0.2rem 0.6rem;
-      border-radius: 10px;
-      margin-top: 0.3rem;
-    }
-
-    .flex-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    hr {
-      border: 0.5px solid #2d4b62;
-    }
-
-    /* scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #2b4a64;
-      border-radius: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fish-classifier · Quilt cells + AI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f7fc;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 24px 20px;
+        }
+        .app {
+            display: flex;
+            gap: 24px;
+            max-width: 1400px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        /* Quilt cells (left) */
+        .quilt-panel {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            padding: 24px 18px;
+            width: 300px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+        }
+        .cell {
+            background: #f8faff;
+            border-radius: 20px;
+            padding: 16px 14px;
+            border: 1px solid #e4e9f2;
+            transition: 0.2s;
+        }
+        .cell-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .badge {
+            background: #d9e2ef;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .cell-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn:hover {
+            background: #eef3fb;
+            border-color: #8ea3c0;
+        }
+        .btn-primary {
+            background: #1e3a5f;
+            border-color: #1e3a5f;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #14304e;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #b8c6da;
+        }
+        .model-version-toggle {
+            display: flex;
+            background: #eef2f7;
+            border-radius: 40px;
+            padding: 4px;
+        }
+        .model-version-toggle button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #2c3e50;
+        }
+        .model-version-toggle button.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            color: #0f2b45;
+        }
+        .training-data-box {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.7rem;
+            max-height: 110px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            border: 1px solid #dbe2ed;
+        }
+        .reference-folders {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .folder {
+            background: #f2f6fd;
+            border-radius: 16px;
+            padding: 10px;
+            border: 1px dashed #9fb3d1;
+        }
+        .folder-header {
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .folder-thumbs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+        .folder-thumbs img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .drop-zone {
+            border: 1px dashed #7f95b5;
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #3d5a7a;
+            background: #fafcff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .drop-zone:hover {
+            background: #e9f0fa;
+        }
+        /* Right side: camera + classification */
+        .workspace {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .camera-preview {
+            background: #dfe7f0;
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        #video {
+            width: 100%;
+            max-height: 280px;
+            border-radius: 20px;
+            background: #b7c4d4;
+            object-fit: cover;
+        }
+        .capture-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .upload-area {
+            background: #f1f5fb;
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+        .classification-result {
+            background: #f8faff;
+            border-radius: 24px;
+            padding: 20px;
+        }
+        .ab-test-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .ab-card {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid #dbe2ed;
+        }
+        .ab-card h4 {
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .mark-correct {
+            margin-top: 8px;
+        }
+        .thumb-preview {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .thumb-preview img {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+        .model-tag {
+            background: #dee8f5;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        .jsonl-export {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .footer-note {
+            font-size: 0.75rem;
+            color: #5b6f87;
+            margin-top: 8px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div class="header">
-    <h1>🐟 QUILT · FISH DECK</h1>
-    <span class="badge">⚙️ live pipeline · port / mid / starboard</span>
-  </div>
+<div class="app">
+    <!-- LEFT QUILT CELLS -->
+    <div class="quilt-panel">
+        <!-- Cell: model version -->
+        <div class="cell">
+            <div class="cell-title">MODEL VERSION <span class="badge" id="modelVersionBadge">v1</span></div>
+            <div class="model-version-toggle">
+                <button id="v1Btn" class="active">v1 heuristic</button>
+                <button id="v2Btn">v2 real model</button>
+            </div>
+            <div style="font-size:0.75rem; margin-top: 8px; color:#2c3e50;">A/B test enabled</div>
+        </div>
 
-  <div class="workspace">
-    <!-- LEFT: QUILT CELLS -->
-    <div class="quilt-sheet" id="quiltSheet">
-      <!-- cells injected by JS for clarity, but static skeleton for readability -->
+        <!-- Cell: training data (accumulated) -->
+        <div class="cell">
+            <div class="cell-title">TRAINING DATA <span class="badge" id="trainingCount">0</span></div>
+            <div class="training-data-box" id="trainingDataDisplay">[]</div>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button class="btn btn-outline" id="exportJsonlBtn">⬇️ export .jsonl</button>
+                <button class="btn btn-outline" id="clearTrainingBtn">clear</button>
+            </div>
+        </div>
+
+        <!-- Cell: reference folders (drag-drop) -->
+        <div class="cell">
+            <div class="cell-title">REFERENCE IMAGES</div>
+            <div class="reference-folders" id="referenceFolders">
+                <!-- dynamic folders for species -->
+            </div>
+        </div>
+
+        <!-- Cell: training run simulation -->
+        <div class="cell">
+            <div class="cell-title">TRAINING RUN</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn btn-primary" id="trainingRunBtn">⚡ trigger overnight run</button>
+                <div id="newModelInfo" style="font-size:0.8rem; background: #eef3fa; border-radius: 12px; padding: 8px;">
+                    <span style="font-weight:500;">new model:</span> v3 (simulated)
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- RIGHT: CAMERA + CLASSIFICATION -->
-    <div class="camera-panel" id="cameraPanel">
-      <div class="drop-zone" id="dropZone">
-        <p style="font-size:1.1rem; margin-bottom:0.5rem;">📸 Drop camera image here</p>
-        <p style="font-size:0.8rem; color:#8db3d0;">or click to select · live from deck</p>
-        <input type="file" id="fileInput" accept="image/*" hidden>
-      </div>
+    <!-- RIGHT WORKSPACE (camera + classification) -->
+    <div class="workspace">
+        <div class="camera-preview">
+            <video id="video" autoplay playsinline></video>
+            <div class="capture-row">
+                <button class="btn btn-primary" id="captureBtn">📸 capture</button>
+                <button class="btn" id="startCameraBtn">🎥 enable camera</button>
+                <label class="btn" for="imageUpload">📁 upload image</label>
+                <input type="file" id="imageUpload" accept="image/*">
+            </div>
+            <div class="thumb-preview" id="currentImagePreview"></div>
+        </div>
 
-      <div class="preview-box" id="previewBox">
-        <canvas id="previewCanvas" width="320" height="180"></canvas>
-      </div>
+        <!-- Classification result + A/B -->
+        <div class="classification-result">
+            <h3 style="font-weight:600; font-size:1.2rem; margin-bottom: 8px;">🐟 classification</h3>
+            <div id="classificationOutput" style="background:#eef3fa; border-radius: 16px; padding: 12px; min-height: 60px;">
+                <span style="color:#4a5f7a;">Upload or capture an image to classify.</span>
+            </div>
 
-      <div class="classify-result" id="classifyResult">
-        <div class="cell-title">🟢 species output cell</div>
-        <div class="species-name" id="speciesName">—</div>
-        <div class="confidence" id="confidenceText">waiting for image</div>
-      </div>
-
-      <div class="action-row">
-        <button class="btn btn-speak" id="speakBtn">🔊 Call species</button>
-        <span style="flex:1"></span>
-        <button class="btn btn-trigger" id="trainOvernightBtn">🌙 Train overnight</button>
-        <button class="btn btn-ab" id="abTestBtn">🧪 A/B test models</button>
-      </div>
-
-      <div class="feedback-buttons">
-        <button class="btn feedback-btn" id="fbCorrect">✅ Correct</button>
-        <button class="btn feedback-btn" id="fbIncorrect">❌ Incorrect</button>
-        <span class="log-line" id="feedbackLog">feedback log: idle</span>
-      </div>
-
-      <div style="margin-top:0.5rem; font-size:0.7rem; color:#6f8ba3;">
-        <span>⚡ cell graph: camera → vision model → species ID · reference cells · train · A/B</span>
-      </div>
+            <!-- A/B test side-by-side (v1 vs v2) -->
+            <div class="ab-test-container" id="abTestContainer" style="display: none;">
+                <div class="ab-card">
+                    <h4>🔍 v1 heuristic <span class="model-tag">v1</span></h4>
+                    <div id="abV1Result">—</div>
+                    <button class="btn btn-outline mark-correct" data-version="v1">✓ mark correct</button>
+                </div>
+                <div class="ab-card">
+                    <h4>🧠 v2 real model <span class="model-tag" id="v2ModelTag">v2</span></h4>
+                    <div id="abV2Result">—</div>
+                    <button class="btn btn-outline mark-correct" data-version="v2">✓ mark correct</button>
+                </div>
+            </div>
+            <div class="footer-note" id="apiStatus">⚙️ heuristic fallback (no OPENAI_API_KEY)</div>
+        </div>
     </div>
-  </div>
+</div>
 
-  <script>
+<script>
     (function() {
-      // ---------- QUILT STATE (simulated persistent cells) ----------
-      let quiltState = {
-        cameraFeed: { value: '📷 no image', ts: null },
-        visionModel: { value: 'heuristic-v1', trained: false },
-        speciesOutput: { value: '—', confidence: 0 },
-        refChum: 'chum_ref',
-        refPink: 'pink_ref',
-        refCoho: 'coho_ref',
-        trainCell: { lastTrigger: 'idle', status: 'standby' },
-        abTest: { active: false, winner: null, candidate: 'heuristic-v2' },
-        feedback: { last: 'none', correctCount: 0, incorrectCount: 0 }
-      };
-
-      // reference image data (simulated as gradients / colors)
-      const REF_IMAGES = {
-        chum: { label: 'chum', color: '#5b6e4f', desc: 'greenish-brown, bars' },
-        pink: { label: 'pink', color: '#b0b7bc', desc: 'silver, black spots' },
-        coho: { label: 'coho', color: '#8b9bb0', desc: 'silver, dark back' }
-      };
-
-      // DOM elements
-      const quiltSheet = document.getElementById('quiltSheet');
-      const dropZone = document.getElementById('dropZone');
-      const fileInput = document.getElementById('fileInput');
-      const previewCanvas = document.getElementById('previewCanvas');
-      const ctx = previewCanvas.getContext('2d');
-      const speciesName = document.getElementById('speciesName');
-      const confidenceText = document.getElementById('confidenceText');
-      const feedbackLog = document.getElementById('feedbackLog');
-      const speakBtn = document.getElementById('speakBtn');
-      const trainBtn = document.getElementById('trainOvernightBtn');
-      const abBtn = document.getElementById('abTestBtn');
-      const fbCorrect = document.getElementById('fbCorrect');
-      const fbIncorrect = document.getElementById('fbIncorrect');
-
-      // current image data array (for classification)
-      let currentImageData = null;
-
-      // ---------- RENDER QUILT SHEET ----------
-      function renderQuilt() {
-        const s = quiltState;
-        let html = '';
-
-        // 1. Camera feed cell
-        html += `<div class="cell ${s.cameraFeed.value !== '📷 no image' ? 'fresh' : ''}">
-          <div class="cell-title">🎥 CAMERA FEED (input)</div>
-          <div class="cell-value">${s.cameraFeed.value}</div>
-          <div class="cell-small">${s.cameraFeed.ts ? 'updated: ' + s.cameraFeed.ts : 'waiting for image'}</div>
-        </div>`;
-
-        // 2. Vision model cell (formula)
-        html += `<div class="cell">
-          <div class="cell-title">🧠 VISION MODEL (formula)</div>
-          <div class="cell-value">${s.visionModel.value}</div>
-          <div class="cell-small">${s.visionModel.trained ? '✅ trained' : '⚡ heuristic'}</div>
-        </div>`;
-
-        // 3. Species output cell
-        html += `<div class="cell fresh">
-          <div class="cell-title">🏷️ SPECIES ID (output)</div>
-          <div class="cell-value">${s.speciesOutput.value}</div>
-          <div class="cell-small">confidence: ${Math.round(s.speciesOutput.confidence * 100)}%</div>
-        </div>`;
-
-        // 4. Reference images (training data)
-        html += `<div class="cell">
-          <div class="cell-title">📚 REFERENCE IMAGES (training data)</div>
-          <div class="ref-grid">
-            <div class="ref-thumb" style="background:${REF_IMAGES.chum.color}">chum</div>
-            <div class="ref-thumb" style="background:${REF_IMAGES.pink.color}">pink</div>
-            <div class="ref-thumb" style="background:${REF_IMAGES.coho.color}">coho</div>
-          </div>
-          <div class="cell-small">chum · pink · coho</div>
-        </div>`;
-
-        // 5. Individual image links to species (recent)
-        html += `<div class="cell">
-          <div class="cell-title">🔗 IMAGE → SPECIES LINK</div>
-          <div class="cell-small">last: ${s.cameraFeed.value} → ${s.speciesOutput.value}</div>
-        </div>`;
-
-        // 6. Training cell (overnight)
-        html += `<div class="cell">
-          <div class="cell-title">🌙 TRAINING CELL (overnight)</div>
-          <div class="cell-small">status: ${s.trainCell.status} · last: ${s.trainCell.lastTrigger}</div>
-          <div class="button-row">
-            <button class="btn btn-trigger" id="trainBtnSmall">▶ trigger training</button>
-          </div>
-        </div>`;
-
-        // 7. A/B test cells
-        html += `<div class="cell a-b">
-          <div class="cell-title">🧪 A/B TEST (old vs new)</div>
-          <div class="cell-small">current: ${s.abTest.active ? 'candidate: ' + s.abTest.candidate : 'inactive'}</div>
-          <div class="cell-small">winner: ${s.abTest.winner || '—'}</div>
-        </div>`;
-
-        // 8. Feedback cells
-        html += `<div class="cell feedback">
-          <div class="cell-title">📋 FEEDBACK CELLS</div>
-          <div class="cell-small">correct: ${s.feedback.correctCount} · incorrect: ${s.feedback.incorrectCount}</div>
-          <div class="cell-small">last: ${s.feedback.last}</div>
-        </div>`;
-
-        quiltSheet.innerHTML = html;
-
-        // attach event to dynamic train button
-        const trainBtnSmall = document.getElementById('trainBtnSmall');
-        if (trainBtnSmall) {
-          trainBtnSmall.addEventListener('click', () => {
-            triggerTraining();
-          });
-        }
-      }
-
-      // ---------- CLASSIFICATION (heuristic) ----------
-      function classifyImageData(imageData) {
-        if (!imageData) return { species: '—', confidence: 0 };
-
-        const data = imageData.data;
-        let rSum = 0, gSum = 0, bSum = 0;
-        const len = data.length;
-        for (let i = 0; i < len; i += 4) {
-          rSum += data[i];
-          gSum += data[i + 1];
-          bSum += data[i + 2];
-        }
-        const total = len / 4;
-        const rAvg = rSum / total;
-        const gAvg = gSum / total;
-        const bAvg = bSum / total;
-
-        // heuristic based on average color: 
-        // chum: greenish-brown (g > r, b low)
-        // pink: silver (high all, but b>r slight)
-        // coho: silver-blue (b high, r lower)
-        let species = 'coho';
-        let confidence = 0.4;
-
-        if (gAvg > rAvg && gAvg > bAvg && gAvg > 80) {
-          species = 'chum';
-          confidence = 0.6 + Math.random() * 0.2;
-        } else if (bAvg > rAvg && bAvg > gAvg && bAvg > 90) {
-          species = 'coho';
-          confidence = 0.6 + Math.random() * 0.2;
-        } else if (rAvg > 100 && gAvg > 100 && bAvg > 100) {
-          species = 'pink';
-          confidence = 0.5 + Math.random() * 0.2;
-        } else {
-          // fallback
-          species = 'pink';
-          confidence = 0.4;
-        }
-
-        // A/B test effect: if active, switch to "heuristic-v2" (just modify confidence)
-        if (quiltState.abTest.active) {
-          // pretend v2 is more confident
-          confidence = Math.min(0.95, confidence + 0.1);
-        }
-
-        return { species, confidence };
-      }
-
-      // ---------- UPDATE STATE FROM IMAGE ----------
-      function processImageFile(file) {
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            // draw to canvas
-            previewCanvas.width = img.width > 400 ? 400 : img.width;
-            previewCanvas.height = img.height > 300 ? 300 : img.height;
-            ctx.drawImage(img, 0, 0, previewCanvas.width, previewCanvas.height);
-            // get image data
-            try {
-              const imageData = ctx.getImageData(0, 0, previewCanvas.width, previewCanvas.height);
-              currentImageData = imageData;
-              // update quilt state
-              const now = new Date().toLocaleTimeString('en-US');
-              quiltState.cameraFeed = { value: `📷 ${file.name || 'cam'}`, ts: now };
-              const result = classifyImageData(imageData);
-              quiltState.speciesOutput = { value: result.species, confidence: result.confidence };
-              // update UI
-              speciesName.textContent = result.species.toUpperCase();
-              confidenceText.textContent = `confidence: ${Math.round(result.confidence * 100)}% · model: ${quiltState.visionModel.value}`;
-              renderQuilt();
-            } catch (err) {
-              console.warn('image data error', err);
-            }
-          };
-          img.src = e.target.result;
+        // ---------- STATE ----------
+        const speciesList = ['salmon', 'tuna', 'bass'];
+        let currentImageDataURL = null;          // uploaded/captured base64
+        let currentClassification = { v1: null, v2: null };
+        let selectedModelVersion = 'v1';        // default v1 heuristic
+        let trainingData = [];                  // array of {image, v1, v2, correct, modelVersion, timestamp}
+        let referenceImages = {
+            salmon: [],
+            tuna: [],
+            bass: []
         };
-        reader.readAsDataURL(file);
-      }
+        let newModelVersion = 'v3-simulated';   // after training run
 
-      // ---------- FEEDBACK ----------
-      function sendFeedback(correct) {
-        if (correct) quiltState.feedback.correctCount++;
-        else quiltState.feedback.incorrectCount++;
-        quiltState.feedback.last = correct ? '✅ correct' : '❌ incorrect';
-        feedbackLog.textContent = `feedback: ${quiltState.feedback.last} (C:${quiltState.feedback.correctCount} / I:${quiltState.feedback.incorrectCount})`;
-        renderQuilt();
-      }
+        // ---------- DOM ELEMENTS ----------
+        const video = document.getElementById('video');
+        const captureBtn = document.getElementById('captureBtn');
+        const startCameraBtn = document.getElementById('startCameraBtn');
+        const imageUpload = document.getElementById('imageUpload');
+        const currentImagePreview = document.getElementById('currentImagePreview');
+        const classificationOutput = document.getElementById('classificationOutput');
+        const abTestContainer = document.getElementById('abTestContainer');
+        const abV1Result = document.getElementById('abV1Result');
+        const abV2Result = document.getElementById('abV2Result');
+        const modelVersionBadge = document.getElementById('modelVersionBadge');
+        const v1Btn = document.getElementById('v1Btn');
+        const v2Btn = document.getElementById('v2Btn');
+        const trainingDataDisplay = document.getElementById('trainingDataDisplay');
+        const trainingCount = document.getElementById('trainingCount');
+        const exportJsonlBtn = document.getElementById('exportJsonlBtn');
+        const clearTrainingBtn = document.getElementById('clearTrainingBtn');
+        const referenceFoldersEl = document.getElementById('referenceFolders');
+        const trainingRunBtn = document.getElementById('trainingRunBtn');
+        const newModelInfo = document.getElementById('newModelInfo');
+        const apiStatus = document.getElementById('apiStatus');
 
-      // ---------- TRAIN OVERNIGHT ----------
-      function triggerTraining() {
-        quiltState.trainCell.lastTrigger = new Date().toLocaleTimeString('en-US');
-        quiltState.trainCell.status = 'training…';
-        quiltState.visionModel.value = 'heuristic-v2 (trained)';
-        quiltState.visionModel.trained = true;
-        renderQuilt();
-        setTimeout(() => {
-          quiltState.trainCell.status = 'complete';
-          renderQuilt();
-        }, 800);
-      }
-
-      // ---------- A/B TEST ----------
-      function toggleAB() {
-        quiltState.abTest.active = !quiltState.abTest.active;
-        if (quiltState.abTest.active) {
-          quiltState.abTest.winner = 'heuristic-v2 (candidate)';
-          // switch model to v2
-          quiltState.visionModel.value = 'heuristic-v2 (A/B)';
-        } else {
-          quiltState.abTest.winner = null;
-          quiltState.visionModel.value = quiltState.visionModel.trained ? 'heuristic-v2 (trained)' : 'heuristic-v1';
+        // ---------- HELPER: API KEY ----------
+        function getApiKey() {
+            // look for OPENAI_API_KEY in env (process.env for embedded dev, or window.__ENV)
+            if (window.__OPENAI_API_KEY__) return window.__OPENAI_API_KEY__;
+            // try to read from meta or global (for demonstration we check)
+            try {
+                if (process && process.env && process.env.OPENAI_API_KEY) return process.env.OPENAI_API_KEY;
+            } catch(e) {}
+            return null;
         }
-        renderQuilt();
-      }
 
-      // ---------- SPEECH ----------
-      function speakSpecies() {
-        const name = quiltState.speciesOutput.value;
-        if (name && name !== '—') {
-          const utterance = new SpeechSynthesisUtterance(`Species identified: ${name} salmon`);
-          utterance.rate = 0.9;
-          speechSynthesis.speak(utterance);
+        const API_KEY = getApiKey();
+        if (API_KEY) {
+            apiStatus.innerText = '✅ real model (OpenAI-compatible) active';
         } else {
-          const utterance = new SpeechSynthesisUtterance('No fish detected');
-          speechSynthesis.speak(utterance);
+            apiStatus.innerText = '⚙️ heuristic fallback (no OPENAI_API_KEY)';
         }
-      }
 
-      // ---------- EVENT LISTENERS ----------
-      dropZone.addEventListener('click', () => fileInput.click());
-      fileInput.addEventListener('change', (e) => processImageFile(e.target.files[0]));
+        // ---------- REFERENCE FOLDERS RENDER ----------
+        function renderReferenceFolders() {
+            referenceFoldersEl.innerHTML = '';
+            speciesList.forEach(species => {
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'folder';
+                const header = document.createElement('div');
+                header.className = 'folder-header';
+                header.innerHTML = `<span>🐟 ${species}</span><span style="font-size:0.7rem;">${referenceImages[species].length}</span>`;
+                folderDiv.appendChild(header);
 
-      dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-      });
-      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        const file = e.dataTransfer.files[0];
-        if (file) processImageFile(file);
-      });
+                const thumbsDiv = document.createElement('div');
+                thumbsDiv.className = 'folder-thumbs';
+                referenceImages[species].forEach(imgSrc => {
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    thumbsDiv.appendChild(img);
+                });
+                folderDiv.appendChild(thumbsDiv);
 
-      speakBtn.addEventListener('click', speakSpecies);
-      trainBtn.addEventListener('click', triggerTraining);
-      abBtn.addEventListener('click', toggleAB);
-      fbCorrect.addEventListener('click', () => sendFeedback(true));
-      fbIncorrect.addEventListener('click', () => sendFeedback(false));
+                const drop = document.createElement('div');
+                drop.className = 'drop-zone';
+                drop.innerText = '📂 drop image here';
+                drop.addEventListener('dragover', (e) => e.preventDefault());
+                drop.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            referenceImages[species].push(ev.target.result);
+                            renderReferenceFolders();
+                            saveReferenceToLocalStorage();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                folderDiv.appendChild(drop);
+                referenceFoldersEl.appendChild(folderDiv);
+            });
+        }
 
-      // initial render
-      renderQuilt();
+        // ---------- LOCAL STORAGE ----------
+        function saveReferenceToLocalStorage() {
+            localStorage.setItem('fish_ref_folders', JSON.stringify(referenceImages));
+        }
+        function loadReferenceFromStorage() {
+            const stored = localStorage.getItem('fish_ref_folders');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    if (parsed.salmon && parsed.tuna && parsed.bass) {
+                        referenceImages = parsed;
+                    }
+                } catch(e) {}
+            }
+            renderReferenceFolders();
+        }
 
-      // set reference images (just for cell display)
-      // also fill some default log
-      feedbackLog.textContent = `feedback: idle (C:0 / I:0)`;
+        // ---------- TRAINING DATA ----------
+        function updateTrainingDisplay() {
+            trainingDataDisplay.innerText = JSON.stringify(trainingData.slice(-3), null, 1);
+            trainingCount.innerText = trainingData.length;
+        }
+
+        function addTrainingRecord({image, v1, v2, correct, modelVersion}) {
+            const record = {
+                image: image || null,
+                v1: v1 || null,
+                v2: v2 || null,
+                correct: correct || null,
+                modelVersion: modelVersion || selectedModelVersion,
+                timestamp: new Date().toISOString()
+            };
+            trainingData.push(record);
+            updateTrainingDisplay();
+        }
+
+        // ---------- HEURISTIC CLASSIFIER (v1) ----------
+        function heuristicClassify(dataURL) {
+            // fake heuristic based on simple average color (demo)
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 40; canvas.height = 40;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 40, 40);
+                    const data = ctx.getImageData(0,0,40,40).data;
+                    let r=0,g=0,b=0;
+                    for (let i=0; i<data.length; i+=4) {
+                        r += data[i]; g += data[i+1]; b += data[i+2];
+                    }
+                    const total = 1600;
+                    r/=total; g/=total; b/=total;
+                    let species = 'salmon';
+                    if (g > r && g > b) species = 'bass';
+                    else if (b > r && b > g) species = 'tuna';
+                    else if (r > 120 && g < 100) species = 'salmon';
+                    resolve(species);
+                };
+                img.src = dataURL;
+            });
+        }
+
+        // ---------- REAL MODEL (v2) via OpenAI-compatible vision ----------
+        async function realModelClassify(dataURL) {
+            const key = getApiKey();
+            if (!key) {
+                // fallback to heuristic
+                return { species: await heuristicClassify(dataURL), usedFallback: true };
+            }
+            // prepare base64 (strip prefix)
+            const base64 = dataURL.split(',')[1] || dataURL;
+            const payload = {
+                model: "gpt-4o-mini",
+                messages: [
+                    { role: "system", content: "You are a fish classifier. Return only the species name from: salmon, tuna, bass." },
+                    { role: "user", content: [
+                        { type: "text", text: "What fish is in this image? Answer with one word: salmon, tuna, bass." },
+                        { type: "image_url", image_url: { url: dataURL } }
+                    ]}
+                ],
+                max_tokens: 10
+            };
+            try {
+                const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${key}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (!resp.ok) throw new Error('API error');
+                const data = await resp.json();
+                const content = data.choices[0].message.content.trim().toLowerCase();
+                if (content.includes('salmon')) return { species: 'salmon', usedFallback: false };
+                if (content.includes('tuna')) return { species: 'tuna', usedFallback: false };
+                if (content.includes('bass')) return { species: 'bass', usedFallback: false };
+                return { species: 'salmon', usedFallback: false };
+            } catch (e) {
+                return { species: await heuristicClassify(dataURL), usedFallback: true };
+            }
+        }
+
+        // ---------- CLASSIFICATION PIPELINE ----------
+        async function runClassification(dataURL) {
+            if (!dataURL) return;
+            currentImageDataURL = dataURL;
+            // show preview
+            currentImagePreview.innerHTML = `<img src="${dataURL}" style="width:64px;height:64px;border-radius:12px;">`;
+
+            // run v1 and v2 always (for A/B)
+            const v1Species = await heuristicClassify(dataURL);
+            const v2Result = await realModelClassify(dataURL);
+            const v2Species = v2Result.species;
+
+            currentClassification = { v1: v1Species, v2: v2Species };
+
+            // display based on selected version (but we show A/B side by side)
+            abTestContainer.style.display = 'flex';
+            abV1Result.innerText = v1Species;
+            abV2Result.innerText = v2Species + (v2Result.usedFallback ? ' (fallback)' : '');
+
+            // main output
+            let mainText = '';
+            if (selectedModelVersion === 'v1') {
+                mainText = `🐟 v1 heuristic: ${v1Species}`;
+            } else {
+                mainText = `🧠 v2 real model: ${v2Species}`;
+            }
+            classificationOutput.innerHTML = `<strong>${mainText}</strong><br><span style="font-size:0.8rem;">A/B results below</span>`;
+
+            // auto record? we do not auto-record until user marks correct.
+        }
+
+        // ---------- MARK CORRECT (training data accumulation) ----------
+        function markCorrect(version) {
+            if (!currentImageDataURL) return;
+            const correctSpecies = version === 'v1' ? currentClassification.v1 : currentClassification.v2;
+            const v1 = currentClassification.v1;
+            const v2 = currentClassification.v2;
+            addTrainingRecord({
+                image: currentImageDataURL,
+                v1: v1,
+                v2: v2,
+                correct: correctSpecies,
+                modelVersion: version
+            });
+            // optional feedback
+            classificationOutput.innerHTML += `<br><span style="background:#dcfce7; padding:2px 8px; border-radius:20px;">✓ recorded (${version})</span>`;
+        }
+
+        // ---------- EVENTS ----------
+        document.querySelectorAll('.mark-correct').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const version = e.target.dataset.version;
+                markCorrect(version);
+            });
+        });
+
+        // model version toggle
+        v1Btn.addEventListener('click', () => {
+            selectedModelVersion = 'v1';
+            modelVersionBadge.innerText = 'v1';
+            v1Btn.classList.add('active'); v2Btn.classList.remove('active');
+            if (currentClassification.v1) {
+                classificationOutput.innerHTML = `<strong>🐟 v1 heuristic: ${currentClassification.v1}</strong>`;
+            }
+        });
+        v2Btn.addEventListener('click', () => {
+            selectedModelVersion = 'v2';
+            modelVersionBadge.innerText = 'v2';
+            v2Btn.classList.add('active'); v1Btn.classList.remove('active');
+            if (currentClassification.v2) {
+                classificationOutput.innerHTML = `<strong>🧠 v2 real model: ${currentClassification.v2}</strong>`;
+            }
+        });
+
+        // camera
+        startCameraBtn.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch(e) { alert('Camera not available'); }
+        });
+
+        captureBtn.addEventListener('click', () => {
+            if (!video.srcObject) { alert('Enable camera first'); return; }
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+            runClassification(dataURL);
+        });
+
+        imageUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                runClassification(ev.target.result);
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        });
+
+        // export jsonl
+        exportJsonlBtn.addEventListener('click', () => {
+            if (trainingData.length === 0) return;
+            const jsonl = trainingData.map(rec => JSON.stringify(rec)).join('\n');
+            const blob = new Blob([jsonl], { type: 'application/jsonl' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'training_data.jsonl';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        });
+
+        clearTrainingBtn.addEventListener('click', () => {
+            trainingData = [];
+            updateTrainingDisplay();
+        });
+
+        // training run simulation
+        trainingRunBtn.addEventListener('click', () => {
+            newModelVersion = 'v3-' + Math.random().toString(16).slice(2, 6);
+            newModelInfo.innerHTML = `🔥 new model: <strong>${newModelVersion}</strong> (simulated)`;
+            // simulate adding a new model tag to A/B? we just show info.
+            document.getElementById('v2ModelTag').innerText = newModelVersion;
+            // optionally we could set v2 to new model but keep as is.
+        });
+
+        // ---------- INIT ----------
+        loadReferenceFromStorage();
+        updateTrainingDisplay();
+
+        // drag-drop for reference folders also via file input (we already have drop zones)
+        // but we also need to allow drop on folder (implemented in render)
+        // also make drop zones clickable? we can add hidden input but not necessary.
+
+        // expose for demo
+        window.__fishDebug = { trainingData, referenceImages };
     })();
-  </script>
+</script>
 </body>
 </html>
