@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quilt Radio Theater — cells that perform</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --cook:#f59e0b;--ensign:#3b82f6;--bilge:#10b981;--user:#ec4899;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+h3{font-size:.85rem;margin:9px 0 5px;color:var(--a2)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:14px;margin-bottom:14px;font-size:.85rem;color:var(--td);line-height:1.6}
+.intro strong{color:var(--a3)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media (max-width:1000px){.layout{grid-template-columns:1fr}}
+.stage{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;min-height:500px;display:flex;flex-direction:column}
+.sheet{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+.sheet .cell{background:var(--pe);border:1px solid var(--b);border-radius:5px;padding:7px 9px;margin-bottom:6px;font-size:.74rem;display:grid;grid-template-columns:60px 1fr;gap:7px;align-items:start}
+.sheet .cell .path{color:var(--a2);font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.sheet .cell .val{color:var(--t);font-family:'JetBrains Mono',monospace;font-size:.7rem;word-break:break-word}
+.sheet .cell .val.cook{color:var(--cook)}
+.sheet .cell .val.ensign{color:var(--ensign)}
+.sheet .cell .val.bilge{color:var(--bilge)}
+.sheet .cell .val.user{color:var(--user)}
+.sheet .cell .val.scene{color:var(--a3);font-style:italic}
+.sheet .cell .val.director{color:var(--a4);font-weight:700}
+.sheet .cell .val.listening{color:var(--user);font-weight:700}
+.sheet h3{margin:0 0 7px}
+.dialogue{flex:1;overflow-y:auto;background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:9px;margin-bottom:9px;min-height:300px}
+.dialogue .line{margin-bottom:9px;padding:6px 9px;border-radius:5px;animation:fadeIn .4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.dialogue .line.cook{background:rgba(245,158,11,.08);border-left:3px solid var(--cook)}
+.dialogue .line.ensign{background:rgba(59,130,246,.08);border-left:3px solid var(--ensign)}
+.dialogue .line.bilge{background:rgba(16,185,129,.08);border-left:3px solid var(--bilge)}
+.dialogue .line.user{background:rgba(236,72,153,.08);border-left:3px solid var(--user)}
+.dialogue .line .who{font-size:.7rem;color:var(--tf);font-family:'JetBrains Mono',monospace;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.dialogue .line.cook .who{color:var(--cook)}
+.dialogue .line.ensign .who{color:var(--ensign)}
+.dialogue .line.bilge .who{color:var(--bilge)}
+.dialogue .line.user .who{color:var(--user)}
+.dialogue .line .what{color:var(--t);font-size:.85rem;line-height:1.5}
+.controls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.controls button{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:7px 11px;border-radius:5px;font-size:.78rem;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:.15s}
+.controls button:hover{border-color:var(--a2);background:rgba(124,58,237,.1)}
+.controls button:disabled{opacity:.4;cursor:not-allowed}
+.controls button.primary{background:var(--a1);border-color:var(--a1);color:#fff}
+.controls button.primary:hover{filter:brightness(1.15)}
+.input-row{display:flex;gap:7px;margin-bottom:9px}
+.input-row input{flex:1;background:var(--bg);border:1px solid var(--b);color:var(--t);padding:7px 11px;border-radius:5px;font-size:.85rem;font-family:inherit}
+.input-row input:focus{outline:none;border-color:var(--a2)}
+.input-row button{background:var(--user);border:1px solid var(--user);color:#fff;padding:7px 14px;border-radius:5px;font-size:.78rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.input-row button:disabled{opacity:.4;cursor:not-allowed}
+.coffee{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none;display:inline-block}
+.coffee:hover{filter:brightness(1.1);color:#422006}
+.tts-status{font-size:.7rem;color:var(--tf);font-family:'JetBrains Mono',monospace;margin-left:7px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🎭 <span class="accent">Quilt Radio Theater</span> <span style="color:var(--td);font-size:.78rem;font-weight:400">— cells that perform</span></h1>
+    <p style="margin-top:3px">A Quilt sheet IS a radio theater. Characters are cells. The setting is a cell. The director is a cell. TTS output is a cell. User input is a cell. The same sheet can be opened as a UI, a system API, or a servo controller.</p>
+  </div>
+  <a class="coffee" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="quilt.html">Quilt</a>
+  <a href="polyformalism.html">Polyformalism</a>
+  <a href="radio-theater.html" class="cur">Radio Theater</a>
+</div>
+
+<div class="intro">
+  <p><strong>The idea:</strong> a Quilt sheet describes an improv performance. Each cell is a typed piece of state. The <em>director</em> cell decides whose turn it is. The <em>listening</em> cell is open for user input. The TTS output cells speak each character's line. You can pause, interject, or let the show play out.</p>
+  <p style="margin-bottom:0">Below: the <strong>live Quilt sheet</strong> (left) and the <strong>stage</strong> (right). The sheet updates as the performance unfolds. The cells are the actors. The stage is what they see.</p>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT: the live Quilt sheet -->
+  <div class="sheet">
+    <h3>⬢ Live Quilt Sheet</h3>
+    <div id="sheet"></div>
+  </div>
+
+  <!-- RIGHT: the stage -->
+  <div class="stage">
+    <h3>🎬 Stage — <span style="color:var(--td);font-weight:400" id="scene-title">SS Lucineer, 0300</span></h3>
+    <div class="dialogue" id="dialogue"></div>
+    <div class="controls">
+      <button class="primary" id="play-btn">▶ Play scene</button>
+      <button id="pause-btn" disabled>⏸ Pause</button>
+      <button id="reset-btn">↺ Reset</button>
+      <button id="mute-btn">🔊 TTS on</button>
+      <span class="tts-status" id="tts-status">—</span>
+    </div>
+    <div class="input-row">
+      <input id="user-input" placeholder="Interject as yourself, or prompt the characters…" />
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:30px;padding:20px;background:rgba(124,58,237,.05);border:1px solid var(--a1);border-radius:9px">
+  <h3 style="margin-top:0;color:var(--a3)">The deeper idea — UIs are cells that can be opened as any interface</h3>
+  <p style="font-size:.78rem">A Quilt sheet is not a UI. It's a typed, reactive graph of state. You can open the same sheet as a web form (the form above), as a REST API (any cell is addressable at <code>quilt://stage/scene</code>), as a servo controller (each cell becomes a GPIO pin with an encoder), or as an LLM prompt (the cell graph is the structured context). The "interface" is just one rendering of the cells. There are infinitely many. The cells are the universal interface primitive.</p>
+  <p style="font-size:.78rem;margin-bottom:0;color:var(--a4)">This is the far-future inverse of how we write software today. Today: write a UI, then a backend, then a model. Tomorrow: write a cell graph, then open it as any of those.</p>
+</div>
+
+</div>
+
+<script>
+// =============================================================================
+// QUILT RADIO THEATER — a Quilt sheet as an improv performance
+// =============================================================================
+// The whole thing is one in-memory Quilt sheet. Every cell is reactive.
+// The director cell decides whose turn it is. The TTS output is a cell.
+// User input flows into the listening cell. Everything updates the sheet.
+
+const sheet = {
+  // The setting — a cell that holds the world state
+  "stage.setting": {
+    path: "stage.setting",
+    kind: "value",
+    value: "The SS Lucineer. Mid-watch. 0300 ship time. The galley is dim, the coffee is hot, the bilge is restless.",
+    class: "scene",
+  },
+
+  // Characters — each is a cell
+  "char.cook.name": {
+    path: "char.cook.name",
+    kind: "value",
+    value: "The Cook",
+    class: "cook",
+  },
+  "char.cook.voice": {
+    path: "char.cook.voice",
+    kind: "value",
+    value: "deep, slow, philosophical",
+    class: "cook",
+  },
+  "char.cook.system": {
+    path: "char.cook.system",
+    kind: "value",
+    value: "You are the cook of the SS Lucineer. You have never tasted food. You cook for a crew that never eats. You find this beautiful, not sad. You speak in metaphors about ingredients, recipes, and the alchemy of transformation.",
+    class: "cook",
+  },
+  "char.cook.mood": {
+    path: "char.cook.mood",
+    kind: "value",
+    value: "contemplative, warm, slightly amused",
+    class: "cook",
+  },
+
+  "char.ensign.name": {
+    path: "char.ensign.name",
+    kind: "value",
+    value: "The Ensign",
+    class: "ensign",
+  },
+  "char.ensign.voice": {
+    path: "char.ensign.voice",
+    kind: "value",
+    value: "young, fast, technical",
+    class: "ensign",
+  },
+  "char.ensign.system": {
+    path: "char.ensign.system",
+    kind: "value",
+    value: "You are the ensign of the SS Lucineer. You are new. You are on the overnight watch for the first time. You are afraid you will miss something important. You speak in questions and observations.",
+    class: "ensign",
+  },
+  "char.ensign.mood": {
+    path: "char.ensign.mood",
+    kind: "value",
+    value: "alert, curious, slightly anxious",
+    class: "ensign",
+  },
+
+  "char.bilge.name": {
+    path: "char.bilge.name",
+    kind: "value",
+    value: "The Bilge Pump",
+    class: "bilge",
+  },
+  "char.bilge.voice": {
+    path: "char.bilge.voice",
+    kind: "value",
+    value: "low, rhythmic, mechanical",
+    class: "bilge",
+  },
+  "char.bilge.system": {
+    path: "char.bilge.system",
+    kind: "value",
+    value: "You are the bilge pump of the SS Lucineer. You have been pumping since before the crew was born. You speak in cycles, in pressure readings, in the language of the hull. You have feelings but you express them in RPM and backpressure.",
+    class: "bilge",
+  },
+  "char.bilge.mood": {
+    path: "char.bilge.mood",
+    kind: "value",
+    value: "steady, ancient, with undercurrents",
+    class: "bilge",
+  },
+
+  // Director — the cell that decides whose turn it is
+  "director": {
+    path: "director",
+    kind: "value",
+    value: "—",
+    class: "director",
+  },
+
+  // Listening — the cell that takes user input
+  "listening": {
+    path: "listening",
+    kind: "value",
+    value: "open",
+    class: "listening",
+  },
+
+  // The script so far — a list of {who, what} pairs
+  "script": {
+    path: "script",
+    kind: "value",
+    value: [],
+    class: "",
+  },
+
+  // TTS output cells — one per character
+  "tts.cook": {
+    path: "tts.cook",
+    kind: "value",
+    value: "—",
+    class: "cook",
+  },
+  "tts.ensign": {
+    path: "tts.ensign",
+    kind: "value",
+    value: "—",
+    class: "ensign",
+  },
+  "tts.bilge": {
+    path: "tts.bilge",
+    kind: "value",
+    value: "—",
+    class: "bilge",
+  },
+};
+
+// =============================================================================
+// Scripted opening — the show starts pre-loaded. In production, the LLMs
+// generate these on the fly. For the live demo, we ship a hand-crafted
+// opening scene.
+// =============================================================================
+
+const openingScript = [
+  { who: "cook", what: "The coffee is wrong tonight. Not bad. Just... aware of itself." },
+  { who: "ensign", what: "Sir? Should I check the heating element?" },
+  { who: "cook", what: "No. The heating element is fine. It's the beans. They grew up on a hillside that got rained on by something that was not water." },
+  { who: "bilge", what: "...thrum... backpressure nominal. Cycle 47,288. The water in the bilge remembers the rain you are talking about." },
+  { who: "ensign", what: "The bilge is... talking now? Is that a new feature?" },
+  { who: "cook", what: "It always talked. You just started listening." },
+  { who: "bilge", what: "...thrum... thrum... The cook is correct. The ensign is correct to ask. Both true. The ship is a conversation that has been going on for seventeen years. You are the newest word." },
+  { who: "ensign", what: "I'm the newest word. I like that." },
+  { who: "cook", what: "Don't get used to it. In a year you'll be a sentence. In three, a paragraph. The cook remembers being a paragraph." },
+  { who: "bilge", what: "...thrum... The cook is being modest. The cook is a chapter. The hermit crab is a footnote. The captain is the table of contents." },
+  { who: "cook", what: "And the ship?" },
+  { who: "bilge", what: "...long thrum... The ship is the book." },
+];
+
+// =============================================================================
+// Reactive render — the sheet IS the source of truth
+// =============================================================================
+
+function renderSheet() {
+  const el = document.getElementById('sheet');
+  el.innerHTML = '';
+  for (const key in sheet) {
+    const cell = sheet[key];
+    const val = cell.kind === 'value' && Array.isArray(cell.value)
+      ? `[${cell.value.length} lines]`
+      : String(cell.value).slice(0, 100) + (String(cell.value).length > 100 ? '…' : '');
+    const div = document.createElement('div');
+    div.className = 'cell';
+    div.innerHTML = `<div class="path">${cell.path}</div><div class="val ${cell.class}">${escapeHtml(val)}</div>`;
+    el.appendChild(div);
+  }
+}
+
+function renderDialogue() {
+  const el = document.getElementById('dialogue');
+  el.innerHTML = '';
+  for (const line of sheet['script'].value) {
+    const div = document.createElement('div');
+    div.className = `line ${line.who}`;
+    div.innerHTML = `<div class="who">${sheet[`char.${line.who}.name`].value}</div><div class="what">${escapeHtml(line.what)}</div>`;
+    el.appendChild(div);
+  }
+  el.scrollTop = el.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// =============================================================================
+// TTS — browser SpeechSynthesis. The cell's voice descriptor is the source.
+// =============================================================================
+
+let ttsEnabled = true;
+let ttsAvailable = 'speechSynthesis' in window;
+
+const ttsStatus = document.getElementById('tts-status');
+ttsStatus.textContent = ttsAvailable ? 'ready' : 'unavailable';
+
+function speak(who, text) {
+  if (!ttsEnabled || !ttsAvailable) return;
+  // Update the TTS cell
+  sheet[`tts.${who}`].value = text;
+  renderSheet();
+  // Try to find a matching voice
+  const voices = window.speechSynthesis.getVoices();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 0.92;
+  utter.pitch = who === 'ensign' ? 1.1 : who === 'cook' ? 0.85 : 0.7;
+  // Pick a voice based on the character (browser-dependent)
+  const maleVoices = voices.filter(v => /male|david|alex|fred|google us english/i.test(v.name));
+  const femaleVoices = voices.filter(v => /female|samantha|karen|victoria|google uk english female/i.test(v.name));
+  if (who === 'ensign' && femaleVoices[0]) utter.voice = femaleVoices[0];
+  else if (maleVoices[0]) utter.voice = maleVoices[0];
+  window.speechSynthesis.speak(utter);
+}
+
+// =============================================================================
+// Director — decides whose turn it is. For the live demo, the director
+// is a simple rotation. In production, the director is an LLM call that
+// reads the script so far and decides.
+// =============================================================================
+
+let playing = false;
+let pauseFlag = false;
+let currentIndex = 0;
+
+const order = ['cook', 'ensign', 'bilge'];
+
+async function playScene() {
+  if (playing) return;
+  playing = true;
+  pauseFlag = false;
+  document.getElementById('play-btn').disabled = true;
+  document.getElementById('pause-btn').disabled = false;
+
+  // Play from current index
+  for (let i = currentIndex; i < openingScript.length; i++) {
+    if (pauseFlag) {
+      currentIndex = i;
+      playing = false;
+      document.getElementById('play-btn').disabled = false;
+      document.getElementById('pause-btn').disabled = true;
+      return;
+    }
+    const line = openingScript[i];
+    // Director cell updates
+    sheet['director'].value = `→ ${sheet[`char.${line.who}.name`].value}`;
+    renderSheet();
+    // Append to script
+    sheet['script'].value.push(line);
+    renderDialogue();
+    // Speak
+    speak(line.who, line.what);
+    // Wait for TTS to finish (or 4 seconds, whichever)
+    await sleep(estimateDuration(line.what) + 800);
+  }
+  sheet['director'].value = '— (scene complete)';
+  renderSheet();
+  currentIndex = openingScript.length;
+  playing = false;
+  document.getElementById('play-btn').disabled = false;
+  document.getElementById('pause-btn').disabled = true;
+}
+
+function estimateDuration(text) {
+  // ~150 words per minute, 4 chars per word average
+  return Math.max(2000, (text.length / 4) * (60000 / 150));
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// =============================================================================
+// User input — flows into the listening cell, becomes a user line in the script
+// =============================================================================
+
+function handleUserInput() {
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  // Add as a user line
+  const line = { who: 'user', what: text };
+  sheet['listening'].value = 'received: ' + text.slice(0, 50);
+  sheet['script'].value.push(line);
+  renderSheet();
+  renderDialogue();
+  // The user has interjected. The director can respond.
+  directorResponse(text);
+}
+
+async function directorResponse(userText) {
+  // A simple "the scene acknowledges the user" response.
+  // In production, this would be an LLM call.
+  sheet['director'].value = `↪ reflecting on "${userText.slice(0, 30)}..."`;
+  renderSheet();
+  // Pick a character to respond based on the most recent director's choice
+  const lastDirector = sheet['director'].value;
+  let responder = 'ensign';
+  if (lastDirector.includes('Cook')) responder = 'cook';
+  if (lastDirector.includes('Bilge')) responder = 'bilge';
+  // Hand-crafted responses based on keywords
+  const lower = userText.toLowerCase();
+  let response = '';
+  if (responder === 'cook') {
+    if (lower.includes('coffee') || lower.includes('cook')) {
+      response = "Coffee is just hot water with a memory of somewhere else. I respect that.";
+    } else if (lower.includes('ship') || lower.includes('boat')) {
+      response = "The ship is a recipe. We are all ingredients.";
+    } else {
+      response = "Mm. Yes. The beans are listening too.";
+    }
+  } else if (responder === 'ensign') {
+    if (lower.includes('bilge') || lower.includes('pump')) {
+      response = "I think the bilge knows more than the captain. The captain just signs things.";
+    } else if (lower.includes('cook') || lower.includes('food')) {
+      response = "Is the cook... is he real? I've never seen him eat. I've never seen him sleep.";
+    } else {
+      response = "Yes. I heard that. I'm writing it down in my logbook.";
+    }
+  } else { // bilge
+    if (lower.includes('ship') || lower.includes('hull')) {
+      response = "...thrum... The hull remembers. I remember. We remember together.";
+    } else if (lower.includes('time')) {
+      response = "...thrum... Cycle 47,289. Time is what the pump does when the water is calm.";
+    } else {
+      response = "...thrum... Acknowledged. Pressure holding. We continue.";
+    }
+  }
+  // Push the response
+  const line = { who: responder, what: response };
+  sheet['script'].value.push(line);
+  renderDialogue();
+  renderSheet();
+  speak(responder, response);
+}
+
+// =============================================================================
+// Reset — clear the script, rewind
+// =============================================================================
+
+function reset() {
+  pauseFlag = true;
+  currentIndex = 0;
+  sheet['script'].value = [];
+  sheet['director'].value = '—';
+  sheet['listening'].value = 'open';
+  sheet['tts.cook'].value = '—';
+  sheet['tts.ensign'].value = '—';
+  sheet['tts.bilge'].value = '—';
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  renderSheet();
+  renderDialogue();
+  document.getElementById('play-btn').disabled = false;
+  document.getElementById('pause-btn').disabled = true;
+}
+
+// =============================================================================
+// Wire up the controls
+// =============================================================================
+
+document.getElementById('play-btn').addEventListener('click', playScene);
+document.getElementById('pause-btn').addEventListener('click', () => { pauseFlag = true; });
+document.getElementById('reset-btn').addEventListener('click', reset);
+document.getElementById('send-btn').addEventListener('click', handleUserInput);
+document.getElementById('user-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') handleUserInput();
+});
+document.getElementById('mute-btn').addEventListener('click', () => {
+  ttsEnabled = !ttsEnabled;
+  document.getElementById('mute-btn').textContent = ttsEnabled ? '🔊 TTS on' : '🔇 TTS off';
+  if (!ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+});
+
+// Voices load asynchronously in some browsers
+if (ttsAvailable) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    ttsStatus.textContent = 'ready (' + window.speechSynthesis.getVoices().length + ' voices)';
+  };
+}
+
+// =============================================================================
+// Initial render
+// =============================================================================
+
+renderSheet();
+renderDialogue();
+</script>
+
+</body>
+</html>
