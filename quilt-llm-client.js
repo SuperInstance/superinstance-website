@@ -185,6 +185,31 @@
   }
 
   // ---------------------------------------------------------------------
+  // Classroom sync (uses the same Worker)
+  // ---------------------------------------------------------------------
+  async function syncGet(sessionId) {
+    const cfg = getConfig();
+    if (!cfg.workerUrl) throw new Error('No Worker URL configured for sync');
+    const url = cfg.workerUrl.replace(/\/$/, '') + '/sync/' + sessionId;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('sync HTTP ' + resp.status);
+    return await resp.json();
+  }
+
+  async function syncPut(sessionId, key, value) {
+    const cfg = getConfig();
+    if (!cfg.workerUrl) throw new Error('No Worker URL configured for sync');
+    const url = cfg.workerUrl.replace(/\/$/, '') + '/sync/' + sessionId;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ op: 'put', key, value }),
+    });
+    if (!resp.ok) throw new Error('sync HTTP ' + resp.status);
+    return await resp.json();
+  }
+
+  // ---------------------------------------------------------------------
   // Export
   // ---------------------------------------------------------------------
   window.quiltLLM = {
@@ -192,5 +217,7 @@
     status,
     setWorkerUrl,
     showLimitHit,
+    syncGet,
+    syncPut,
   };
 })();

@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<!--
+  classroom.html — The teacher's control panel for Quilt-classroom.
+
+  A Quilt sheet where each cell is a student, a question, a response, or
+  a side-chatbot message. The teacher views it as:
+    - Spreadsheet: students × questions (live grid)
+    - DAW: questions over time, with student voices (struggle / questions track)
+    - Custom UI: configurable browsers (sorted by struggle, by response time, etc.)
+
+  The teacher can:
+    - Push a question to all students (or a subgroup)
+    - Configure a side-chatbot with model + scope (which cells it can read)
+    - See real-time: who's struggling, who's idle, who's asking what
+    - Group students for help, or send individual sub-lessons
+    - Gamify: assign teams, score, leaderboard
+
+  Live multi-device sync: via BroadcastChannel (same-device multi-tab)
+  and a session ID for cross-device (uses the quilt-llm-worker as the
+  sync backend; without the Worker, the demo works on one device).
+
+  Author: Mavis
+  Date: 2026-08-20
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quilt Classroom — teacher's control panel</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+    --teal: #39c5cf;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 0.8rem 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .toolbar { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  button, select, input[type="text"], input[type="number"] {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  button.primary:hover { background: #388bfd; }
+  button.warn { background: #d29922; border-color: #d29922; color: #0d1117; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .container { display: grid; grid-template-columns: 220px 1fr; height: calc(100vh - 60px); }
+  .sidebar {
+    background: #0d1117; border-right: 1px solid var(--border);
+    padding: 0.8rem; overflow-y: auto;
+  }
+  .sidebar h3 { margin: 0.5rem 0 0.3rem; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .main { display: flex; flex-direction: column; overflow: hidden; }
+  .view-tabs { display: flex; gap: 0.2rem; padding: 0.5rem; background: #0d1117; border-bottom: 1px solid var(--border); }
+  .view-tab { padding: 0.4rem 0.9rem; cursor: pointer; border-radius: 4px; font-size: 0.85rem; color: var(--muted); }
+  .view-tab.active { background: var(--panel); color: var(--fg); }
+  .view-tab:hover { background: var(--panel); }
+  .view-area { flex: 1; overflow: auto; padding: 1rem; }
+  .status-bar {
+    padding: 0.4rem 1rem; background: #0d1117; border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--muted); display: flex; gap: 1rem;
+  }
+  .status-bar .ok { color: var(--ok); }
+  .status-bar .warn { color: var(--warn); }
+
+  /* Students list (sidebar) */
+  .student-row {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.4rem 0.6rem; margin-bottom: 0.3rem;
+    display: flex; align-items: center; gap: 0.4rem;
+    cursor: pointer; font-size: 0.85rem;
+  }
+  .student-row:hover { border-color: var(--accent); }
+  .student-row .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+  .student-row.idle .dot { background: var(--muted); }
+  .student-row.struggling .dot { background: var(--err); }
+  .student-row .name { flex: 1; }
+  .student-row .struggle { font-size: 0.7rem; color: var(--muted); }
+
+  /* Spreadsheet view */
+  .sheet-wrap { overflow: auto; max-height: 70vh; border: 1px solid var(--border); border-radius: 4px; }
+  table.sheet { border-collapse: collapse; width: 100%; }
+  .sheet th, .sheet td {
+    border: 1px solid var(--border); padding: 0.4rem 0.5rem;
+    font-size: 0.85rem; min-width: 100px; max-width: 240px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .sheet th { background: #161b22; color: var(--muted); position: sticky; top: 0; z-index: 5; font-weight: 600; text-align: left; }
+  .sheet th.row-header { background: #161b22; position: sticky; left: 0; z-index: 6; min-width: 120px; }
+  .sheet td.row-header { background: #161b22; position: sticky; left: 0; font-weight: 600; z-index: 4; }
+  .sheet td.responded { background: #1a3a23; }
+  .sheet td.struggling { background: #3a1a1a; }
+  .sheet td.asking { background: #2a1f3a; }
+  .sheet td .preview { font-style: italic; color: var(--muted); font-size: 0.75rem; }
+
+  /* DAW view */
+  .daw-row {
+    display: grid; grid-template-columns: 140px 1fr;
+    margin-bottom: 0.4rem; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 4px;
+    min-height: 70px;
+  }
+  .daw-row .name { padding: 0.5rem; border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; }
+  .daw-row .name .label { font-weight: bold; font-size: 0.85rem; }
+  .daw-row .name .kind { font-size: 0.7rem; color: var(--muted); }
+  .daw-row .timeline { position: relative; padding: 0.4rem; min-height: 70px; background: linear-gradient(90deg, transparent 0%, transparent 100%); background-size: 10% 100%; }
+  .daw-cell {
+    position: absolute; top: 8px; height: 54px;
+    background: var(--accent); border-radius: 3px;
+    padding: 0.3rem 0.4rem; font-size: 0.7rem;
+    cursor: pointer; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .daw-cell:hover { transform: scale(1.05); z-index: 10; }
+  .daw-cell.question { background: var(--accent); }
+  .daw-cell.response { background: var(--ok); }
+  .daw-cell.struggle { background: var(--err); }
+  .daw-cell.ask { background: var(--purple); }
+  .daw-cell.idle { background: var(--muted); }
+
+  /* Custom UI view */
+  .custom-templates { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .template-chip {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .template-chip:hover { border-color: var(--accent); }
+  .template-chip.active { background: #1f2937; border-color: var(--accent); }
+  .leaderboard { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 1rem; }
+  .leaderboard .row { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border); }
+  .leaderboard .row:last-child { border-bottom: none; }
+  .leaderboard .row .name { font-weight: bold; }
+  .leaderboard .row .stat { color: var(--muted); font-size: 0.85rem; }
+
+  /* Question editor modal */
+  .modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .modal-content {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem; max-width: 600px; width: 90%;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal h2 { margin-top: 0; }
+  .form-group { margin: 0.8rem 0; }
+  .form-group label { display: block; margin-bottom: 0.3rem; color: var(--muted); font-size: 0.85rem; }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; background: #0d1117; color: var(--fg);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.5rem; font-family: inherit; font-size: 0.9rem;
+  }
+  .form-group textarea { min-height: 80px; resize: vertical; }
+
+  /* Question card */
+  .question-card {
+    background: var(--panel); border: 1px solid var(--accent);
+    border-left: 4px solid var(--accent); border-radius: 4px;
+    padding: 0.8rem; margin-bottom: 0.5rem;
+  }
+  .question-card.live { border-color: var(--ok); border-left-color: var(--ok); }
+  .question-card.closed { opacity: 0.5; }
+  .question-card .text { font-size: 0.95rem; margin: 0.3rem 0; }
+  .question-card .meta { font-size: 0.75rem; color: var(--muted); }
+
+  /* Chatbot config */
+  .chatbot-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 4px solid var(--teal); border-radius: 4px;
+    padding: 0.8rem; margin-bottom: 0.5rem;
+  }
+  .chatbot-card .meta { font-size: 0.75rem; color: var(--muted); margin: 0.3rem 0; }
+  .chatbot-card .scope { font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--teal); }
+
+  .legend { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .legend span { display: inline-block; margin-right: 0.8rem; }
+  .legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.2rem; vertical-align: middle; }
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+  .hidden { display: none !important; }
+  .empty { text-align: center; padding: 2rem; color: var(--muted); }
+</style>
+<script src="quilt-llm-client.js"></script>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🍎 Quilt Classroom</h1>
+    <div class="subtitle">teacher's control panel — the watch over a live cell graph of students</div>
+  </div>
+  <div class="toolbar">
+    <button class="primary" id="addQuestionBtn">+ New question</button>
+    <button id="addChatbotBtn">+ Side chatbot</button>
+    <button id="groupBtn">⚏ Group</button>
+    <button id="gamifyBtn">🎮 Gamify</button>
+    <select id="modelSelect">
+      <option value="workers-ai">Workers AI (default)</option>
+      <option value="zai">z.ai (premium)</option>
+      <option value="kimi">Kimi K3 (premium)</option>
+      <option value="deepseek">DeepSeek V3 (premium)</option>
+    </select>
+    <input type="text" id="sessionId" placeholder="session id" style="width: 140px;" />
+    <button id="shareLinkBtn">📋 Share</button>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Sidebar: students + question log -->
+  <aside class="sidebar">
+    <h3>Students (<span id="studentCount">0</span>)</h3>
+    <div id="studentList"></div>
+
+    <h3>Session</h3>
+    <div style="font-size: 0.8rem; color: var(--muted); line-height: 1.6;">
+      <div>Mode: <span id="syncMode" style="color: var(--ok)">demo</span></div>
+      <div>Active questions: <span id="activeQuestionCount">0</span></div>
+      <div>Responses: <span id="responseCount">0</span></div>
+      <div>Side-asks: <span id="askCount">0</span></div>
+    </div>
+
+    <h3>Side chat</h3>
+    <div id="chatbotList"></div>
+
+    <h3>Recent activity</h3>
+    <div id="activityLog" style="font-size: 0.75rem; color: var(--muted); max-height: 200px; overflow-y: auto;"></div>
+  </aside>
+
+  <main class="main">
+    <div class="view-tabs">
+      <div class="view-tab active" data-view="spreadsheet">📊 Spreadsheet</div>
+      <div class="view-tab" data-view="daw">⏪ DAW</div>
+      <div class="view-tab" data-view="custom">🎨 Custom UI</div>
+      <div class="view-tab" data-view="questions">📝 Questions</div>
+      <div class="view-tab" data-view="chat">💬 Side chat</div>
+    </div>
+    <div class="view-area" id="viewArea"></div>
+    <div class="status-bar">
+      <span id="statusMain">Ready. Add a question to begin.</span>
+      <span style="flex:1"></span>
+      <span id="statusSync">🔌 local</span>
+      <span id="statusApi"></span>
+    </div>
+  </main>
+</div>
+
+<!-- Question editor modal -->
+<div class="modal hidden" id="questionModal">
+  <div class="modal-content">
+    <h2>New question</h2>
+    <div class="form-group">
+      <label>Question text</label>
+      <textarea id="qText" placeholder="What is the capital of France?"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <select id="qType">
+        <option value="text">Free text</option>
+        <option value="choice">Multiple choice (provide options below)</option>
+        <option value="drawing">Drawing / diagram</option>
+        <option value="code">Code</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Options (one per line, for multiple choice)</label>
+      <textarea id="qOptions" placeholder="Paris&#10;London&#10;Berlin&#10;Madrid"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Target students (empty = all)</label>
+      <input type="text" id="qTargets" placeholder="alice, bob, charlie" />
+    </div>
+    <div class="form-group">
+      <label>Time limit (minutes, 0 = none)</label>
+      <input type="number" id="qTimeLimit" value="0" min="0" />
+    </div>
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="qAllowSide" checked />
+        Allow side-questions to chatbot
+      </label>
+    </div>
+    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+      <button class="primary" id="qSaveBtn">Push to students</button>
+      <button id="qCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chatbot editor modal -->
+<div class="modal hidden" id="chatbotModal">
+  <div class="modal-content">
+    <h2>Side chatbot</h2>
+    <p style="color: var(--muted); font-size: 0.85rem;">
+      A scoped assistant. The student can ask side-questions; the chatbot answers
+      using only the cells in its scope.
+    </p>
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" id="cbName" placeholder="TutorBot" />
+    </div>
+    <div class="form-group">
+      <label>Persona</label>
+      <select id="cbPersona">
+        <option value="socratic">Socratic (asks questions, doesn't give answers)</option>
+        <option value="tutor">Tutor (explains step by step)</option>
+        <option value="researcher">Researcher (looks up facts, cites cells)</option>
+        <option value="encouraging">Encouraging (positive, builds confidence)</option>
+        <option value="challenge">Challenge (pushes back, asks for evidence)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Scope (which cells can it read?)</label>
+      <input type="text" id="cbScope" placeholder="question.*, student.*.notes" />
+    </div>
+    <div class="form-group">
+      <label>Custom prompt (overrides persona)</label>
+      <textarea id="cbPrompt" placeholder="You are a patient math tutor. Never give the answer; always lead with a question."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Model</label>
+      <select id="cbModel">
+        <option value="workers-ai">Workers AI (default, free)</option>
+        <option value="zai">z.ai (premium)</option>
+        <option value="kimi">Kimi K3 (premium)</option>
+        <option value="deepseek">DeepSeek V3 (premium)</option>
+      </select>
+    </div>
+    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+      <button class="primary" id="cbSaveBtn">Create chatbot</button>
+      <button id="cbCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// State
+// ============================================================================
+const state = {
+  sessionId: localStorage.getItem('classroom_session_id') || 'demo-' + Math.random().toString(36).slice(2, 8),
+  students: [],
+  questions: [],     // { id, text, type, options, targets, allowSide, timeLimit, status, pushedAt }
+  responses: [],     // { id, questionId, studentId, text, time, struggle }
+  asks: [],          // { id, questionId, studentId, text, time }
+  chatbots: [],      // { id, name, persona, scope, prompt, model }
+  chat: [],          // { id, studentId, chatbotId, userMsg, botMsg, time }
+  groups: [],        // { id, name, students: [] }
+  view: 'spreadsheet',
+  customUI: 'leaderboard',
+  bc: null,          // BroadcastChannel for same-device multi-tab
+  syncMode: 'local',  // local | worker
+};
+
+localStorage.setItem('classroom_session_id', state.sessionId);
+document.getElementById('sessionId').value = state.sessionId;
+
+// ============================================================================
+// Demo seed (6 simulated students + 2 starting questions)
+// ============================================================================
+function seedDemo() {
+  state.students = [
+    { id: 'alice', name: 'Alice', currentQ: 0, lastActive: Date.now() - 1000, struggle: 0.1, notes: 'Got the last one fast.' },
+    { id: 'bob', name: 'Bob', currentQ: 0, lastActive: Date.now() - 5000, struggle: 0.5, notes: 'Hesitating on the second one.' },
+    { id: 'charlie', name: 'Charlie', currentQ: 0, lastActive: Date.now() - 10000, struggle: 0.8, notes: 'Asking the chatbot a lot.' },
+    { id: 'diana', name: 'Diana', currentQ: 0, lastActive: Date.now() - 500, struggle: 0.0, notes: 'Done first question.' },
+    { id: 'evan', name: 'Evan', currentQ: 0, lastActive: Date.now() - 2000, struggle: 0.3, notes: '' },
+    { id: 'fiona', name: 'Fiona', currentQ: 0, lastActive: Date.now() - 8000, struggle: 0.6, notes: 'Tried to skip ahead.' },
+  ];
+  state.questions = [
+    {
+      id: 'q1', text: 'What is the capital of France?',
+      type: 'choice', options: ['Paris', 'London', 'Berlin', 'Madrid'],
+      targets: [], allowSide: true, timeLimit: 0,
+      status: 'live', pushedAt: Date.now() - 60000,
+    },
+    {
+      id: 'q2', text: 'In your own words, explain why the sky is blue.',
+      type: 'text', options: [],
+      targets: [], allowSide: true, timeLimit: 5,
+      status: 'live', pushedAt: Date.now() - 30000,
+    },
+  ];
+  // Some demo responses
+  state.responses = [
+    { id: 'r1', questionId: 'q1', studentId: 'alice', text: 'Paris', time: Date.now() - 40000, struggle: 0.0 },
+    { id: 'r2', questionId: 'q1', studentId: 'diana', text: 'Paris', time: Date.now() - 30000, struggle: 0.0 },
+  ];
+  state.asks = [
+    { id: 'a1', questionId: 'q1', studentId: 'charlie', text: 'Is London close?', time: Date.now() - 20000 },
+  ];
+  state.chatbots = [
+    { id: 'cb1', name: 'TutorBot', persona: 'socratic', scope: 'question.*, student.*.notes', prompt: '', model: 'workers-ai' },
+  ];
+  state.chat = [
+    { id: 'm1', studentId: 'charlie', chatbotId: 'cb1', userMsg: 'Is London close to Paris?', botMsg: 'What makes you ask? What do you already know about London?', time: Date.now() - 19000 },
+  ];
+}
+
+// ============================================================================
+// Sync (BroadcastChannel for same-device multi-tab)
+// ============================================================================
+function setupSync() {
+  if (typeof BroadcastChannel === 'undefined') return;
+  state.bc = new BroadcastChannel('quilt-classroom-' + state.sessionId);
+  state.bc.onmessage = (e) => {
+    // A student tab pushed a response; merge it
+    const { type, payload } = e.data;
+    if (type === 'response') {
+      mergeResponse(payload);
+    } else if (type === 'ask') {
+      mergeAsk(payload);
+    } else if (type === 'chat') {
+      mergeChat(payload);
+    } else if (type === 'student_join') {
+      mergeStudent(payload);
+    } else if (type === 'sync_request') {
+      // Send full state to the new tab
+      state.bc.postMessage({ type: 'sync_state', payload: getState() });
+    } else if (type === 'sync_state') {
+      Object.assign(state, payload);
+      renderAll();
+    }
+  };
+  // Request sync from any other tab
+  state.bc.postMessage({ type: 'sync_request' });
+}
+
+function broadcast(type, payload) {
+  if (state.bc) state.bc.postMessage({ type, payload });
+}
+
+function mergeResponse(r) {
+  // Replace if exists, else add
+  const idx = state.responses.findIndex(x => x.id === r.id);
+  if (idx >= 0) state.responses[idx] = r;
+  else state.responses.push(r);
+  addActivity(`${studentName(r.studentId)} answered ${r.text.length > 20 ? r.text.slice(0, 20) + '...' : r.text}`);
+  renderAll();
+}
+
+function mergeAsk(a) {
+  const idx = state.asks.findIndex(x => x.id === a.id);
+  if (idx >= 0) state.asks[idx] = a;
+  else state.asks.push(a);
+  addActivity(`${studentName(a.studentId)} asked: "${a.text.slice(0, 30)}..."`);
+  renderAll();
+}
+
+function mergeChat(c) {
+  const idx = state.chat.findIndex(x => x.id === c.id);
+  if (idx >= 0) state.chat[idx] = c;
+  else state.chat.push(c);
+  renderAll();
+}
+
+function mergeStudent(s) {
+  const idx = state.students.findIndex(x => x.id === s.id);
+  if (idx >= 0) state.students[idx] = s;
+  else state.students.push(s);
+  addActivity(`${s.name} joined`);
+  renderAll();
+}
+
+function getState() {
+  return {
+    students: state.students,
+    questions: state.questions,
+    responses: state.responses,
+    asks: state.asks,
+    chatbots: state.chatbots,
+    chat: state.chat,
+    groups: state.groups,
+  };
+}
+
+function addActivity(msg) {
+  const log = document.getElementById('activityLog');
+  const div = document.createElement('div');
+  div.style.padding = '0.2rem 0';
+  div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  log.insertBefore(div, log.firstChild);
+  if (log.children.length > 30) log.removeChild(log.lastChild);
+}
+
+function studentName(id) {
+  const s = state.students.find(s => s.id === id);
+  return s ? s.name : id;
+}
+
+// ============================================================================
+// Render
+// ============================================================================
+function renderAll() {
+  renderSidebar();
+  renderView();
+  document.getElementById('studentCount').textContent = state.students.length;
+  document.getElementById('activeQuestionCount').textContent = state.questions.filter(q => q.status === 'live').length;
+  document.getElementById('responseCount').textContent = state.responses.length;
+  document.getElementById('askCount').textContent = state.asks.length;
+}
+
+function renderSidebar() {
+  // Students
+  const sl = document.getElementById('studentList');
+  sl.innerHTML = '';
+  for (const s of state.students) {
+    const div = document.createElement('div');
+    let cls = 'student-row';
+    if (Date.now() - s.lastActive > 30000) cls += ' idle';
+    if (s.struggle > 0.6) cls += ' struggling';
+    div.className = cls;
+    div.innerHTML = `
+      <div class="dot"></div>
+      <div class="name">${s.name}</div>
+      <div class="struggle">${(s.struggle * 100).toFixed(0)}%</div>
+    `;
+    div.onclick = () => focusStudent(s);
+    sl.appendChild(div);
+  }
+  // Chatbots
+  const cl = document.getElementById('chatbotList');
+  cl.innerHTML = '';
+  for (const cb of state.chatbots) {
+    const div = document.createElement('div');
+    div.className = 'chatbot-card';
+    div.innerHTML = `
+      <strong>${cb.name}</strong>
+      <div class="meta">${cb.persona} · ${cb.model}</div>
+      <div class="scope">${cb.scope}</div>
+    `;
+    cl.appendChild(div);
+  }
+}
+
+function focusStudent(s) {
+  // In a full app, this would drill into the student's notes
+  alert(`${s.name}\n\nNotes: ${s.notes || '(no notes)'}\nStruggle: ${(s.struggle * 100).toFixed(0)}%\nLast active: ${Math.round((Date.now() - s.lastActive) / 1000)}s ago`);
+}
+
+function renderView() {
+  const area = document.getElementById('viewArea');
+  if (state.view === 'spreadsheet') renderSpreadsheet(area);
+  else if (state.view === 'daw') renderDAW(area);
+  else if (state.view === 'custom') renderCustom(area);
+  else if (state.view === 'questions') renderQuestions(area);
+  else if (state.view === 'chat') renderChat(area);
+}
+
+function renderSpreadsheet(area) {
+  const liveQs = state.questions.filter(q => q.status === 'live');
+  area.innerHTML = '';
+  if (liveQs.length === 0) {
+    area.innerHTML = '<div class="empty">No live questions. Click "+ New question" to push one.</div>';
+    return;
+  }
+  const wrap = document.createElement('div');
+  wrap.className = 'sheet-wrap';
+  const table = document.createElement('table');
+  table.className = 'sheet';
+  // Header row: student | question1 | question2 | ...
+  const thead = document.createElement('thead');
+  const tr = document.createElement('tr');
+  const th0 = document.createElement('th');
+  th0.className = 'row-header';
+  th0.textContent = 'Student';
+  tr.appendChild(th0);
+  for (const q of liveQs) {
+    const th = document.createElement('th');
+    th.textContent = q.text.length > 30 ? q.text.slice(0, 30) + '...' : q.text;
+    th.title = q.text;
+    tr.appendChild(th);
+  }
+  thead.appendChild(tr);
+  table.appendChild(thead);
+
+  // Body: one row per student
+  const tbody = document.createElement('tbody');
+  for (const s of state.students) {
+    const row = document.createElement('tr');
+    const rowHdr = document.createElement('td');
+    rowHdr.className = 'row-header';
+    rowHdr.textContent = s.name + ` (${(s.struggle*100).toFixed(0)}%)`;
+    row.appendChild(rowHdr);
+    for (const q of liveQs) {
+      const cell = document.createElement('td');
+      const r = state.responses.find(r => r.questionId === q.id && r.studentId === s.id);
+      const a = state.asks.find(a => a.questionId === q.id && a.studentId === s.id);
+      if (r) {
+        cell.classList.add('responded');
+        const preview = r.text.length > 30 ? r.text.slice(0, 30) + '...' : r.text;
+        cell.innerHTML = `<div>${preview}</div><div class="preview">@ ${new Date(r.time).toLocaleTimeString()}</div>`;
+        cell.title = r.text;
+      } else if (a) {
+        cell.classList.add('asking');
+        cell.innerHTML = `<div class="preview">💬 ${a.text.slice(0, 25)}...</div>`;
+        cell.title = `Side-asked: ${a.text}`;
+      } else if (s.struggle > 0.6) {
+        cell.classList.add('struggling');
+        cell.innerHTML = `<div class="preview">⚠ struggling</div>`;
+      } else {
+        cell.innerHTML = `<div class="preview">—</div>`;
+      }
+      row.appendChild(cell);
+    }
+    tbody.appendChild(row);
+  }
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  area.appendChild(wrap);
+}
+
+function renderDAW(area) {
+  area.innerHTML = '';
+  const wrap = document.createElement('div');
+  const tMin = Date.now() - 5 * 60 * 1000;  // 5 min window
+  const tMax = Date.now();
+  const totalS = (tMax - tMin) / 1000;
+  const legend = document.createElement('div');
+  legend.className = 'legend';
+  legend.innerHTML = `
+    <span><span class="swatch" style="background: var(--accent)"></span>question</span>
+    <span><span class="swatch" style="background: var(--ok)"></span>response</span>
+    <span><span class="swatch" style="background: var(--purple)"></span>side-ask</span>
+    <span><span class="swatch" style="background: var(--err)"></span>struggle spike</span>
+    <span style="margin-left: 1rem;">window: 5 min</span>
+  `;
+  area.appendChild(legend);
+
+  // Tracks: one per student + one for questions + one for asks
+  const tracks = [
+    { name: 'Questions', kind: 'questions', cells: state.questions.map(q => ({
+      t: q.pushedAt, dur: 1000, kind: 'question', text: q.text.slice(0, 30),
+    }))},
+    ...state.students.map(s => ({
+      name: s.name, kind: 'student', studentId: s.id,
+      cells: [
+        ...state.responses.filter(r => r.studentId === s.id).map(r => ({
+          t: r.time, dur: 1000, kind: 'response', text: r.text.slice(0, 30),
+        })),
+        ...state.asks.filter(a => a.studentId === s.id).map(a => ({
+          t: a.time, dur: 1000, kind: 'ask', text: '💬 ' + a.text.slice(0, 25),
+        })),
+      ],
+    })),
+  ];
+
+  for (const t of tracks) {
+    const tr = document.createElement('div');
+    tr.className = 'daw-row';
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.innerHTML = `<div class="label">${t.name}</div><div class="kind">${t.kind}</div>`;
+    tr.appendChild(name);
+    const tl = document.createElement('div');
+    tl.className = 'timeline';
+    // Time markers
+    for (let s = 0; s <= 300; s += 30) {
+      const marker = document.createElement('div');
+      marker.className = 'time-marker';
+      if (s % 60 === 0) marker.style.background = 'rgba(255,255,255,0.15)';
+      marker.style.left = (s / 300 * 100) + '%';
+      marker.style.position = 'absolute';
+      marker.style.top = '0';
+      marker.style.bottom = '0';
+      marker.style.width = '1px';
+      tl.appendChild(marker);
+    }
+    for (const c of t.cells) {
+      const cell = document.createElement('div');
+      cell.className = 'daw-cell ' + c.kind;
+      const left = Math.max(0, (c.t - tMin) / 1000 / totalS * 100);
+      cell.style.left = left + '%';
+      cell.style.width = '3%';
+      cell.textContent = c.text;
+      cell.title = c.text;
+      tl.appendChild(cell);
+    }
+    tr.appendChild(tl);
+    wrap.appendChild(tr);
+  }
+  area.appendChild(wrap);
+}
+
+function renderCustom(area) {
+  area.innerHTML = '';
+  const tabs = document.createElement('div');
+  tabs.className = 'custom-templates';
+  for (const t of [
+    { id: 'leaderboard', label: '🏆 Leaderboard' },
+    { id: 'struggle', label: '🆘 By struggle' },
+    { id: 'speed', label: '⚡ By speed' },
+    { id: 'asks', label: '💬 Side-asks' },
+  ]) {
+    const chip = document.createElement('div');
+    chip.className = 'template-chip' + (state.customUI === t.id ? ' active' : '');
+    chip.textContent = t.label;
+    chip.onclick = () => { state.customUI = t.id; renderCustom(area); };
+    tabs.appendChild(chip);
+  }
+  area.appendChild(tabs);
+
+  const board = document.createElement('div');
+  board.className = 'leaderboard';
+  if (state.customUI === 'leaderboard') {
+    const ranked = state.students.map(s => {
+      const r = state.responses.filter(r => r.studentId === s.id).length;
+      const a = state.asks.filter(a => a.studentId === s.id).length;
+      const score = r * 10 - s.struggle * 5 - a * 2;
+      return { ...s, score, responseCount: r, askCount: a };
+    }).sort((a, b) => b.score - a.score);
+    for (const s of ranked) {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `<span class="name">${s.name}</span><span class="stat">${s.responseCount} answered · ${s.askCount} asked · score ${s.score.toFixed(1)}</span>`;
+      board.appendChild(row);
+    }
+  } else if (state.customUI === 'struggle') {
+    const ranked = [...state.students].sort((a, b) => b.struggle - a.struggle);
+    for (const s of ranked) {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `<span class="name">${s.name}</span><span class="stat">struggle ${(s.struggle*100).toFixed(0)}%</span>`;
+      board.appendChild(row);
+    }
+  } else if (state.customUI === 'speed') {
+    const ranked = state.students.map(s => {
+      const myResps = state.responses.filter(r => r.studentId === s.id);
+      const avgTime = myResps.length > 0
+        ? myResps.reduce((sum, r) => sum + (Date.now() - r.time), 0) / myResps.length
+        : Infinity;
+      return { ...s, avgTime };
+    }).sort((a, b) => a.avgTime - b.avgTime);
+    for (const s of ranked) {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `<span class="name">${s.name}</span><span class="stat">${s.avgTime === Infinity ? '—' : Math.round(s.avgTime/1000) + 's ago'}</span>`;
+      board.appendChild(row);
+    }
+  } else if (state.customUI === 'asks') {
+    if (state.asks.length === 0) {
+      board.innerHTML = '<div class="empty">No side-asks yet.</div>';
+    } else {
+      for (const a of state.asks.slice().reverse()) {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `<span class="name">${studentName(a.studentId)}</span><span class="stat">"${a.text.slice(0, 60)}"</span>`;
+        board.appendChild(row);
+      }
+    }
+  }
+  area.appendChild(board);
+}
+
+function renderQuestions(area) {
+  area.innerHTML = '';
+  if (state.questions.length === 0) {
+    area.innerHTML = '<div class="empty">No questions yet.</div>';
+    return;
+  }
+  for (const q of state.questions.slice().reverse()) {
+    const card = document.createElement('div');
+    card.className = 'question-card ' + q.status;
+    const respCount = state.responses.filter(r => r.questionId === q.id).length;
+    const askCount = state.asks.filter(a => a.questionId === q.id).length;
+    card.innerHTML = `
+      <div class="meta">${q.type} · ${q.status} · ${respCount} answered · ${askCount} asked</div>
+      <div class="text">${q.text}</div>
+      ${q.options.length > 0 ? '<div class="meta">' + q.options.join(' · ') + '</div>' : ''}
+      <div style="margin-top: 0.4rem;">
+        ${q.status === 'live' ? `<button onclick="closeQuestion('${q.id}')">Close</button>` : `<button onclick="reopenQuestion('${q.id}')">Reopen</button>`}
+        <button onclick="viewResponses('${q.id}')">View responses (${respCount})</button>
+      </div>
+    `;
+    area.appendChild(card);
+  }
+}
+
+function renderChat(area) {
+  area.innerHTML = '';
+  if (state.chat.length === 0) {
+    area.innerHTML = '<div class="empty">No chat yet.</div>';
+    return;
+  }
+  for (const c of state.chat.slice().reverse()) {
+    const cb = state.chatbots.find(cb => cb.id === c.chatbotId);
+    const div = document.createElement('div');
+    div.className = 'chatbot-card';
+    div.innerHTML = `
+      <div class="meta">${studentName(c.studentId)} → ${cb ? cb.name : '?'} @ ${new Date(c.time).toLocaleTimeString()}</div>
+      <div><strong>👤</strong> ${c.userMsg}</div>
+      <div><strong>🤖</strong> ${c.botMsg}</div>
+    `;
+    area.appendChild(div);
+  }
+}
+
+// ============================================================================
+// Actions
+// ============================================================================
+function closeQuestion(qid) {
+  const q = state.questions.find(q => q.id === qid);
+  if (q) { q.status = 'closed'; renderAll(); }
+}
+function reopenQuestion(qid) {
+  const q = state.questions.find(q => q.id === qid);
+  if (q) { q.status = 'live'; q.pushedAt = Date.now(); renderAll(); }
+}
+function viewResponses(qid) {
+  const q = state.questions.find(q => q.id === qid);
+  if (!q) return;
+  const resps = state.responses.filter(r => r.questionId === qid);
+  alert(`Responses to: ${q.text}\n\n${resps.map(r => `${studentName(r.studentId)}: ${r.text}`).join('\n') || '(no responses yet)'}`);
+}
+window.closeQuestion = closeQuestion;
+window.reopenQuestion = reopenQuestion;
+window.viewResponses = viewResponses;
+
+// ============================================================================
+// Modal handling
+// ============================================================================
+document.getElementById('addQuestionBtn').onclick = () => {
+  document.getElementById('questionModal').classList.remove('hidden');
+};
+document.getElementById('qCancelBtn').onclick = () => {
+  document.getElementById('questionModal').classList.add('hidden');
+};
+document.getElementById('qSaveBtn').onclick = () => {
+  const text = document.getElementById('qText').value.trim();
+  if (!text) { alert('Question text is required'); return; }
+  const q = {
+    id: 'q' + Date.now().toString(36),
+    text,
+    type: document.getElementById('qType').value,
+    options: document.getElementById('qOptions').value.split('\n').filter(x => x.trim()),
+    targets: document.getElementById('qTargets').value.split(',').map(x => x.trim()).filter(Boolean),
+    allowSide: document.getElementById('qAllowSide').checked,
+    timeLimit: parseInt(document.getElementById('qTimeLimit').value) || 0,
+    status: 'live',
+    pushedAt: Date.now(),
+  };
+  state.questions.push(q);
+  broadcast('question', q);
+  addActivity(`Pushed question: ${q.text.slice(0, 40)}...`);
+  document.getElementById('questionModal').classList.add('hidden');
+  // Clear form
+  document.getElementById('qText').value = '';
+  document.getElementById('qOptions').value = '';
+  document.getElementById('qTargets').value = '';
+  renderAll();
+  document.getElementById('statusMain').textContent = `✓ Question pushed to ${q.targets.length === 0 ? 'all students' : q.targets.length + ' students'}`;
+  document.getElementById('statusMain').className = 'ok';
+};
+
+document.getElementById('addChatbotBtn').onclick = () => {
+  document.getElementById('chatbotModal').classList.remove('hidden');
+};
+document.getElementById('cbCancelBtn').onclick = () => {
+  document.getElementById('chatbotModal').classList.add('hidden');
+};
+document.getElementById('cbSaveBtn').onclick = () => {
+  const name = document.getElementById('cbName').value.trim() || 'TutorBot';
+  const cb = {
+    id: 'cb' + Date.now().toString(36),
+    name,
+    persona: document.getElementById('cbPersona').value,
+    scope: document.getElementById('cbScope').value || 'question.*, student.*.notes',
+    prompt: document.getElementById('cbPrompt').value,
+    model: document.getElementById('cbModel').value,
+  };
+  state.chatbots.push(cb);
+  broadcast('chatbot', cb);
+  addActivity(`Created chatbot: ${cb.name} (${cb.persona})`);
+  document.getElementById('chatbotModal').classList.add('hidden');
+  renderAll();
+};
+
+document.getElementById('shareLinkBtn').onclick = () => {
+  const url = `${location.origin}/student.html?session=${state.sessionId}`;
+  navigator.clipboard.writeText(url).then(() => {
+    document.getElementById('statusMain').textContent = `✓ Copied student link: ${url}`;
+  });
+};
+
+document.getElementById('groupBtn').onclick = () => {
+  // Auto-group by struggle: struggling together, fast together
+  const sorted = [...state.students].sort((a, b) => b.struggle - a.struggle);
+  const groups = [
+    { name: 'Needs help', students: sorted.filter(s => s.struggle > 0.5).map(s => s.id) },
+    { name: 'On track', students: sorted.filter(s => s.struggle > 0.2 && s.struggle <= 0.5).map(s => s.id) },
+    { name: 'Acing it', students: sorted.filter(s => s.struggle <= 0.2).map(s => s.id) },
+  ];
+  alert(`Auto-group by struggle:\n\n${groups.map(g => `${g.name}: ${g.students.length} students (${g.students.map(studentName).join(', ')})`).join('\n')}`);
+};
+
+document.getElementById('gamifyBtn').onclick = () => {
+  // Split into 2 teams
+  const shuffled = [...state.students].sort(() => Math.random() - 0.5);
+  const team1 = shuffled.slice(0, Math.ceil(shuffled.length / 2));
+  const team2 = shuffled.slice(Math.ceil(shuffled.length / 2));
+  alert(`🎮 Teams:\n\n🟦 Team 1: ${team1.map(s => s.name).join(', ')}\n🟥 Team 2: ${team2.map(s => s.name).join(', ')}\n\nFirst to 5 correct answers wins!`);
+};
+
+// View tabs
+document.querySelectorAll('.view-tab').forEach(tab => {
+  tab.onclick = () => {
+    state.view = tab.dataset.view;
+    document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t === tab));
+    renderView();
+  };
+});
+
+// Session ID change
+document.getElementById('sessionId').onchange = (e) => {
+  state.sessionId = e.target.value;
+  localStorage.setItem('classroom_session_id', state.sessionId);
+  setupSync();
+};
+
+// ============================================================================
+// Init
+// ============================================================================
+seedDemo();
+setupSync();
+renderAll();
+document.getElementById('statusMain').textContent = 'Demo session ready. 6 simulated students. Open student.html in another tab to join.';
+document.getElementById('statusSync').textContent = `🔌 session: ${state.sessionId}`;
+</script>
+</body>
+</html>

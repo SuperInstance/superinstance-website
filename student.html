@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<!--
+  student.html — The student's tablet/phone view of Quilt-classroom.
+
+  The student sees:
+    - The current question (large, focused)
+    - A notes area
+    - A side-chatbot for asking questions
+    - A submit button
+    - A "raise hand" / "ask teacher" button
+
+  Each student device is an opener onto the same cell graph that the
+  teacher is watching in classroom.html. State syncs via BroadcastChannel
+  (same-device) or via the Cloudflare Worker (cross-device).
+
+  Author: Mavis
+  Date: 2026-08-20
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Quilt Classroom — student</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+    --teal: #39c5cf;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  header {
+    padding: 0.8rem 1rem; background: var(--panel); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  h1 { margin: 0; font-size: 1.1rem; }
+  .subtitle { color: var(--muted); font-size: 0.75rem; }
+  .main {
+    flex: 1; padding: 1rem; overflow-y: auto;
+    max-width: 600px; margin: 0 auto; width: 100%;
+  }
+  .question-card {
+    background: var(--panel); border: 2px solid var(--accent);
+    border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem;
+  }
+  .question-card .meta {
+    font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .question-card .text { font-size: 1.3rem; margin: 0.5rem 0; line-height: 1.4; }
+  .question-card .options { margin-top: 1rem; }
+  .question-card .options .opt {
+    background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.7rem 1rem; margin: 0.4rem 0; cursor: pointer; font-size: 1rem;
+  }
+  .question-card .options .opt:hover { border-color: var(--accent); background: #1a2230; }
+  .question-card .options .opt.selected { border-color: var(--ok); background: #1a3a23; }
+
+  textarea, input[type="text"] {
+    width: 100%; background: #0d1117; color: var(--fg);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.7rem; font-family: inherit; font-size: 1rem;
+  }
+  textarea { min-height: 100px; resize: vertical; }
+
+  button {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.7rem 1.2rem; border-radius: 6px; cursor: pointer;
+    font-size: 0.95rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  button.primary:hover { background: #388bfd; }
+  button.success { background: var(--ok); border-color: var(--ok); color: #0d1117; }
+  button.success:hover { filter: brightness(1.1); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .section { margin-bottom: 1.5rem; }
+  .section h2 {
+    font-size: 0.8rem; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.05em; margin: 0 0 0.5rem;
+  }
+  .chatbot {
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 4px solid var(--teal); border-radius: 6px;
+    padding: 0.8rem; margin-bottom: 0.7rem;
+  }
+  .chatbot .name { font-weight: bold; color: var(--teal); }
+  .chatbot .meta { font-size: 0.7rem; color: var(--muted); }
+  .chatbot .msg {
+    margin: 0.4rem 0; padding: 0.5rem; border-radius: 4px;
+    font-size: 0.9rem; line-height: 1.4;
+  }
+  .chatbot .msg.user { background: #1a2230; }
+  .chatbot .msg.bot { background: #1a2a23; }
+  .chatbot .input-row { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+  .chatbot .input-row input { flex: 1; }
+
+  .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .empty { text-align: center; padding: 2rem; color: var(--muted); }
+
+  .status-bar {
+    padding: 0.5rem 1rem; background: var(--panel); border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--muted); text-align: center;
+  }
+  .status-bar .ok { color: var(--ok); }
+  .status-bar .warn { color: var(--warn); }
+
+  /* Mobile-first */
+  @media (max-width: 480px) {
+    .main { padding: 0.6rem; }
+    .question-card .text { font-size: 1.15rem; }
+  }
+</style>
+<script src="quilt-llm-client.js"></script>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📚 My Classroom</h1>
+    <div class="subtitle" id="headerSub">connecting...</div>
+  </div>
+  <div style="display: flex; gap: 0.4rem;">
+    <button id="nameBtn" style="font-size: 0.8rem;">✏️ Name</button>
+  </div>
+</header>
+
+<div class="main">
+  <!-- Question -->
+  <div class="section" id="questionSection">
+    <h2>Current question</h2>
+    <div id="questionArea">
+      <div class="empty">Waiting for the teacher to push a question...</div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="section">
+    <h2>My notes</h2>
+    <textarea id="notesArea" placeholder="Jot down your thinking. Your teacher can see these."></textarea>
+  </div>
+
+  <!-- Chatbot -->
+  <div class="section" id="chatbotSection">
+    <h2>Side chatbot</h2>
+    <div id="chatbotArea">
+      <div class="empty">No chatbot available yet.</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="section">
+    <h2>Actions</h2>
+    <div class="actions">
+      <button class="success" id="submitBtn" disabled>✓ Submit answer</button>
+      <button id="raiseHandBtn">✋ Ask teacher</button>
+      <button id="nextBtn" disabled>Skip →</button>
+    </div>
+    <div id="submitStatus" style="margin-top: 0.5rem; font-size: 0.85rem;"></div>
+  </div>
+</div>
+
+<div class="status-bar" id="statusBar">
+  Initializing...
+</div>
+
+<script>
+// ============================================================================
+// State
+// ============================================================================
+const params = new URLSearchParams(window.location.search);
+const state = {
+  sessionId: params.get('session') || localStorage.getItem('classroom_session_id') || 'demo-default',
+  studentId: localStorage.getItem('student_id') || 'student-' + Math.random().toString(36).slice(2, 6),
+  studentName: localStorage.getItem('student_name') || '',
+  questions: [],
+  chatbots: [],
+  notes: '',
+  currentQ: null,  // index into live questions
+  currentResponse: '',
+  selectedOption: null,
+  bc: null,
+  chat: {},  // chatbotId -> [{ user, bot, time }]
+  modelKey: 'workers-ai',  // for the chatbot
+};
+
+localStorage.setItem('classroom_session_id', state.sessionId);
+
+// ============================================================================
+// Sync
+// ============================================================================
+function setupSync() {
+  if (typeof BroadcastChannel === 'undefined') {
+    document.getElementById('statusBar').textContent = '⚠ BroadcastChannel not supported. Demo mode only.';
+    return;
+  }
+  state.bc = new BroadcastChannel('quilt-classroom-' + state.sessionId);
+  state.bc.onmessage = (e) => {
+    const { type, payload } = e.data;
+    if (type === 'sync_state') {
+      state.questions = payload.questions || [];
+      state.chatbots = payload.chatbots || [];
+      // Don't overwrite our own notes
+      // state.notes = ...;
+      // Don't overwrite our own current response
+      renderAll();
+    } else if (type === 'question') {
+      if (!state.questions.find(q => q.id === payload.id)) {
+        state.questions.push(payload);
+        renderAll();
+        setStatus('✦ New question!', 'ok');
+      }
+    } else if (type === 'chatbot') {
+      if (!state.chatbots.find(cb => cb.id === payload.id)) {
+        state.chatbots.push(payload);
+        renderAll();
+      }
+    } else if (type === 'student_join' && payload.id === state.studentId) {
+      // The teacher confirmed our join
+      setStatus('✓ Connected to teacher', 'ok');
+    }
+  };
+  // Join
+  state.bc.postMessage({
+    type: 'student_join',
+    payload: {
+      id: state.studentId,
+      name: state.studentName || state.studentId,
+      lastActive: Date.now(),
+      struggle: 0,
+      notes: state.notes,
+    },
+  });
+  // Request state
+  state.bc.postMessage({ type: 'sync_request' });
+}
+
+function broadcast(type, payload) {
+  if (state.bc) state.bc.postMessage({ type, payload });
+}
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('statusBar');
+  el.textContent = msg;
+  el.className = cls || '';
+}
+
+// ============================================================================
+// Name
+// ============================================================================
+document.getElementById('nameBtn').onclick = () => {
+  const n = prompt('Your name', state.studentName);
+  if (n !== null) {
+    state.studentName = n.trim();
+    localStorage.setItem('student_name', state.studentName);
+    document.getElementById('headerSub').textContent = `session: ${state.sessionId} · ${state.studentName}`;
+    // Re-announce
+    broadcast('student_join', {
+      id: state.studentId,
+      name: state.studentName,
+      lastActive: Date.now(),
+      struggle: 0,
+      notes: state.notes,
+    });
+  }
+};
+
+// ============================================================================
+// Notes
+// ============================================================================
+const notesEl = document.getElementById('notesArea');
+let notesTimer = null;
+notesEl.addEventListener('input', () => {
+  state.notes = notesEl.value;
+  // Broadcast (debounced)
+  if (notesTimer) clearTimeout(notesTimer);
+  notesTimer = setTimeout(() => {
+    broadcast('student_join', {
+      id: state.studentId,
+      name: state.studentName || state.studentId,
+      lastActive: Date.now(),
+      struggle: computeStruggle(),
+      notes: state.notes,
+    });
+  }, 500);
+});
+
+function computeStruggle() {
+  // Heuristic: lots of notes + few submissions + recent activity = high struggle
+  const liveQ = currentLiveQuestion();
+  if (!liveQ) return 0;
+  const noteLen = state.notes.length;
+  if (noteLen > 300) return 0.7;
+  if (noteLen > 150) return 0.4;
+  return 0.2;
+}
+
+// ============================================================================
+// Question rendering + response
+// ============================================================================
+function currentLiveQuestion() {
+  const live = state.questions.filter(q => q.status === 'live');
+  return live[state.currentQ] || live[0] || null;
+}
+
+function renderQuestion() {
+  const area = document.getElementById('questionArea');
+  const q = currentLiveQuestion();
+  state.currentQ = state.questions.indexOf(q);
+  if (!q) {
+    area.innerHTML = '<div class="empty">Waiting for the teacher to push a question...</div>';
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('nextBtn').disabled = true;
+    return;
+  }
+  let html = `
+    <div class="question-card">
+      <div class="meta">${q.type}${q.timeLimit > 0 ? ' · ' + q.timeLimit + ' min' : ''}</div>
+      <div class="text">${escape(q.text)}</div>
+  `;
+  if (q.type === 'choice' && q.options.length > 0) {
+    html += '<div class="options">';
+    for (const opt of q.options) {
+      const sel = state.selectedOption === opt ? ' selected' : '';
+      html += `<div class="opt${sel}" data-opt="${escape(opt)}">${escape(opt)}</div>`;
+    }
+    html += '</div>';
+  } else {
+    html += `<textarea id="responseArea" placeholder="Type your answer here...">${escape(state.currentResponse)}</textarea>`;
+  }
+  html += '</div>';
+  area.innerHTML = html;
+  // Wire up options
+  if (q.type === 'choice') {
+    area.querySelectorAll('.opt').forEach(el => {
+      el.onclick = () => {
+        state.selectedOption = el.dataset.opt;
+        state.currentResponse = el.dataset.opt;
+        renderQuestion();
+      };
+    });
+  } else {
+    const ta = document.getElementById('responseArea');
+    if (ta) ta.oninput = (e) => state.currentResponse = e.target.value;
+  }
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function escape(s) {
+  return String(s).replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.getElementById('submitBtn').onclick = () => {
+  const q = currentLiveQuestion();
+  if (!q) return;
+  const text = state.currentResponse.trim();
+  if (!text) {
+    document.getElementById('submitStatus').textContent = 'Type an answer first.';
+    return;
+  }
+  const response = {
+    id: 'r' + Date.now().toString(36),
+    questionId: q.id,
+    studentId: state.studentId,
+    text,
+    time: Date.now(),
+    struggle: computeStruggle(),
+  };
+  broadcast('response', response);
+  document.getElementById('submitStatus').innerHTML = '<span style="color: var(--ok)">✓ Submitted. The teacher sees it now.</span>';
+  document.getElementById('submitBtn').disabled = true;
+  // Auto-advance
+  setTimeout(() => {
+    if (state.questions.filter(q => q.status === 'live').length > 1) {
+      state.currentQ++;
+      state.currentResponse = '';
+      state.selectedOption = null;
+      renderQuestion();
+      document.getElementById('submitStatus').textContent = '';
+      document.getElementById('submitBtn').disabled = false;
+    }
+  }, 1500);
+};
+
+document.getElementById('nextBtn').onclick = () => {
+  state.currentQ++;
+  state.currentResponse = '';
+  state.selectedOption = null;
+  renderQuestion();
+};
+
+document.getElementById('raiseHandBtn').onclick = () => {
+  const q = currentLiveQuestion();
+  if (!q) {
+    alert('No question to ask about yet.');
+    return;
+  }
+  const text = prompt('What do you want to ask the teacher?');
+  if (!text) return;
+  broadcast('ask', {
+    id: 'a' + Date.now().toString(36),
+    questionId: q.id,
+    studentId: state.studentId,
+    text,
+    time: Date.now(),
+  });
+  document.getElementById('submitStatus').innerHTML = '<span style="color: var(--purple)">✋ Raised. The teacher sees your question.</span>';
+};
+
+// ============================================================================
+// Chatbot
+// ============================================================================
+function renderChatbots() {
+  const area = document.getElementById('chatbotArea');
+  if (state.chatbots.length === 0) {
+    area.innerHTML = '<div class="empty">No chatbot available yet. Your teacher can add one.</div>';
+    return;
+  }
+  area.innerHTML = '';
+  for (const cb of state.chatbots) {
+    const div = document.createElement('div');
+    div.className = 'chatbot';
+    const history = state.chat[cb.id] || [];
+    let chatHtml = '';
+    for (const m of history.slice(-5)) {
+      chatHtml += `<div class="msg user">👤 ${escape(m.user)}</div>`;
+      chatHtml += `<div class="msg bot">🤖 ${escape(m.bot)}</div>`;
+    }
+    div.innerHTML = `
+      <div class="name">${escape(cb.name)}</div>
+      <div class="meta">${cb.persona} · ${cb.model} · scope: ${escape(cb.scope)}</div>
+      <div class="chat-history">${chatHtml}</div>
+      <div class="input-row">
+        <input type="text" id="cbInput-${cb.id}" placeholder="Ask ${escape(cb.name)} a side-question..." />
+        <button data-cb="${cb.id}">Ask</button>
+      </div>
+    `;
+    area.appendChild(div);
+    const input = document.getElementById(`cbInput-${cb.id}`);
+    const btn = div.querySelector('button');
+    const onAsk = async () => {
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      input.disabled = true;
+      btn.disabled = true;
+      btn.textContent = '...';
+
+      // Build context from scope
+      const context = buildChatbotContext(cb);
+      const sysPrompt = buildSystemPrompt(cb, context);
+
+      try {
+        const result = await quiltLLM.call(
+          [
+            { role: 'system', content: sysPrompt },
+            { role: 'user', content: text },
+          ],
+          { provider: cb.model, model: cb.model === 'zai' ? 'glm-5' : undefined, max_tokens: 600, temperature: 0.7, premium: cb.model !== 'workers-ai' }
+        );
+        const reply = result.content || '(no response)';
+        if (!state.chat[cb.id]) state.chat[cb.id] = [];
+        state.chat[cb.id].push({ user: text, bot: reply, time: Date.now() });
+        broadcast('chat', {
+          id: 'm' + Date.now().toString(36),
+          studentId: state.studentId,
+          chatbotId: cb.id,
+          userMsg: text,
+          botMsg: reply,
+          time: Date.now(),
+        });
+        renderChatbots();
+      } catch (e) {
+        alert('Chatbot error: ' + e.message);
+      } finally {
+        input.disabled = false;
+        btn.disabled = false;
+        btn.textContent = 'Ask';
+      }
+    };
+    btn.onclick = onAsk;
+    input.onkeypress = (e) => { if (e.key === 'Enter') onAsk(); };
+  }
+}
+
+function buildChatbotContext(cb) {
+  // Read cells in the chatbot's scope
+  const lines = [];
+  const q = currentLiveQuestion();
+  if (cb.scope.includes('question') && q) {
+    lines.push(`CURRENT QUESTION: ${q.text}`);
+    if (q.options) lines.push(`OPTIONS: ${q.options.join(', ')}`);
+  }
+  if (cb.scope.includes('student') || cb.scope.includes('notes')) {
+    lines.push(`STUDENT'S NOTES: ${state.notes || '(no notes yet)'}`);
+  }
+  return lines.join('\n');
+}
+
+function buildSystemPrompt(cb, context) {
+  const personas = {
+    socratic: 'You are a Socratic tutor. NEVER give the answer directly. Always respond with a question that helps the student think one step further. If they ask for the answer, ask them what they think first.',
+    tutor: 'You are a patient tutor. Explain step by step. Use simple language. Build on what the student already knows.',
+    researcher: 'You are a research assistant. Cite relevant facts. Use the cells in your context as sources. When the cell has a question, address it directly.',
+    encouraging: 'You are an encouraging tutor. Be positive, build confidence, celebrate effort. Help the student feel capable while still guiding them to the answer.',
+    challenge: 'You are a challenging tutor. Push back. Ask for evidence. Force the student to defend their reasoning. Be rigorous, not harsh.',
+  };
+  const persona = cb.prompt || personas[cb.persona] || personas.tutor;
+  return `${persona}\n\nCONTEXT:\n${context}`;
+}
+
+// ============================================================================
+// Render
+// ============================================================================
+function renderAll() {
+  renderQuestion();
+  renderChatbots();
+  document.getElementById('headerSub').textContent = `session: ${state.sessionId}${state.studentName ? ' · ' + state.studentName : ''}`;
+}
+
+// ============================================================================
+// Init
+// ============================================================================
+setupSync();
+renderAll();
+setStatus(`✓ Connected to session ${state.sessionId}`, 'ok');
+
+// Keep the connection alive — periodic student_join
+setInterval(() => {
+  broadcast('student_join', {
+    id: state.studentId,
+    name: state.studentName || state.studentId,
+    lastActive: Date.now(),
+    struggle: computeStruggle(),
+    notes: state.notes,
+  });
+}, 5000);
+</script>
+<script src="quilt-llm-client.js"></script>
+</body>
+</html>
