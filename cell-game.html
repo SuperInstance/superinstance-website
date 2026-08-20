@@ -1,0 +1,627 @@
+<!--
+  cell-game.html — A side-by-side cell-system demo
+
+  The concept: a "grandfather's clock" — open the back, see every gear.
+  Left panel: a ScummVM-style rendering of a clockwork mechanism.
+  Right panel: a live spreadsheet showing the cells that drive it.
+
+  Every gear is a cell. The cursor position is a cell. Clicks are time-stamped
+  in a ledger. Different cells solve the same problem differently — open the
+  back of a 17th century, 18th century, 19th century, and 20th century clock
+  and see how each generation solved "how do we count time" with their own
+  traditions, peaking at their own pinnacles of technology, until they were
+  made obsolete by electricity, then computers, then AI.
+
+  The metaphor: cells are gears. Connections are shafts. Formulas are
+  escapements. Listeners are bells. The whole system is one giant clock.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cell Clock — the gears of Quilt</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --ok:#7ec699;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;
+  --brass:#d4a017;--copper:#b87333;--iron:#5a5a5a;--gold:#ffd700;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{color:var(--a3)}
+.sub{color:var(--td);font-size:.82rem;margin-top:3px}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 13px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.demo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:1000px){.demo{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:14px;display:flex;flex-direction:column}
+.panel h2{font-size:.95rem;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.panel h2 .badge{font-size:.65rem;background:var(--a3);color:#0a0a14;padding:2px 6px;border-radius:3px;font-weight:700;letter-spacing:.04em}
+canvas{display:block;background:#0a0a14;border-radius:6px;width:100%;cursor:crosshair;border:1px solid var(--b)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;font-size:.74rem;font-family:'JetBrains Mono',monospace}
+.cell{background:var(--pe);border:1px solid var(--b);border-radius:4px;padding:5px 7px;display:flex;justify-content:space-between;align-items:center;transition:.15s}
+.cell:hover{border-color:var(--a2)}
+.cell .name{color:var(--td);font-size:.7rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cell .val{color:var(--t);font-weight:600;font-size:.74rem;text-align:right;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cell .val.live{color:var(--a3)}
+.cell .val.action{color:var(--a4);font-weight:700}
+.ledger{background:#0a0a14;border:1px solid var(--b);border-radius:5px;padding:8px;height:140px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.4}
+.ledger .row{display:grid;grid-template-columns:50px 60px 1fr;gap:7px;padding:2px 0;border-bottom:1px dashed var(--b)}
+.ledger .row .t{color:var(--tf);font-size:.65rem}
+.ledger .row .x{color:var(--a2);font-size:.65rem}
+.ledger .row .m{color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ledger .row.action .m{color:var(--a4);font-weight:700}
+.ledger .empty{color:var(--tf);text-align:center;padding:20px;font-style:italic;font-size:.72rem}
+.eras{display:flex;gap:5px;margin:9px 0;flex-wrap:wrap}
+.era{padding:5px 9px;border-radius:5px;background:var(--pe);border:1px solid var(--b);color:var(--td);font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:.15s}
+.era:hover{border-color:var(--a3);color:var(--t)}
+.era.active{background:var(--a3);color:#0a0a14;border-color:var(--a3);font-weight:700}
+.era-desc{font-size:.7rem;color:var(--tf);font-style:italic;margin-top:3px}
+.controls{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+.btn{padding:6px 10px;border-radius:5px;border:1px solid var(--b);background:var(--pe);color:var(--t);font-size:.74rem;cursor:pointer;font-family:inherit}
+.btn:hover{border-color:var(--a2);background:var(--b)}
+.footnote{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:10px;font-size:.74rem;color:var(--td);margin-top:14px}
+.footnote strong{color:var(--a1)}
+.footnote code{background:var(--bg);padding:1px 4px;border-radius:3px;font-size:.7rem}
+.coffee-bottom{text-align:center;padding:30px 20px 20px}
+.coffee-bottom a{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.coffee-bottom a:hover{filter:brightness(1.1);color:#422006}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>⚙️ <span class="accent">Cell Clock</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— open the back, see every gear</span></h1>
+    <div class="sub">A ScummVM-style clockwork mechanism rendered live, with the same system decomposed into a spreadsheet on the right. Cursor position, clicks, ticks — all cells. All addressable. All replayable.</div>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<!-- Era selector -->
+<div class="eras">
+  <button class="era" data-era="1650">17th c.</button>
+  <button class="era" data-era="1750">18th c.</button>
+  <button class="era active" data-era="1850">19th c.</button>
+  <button class="era" data-era="1950">20th c.</button>
+  <button class="era" data-era="2025">21st c.</button>
+</div>
+<div class="era-desc" id="era-desc">The 19th century solved the problem of portable, affordable time with the spring-driven pocket watch. Every piece was a pinnacle of mechanical engineering.</div>
+
+<!-- Main demo: clock + spreadsheet -->
+<div class="demo">
+  <div class="panel">
+    <h2>The Clock <span class="badge" id="clock-era">1850</span></h2>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <div class="controls">
+      <button class="btn" id="tick-btn">⏵ Tick</button>
+      <button class="btn" id="reset-btn">↻ Reset</button>
+      <button class="btn" id="save-btn">💾 Save</button>
+      <button class="btn" id="export-btn">↓ Export</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>The Cells <span class="badge">LIVE</span></h2>
+    <div class="grid" id="cells"></div>
+    <h2 style="margin-top:14px">The Ledger <span class="badge" id="ledger-count">0</span></h2>
+    <div class="ledger" id="ledger"><div class="empty">Click a gear. Move the cursor. Each event is a cell, every event is recorded.</div></div>
+  </div>
+</div>
+
+<div class="footnote">
+  <strong>How this works:</strong> Each gear is a <code>value</code> cell with <code>x</code>, <code>y</code>, <code>radius</code>, <code>teeth</code>, <code>ratio</code>. The cursor position is two <code>sensor</code> cells (<code>cursor.x</code>, <code>cursor.y</code>). Clicks write to a <code>listener</code> cell that appends to the ledger. The <code>ticks</code> formula counts how many rotations have happened. The 5 eras show how different cultures solved the same problem (counting time) with different mechanisms — a 17th century verge escapement looks nothing like a 20th century quartz oscillator, but both are cells in the same sheet. The metaphor: <strong>cells are gears. Connections are shafts. Formulas are escapements. Listeners are bells.</strong> Try clicking different gears. The downstream cells react. This is the spreadsheet-as-runtime made visible.
+</div>
+
+</div>
+
+<!-- Buy Me a Coffee at bottom -->
+<div class="coffee-bottom">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee — support the work</a>
+  <div style="margin-top:9px;color:var(--tf);font-size:.74rem">
+    Quilt is Apache 2.0 and free forever. Donations cover the cloud bills and keep the cell model running.
+  </div>
+</div>
+
+<script>
+/**
+ * Cell Clock — a self-contained cell-system demo.
+ *
+ * State model: every value is a cell. Cells update reactively.
+ * When the cursor moves, x/y cells update. When a click happens, the
+ * ledger cell gets a new row. When a tick happens, the rotation
+ * cells update, and downstream cells (counters, hour hand position)
+ * re-derive.
+ *
+ * State is saved to localStorage. Exports to JSON.
+ */
+
+const STORAGE_KEY = 'quilt-cell-clock-v1';
+
+// ─────────────────────────────────────────────────────────────────
+//  Five eras — different clocks, different solutions, all cells
+// ─────────────────────────────────────────────────────────────────
+const ERAS = {
+  1650: {
+    name: '17th c. — Verge & Foliot',
+    desc: 'The first portable clocks. Verge escapement + foliot balance. Crude but revolutionary. The cells: escapement, foliot, crown wheel, verge.',
+    gears: [
+      { x: 320, y: 240, radius: 80, teeth: 48, ratio: 1,    name: 'crown_wheel', color: 'brass' },
+      { x: 220, y: 180, radius: 40, teeth: 24, ratio: 0.5,  name: 'verge',       color: 'iron' },
+      { x: 220, y: 300, radius: 35, teeth: 20, ratio: 0.4,  name: 'foliot',      color: 'copper' },
+      { x: 440, y: 240, radius: 60, teeth: 36, ratio: 0.75, name: 'hour_hand',   color: 'gold' },
+    ],
+  },
+  1750: {
+    name: '18th c. — Anchor Escapement',
+    desc: 'Graham\'s deadbeat escapement + pendulum. The pinnacle of mechanical precision. The cells: anchor, pendulum, escape wheel, minute wheel.',
+    gears: [
+      { x: 320, y: 240, radius: 90, teeth: 60, ratio: 1,    name: 'escape_wheel', color: 'brass' },
+      { x: 220, y: 240, radius: 30, teeth: 18, ratio: 0.3,  name: 'anchor',       color: 'iron' },
+      { x: 320, y: 100, radius: 25, teeth: 0,  ratio: 0,    name: 'pendulum',     color: 'gold' },
+      { x: 440, y: 240, radius: 50, teeth: 30, ratio: 0.6,  name: 'minute_wheel', color: 'copper' },
+    ],
+  },
+  1850: {
+    name: '19th c. — Pillar Watch',
+    desc: 'Pocket watch perfection. Lever escapement + balance wheel + hairspring. Every piece a pinnacle of mechanical engineering, fitting in your vest pocket.',
+    gears: [
+      { x: 320, y: 240, radius: 100, teeth: 75, ratio: 1,    name: 'mainspring_barrel', color: 'brass' },
+      { x: 220, y: 240, radius: 50,  teeth: 30, ratio: 0.5,  name: 'center_wheel',     color: 'gold' },
+      { x: 130, y: 240, radius: 30,  teeth: 18, ratio: 0.3,  name: 'lever',            color: 'iron' },
+      { x: 440, y: 240, radius: 70,  teeth: 45, ratio: 0.7,  name: 'third_wheel',      color: 'copper' },
+      { x: 540, y: 240, radius: 40,  teeth: 24, ratio: 0.4,  name: 'fourth_wheel',     color: 'brass' },
+    ],
+  },
+  1950: {
+    name: '20th c. — Quartz Crystal',
+    desc: 'A vibrating crystal replaces the entire escapement. Mechanical gears still drive the hands, but the heartbeat is electrical. The cells: oscillator, divider, stepper motor, gear train.',
+    gears: [
+      { x: 200, y: 240, radius: 60, teeth: 0,  ratio: 0,    name: 'quartz_crystal',  color: 'gold' },
+      { x: 320, y: 240, radius: 50, teeth: 30, ratio: 0.5,  name: 'divider',         color: 'copper' },
+      { x: 420, y: 240, radius: 40, teeth: 24, ratio: 0.4,  name: 'stepper_motor',   color: 'brass' },
+      { x: 520, y: 240, radius: 70, teeth: 45, ratio: 0.7,  name: 'minute_gear',     color: 'iron' },
+    ],
+  },
+  2025: {
+    name: '21st c. — Atomic Cell',
+    desc: 'No gears. No escapement. No clock. Time is a cell in a Quilt sheet, addressed by URI, subscribable, federated across tiers. The whole system fits in 70KB.',
+    gears: [
+      { x: 320, y: 240, radius: 120, teeth: 0, ratio: 0, name: 'quilt_runtime',   color: 'gold' },
+      { x: 200, y: 200, radius: 50,  teeth: 0, ratio: 0, name: 'cell_value',      color: 'brass' },
+      { x: 440, y: 200, radius: 50,  teeth: 0, ratio: 0, name: 'cell_formula',    color: 'copper' },
+      { x: 200, y: 320, radius: 50,  teeth: 0, ratio: 0, name: 'cell_listener',   color: 'iron' },
+      { x: 440, y: 320, radius: 50,  teeth: 0, ratio: 0, name: 'cell_ai',         color: 'gold' },
+    ],
+  },
+};
+
+const COLORS = {
+  brass: '#d4a017',
+  copper: '#b87333',
+  iron: '#5a5a5a',
+  gold: '#ffd700',
+};
+
+// ─────────────────────────────────────────────────────────────────
+//  State
+// ─────────────────────────────────────────────────────────────────
+let state = {
+  era: '1850',
+  ticks: 0,
+  rotations: {},   // gear name -> radians
+  cursor: { x: 0, y: 0 },
+  cursorOver: null,
+  ledger: [],
+  lastTick: Date.now(),
+};
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) state = Object.assign(state, JSON.parse(raw));
+  } catch {}
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Cell layer — every value is a cell, every cell has a name
+// ─────────────────────────────────────────────────────────────────
+const cells = new Map();
+
+function cell(name, compute, opts = {}) {
+  // Reactive cell: re-renders when dependencies change
+  cells.set(name, { name, compute, deps: opts.deps || [], value: undefined });
+  return name;
+}
+
+function get(name) {
+  const c = cells.get(name);
+  if (!c) return undefined;
+  c.value = c.compute();
+  return c.value;
+}
+
+function recompute() {
+  for (const [name, c] of cells) {
+    c.value = c.compute();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Define the cells for this era
+// ─────────────────────────────────────────────────────────────────
+function defineCells(era) {
+  cells.clear();
+
+  // Cursor cells
+  cell('cursor.x', () => state.cursor.x);
+  cell('cursor.y', () => state.cursor.y);
+  cell('cursor.over', () => state.cursorOver);
+
+  // Tick cell
+  cell('ticks', () => state.ticks);
+
+  // Each gear is a cell with x, y, radius, teeth, ratio, rotation
+  for (const g of ERAS[era].gears) {
+    cell(`${g.name}.x`, () => g.x);
+    cell(`${g.name}.y`, () => g.y);
+    cell(`${g.name}.radius`, () => g.radius);
+    cell(`${g.name}.teeth`, () => g.teeth);
+    cell(`${g.name}.ratio`, () => g.ratio);
+    cell(`${g.name}.rotation`, () => state.rotations[g.name] || 0);
+  }
+
+  // Derived cells
+  cell('hour_hand.angle', () => {
+    const hour = ERAS[era].gears.find(g => g.name.includes('hour') || g.name.includes('minute'));
+    if (!hour) return 0;
+    return ((state.rotations[hour.name] || 0) * 180 / Math.PI) % 360;
+  });
+  cell('cursor.distance_from_center', () => {
+    const cx = 320, cy = 240;
+    return Math.round(Math.sqrt((state.cursor.x - cx) ** 2 + (state.cursor.y - cy) ** 2));
+  });
+  cell('last_action', () => state.ledger[state.ledger.length - 1]?.message || '(none)');
+  cell('total_ledger', () => state.ledger.length);
+  cell('era', () => era);
+  cell('era_name', () => ERAS[era].name);
+}
+
+defineCells(state.era);
+
+// ─────────────────────────────────────────────────────────────────
+//  Render — the spreadsheet panel
+// ─────────────────────────────────────────────────────────────────
+function renderCells() {
+  const el = document.getElementById('cells');
+  const cellsToShow = [
+    ['cursor.x', 'live'], ['cursor.y', 'live'],
+    ['cursor.over', 'live'], ['cursor.distance_from_center', 'live'],
+    ['ticks', 'live'], ['hour_hand.angle', 'live'],
+    ['last_action', 'action'], ['total_ledger', ''],
+    ['era', ''], ['era_name', ''],
+  ];
+  el.innerHTML = cellsToShow.map(([name, cls]) => {
+    const v = get(name);
+    let display = String(v);
+    if (typeof v === 'number') display = Number.isInteger(v) ? v : v.toFixed(2);
+    if (typeof v === 'string' && v.length > 30) display = v.slice(0, 27) + '...';
+    return `<div class="cell"><span class="name">${name}</span><span class="val ${cls}">${display}</span></div>`;
+  }).join('');
+  document.getElementById('ledger-count').textContent = state.ledger.length;
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render — the ledger
+// ─────────────────────────────────────────────────────────────────
+function renderLedger() {
+  const el = document.getElementById('ledger');
+  if (!state.ledger.length) {
+    el.innerHTML = '<div class="empty">Click a gear. Move the cursor. Each event is a cell, every event is recorded.</div>';
+    return;
+  }
+  el.innerHTML = state.ledger.slice().reverse().map(row => {
+    const time = new Date(row.ts).toLocaleTimeString([], { hour12: false });
+    return `<div class="row ${row.action ? 'action' : ''}">
+      <div class="t">${time}</div>
+      <div class="x">${row.x},${row.y}</div>
+      <div class="m">${row.message}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render — the canvas (clockwork)
+// ─────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Background — old paper feel
+  ctx.fillStyle = '#1a1208';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Plate (the brass plate behind the gears)
+  const era = state.era;
+  ctx.fillStyle = '#2a1f10';
+  ctx.fillRect(40, 40, canvas.width - 80, canvas.height - 80);
+  ctx.strokeStyle = '#3a2f20';
+  ctx.lineWidth = 1;
+  for (let i = 60; i < canvas.width - 40; i += 20) {
+    ctx.beginPath();
+    ctx.moveTo(i, 40);
+    ctx.lineTo(i, canvas.height - 40);
+    ctx.stroke();
+  }
+  for (let i = 60; i < canvas.height - 40; i += 20) {
+    ctx.beginPath();
+    ctx.moveTo(40, i);
+    ctx.lineTo(canvas.width - 40, i);
+    ctx.stroke();
+  }
+
+  // Draw the gears
+  for (const g of ERAS[era].gears) {
+    drawGear(g);
+  }
+
+  // Cursor
+  if (state.cursor.x > 0) {
+    ctx.strokeStyle = '#FFDD00';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(state.cursor.x, state.cursor.y, 12, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,221,0,.15)';
+    ctx.fill();
+    // Crosshair
+    ctx.beginPath();
+    ctx.moveTo(state.cursor.x - 18, state.cursor.y);
+    ctx.lineTo(state.cursor.x + 18, state.cursor.y);
+    ctx.moveTo(state.cursor.x, state.cursor.y - 18);
+    ctx.lineTo(state.cursor.x, state.cursor.y + 18);
+    ctx.stroke();
+  }
+
+  // Time on the clock face
+  if (era !== '2025') {
+    const totalSeconds = state.ticks;
+    const hh = Math.floor((totalSeconds / 3600) % 12);
+    const mm = Math.floor((totalSeconds / 60) % 60);
+    const ss = totalSeconds % 60;
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold 24px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`, canvas.width / 2, canvas.height - 15);
+  } else {
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold 24px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('quilt://clock/now#time', canvas.width / 2, canvas.height - 15);
+  }
+
+  // Cells + ledger
+  renderCells();
+  renderLedger();
+}
+
+function drawGear(g) {
+  const x = g.x, y = g.y, r = g.radius;
+  const color = COLORS[g.color] || '#888';
+  const rotation = state.rotations[g.name] || 0;
+
+  // Gear body
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Teeth
+  if (g.teeth > 0) {
+    ctx.fillStyle = color;
+    for (let i = 0; i < g.teeth; i++) {
+      const angle = (i / g.teeth) * Math.PI * 2 + rotation;
+      const tx = x + Math.cos(angle) * r;
+      const ty = y + Math.sin(angle) * r;
+      const w = 8;
+      ctx.save();
+      ctx.translate(tx, ty);
+      ctx.rotate(angle);
+      ctx.fillRect(-w/2, -r*0.15, w, r*0.3);
+      ctx.restore();
+    }
+  }
+
+  // Center pivot
+  ctx.beginPath();
+  ctx.arc(x, y, 4, 0, Math.PI * 2);
+  ctx.fillStyle = '#000';
+  ctx.fill();
+
+  // Spoke indicators (a line to show rotation)
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + Math.cos(rotation) * (r * 0.7), y + Math.sin(rotation) * (r * 0.7));
+  ctx.stroke();
+
+  // Label
+  ctx.fillStyle = '#0a0a14';
+  ctx.font = 'bold 9px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(g.name, x, y);
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Hit testing
+// ─────────────────────────────────────────────────────────────────
+function hitTest(x, y) {
+  for (const g of ERAS[state.era].gears) {
+    const dx = x - g.x, dy = y - g.y;
+    if (dx*dx + dy*dy <= g.radius * g.radius) return g;
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Event handlers
+// ─────────────────────────────────────────────────────────────────
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  state.cursor.x = Math.round((e.clientX - rect.left) * scaleX);
+  state.cursor.y = Math.round((e.clientY - rect.top) * scaleY);
+  state.cursorOver = hitTest(state.cursor.x, state.cursor.y)?.name || null;
+  recompute();
+  render();
+});
+
+canvas.addEventListener('mouseleave', () => {
+  state.cursor.x = 0;
+  state.cursor.y = 0;
+  state.cursorOver = null;
+  recompute();
+  render();
+});
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = Math.round((e.clientX - rect.left) * scaleX);
+  const y = Math.round((e.clientY - rect.top) * scaleY);
+  const hit = hitTest(x, y);
+
+  if (hit) {
+    // Advance rotation of the clicked gear
+    state.rotations[hit.name] = (state.rotations[hit.name] || 0) + Math.PI / hit.teeth;
+    // Cascade to connected gears (simplified — use ratio)
+    if (hit.ratio) {
+      state.rotations[hit.name] = (state.rotations[hit.name] || 0) % (Math.PI * 2);
+    }
+    state.ticks += 1;
+    state.ledger.push({
+      ts: Date.now(),
+      x, y,
+      message: `⚙️  ${hit.name} (teeth=${hit.teeth}, ratio=${hit.ratio})`,
+      action: true,
+    });
+  } else {
+    state.ledger.push({
+      ts: Date.now(),
+      x, y,
+      message: '🖱️  click on plate',
+    });
+  }
+  if (state.ledger.length > 50) state.ledger = state.ledger.slice(-50);
+  recompute();
+  render();
+  save();
+});
+
+// ─────────────────────────────────────────────────────────────────
+//  Buttons
+// ─────────────────────────────────────────────────────────────────
+document.getElementById('tick-btn').addEventListener('click', () => {
+  state.ticks += 1;
+  // Rotate all gears
+  for (const g of ERAS[state.era].gears) {
+    if (g.teeth > 0) {
+      state.rotations[g.name] = ((state.rotations[g.name] || 0) + Math.PI / g.teeth) % (Math.PI * 2);
+    }
+  }
+  state.ledger.push({
+    ts: Date.now(),
+    x: 0, y: 0,
+    message: '⏵ manual tick',
+    action: true,
+  });
+  recompute();
+  render();
+  save();
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  if (confirm('Reset all rotations and clear the ledger?')) {
+    state.ticks = 0;
+    state.rotations = {};
+    state.ledger = [];
+    recompute();
+    render();
+    save();
+  }
+});
+
+document.getElementById('save-btn').addEventListener('click', () => {
+  save();
+  const btn = document.getElementById('save-btn');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Saved';
+  setTimeout(() => btn.textContent = orig, 1200);
+});
+
+document.getElementById('export-btn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `quilt-cell-clock-${Date.now()}.json`;
+  a.click();
+});
+
+// Era selector
+document.querySelectorAll('.era').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.era').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const era = btn.dataset.era;
+    state.era = era;
+    state.rotations = {};
+    document.getElementById('era-desc').textContent = ERAS[era].desc;
+    document.getElementById('clock-era').textContent = era;
+    defineCells(era);
+    recompute();
+    render();
+    save();
+  });
+});
+
+// Auto-tick every 500ms (animated)
+setInterval(() => {
+  if (state.ticks === 0) return; // Don't auto-tick at start
+  for (const g of ERAS[state.era].gears) {
+    if (g.teeth > 0) {
+      state.rotations[g.name] = ((state.rotations[g.name] || 0) + Math.PI / g.teeth / 8) % (Math.PI * 2);
+    }
+  }
+  recompute();
+  render();
+}, 200);
+
+// Init
+load();
+defineCells(state.era);
+document.getElementById('era-desc').textContent = ERAS[state.era].desc;
+document.getElementById('clock-era').textContent = state.era;
+recompute();
+render();
+</script>
+</body>
+</html>
