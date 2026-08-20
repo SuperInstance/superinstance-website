@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deploy preview — see hosted Quilt in action</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --cloud:#7c3aed;--run:#10b981;--build:#3b82f6;--log:#6a6a7a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.tabs{display:flex;gap:0;margin-bottom:9px;border-bottom:1px solid var(--b)}
+.tab{background:transparent;color:var(--td);border:0;border-bottom:2px solid transparent;padding:7px 11px;font-size:.78rem;cursor:pointer;font-weight:600;font-family:inherit}
+.tab:hover{color:var(--t)}
+.tab.active{color:var(--a3);border-bottom-color:var(--a3)}
+.terminal{background:#0a0a0f;border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.6;max-height:340px;overflow-y:auto}
+.terminal .line{padding:1px 0;white-space:pre-wrap;word-break:break-word}
+.terminal .prompt{color:var(--a3);font-weight:700}
+.terminal .cmd{color:var(--t)}
+.terminal .out{color:var(--td)}
+.terminal .ok{color:var(--a3)}
+.terminal .err{color:var(--err)}
+.terminal .info{color:var(--a2)}
+.terminal .build{color:var(--build)}
+.terminal .cloud{color:var(--cloud)}
+.terminal .run{color:var(--run)}
+.terminal .log{color:var(--log)}
+.preview-frame{background:var(--bg);border:1px solid var(--b);border-radius:9px;min-height:400px;position:relative;overflow:hidden;margin-bottom:14px}
+.url-bar{background:var(--pe);border-bottom:1px solid var(--b);padding:7px 11px;display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--td)}
+.url-bar .traffic{display:flex;gap:5px}
+.url-bar .dot{width:9px;height:9px;border-radius:50%;background:var(--b)}
+.url-bar .url{flex:1;background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:3px 7px;color:var(--a3)}
+.url-bar .reload{background:transparent;border:0;color:var(--td);cursor:pointer;font-size:.9rem}
+.url-bar .reload:hover{color:var(--t)}
+.deploy-view{background:#fff;color:#000;min-height:340px;display:flex;align-items:center;justify-content:center;font-family:-apple-system,sans-serif;padding:20px}
+.deploy-view .card{max-width:480px;text-align:center;padding:30px;border-radius:11px;background:#fafafa;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.deploy-view .card h2{color:#0a0a14;font-size:1.4rem;margin-bottom:9px}
+.deploy-view .card p{color:#444;margin-bottom:14px}
+.deploy-view .card .stat{display:inline-block;background:#10b981;color:#fff;padding:4px 11px;border-radius:11px;font-size:.74rem;font-weight:700;margin-bottom:14px}
+.deploy-view .card .cells{background:#fff;border:1px solid #ddd;border-radius:5px;padding:11px;margin-top:11px;font-family:'JetBrains Mono',monospace;font-size:.7rem;text-align:left;line-height:1.7}
+.deploy-view .card .cells .k{color:#7c3aed}
+.deploy-view .card .cells .v{color:#10b981}
+.deploy-view .card .btn{background:linear-gradient(135deg,#7c3aed,#3b82f6);color:#fff;border:0;padding:7px 14px;border-radius:5px;font-weight:700;cursor:pointer}
+.metrics{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px}
+.metrics h3{font-size:.85rem;color:var(--a3);margin-bottom:9px}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.metric{background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:9px;text-align:center}
+.metric .v{font-size:1.4rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.metric .l{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.cta{text-align:center;padding:18px;background:linear-gradient(135deg,rgba(124,58,237,.1) 0%,rgba(59,130,246,.1) 100%);border:1px solid var(--a1);border-radius:9px;margin-top:18px}
+.cta .btn{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:11px 22px;border-radius:7px;font-weight:700;cursor:pointer;font-size:.92rem;text-decoration:none;display:inline-block;margin:5px}
+.cta .btn:hover{filter:brightness(1.1);color:#fff}
+.cta .btn.sec{background:transparent;border:2px solid var(--a3);color:var(--a3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🚀 <span class="accent">Deploy preview</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— see hosted Quilt in action</span></h1>
+    <p style="margin-top:3px">Watch a Quilt sheet deploy to the cloud in real-time. CLI output, browser preview, metrics. Then click "Deploy your own".</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="federation.html">Federation</a>
+  <a href="inspector.html">Inspector</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="deploy-preview.html" class="cur">Deploy</a>
+</div>
+
+<div class="intro">
+  <p>Hosted Quilt is real. Try the CLI. See the deploy. Get a real URL.</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="cli">CLI</button>
+  <button class="tab" data-tab="preview">Preview</button>
+  <button class="tab" data-tab="metrics">Metrics</button>
+</div>
+
+<!-- CLI tab -->
+<div id="tab-cli">
+  <div class="terminal" id="terminal">
+    <div class="line"><span class="prompt">$</span> <span class="cmd">npx @quilt/deploy init my-quilt-app</span></div>
+    <div class="line"><span class="out">  ✓ Created my-quilt-app/</span></div>
+    <div class="line"><span class="out">  ✓ Detected Quilt 0.6.0</span></div>
+    <div class="line"><span class="out">  ✓ Initialized git repo</span></div>
+    <div class="line"><span class="info">i</span> <span class="out">Next: add your cells to my-quilt-app/sheet.json</span></div>
+    <div class="line"><span class="prompt">$</span> <span class="cmd">cd my-quilt-app && npx @quilt/deploy</span></div>
+    <div class="line"><span class="build">▶ Building</span> <span class="out">my-quilt-app…</span></div>
+    <div class="line"><span class="out">  ✓ Bundled 9 cells (1.2KB gzipped)</span></div>
+    <div class="line"><span class="out">  ✓ Generated Cloudflare Worker entry</span></div>
+    <div class="line"><span class="out">  ✓ Created .nail bundle (24KB)</span></div>
+    <div class="line"><span class="cloud">☁ Deploying</span> <span class="out">to superinstance.quilt.app…</span></div>
+    <div class="line"><span class="out">  ✓ Uploading assets (8 files, 47KB)</span></div>
+    <div class="line"><span class="out">  ✓ Provisioning Worker (edge network, 200+ cities)</span></div>
+    <div class="line"><span class="out">  ✓ Configuring KV (namespace: prod-7f3a)</span></div>
+    <div class="line"><span class="out">  ✓ Configuring R2 (bucket: quilt-prod-eu-west)</span></div>
+    <div class="line"><span class="out">  ✓ Configuring Vectorize (384d index)</span></div>
+    <div class="line"><span class="ok">✓ Deployed</span> <span class="out">in 4.7s</span></div>
+    <div class="line"><span class="run">▶ Live at:</span> <span class="cmd">https://my-quilt-app.superinstance.quilt.app</span></div>
+    <div class="line"><span class="log">  → 9 cells, 3 listeners, 2 formulas</span></div>
+    <div class="line"><span class="log">  → p50 latency: 12ms · p99: 47ms</span></div>
+    <div class="line"><span class="log">  → Replicas: 200 (auto-scaled)</span></div>
+    <div class="line"></div>
+    <div class="line"><span class="info">i</span> <span class="out">Free tier: 100K requests/day, 1GB R2, 100K Vectorize ops</span></div>
+    <div class="line"><span class="prompt">$</span> <span class="cmd">curl https://my-quilt-app.superinstance.quilt.app/api/state</span></div>
+    <div class="line"><span class="out">  {"cells":{"count":42,"doubled":84,"sum":126,…}}</span></div>
+  </div>
+
+  <div class="cta">
+    <h2 style="color:var(--a3);margin-bottom:11px">Ready to deploy your own?</h2>
+    <p style="color:var(--td)">Free tier: 100K requests/day, 1GB storage, 100K vector ops. No credit card.</p>
+    <a class="btn" href="https://quilt.superinstance.dev" onclick="event.preventDefault();alert('Coming soon! Star github.com/SuperInstance/quilt to be notified.')">Deploy your sheet →</a>
+    <a class="btn sec" href="playground.html">Try playground first</a>
+  </div>
+</div>
+
+<!-- Preview tab -->
+<div id="tab-preview" style="display:none">
+  <div class="preview-frame">
+    <div class="url-bar">
+      <div class="traffic">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="url">https://my-quilt-app.superinstance.quilt.app</div>
+      <button class="reload">↻</button>
+    </div>
+    <div class="deploy-view">
+      <div class="card">
+        <h2>my-quilt-app</h2>
+        <div class="stat">● live · 200ms</div>
+        <p>A real Quilt sheet running on Cloudflare's edge network. 9 cells, 200 replicas, 12ms p50 latency.</p>
+        <div class="cells">
+          <span class="k">count</span>: <span class="v">42</span><br>
+          <span class="k">doubled</span>: <span class="v">84</span><br>
+          <span class="k">tripled</span>: <span class="v">126</span><br>
+          <span class="k">sum</span>: <span class="v">210</span><br>
+          <span class="k">is_even</span>: <span class="v">true</span><br>
+          <span class="k">log_count</span>: <span class="v">"count= 42"</span><br>
+          <span class="k">log_sum</span>: <span class="v">"sum= 210"</span>
+        </div>
+        <button class="btn" style="margin-top:11px">Edit in playground</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Metrics tab -->
+<div id="tab-metrics" style="display:none">
+  <div class="metrics">
+    <h3>Last 24 hours</h3>
+    <div class="metrics-grid">
+      <div class="metric"><div class="v" style="color:var(--a3)">87,432</div><div class="l">requests</div></div>
+      <div class="metric"><div class="v" style="color:var(--a2)">12ms</div><div class="l">p50 latency</div></div>
+      <div class="metric"><div class="v" style="color:var(--a4)">47ms</div><div class="l">p99 latency</div></div>
+      <div class="metric"><div class="v" style="color:var(--a1)">99.97%</div><div class="l">uptime</div></div>
+    </div>
+  </div>
+  <div class="metrics">
+    <h3>This month</h3>
+    <div class="metrics-grid">
+      <div class="metric"><div class="v" style="color:var(--a3)">2.4M</div><div class="l">requests</div></div>
+      <div class="metric"><div class="v" style="color:var(--a2)">120MB</div><div class="l">R2 used</div></div>
+      <div class="metric"><div class="v" style="color:var(--a4)">340K</div><div class="l">vector ops</div></div>
+      <div class="metric"><div class="v" style="color:var(--a1)">$0.00</div><div class="l">billed</div></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach((tab) => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+    tab.classList.add('active');
+    const target = 'tab-' + tab.dataset.tab;
+    document.querySelectorAll('[id^="tab-"]').forEach((el) => el.style.display = 'none');
+    document.getElementById(target).style.display = 'block';
+  });
+});
+</script>
+</body>
+</html>

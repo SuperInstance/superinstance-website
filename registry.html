@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registry — all work-doing tools indexed</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.summary{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(124,58,237,.1) 100%);border:1px solid var(--a3);border-radius:8px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.summary .stat{text-align:center}
+.summary .v{font-size:1.6rem;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--a3)}
+.summary .l{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.filter{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:11px;margin-bottom:14px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+input.search{background:var(--pe);color:var(--t);border:1px solid var(--bs);border-radius:5px;padding:7px 11px;font-family:inherit;font-size:.78rem;min-width:200px}
+input.search:focus{outline:none;border-color:var(--a2)}
+.chip{background:var(--pe);border:1px solid var(--b);color:var(--td);padding:3px 9px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.chip:hover{border-color:var(--a2);color:var(--t)}
+.chip.on{background:rgba(124,58,237,.15);border-color:var(--a1);color:var(--t);font-weight:700}
+table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.74rem;background:var(--panel);border:1px solid var(--b);border-radius:9px;overflow:hidden}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--b)}
+th{background:var(--pe);color:var(--td);font-weight:700;text-transform:uppercase;font-size:.65rem;letter-spacing:.04em;cursor:pointer;user-select:none}
+th:hover{color:var(--a3)}
+th.sorted{color:var(--a3)}
+th.sorted::after{content:' ▼';font-size:.55rem}
+td.num{text-align:right}
+td.url{color:var(--a2);text-decoration:none}
+td.url:hover{text-decoration:underline}
+tr:hover{background:rgba(124,58,237,.05)}
+.row-icon{font-size:1rem;width:30px;text-align:center}
+.row-tag{font-size:.62rem;padding:1px 5px;border-radius:3px;background:var(--b);color:var(--td);text-transform:uppercase;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+.empty{text-align:center;padding:30px;color:var(--tf);font-style:italic;font-size:.78rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>📚 <span class="accent">Registry</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— every tool, indexed and searchable</span></h1>
+    <p style="margin-top:3px">A sortable, searchable table of every work-doing tool on superinstance.dev. Filter by category, sort by name/size/tests.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="registry.html" class="cur">Registry</a>
+  <a href="playground.html">Playground</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="ai-sheet.html">AI sheet</a>
+</div>
+
+<div class="intro">
+  <p>All <code>25+</code> work-doing tools, indexed. Search, filter, sort. Click a row to open.</p>
+</div>
+
+<div class="summary">
+  <div class="stat"><div class="v" id="s-total">0</div><div class="l">tools</div></div>
+  <div class="stat"><div class="v" id="s-pages">0</div><div class="l">pages</div></div>
+  <div class="stat"><div class="v" id="s-templates">0</div><div class="l">templates</div></div>
+  <div class="stat"><div class="v" id="s-mb">0</div><div class="l">MB total</div></div>
+</div>
+
+<div class="filter">
+  <input class="search" id="search" placeholder="search by name, tag, description…">
+  <span style="color:var(--td);font-size:.7rem;margin-left:11px">Category:</span>
+  <span class="chip on" data-cat="all">all</span>
+  <span class="chip" data-cat="build">build</span>
+  <span class="chip" data-cat="measure">measure</span>
+  <span class="chip" data-cat="reflex">reflex</span>
+  <span class="chip" data-cat="learn">learn</span>
+  <span class="chip" data-cat="template">template</span>
+  <span class="chip" data-cat="data">data</span>
+  <span class="chip" data-cat="monitor">monitor</span>
+  <span class="chip" data-cat="simulate">simulate</span>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th data-sort="name">Name</th>
+      <th data-sort="cat">Category</th>
+      <th data-sort="size">Size</th>
+      <th data-sort="llm">LLM</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Data
+// ─────────────────────────────────────────────────────────────────
+
+const TOOLS = [
+  { name: 'playground.html', cat: 'build', icon: '🧪', size: 17, llm: '', desc: 'Write a Quilt sheet, run it, see cells evaluate. 4 example sheets included.' },
+  { name: 'ai-sheet.html', cat: 'build', icon: '✨', size: 16, llm: 'z.ai', desc: 'Natural language → Quilt sheet via z.ai GLM-4.5. Copy to Playground to run.' },
+  { name: 'json-to-sheet.html', cat: 'data', icon: '🔄', size: 15, llm: '', desc: 'Paste JSON, get a Quilt sheet. Each top-level key becomes a cell.' },
+  { name: 'nail-builder.html', cat: 'build', icon: '🔨', size: 18, llm: '', desc: 'Build portable .nail bundles. Pick target runtime (cloud/workstation/ESP32/Jetson).' },
+  { name: 'puzzle.html', cat: 'learn', icon: '🧩', size: 20, llm: '', desc: '9 puzzles from easy (sum) to hard (stddev). Score against par.' },
+  { name: 'lint.html', cat: 'build', icon: '🧹', size: 19, llm: '', desc: '14 rules find issues: undefined refs, circular deps, eval, security risks.' },
+  { name: 'token-calculator.html', cat: 'measure', icon: '🧮', size: 16, llm: '', desc: 'Multi-provider cost estimator. Add tasks, see tokens used across z.ai/Kimi/DeepSeek/CF.' },
+  { name: 'cron-builder.html', cat: 'data', icon: '📅', size: 18, llm: '', desc: 'Build cron expressions visually. Calendar view, hour grid showing when it fires.' },
+  { name: 'benchmark.html', cat: 'measure', icon: '📊', size: 19, llm: 'Kimi', desc: 'Run 5 workload scenarios in your browser: scale, depth, reactivity, compute, mixed.' },
+  { name: 'regex.html', cat: 'data', icon: '🔤', size: 17, llm: 'z.ai', desc: 'Test, visualize, export regex. JS/Python/Quilt export. 8 preset patterns.' },
+  { name: 'diff.html', cat: 'data', icon: '🔀', size: 16, llm: 'z.ai', desc: 'Myers LCS, side-by-side, additions/deletions/modifications, 2-way merge.' },
+  { name: 'reflex-tracer.html', cat: 'reflex', icon: '🕸️', size: 19, llm: 'DeepSeek', desc: 'Visualize when reflexes fire. Timeline + force graph + event log.' },
+  { name: 'pincher.html', cat: 'reflex', icon: '🦀', size: 24, llm: 'z.ai', desc: 'Reflex engine in browser. Pinch tasks, learn reflexes, see 3 tiers.' },
+  { name: 'vibe.html', cat: 'monitor', icon: '🧝', size: 22, llm: '', desc: 'Live dashboard for invisible elves. 5 vibes, 4 providers, audit loop.' },
+  { name: 'inspector.html', cat: 'build', icon: '🔍', size: 16, llm: '', desc: 'Visualize any Quilt sheet as a dependency graph. Filter, click, edit.' },
+  { name: 'federation.html', cat: 'simulate', icon: '🌐', size: 17, llm: '', desc: 'See cells propagate across 4 simulated instances with latency.' },
+  { name: 'fleet.html', cat: 'monitor', icon: '🚢', size: 14, llm: '', desc: 'All 20 Quilt repos at a glance. Tier filter, language filter, test counts.' },
+  { name: 'deploy-preview.html', cat: 'simulate', icon: '🚀', size: 13, llm: '', desc: 'See hosted Quilt in action. CLI output, browser preview, metrics.' },
+  { name: 'api-tester.html', cat: 'data', icon: '🔌', size: 16, llm: '', desc: 'Test Quilt REST endpoints. See request/response. 16 endpoints.' },
+  { name: 'scenario-simulator.html', cat: 'simulate', icon: '🎬', size: 20, llm: '', desc: 'Simulate a small fleet of Quilt instances. Watch propagation.' },
+  { name: 'registry.html', cat: 'data', icon: '📚', size: 7, llm: '', desc: 'This page. Every tool indexed and searchable.' },
+  { name: 'workspace.html', cat: 'monitor', icon: '🛠️', size: 14, llm: '', desc: 'Front door. 4 common workflows, 16 tool cards.' },
+  { name: 'debugger.html', cat: 'reflex', icon: '🔍', size: 18, llm: 'Kimi', desc: 'Visualize a sheet as dependency graph. Force-directed, hover details.' },
+  { name: 'from-react.html', cat: 'learn', icon: '↔️', size: 12, llm: 'z.ai', desc: 'Mental model bridge for React developers. 9 side-by-side comparisons.' },
+  { name: 'cell-game.html', cat: 'learn', icon: '⏰', size: 28, llm: '', desc: 'ScummVM-style clockwork + live spreadsheet. 5 eras of timekeeping.' },
+  { name: 'templates/finance.html', cat: 'template', icon: '💰', size: 11, llm: '', desc: 'Personal finance tracker. Categories, monthly budget, savings rate.' },
+  { name: 'templates/ai-writer.html', cat: 'template', icon: '✍️', size: 13, llm: 'z.ai', desc: 'AI writing assistant. Pick a tone, set a length, write.' },
+  { name: 'templates/weather.html', cat: 'template', icon: '🌤', size: 10, llm: '', desc: 'Multi-city weather. Add cities, see current conditions, hourly forecast.' },
+  { name: 'templates/trading.html', cat: 'template', icon: '📈', size: 22, llm: '', desc: 'Paper trading simulator. Track positions, see P&L.' },
+  { name: 'templates/chat-chain.html', cat: 'template', icon: '💬', size: 19, llm: '', desc: 'Branchable chat. Each message can have child messages.' },
+  { name: 'templates/notes.html', cat: 'template', icon: '📝', size: 19, llm: '', desc: 'Note-taking app. Each note is a cell. Search by tag or content.' },
+  { name: 'templates/habit-tracker.html', cat: 'template', icon: '✅', size: 15, llm: '', desc: 'Daily habit tracker. 7-day view, streak counter, completion rate.' },
+  { name: 'templates/recipe.html', cat: 'template', icon: '🍳', size: 16, llm: '', desc: 'Recipe calculator. Scale ingredients to different serving counts.' },
+];
+
+// ─────────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────────
+
+let sortKey = 'name';
+let sortAsc = true;
+let catFilter = 'all';
+let search = '';
+
+function render() {
+  let filtered = TOOLS.slice();
+  if (catFilter !== 'all') filtered = filtered.filter((t) => t.cat === catFilter);
+  if (search) {
+    const q = search.toLowerCase();
+    filtered = filtered.filter((t) =>
+      t.name.toLowerCase().includes(q)
+      || t.desc.toLowerCase().includes(q)
+      || t.cat.toLowerCase().includes(q)
+      || (t.llm && t.llm.toLowerCase().includes(q))
+    );
+  }
+  filtered.sort((a, b) => {
+    let av = a[sortKey], bv = b[sortKey];
+    if (typeof av === 'string') { av = av.toLowerCase(); bv = (bv || '').toLowerCase(); }
+    if (av < bv) return sortAsc ? -1 : 1;
+    if (av > bv) return sortAsc ? 1 : -1;
+    return 0;
+  });
+  const $rows = document.getElementById('rows');
+  if (filtered.length === 0) {
+    $rows.innerHTML = '<tr><td colspan="6"><div class="empty">No tools match this filter.</div></td></tr>';
+  } else {
+    $rows.innerHTML = filtered.map((t) => `
+      <tr>
+        <td class="row-icon">${t.icon}</td>
+        <td><a class="url" href="${t.name}" target="_blank">${t.name}</a></td>
+        <td><span class="row-tag">${t.cat}</span></td>
+        <td class="num">${t.size}KB</td>
+        <td>${t.llm || '—'}</td>
+        <td style="color:var(--td);font-family:inherit">${t.desc}</td>
+      </tr>
+    `).join('');
+  }
+  // Summary
+  const totalKB = TOOLS.reduce((s, t) => s + t.size, 0);
+  document.getElementById('s-total').textContent = TOOLS.length;
+  document.getElementById('s-pages').textContent = TOOLS.filter((t) => !t.name.includes('templates/')).length;
+  document.getElementById('s-templates').textContent = TOOLS.filter((t) => t.name.includes('templates/')).length;
+  document.getElementById('s-mb').textContent = (totalKB / 1024).toFixed(1);
+  // Sort indicators
+  document.querySelectorAll('th[data-sort]').forEach((th) => {
+    th.classList.toggle('sorted', th.dataset.sort === sortKey);
+  });
+}
+
+document.querySelectorAll('th[data-sort]').forEach((th) => {
+  th.addEventListener('click', () => {
+    if (sortKey === th.dataset.sort) sortAsc = !sortAsc;
+    else { sortKey = th.dataset.sort; sortAsc = true; }
+    render();
+  });
+});
+document.querySelectorAll('[data-cat]').forEach((c) => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('[data-cat]').forEach((x) => x.classList.remove('on'));
+    c.classList.add('on');
+    catFilter = c.dataset.cat;
+    render();
+  });
+});
+document.getElementById('search').addEventListener('input', (e) => {
+  search = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quilt Inspector — visualize and edit any sheet</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.controls{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:11px;margin-bottom:14px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:7px 13px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:13px;margin-bottom:14px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+.panel h3{font-size:.85rem;color:var(--a3);margin-bottom:9px}
+textarea{width:100%;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:6px;padding:9px;font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.5;min-height:200px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--a2)}
+.graph{background:var(--bg);border:1px solid var(--b);border-radius:9px;min-height:600px;position:relative;overflow:hidden}
+.legend{position:absolute;top:9px;left:9px;background:rgba(20,20,31,.95);border:1px solid var(--b);border-radius:6px;padding:7px;font-size:.65rem;font-family:'JetBrains Mono',monospace}
+.legend .l{display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.legend .l:last-child{margin-bottom:0}
+.legend .dot{width:8px;height:8px;border-radius:50%}
+.legend .dot.value{background:var(--a3)}
+.legend .dot.formula{background:var(--a1)}
+.legend .dot.listener{background:var(--a4)}
+.legend .dot.api{background:var(--err)}
+.legend .dot.program{background:var(--a2)}
+.details{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.5;margin-top:9px;max-height:200px;overflow:auto}
+.details .name{color:var(--a3);font-weight:700;font-size:.85rem;margin-bottom:5px}
+.details .src{color:var(--a4);white-space:pre-wrap;background:var(--pe);padding:5px;border-radius:3px;margin-top:5px;font-size:.7rem}
+.empty{text-align:center;padding:20px;color:var(--tf);font-style:italic;font-size:.78rem}
+.examples{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
+.example{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:4px 9px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.example:hover{border-color:var(--a2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🔍 <span class="accent">Inspector</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— visualize and edit any sheet</span></h1>
+    <p style="margin-top:3px">Paste a Quilt sheet. See the full dependency graph. Click any node to inspect. Drag to rearrange. Filter by kind.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="regex.html">Regex</a>
+  <a href="diff.html">Diff</a>
+  <a href="reflex-tracer.html">Reflex tracer</a>
+  <a href="lint.html">Lint</a>
+  <a href="ai-sheet.html">AI sheet</a>
+  <a href="inspector.html" class="cur">Inspector</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="examples">
+  <span class="example" data-ex="simple">Simple (4 cells)</span>
+  <span class="example" data-ex="complex">Complex (12 cells)</span>
+  <span class="example" data-ex="listeners">With listeners (8 cells)</span>
+  <span class="example" data-ex="circular">Circular (5 cells)</span>
+  <span class="example" data-ex="ai">AI cell (4 cells)</span>
+</div>
+
+<div class="controls">
+  <button id="render-btn">▶ Render graph</button>
+  <button class="secondary" id="layout-btn">⇄ Re-layout</button>
+  <button class="secondary" id="filter-value" data-on="1">value</button>
+  <button class="secondary" id="filter-formula" data-on="1">formula</button>
+  <button class="secondary" id="filter-listener" data-on="1">listener</button>
+  <button class="secondary" id="filter-api" data-on="1">api</button>
+  <button class="secondary" id="filter-program" data-on="1">program</button>
+  <button class="secondary" id="reset-btn">Reset</button>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Sheet source</h3>
+    <textarea id="input" spellcheck="false"></textarea>
+    <div id="details" class="details">
+      <p style="color:var(--tf);font-style:italic">Click a node in the graph to see its details.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Dependency graph</h3>
+    <div class="graph" id="graph">
+      <div class="legend">
+        <div class="l"><div class="dot value"></div> value</div>
+        <div class="l"><div class="dot formula"></div> formula</div>
+        <div class="l"><div class="dot listener"></div> listener</div>
+        <div class="l"><div class="dot program"></div> program</div>
+        <div class="l"><div class="dot api"></div> api</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const EXAMPLES = {
+  simple: {
+    name: 'simple',
+    cells: [
+      { path: 'a', kind: 'value', value: 1 },
+      { path: 'b', kind: 'value', value: 2 },
+      { path: 'sum', kind: 'formula', fn: '(ctx) => ctx.a + ctx.b' },
+      { path: 'doubled', kind: 'formula', fn: '(ctx) => ctx.sum * 2' },
+    ],
+  },
+  complex: {
+    name: 'complex',
+    cells: [
+      { path: 'price', kind: 'value', value: 100 },
+      { path: 'tax_rate', kind: 'value', value: 0.08 },
+      { path: 'discount_pct', kind: 'value', value: 0.2 },
+      { path: 'subtotal', kind: 'formula', fn: '(ctx) => ctx.price' },
+      { path: 'discount', kind: 'formula', fn: '(ctx) => ctx.subtotal * ctx.discount_pct' },
+      { path: 'after_discount', kind: 'formula', fn: '(ctx) => ctx.subtotal - ctx.discount' },
+      { path: 'tax', kind: 'formula', fn: '(ctx) => ctx.after_discount * ctx.tax_rate' },
+      { path: 'total', kind: 'formula', fn: '(ctx) => ctx.after_discount + ctx.tax' },
+      { path: 'savings', kind: 'formula', fn: '(ctx) => ctx.discount' },
+      { path: 'log', kind: 'program', fn: 'console.log("computed", ctx.total)' },
+      { path: 'pct_of_income', kind: 'formula', fn: '(ctx) => ctx.total / 5000' },
+      { path: 'pct_str', kind: 'formula', fn: '(ctx) => `${(ctx.pct_of_income * 100).toFixed(1)}%`', value: undefined },
+    ],
+  },
+  listeners: {
+    name: 'listeners',
+    cells: [
+      { path: 'count', kind: 'value', value: 0 },
+      { path: 'doubled', kind: 'formula', fn: '(ctx) => ctx.count * 2' },
+      { path: 'tripled', kind: 'formula', fn: '(ctx) => ctx.count * 3' },
+      { path: 'sum', kind: 'formula', fn: '(ctx) => ctx.doubled + ctx.tripled' },
+      { path: 'log_count', kind: 'listener', listens: 'count', fn: 'console.log("count=", ctx.count)' },
+      { path: 'log_sum', kind: 'listener', listens: 'sum', fn: 'console.log("sum=", ctx.sum)' },
+      { path: 'log_doubled', kind: 'listener', listens: 'doubled', fn: 'console.log("doubled=", ctx.doubled)' },
+      { path: 'is_even', kind: 'formula', fn: '(ctx) => ctx.count % 2 === 0' },
+    ],
+  },
+  circular: {
+    name: 'circular',
+    cells: [
+      { path: 'a', kind: 'formula', fn: '(ctx) => ctx.b + 1' },
+      { path: 'b', kind: 'formula', fn: '(ctx) => ctx.c + 1' },
+      { path: 'c', kind: 'formula', fn: '(ctx) => ctx.a + 1' },
+      { path: 'x', kind: 'value', value: 1 },
+      { path: 'y', kind: 'formula', fn: '(ctx) => ctx.x * 2' },
+    ],
+  },
+  ai: {
+    name: 'ai',
+    cells: [
+      { path: 'topic', kind: 'value', value: 'quilt' },
+      { path: 'length', kind: 'value', value: 200 },
+      { path: 'draft', kind: 'ai', prompt: 'Write a ${ctx.length}-word essay on ${ctx.topic}' },
+      { path: 'word_count', kind: 'formula', fn: '(ctx) => ctx.draft.split(" ").length' },
+    ],
+  },
+};
+
+let filterKinds = { value: true, formula: true, listener: true, api: true, program: true };
+let selectedNode = null;
+let dragging = null;
+
+function loadExample(key) {
+  $input.value = JSON.stringify(EXAMPLES[key], null, 2);
+  render();
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+const KIND_COLORS = { value: 'var(--a3)', formula: 'var(--a1)', listener: 'var(--a4)', api: 'var(--err)', program: 'var(--a2)' };
+const KIND_TEXT_COLORS = { value: '#0a0a14', formula: '#fff', listener: '#0a0a14', api: '#fff', program: '#fff' };
+
+function render() {
+  let sheet;
+  try { sheet = JSON.parse($input.value); } catch (e) {
+    $graph.innerHTML = `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--err)">JSON parse error: ${escapeHtml(e.message)}</div>`;
+    return;
+  }
+  if (!sheet.cells || !Array.isArray(sheet.cells)) return;
+
+  const cells = sheet.cells.filter((c) => filterKinds[c.kind] !== false);
+  const paths = new Set(cells.map((c) => c.path));
+
+  // Build edges
+  const edges = [];
+  for (const c of cells) {
+    if (c.kind === 'formula' || c.kind === 'program') {
+      const refs = (c.fn || '').matchAll(/ctx\.(\w+)/g);
+      const seen = new Set();
+      for (const m of refs) {
+        if (!seen.has(m[1]) && paths.has(m[1]) && m[1] !== c.path) {
+          seen.add(m[1]);
+          edges.push({ from: m[1], to: c.path });
+        }
+      }
+    } else if (c.kind === 'listener' && c.listens && paths.has(c.listens)) {
+      edges.push({ from: c.listens, to: c.path });
+    }
+  }
+
+  // Layout: simple levels
+  const levels = new Map();
+  for (const c of cells) levels.set(c.path, 0);
+  // BFS
+  const inDeg = new Map();
+  for (const c of cells) inDeg.set(c.path, 0);
+  for (const e of edges) inDeg.set(e.to, (inDeg.get(e.to) || 0) + 1);
+  const queue = cells.filter((c) => (inDeg.get(c.path) || 0) === 0).map((c) => c.path);
+  while (queue.length) {
+    const p = queue.shift();
+    const l = levels.get(p);
+    for (const e of edges.filter((ed) => ed.from === p)) {
+      levels.set(e.to, Math.max(levels.get(e.to), l + 1));
+      inDeg.set(e.to, inDeg.get(e.to) - 1);
+      if (inDeg.get(e.to) === 0) queue.push(e.to);
+    }
+  }
+  // Group by level
+  const byLevel = new Map();
+  for (const c of cells) {
+    const l = levels.get(c.path);
+    if (!byLevel.has(l)) byLevel.set(l, []);
+    byLevel.get(l).push(c);
+  }
+  const maxLevel = Math.max(...Array.from(byLevel.keys()));
+  // Position
+  const W = $graph.clientWidth || 900;
+  const H = 600;
+  const colWidth = (W - 80) / Math.max(maxLevel + 1, 1);
+  const nodeR = 30;
+  const positions = new Map();
+  for (const [l, cs] of byLevel.entries()) {
+    const colX = 40 + l * colWidth + colWidth / 2;
+    const rowH = (H - 80) / Math.max(cs.length, 1);
+    cs.forEach((c, i) => {
+      positions.set(c.path, { x: colX, y: 40 + i * rowH + rowH / 2 });
+    });
+  }
+  // Render SVG
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:${H}px;background:var(--bg)">`;
+  // Edges
+  for (const e of edges) {
+    const a = positions.get(e.from);
+    const b = positions.get(e.to);
+    if (!a || !b) continue;
+    const mx = (a.x + b.x) / 2;
+    svg += `<path d="M${a.x + nodeR},${a.y} C${mx},${a.y} ${mx},${b.y} ${b.x - nodeR},${b.y}" fill="none" stroke="var(--bs)" stroke-width="1.5" opacity="0.6"/>`;
+  }
+  // Nodes
+  for (const c of cells) {
+    const p = positions.get(c.path);
+    if (!p) continue;
+    const isSel = selectedNode === c.path;
+    const color = KIND_COLORS[c.kind] || 'var(--pe)';
+    const textColor = KIND_TEXT_COLORS[c.kind] || '#fff';
+    svg += `<g class="node" data-id="${c.path}" transform="translate(${p.x},${p.y})" style="cursor:pointer">
+      <circle r="${nodeR}" fill="${color}" stroke="${isSel ? 'var(--a3)' : 'var(--b)'}" stroke-width="${isSel ? 3 : 1.5}"/>
+      <text text-anchor="middle" dy="4" fill="${textColor}" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">${escapeHtml(c.path)}</text>
+    </g>`;
+  }
+  svg += '</svg>';
+  $graph.innerHTML = svg + $graph.querySelector('.legend').outerHTML;
+  // Wire up
+  $graph.querySelectorAll('.node').forEach((el) => {
+    el.addEventListener('click', () => {
+      selectedNode = el.dataset.id;
+      render();
+      showDetails();
+    });
+  });
+  if (selectedNode) showDetails();
+}
+
+function showDetails() {
+  let sheet;
+  try { sheet = JSON.parse($input.value); } catch (e) { return; }
+  const c = sheet.cells.find((x) => x.path === selectedNode);
+  if (!c) return;
+  $details.innerHTML = `
+    <div class="name">${escapeHtml(c.path)}</div>
+    <div style="color:var(--td);margin-bottom:5px">kind: <span style="color:var(--a3)">${c.kind}</span></div>
+    ${c.value !== undefined ? `<div style="color:var(--td)">value: <span style="color:var(--a3)">${escapeHtml(JSON.stringify(c.value))}</span></div>` : ''}
+    ${c.fn ? `<div class="src">${escapeHtml(c.fn)}</div>` : ''}
+    ${c.listens ? `<div style="color:var(--a4);margin-top:5px">listens on: ${c.listens}</div>` : ''}
+  `;
+}
+
+const $input = document.getElementById('input');
+const $graph = document.getElementById('graph');
+const $details = document.getElementById('details');
+
+document.getElementById('render-btn').addEventListener('click', render);
+document.getElementById('layout-btn').addEventListener('click', render);
+document.getElementById('reset-btn').addEventListener('click', () => {
+  $input.value = JSON.stringify(EXAMPLES.simple, null, 2);
+  selectedNode = null;
+  render();
+});
+
+['value', 'formula', 'listener', 'api', 'program'].forEach((k) => {
+  const btn = document.getElementById(`filter-${k}`);
+  btn.addEventListener('click', () => {
+    filterKinds[k] = !filterKinds[k];
+    btn.dataset.on = filterKinds[k] ? '1' : '0';
+    btn.style.opacity = filterKinds[k] ? '1' : '0.4';
+    render();
+  });
+});
+
+document.querySelectorAll('.example').forEach((el) => {
+  el.addEventListener('click', () => loadExample(el.dataset.ex));
+});
+
+$input.addEventListener('input', () => { selectedNode = null; render(); });
+
+// Boot
+loadExample('complex');
+</script>
+</body>
+</html>

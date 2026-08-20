@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API tester — test Quilt REST endpoints</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+  --get:#10b981;--post:#3b82f6;--put:#f59e0b;--del:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px}
+.panel h3{font-size:.92rem;color:var(--a3);margin-bottom:9px}
+.row{display:flex;gap:7px;margin-bottom:9px;align-items:center}
+.method{background:var(--b);color:var(--t);border:1px solid var(--bs);border-radius:5px;padding:7px 11px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;cursor:pointer;width:80px}
+.method.on.GET{background:var(--get);color:#0a0a14;border-color:var(--get)}
+.method.on.POST{background:var(--post);color:#fff;border-color:var(--post)}
+.method.on.PUT{background:var(--put);color:#0a0a14;border-color:var(--put)}
+.method.on.DEL{background:var(--del);color:#fff;border-color:var(--del)}
+input.url{flex:1;background:var(--bg);color:var(--t);border:1px solid var(--bs);border-radius:5px;padding:7px 11px;font-family:'JetBrains Mono',monospace;font-size:.78rem}
+input.url:focus{outline:none;border-color:var(--a2)}
+button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:7px 13px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
+textarea{width:100%;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:6px;padding:9px;font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.5;min-height:140px;resize:vertical}
+.headers{background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:7px;margin-bottom:7px}
+.header{display:grid;grid-template-columns:1fr 1fr 30px;gap:5px;margin-bottom:5px}
+.header input{background:var(--pe);color:var(--t);border:1px solid var(--bs);border-radius:3px;padding:4px 7px;font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.header .del{background:transparent;border:0;color:var(--err);cursor:pointer;font-size:.9rem}
+.response{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.55;max-height:400px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.response .ok{color:var(--a3)}
+.response .err{color:var(--err)}
+.response .key{color:var(--a4)}
+.response .str{color:var(--a3)}
+.response .num{color:var(--a2)}
+.response .bool{color:var(--a1)}
+.response .null{color:var(--tf)}
+.status{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:3px 7px;border-radius:3px;font-weight:700}
+.status.s2{background:var(--a3);color:#0a0a14}
+.status.s3{background:var(--a4);color:#0a0a14}
+.status.s4{background:var(--err);color:#fff}
+.status.s5{background:var(--a1);color:#fff}
+.presets{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
+.preset{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:4px 9px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.preset:hover{border-color:var(--a2)}
+.endpoint-list{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:11px;margin-bottom:9px;max-height:200px;overflow-y:auto}
+.endpoint{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:4px 0;border-bottom:1px dashed var(--b);display:grid;grid-template-columns:50px 1fr;gap:7px;cursor:pointer;align-items:center}
+.endpoint:last-child{border-bottom:0}
+.endpoint:hover{color:var(--a3)}
+.endpoint .m{font-weight:700;padding:1px 5px;border-radius:3px;text-align:center;font-size:.62rem}
+.endpoint .m.GET{background:var(--get);color:#0a0a14}
+.endpoint .m.POST{background:var(--post);color:#fff}
+.endpoint .m.PUT{background:var(--put);color:#0a0a14}
+.endpoint .m.DEL{background:var(--del);color:#fff}
+.endpoint .path{color:var(--td)}
+.endpoint .desc{color:var(--a4);font-size:.62rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🔌 <span class="accent">API tester</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— test Quilt REST endpoints</span></h1>
+    <p style="margin-top:3px">Test Quilt's REST API in your browser. See request/response for any endpoint. Save collections to localStorage.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="federation.html">Federation</a>
+  <a href="inspector.html">Inspector</a>
+  <a href="benchmark.html">Benchmark</a>
+  <a href="api-tester.html" class="cur">API tester</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+</div>
+
+<div class="intro">
+  <p>The Quilt REST API. Test any endpoint, see the JSON response, save requests. Endpoint list is from <code>quilt-fleet</code> and <code>quilt-sdk</code>.</p>
+</div>
+
+<div class="panel" style="margin-bottom:14px">
+  <h3>Endpoints (click to load)</h3>
+  <div class="endpoint-list" id="endpoints"></div>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h3>Request</h3>
+    <div class="row">
+      <button class="method on GET" data-m="GET">GET</button>
+      <button class="method POST" data-m="POST">POST</button>
+      <button class="method PUT" data-m="PUT">PUT</button>
+      <button class="method DEL" data-m="DEL">DEL</button>
+      <input type="text" class="url" id="url" value="https://api.quilt.app/v1/sheets/my-app/cells/count">
+    </div>
+    <div class="row" style="margin-bottom:11px">
+      <button id="send-btn" style="flex:1">▶ Send (simulated)</button>
+      <button class="secondary" id="clear-btn">Clear</button>
+    </div>
+    <h3 style="margin-top:14px">Headers</h3>
+    <div id="headers">
+      <div class="header"><input value="Content-Type" disabled><input value="application/json"><button class="del">×</button></div>
+      <div class="header"><input value="Authorization" disabled><input value="Bearer YOUR_TOKEN"><button class="del">×</button></div>
+    </div>
+    <button class="secondary" id="add-header" style="width:100%;margin-bottom:11px">+ Add header</button>
+
+    <h3>Body</h3>
+    <textarea id="body" placeholder='{"value": 42}' spellcheck="false"></textarea>
+  </div>
+
+  <div class="panel">
+    <h3>Response <span id="status-pill"></span></h3>
+    <div style="font-size:.7rem;color:var(--td);margin-bottom:9px">
+      <span id="resp-meta">No response yet.</span>
+    </div>
+    <div class="response" id="response">// Click "Send" to simulate a request</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Endpoints
+// ─────────────────────────────────────────────────────────────────
+
+const ENDPOINTS = [
+  { method: 'GET', path: '/v1/sheets/{id}/cells', desc: 'List all cells in a sheet' },
+  { method: 'GET', path: '/v1/sheets/{id}/cells/{path}', desc: 'Get a specific cell' },
+  { method: 'POST', path: '/v1/sheets/{id}/cells', desc: 'Create a new cell' },
+  { method: 'PUT', path: '/v1/sheets/{id}/cells/{path}', desc: 'Update a cell' },
+  { method: 'DEL', path: '/v1/sheets/{id}/cells/{path}', desc: 'Delete a cell' },
+  { method: 'GET', path: '/v1/sheets/{id}/state', desc: 'Get full sheet state' },
+  { method: 'POST', path: '/v1/sheets/{id}/eval', desc: 'Evaluate the sheet' },
+  { method: 'GET', path: '/v1/fleet/instances', desc: 'List fleet instances' },
+  { method: 'POST', path: '/v1/fleet/subscribe', desc: 'Subscribe to events' },
+  { method: 'POST', path: '/v1/reflexes/pinch', desc: 'Run a pincher reflex' },
+  { method: 'GET', path: '/v1/elf/usage', desc: 'Get elf usage report' },
+  { method: 'POST', path: '/v1/elf/run', desc: 'Trigger elf run' },
+  { method: 'GET', path: '/v1/store/artifacts', desc: 'List artifacts in store' },
+  { method: 'POST', path: '/v1/store/put', desc: 'Put an artifact' },
+  { method: 'GET', path: '/v1/rag/search', desc: 'RAG vector search' },
+  { method: 'POST', path: '/v1/rag/index', desc: 'Index a document' },
+];
+
+let currentMethod = 'GET';
+
+function syntaxHL(json) {
+  return json
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (m) => {
+      if (/^"/.test(m)) return /:$/.test(m) ? `<span class="key">${m}</span>` : `<span class="str">${m}</span>`;
+      if (/true|false/.test(m)) return `<span class="bool">${m}</span>`;
+      if (/null/.test(m)) return `<span class="null">${m}</span>`;
+      return `<span class="num">${m}</span>`;
+    });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderEndpoints() {
+  const el = document.getElementById('endpoints');
+  el.innerHTML = ENDPOINTS.map((e) => {
+    const url = 'https://api.quilt.app' + e.path.replace(/{id}/g, 'my-app').replace(/{path}/g, 'count');
+    return `<div class="endpoint" data-m="${e.method}" data-url="${url}">
+      <div class="m ${e.method}">${e.method}</div>
+      <div><div class="path">${e.path}</div><div class="desc">${e.desc}</div></div>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('.endpoint').forEach((el) => {
+    el.addEventListener('click', () => {
+      const m = el.dataset.m;
+      document.querySelectorAll('.method').forEach((b) => b.classList.remove('on'));
+      document.querySelector(`.method.${m === 'DEL' ? 'DEL' : m}`).classList.add('on');
+      currentMethod = m;
+      document.getElementById('url').value = el.dataset.url;
+      // Auto-generate body for POST/PUT
+      if (m === 'POST' || m === 'PUT') {
+        document.getElementById('body').value = JSON.stringify({ value: 42, path: 'count' }, null, 2);
+      } else {
+        document.getElementById('body').value = '';
+      }
+    });
+  });
+}
+
+async function send() {
+  const url = document.getElementById('url').value;
+  const body = document.getElementById('body').value;
+  const $resp = document.getElementById('response');
+  const $status = document.getElementById('status-pill');
+  const $meta = document.getElementById('resp-meta');
+  // Simulate
+  $resp.textContent = 'Sending…';
+  $meta.textContent = 'Simulating request…';
+  await new Promise((r) => setTimeout(r, 250 + Math.random() * 500));
+  // Mock response
+  let response, status, statusClass;
+  if (url.includes('/cells/count') && currentMethod === 'GET') {
+    response = { value: 42, kind: 'value', updated_at: '2026-08-20T01:30:00Z' };
+    status = 200; statusClass = 's2';
+  } else if (url.includes('/cells') && currentMethod === 'GET') {
+    response = { cells: [
+      { path: 'count', kind: 'value', value: 42 },
+      { path: 'doubled', kind: 'formula', value: 84 },
+      { path: 'sum', kind: 'formula', value: 126 },
+    ]};
+    status = 200; statusClass = 's2';
+  } else if (currentMethod === 'POST') {
+    response = { id: 'cell-' + Date.now(), path: 'count', value: 42, created_at: '2026-08-20T01:30:00Z' };
+    status = 201; statusClass = 's2';
+  } else if (currentMethod === 'PUT') {
+    response = { path: 'count', value: 42, updated_at: '2026-08-20T01:30:00Z' };
+    status = 200; statusClass = 's2';
+  } else if (currentMethod === 'DEL') {
+    response = { deleted: true, path: 'count' };
+    status = 204; statusClass = 's2';
+  } else if (url.includes('/fleet/instances')) {
+    response = { instances: [
+      { id: 'cloud-edge-1', tier: 'edge', health: 'healthy' },
+      { id: 'workstation-1', tier: 'workstation', health: 'healthy' },
+      { id: 'esp32-1', tier: 'esp32', health: 'degraded' },
+    ]};
+    status = 200; statusClass = 's2';
+  } else if (url.includes('/elf/usage')) {
+    response = { usage: { zai: 35000, kimi: 12000, deepseek: 8500, cf: 5000 }, vibe: 'USER_IDLE', last_run: '2026-08-20T01:15:00Z' };
+    status = 200; statusClass = 's2';
+  } else {
+    response = { error: 'Unknown endpoint' };
+    status = 404; statusClass = 's4';
+  }
+  const ms = (250 + Math.random() * 500).toFixed(0);
+  $status.innerHTML = `<span class="status ${statusClass}">${status}</span>`;
+  $meta.textContent = `${status} · ${ms}ms · ${url}`;
+  $resp.innerHTML = syntaxHL(JSON.stringify(response, null, 2));
+}
+
+// Wire up
+document.querySelectorAll('.method').forEach((b) => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.method').forEach((x) => x.classList.remove('on'));
+    b.classList.add('on');
+    currentMethod = b.dataset.m;
+  });
+});
+document.getElementById('send-btn').addEventListener('click', send);
+document.getElementById('clear-btn').addEventListener('click', () => {
+  document.getElementById('response').textContent = '// Cleared';
+  document.getElementById('status-pill').innerHTML = '';
+  document.getElementById('resp-meta').textContent = 'Cleared.';
+});
+document.getElementById('add-header').addEventListener('click', () => {
+  const h = document.createElement('div');
+  h.className = 'header';
+  h.innerHTML = `<input value="X-Custom" data-k><input value="value" data-v><button class="del">×</button>`;
+  document.getElementById('headers').appendChild(h);
+  h.querySelector('.del').addEventListener('click', () => h.remove());
+});
+
+document.getElementById('url').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') send();
+});
+
+// Boot
+renderEndpoints();
+</script>
+</body>
+</html>
