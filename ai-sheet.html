@@ -146,35 +146,29 @@ const $usage = document.getElementById('usage');
 const $preview = document.getElementById('preview');
 const $cellCards = document.getElementById('cell-cards');
 
-const SYSTEM_PROMPT = `You are a Quilt sheet generator. Given a user request, return ONLY a JSON object with this shape:
+const SYSTEM_PROMPT = `You are a Quilt sheet generator. You MUST return a JSON object with EXACTLY this shape and nothing else (no markdown, no explanation, no prose):
 
 {
-  "name": "<short-name>",
+  "name": "short-kebab-name",
   "cells": [
-    { "path": "<dot.notation.path>", "kind": "value|formula|listener|program", "value": <for value cells>, "fn": "(ctx) => ...", "listens": "<for listener cells>" }
+    { "path": "snake_case_path", "kind": "value", "value": 0 },
+    { "path": "derived_path", "kind": "formula", "fn": "(ctx) => ctx.input_path * 2" }
   ]
 }
 
-Rules:
-- Use 'value' cells for inputs (constants or starting values)
-- Use 'formula' cells for derived computations; the fn is a JavaScript arrow function
-- Use 'listener' cells to react to changes in another cell
-- Reference other cells via ctx.<path>
-- Use snake_case for cell paths
-- Add a brief description as a "_desc" cell if helpful
-- All formulas should be pure (no side effects)
-- Return ONLY the JSON, no markdown fences, no commentary
+CRITICAL RULES:
+1. The top-level MUST be an object with "name" (string) and "cells" (array).
+2. Each cell MUST have "path" (string, snake_case) and "kind" (one of: value, formula, listener).
+3. For "value" cells: include "value" property with the literal.
+4. For "formula" cells: include "fn" property as a JavaScript arrow function string. The function receives a single argument "ctx" and returns a value.
+5. For "listener" cells: include "listens" property (the path of the cell to watch) and "fn" property.
+6. Reference other cells in formulas as ctx.<path>.
+7. Use snake_case for all paths.
+8. All formulas MUST be pure (no side effects, no eval, no fetch).
+9. Return ONLY the JSON object. NO markdown fences. NO prose before or after.
 
-Example:
-{
-  "name": "tip-calculator",
-  "cells": [
-    { "path": "bill", "kind": "value", "value": 100 },
-    { "path": "tip_pct", "kind": "value", "value": 0.18 },
-    { "path": "tip", "kind": "formula", "fn": "(ctx) => ctx.bill * ctx.tip_pct" },
-    { "path": "total", "kind": "formula", "fn": "(ctx) => ctx.bill + ctx.tip" }
-  ]
-}`;
+EXAMPLE (input: "tip calculator with bill and tip percentage"):
+{"name":"tip-calc","cells":[{"path":"bill","kind":"value","value":100},{"path":"tip_pct","kind":"value","value":0.18},{"path":"tip","kind":"formula","fn":"(ctx) => ctx.bill * ctx.tip_pct"},{"path":"total","kind":"formula","fn":"(ctx) => ctx.bill + ctx.tip"}]}`;
 
 function syntaxHL(json) {
   return json
