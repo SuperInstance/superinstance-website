@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tensor Cells — SuperInstance Quilt</title>
+<style>
+:root{--bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;--t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.65;font-size:15px}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1000px;margin:0 auto;padding:22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.6rem;font-weight:800}
+h2{font-size:1.3rem;margin:32px 0 12px;color:var(--a3)}
+h3{font-size:1.05rem;margin:20px 0 8px;color:var(--a4)}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+p{margin-bottom:14px;color:var(--td)}
+ul,ol{margin:0 0 14px 24px;color:var(--td)}
+li{margin-bottom:6px}
+code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--pe);padding:1px 5px;border-radius:3px;color:var(--a3)}
+pre{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:14px;overflow-x:auto;font-size:.82rem;line-height:1.5;color:var(--td);margin:14px 0}
+pre code{background:none;padding:0;color:inherit}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 13px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.callout{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:14px;margin:18px 0;color:var(--td)}
+.callout.green{background:rgba(16,185,129,.08);border-color:var(--a3)}
+.callout.gold{background:rgba(245,158,11,.08);border-color:var(--a4)}
+.callout strong{color:var(--a1)}
+.callout.green strong{color:var(--a3)}
+.callout.gold strong{color:var(--a4)}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.85rem}
+th{text-align:left;background:var(--pe);padding:8px 10px;border-bottom:1px solid var(--b);color:var(--td);font-weight:600}
+td{padding:7px 10px;border-bottom:1px solid var(--b);font-family:'JetBrains Mono',monospace;font-size:.78rem}
+.coffee-bottom{text-align:center;padding:30px 20px 20px;margin-top:50px;border-top:1px solid var(--b)}
+.coffee-bottom a{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.coffee-bottom a:hover{filter:brightness(1.1);color:#422006}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>📐 <span class="accent">Tensor Cells</span></h1>
+    <p style="color:var(--td);max-width:740px;margin-top:6px">Cells aren't just scalars. They have weight, gravity, and distance in tensor space. Connections propagate like physics. Memory pools and caches are cells too.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<h2>The cell isn't a value. It's a position in a tensor.</h2>
+
+<p>A Quilt sheet is a graph, but it's more useful to think of it as a <strong>tensor field</strong>. Every cell has a position. Every connection is a vector. The whole sheet is a navigable N-dimensional space where:</p>
+
+<ul>
+  <li><strong>Cells have weight</strong> — a scalar influence on their neighbors. A high-weight cell propagates strongly; a low-weight cell is a leaf.</li>
+  <li><strong>Cells have gravity</strong> — an attraction to other cells. A high-gravity cell pulls neighboring values toward itself.</li>
+  <li><strong>Cells have distance</strong> — their position in tensor space. Two cells at distance <em>d</em> interact with strength <code>1/(1+d²)</code>.</li>
+  <li><strong>Connections have direction and magnitude</strong> — they aren't just edges, they're vectors with phase and amplitude.</li>
+  <li><strong>Propagations are physical</strong> — they follow the geometry of the tensor, not just the topology of the graph.</li>
+</ul>
+
+<div class="callout">
+  <strong>Why this matters:</strong> A spreadsheet re-evaluates dependencies topologically. A Quilt sheet re-evaluates <em>physically</em>. The difference is that downstream cells don't just receive values — they receive values <em>with momentum</em>. A change in cell A doesn't just update cell B; it pushes B with a force proportional to A's weight and inversely proportional to the squared distance. This is the difference between a lookup table and a simulation.
+</div>
+
+<h2>Cell attributes</h2>
+
+<pre><code>cells:
+  sensor.boat.heading:
+    kind: value
+    value: 45
+    
+    # New: tensor-space attributes
+    weight: 1.0          # How strongly this cell propagates
+    gravity: 0.0         # Does this cell pull neighbors toward itself?
+    position: [1, 2, 0]  # x, y, z in tensor space
+    distance: 1.414      # Auto-computed distance from origin
+    
+  # A cell with high gravity — values nearby tend toward it
+  target.heading:
+    kind: value
+    value: 90
+    gravity: 0.8         # Strong attractor
+    position: [0, 0, 0]
+    
+  # A cell with low weight — terminal, doesn't propagate far
+  display.label:
+    kind: formula
+    formula: "round(sensor.boat.heading) + '°'"
+    weight: 0.1          # Local effect only</code></pre>
+
+<h2>Distance and propagation</h2>
+
+<p>The propagation rule is geometric, not just topological. When a cell's value changes, the change propagates to dependents with strength:</p>
+
+<pre><code>delta_received = delta * (1 / (1 + distance²)) * weight * (1 - damping)
+</code></pre>
+
+<p>This means:</p>
+
+<ul>
+  <li><strong>Far-away cells are damped.</strong> A change in cell A might be 99% absorbed before it reaches a cell 100 units away.</li>
+  <li><strong>Heavy cells propagate strongly.</strong> A weight-10 cell can affect the whole sheet; a weight-0.1 cell can barely affect its immediate neighbors.</li>
+  <li><strong>Damping prevents oscillation.</strong> A high-damping sheet is stable; a low-damping sheet can resonate.</li>
+</ul>
+
+<h2>Memory and cache as cells</h2>
+
+<p>Anything that holds state is a cell. That includes:</p>
+
+<table>
+  <tr><th>Concept</th><th>Cell kind</th><th>What it does</th></tr>
+  <tr><td>RAM</td><td><code>memory_pool</code></td><td>Fixed-size byte store with allocation / free</td></tr>
+  <tr><td>Disk</td><td><code>store</code></td><td>Content-addressed, with TTL</td></tr>
+  <tr><td>Cache</td><td><code>cache</code></td><td>LRU with hot/warm/cold tiers (see <code>FederatedArtifactStore</code>)</td></tr>
+  <tr><td>Registry</td><td><code>registry</code></td><td>Named-cell map, queryable by URI</td></tr>
+  <tr><td>Queue</td><td><code>queue</code></td><td>FIFO with optional priority and TTL</td></tr>
+  <tr><td>Lock</td><td><code>lock</code></td><td>Distributed mutex with timeout</td></tr>
+  <tr><td>Counter</td><td><code>counter</code></td><td>Atomic integer with rate limiting</td></tr>
+  <tr><td>Bloom</td><td><code>bloom</code></td><td>Probabilistic set with k hashes</td></tr>
+</table>
+
+<div class="callout green">
+  <strong>Cells are ports, not just values.</strong> A memory pool is a cell. A cache is a cell. A registry is a cell. Anything that holds state and is addressable becomes a cell. This means you can subscribe to your cache hit rate. You can route a query to a specific cache tier. You can federate caches across tiers. The cell model is universal.
+</div>
+
+<h2>Why "tensor encoding" matters</h2>
+
+<p>Most data systems treat records as rows in a table. That's a 1D representation — every record is a point on a line, ordered by key.</p>
+
+<p>Quilt treats records as <strong>tensors</strong>:</p>
+
+<ul>
+  <li><strong>Each cell is a point in N-dimensional space.</strong> <code>position: [x, y, z, ...]</code> places it in the tensor field.</li>
+  <li><strong>Cells with similar positions are neighbors.</strong> They're physically close, so they interact strongly.</li>
+  <li><strong>Cells with similar attributes are clustered.</strong> Two cells in the same tier (esp32, jetson) are close in <em>tier-space</em>; two cells in the same sheet are close in <em>sheet-space</em>.</li>
+  <li><strong>Projections are visualizations.</strong> The 2D heatmap is a projection from N dimensions to 2. The 3D synoptic is a projection from N to 3. The TUI view is a projection from N to 1.</li>
+  <li><strong>The same data renders differently in different projections.</strong> A finance heatmap shows load. A 3D graph shows topology. A Markdown table shows a snapshot. They're all views of the same tensor.</li>
+</ul>
+
+<h2>Optimization through physical setup</h2>
+
+<p>Because the system is geometric, you can optimize it by setting up its geometry:</p>
+
+<ul>
+  <li><strong>Place hot cells near each other.</strong> Cells that update together should be physically close; their propagation is fast.</li>
+  <li><strong>Place stable cells far from unstable ones.</strong> A cell that updates 1000x/sec shouldn't be near a cell that updates 1x/min — the stable cell wastes time damping fast updates.</li>
+  <li><strong>Use gravity for invariants.</strong> If a value should always converge to a target, give the target high gravity. The system self-corrects.</li>
+  <li><strong>Use distance for batching.</strong> Cells at distance > 10 from the change can be updated in a batch, asynchronously.</li>
+  <li><strong>Use weight for prioritization.</strong> When resources are tight, update the highest-weight cells first.</li>
+</ul>
+
+<div class="callout gold">
+  <strong>The whole-system switchboard:</strong> Quilt isn't one repo. It's the cell-based computer architecture with tensor encodings that can be represented nicely as spreadsheets. The metaphor: a <em>switchboard</em> is a panel with sockets and patch cables. A Quilt sheet is a switchboard with cells (sockets) and connections (cables). Add a cable between any two cells. Patch a sensor to a formula to a notification. Patch a knob on a boat to a PID controller to a motor. Patch a user prompt to a router to a model to a response. Patch <em>any</em> engine — Isaac, Cosmos, Minecraft, a Jupyter kernel — as a cell. The switchboard is the runtime. The cell is the port. The connection is the cable. The operator platform is the whole thing.
+</div>
+
+<h2>The math (when you need it)</h2>
+
+<p>The propagation tensor at any moment is a rank-N tensor <code>P</code> where <code>P[i, j, k, ...]</code> is the influence of cell <code>i</code> on cell <code>j</code> at step <code>k</code> in subsystem <code>...</code>. The state update is:</p>
+
+<pre><code>state[t+1] = state[t] + dt * (propagation(state, P) - damping * state[t])
+</code></pre>
+
+<p>For most practical sheets this is overkill. The discrete propagation we use in production is simpler:</p>
+
+<pre><code>for each changed cell c:
+  for each dependent d, ordered by distance:
+    d.value += (c.value - d.value) * weight * (1 / (1 + distance²)) * damping
+    if abs(d.value - d.last_value) > threshold:
+      propagate(d)
+</code></pre>
+
+<p>Same behavior, easier to debug, runs in O(edges × max_depth).</p>
+
+<h2>Putting it together</h2>
+
+<table>
+  <tr><th>Concept</th><th>What it enables</th></tr>
+  <tr><td>Cells as tensor positions</td><td>Geometric propagation, distance-based damping, gravity-based invariants</td></tr>
+  <tr><td>Cells with weight</td><td>Local vs global effects, prioritization under load</td></tr>
+  <tr><td>Cells as memory</td><td>Addressable caches, federated stores, queryable registries</td></tr>
+  <tr><td>Projections</td><td>2D heatmap, 3D synoptic, TUI table, Markdown snapshot, JSON state</td></tr>
+  <tr><td>The whole-system switchboard</td><td>One architecture from the metal to the UX, from a single sensor to a fleet</td></tr>
+</table>
+
+<p>This is what "the cell model is the substrate" means. Not cells as a feature. Cells as the <em>operating system</em>.</p>
+
+</div>
+
+<div class="coffee-bottom">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee — support the work</a>
+  <div style="margin-top:9px;color:var(--tf);font-size:.78rem">Quilt is Apache 2.0. The cell model is the substrate; tensor encoding is the geometry.</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleet Heatmap — SuperInstance Quilt</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --ok:#7ec699;--bad:#ff6b6b;--a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{color:var(--a4)}
+.sub{color:var(--td);font-size:.82rem;margin-top:3px}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:7px 13px;border-radius:6px;font-weight:700;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.controls label{color:var(--td);font-size:.78rem;display:flex;align-items:center;gap:5px}
+.controls select,.controls input,.controls button{background:var(--pe);border:1px solid var(--b);color:var(--t);padding:6px 10px;border-radius:5px;font-size:.78rem;font-family:inherit}
+.controls button{cursor:pointer;font-weight:500}
+.controls button:hover{background:var(--b);border-color:var(--a2)}
+.layout{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--b);border-radius:10px;padding:14px;display:flex;flex-direction:column}
+.panel h2{font-size:.95rem;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.panel h2 .badge{font-size:.65rem;background:var(--a4);color:#0a0a14;padding:2px 6px;border-radius:3px;font-weight:700;letter-spacing:.04em}
+.heat{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;padding:8px;background:#0a0a14;border-radius:6px;border:1px solid var(--b)}
+.tile{aspect-ratio:1;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#0a0a14;cursor:pointer;transition:.1s;font-family:'JetBrains Mono',monospace;position:relative;overflow:hidden}
+.tile:hover{transform:scale(1.05);z-index:2;border:2px solid #fff}
+.tile .lbl{font-size:.5rem;opacity:.8}
+.legend{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--td);margin-top:8px;flex-wrap:wrap}
+.legend .scale{width:140px;height:10px;border-radius:2px;background:linear-gradient(90deg,#10b981 0%,#84cc16 25%,#f59e0b 50%,#ef4444 75%,#7c2d12 100%)}
+pre.mer{background:#0a0a14;border:1px solid var(--b);border-radius:5px;padding:8px;font-size:.66rem;color:var(--a3);overflow-x:auto;line-height:1.4;flex:1;font-family:'JetBrains Mono',monospace;white-space:pre}
+pre.mer .c{color:var(--td)}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;font-size:.74rem;margin-top:8px}
+.stat{background:var(--pe);border:1px solid var(--b);border-radius:4px;padding:6px 8px}
+.stat .l{color:var(--td);font-size:.65rem;text-transform:uppercase;letter-spacing:.04em}
+.stat .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem}
+.note{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:6px;padding:10px;font-size:.74rem;color:var(--td);margin-top:14px}
+.note code{background:var(--bg);padding:1px 4px;border-radius:3px}
+.coffee-bottom{text-align:center;padding:30px 20px 20px}
+.coffee-bottom a{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:12px 24px;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.coffee-bottom a:hover{filter:brightness(1.1);color:#422006}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🔥 <span class="accent">Fleet Heatmap</span> <span style="color:var(--td);font-size:.85rem;font-weight:400">— instances × metrics, sortable, Mermaid-renderable, Markdown-exportable</span></h1>
+    <div class="sub">A rectangular pie in the style of a finance heatmap. Each tile is a cell. Sortable. Projectable to TUI, Markdown, JSON, Mermaid.</div>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="controls">
+  <label>Metric
+    <select id="metric">
+      <option value="cpu">CPU %</option>
+      <option value="memory">Memory MB</option>
+      <option value="connections">Connections</option>
+      <option value="latency">Latency ms</option>
+    </select>
+  </label>
+  <label>Tier filter
+    <select id="tier">
+      <option value="all">All tiers</option>
+      <option value="esp32">esp32</option>
+      <option value="jetson">jetson</option>
+      <option value="codespace">codespace</option>
+      <option value="cloudflare">cloudflare</option>
+      <option value="server">server</option>
+    </select>
+  </label>
+  <button onclick="sortBy('name')">Sort: name</button>
+  <button onclick="sortBy('value')">Sort: value</button>
+  <button onclick="sortBy('tier')">Sort: tier</button>
+  <button onclick="shuffle()">🎲 Shuffle</button>
+  <button onclick="refresh()">↻ Refresh</button>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h2>Heatmap <span class="badge" id="metric-label">CPU %</span></h2>
+    <div class="heat" id="heat"></div>
+    <div class="legend">
+      <span>Low</span>
+      <div class="scale"></div>
+      <span>High</span>
+      <span style="margin-left:14px">Tiles = instances. Click for details. Hover to scale.</span>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Mermaid <span class="badge">PROJ</span></h2>
+    <pre class="mer" id="mermaid">Loading...</pre>
+    <h2 style="margin-top:14px">Markdown <span class="badge">PROJ</span></h2>
+    <pre class="mer" id="markdown">Loading...</pre>
+  </div>
+</div>
+
+<div class="note">
+  <strong>How this works:</strong> Each tile is a <code>value</code> cell with <code>name</code>, <code>tier</code>, <code>cpu</code>, <code>memory</code>, <code>connections</code>, <code>latency</code>. The heatmap is a 2D projection of a 4D tensor (instances × {cpu, memory, connections, latency}). Click a metric to project that axis. Sort to reorganize. The Mermaid block is a text-to-diagram projection — paste it into any Mermaid renderer. The Markdown block is a human-and-agent-readable state file. The whole thing is a Quilt sheet running in your browser. Save your snapshot, share the JSON, render in TUI or PNG.
+</div>
+
+</div>
+
+<div class="coffee-bottom">
+  <a href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee — support the work</a>
+  <div style="margin-top:9px;color:var(--tf);font-size:.74rem">Quilt is Apache 2.0. The cell model is the substrate; every visualization is just a projection.</div>
+</div>
+
+<script>
+const STORAGE_KEY = 'quilt-fleet-heatmap-v1';
+
+const TIERS = ['esp32', 'jetson', 'codespace', 'cloudflare', 'server'];
+const NAMES = [
+  'boat-1', 'boat-2', 'boat-3', 'sensor-1', 'sensor-2', 'sensor-3', 'sensor-4',
+  'jetson-lab', 'jetson-warehouse', 'codespace-7c', 'codespace-9x', 'codespace-2a',
+  'cloudflare-prod-1', 'cloudflare-prod-2', 'cloudflare-edge-1', 'cloudflare-edge-2',
+  'server-us-east-1', 'server-eu-west-1', 'server-ap-south-1', 'server-local-1',
+];
+
+function genInstance(name) {
+  // Reproducible-ish per name
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = ((h << 5) - h + name.charCodeAt(i)) | 0;
+  const tier = TIERS[Math.abs(h) % TIERS.length];
+  const tierMult = { esp32: 0.3, jetson: 1.2, codespace: 1.5, cloudflare: 0.8, server: 1.0 }[tier];
+  return {
+    name, tier,
+    cpu: Math.round((Math.abs(h * 7) % 80 + 10) * tierMult),
+    memory: Math.round((Math.abs(h * 13) % 8000 + 200) * tierMult),
+    connections: Math.abs(h * 3) % 200,
+    latency: Math.round((Math.abs(h * 11) % 100 + 1) * (1 / tierMult)),
+  };
+}
+
+let instances = NAMES.map(genInstance);
+
+let currentMetric = 'cpu';
+let currentTier = 'all';
+let currentSort = 'name';
+
+function valueOf(inst) { return inst[currentMetric]; }
+
+function sortBy(key) {
+  currentSort = key;
+  if (key === 'name') instances.sort((a, b) => a.name.localeCompare(b.name));
+  else if (key === 'value') instances.sort((a, b) => valueOf(b) - valueOf(a));
+  else if (key === 'tier') instances.sort((a, b) => a.tier.localeCompare(b.tier) || a.name.localeCompare(b.name));
+  render();
+}
+
+function shuffle() {
+  for (let i = instances.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [instances[i], instances[j]] = [instances[j], instances[i]];
+  }
+  render();
+}
+
+function refresh() {
+  // Re-generate with new values (simulate new data)
+  instances = instances.map(i => {
+    const fresh = genInstance(i.name + Date.now() % 1000);
+    return { ...i, ...fresh };
+  });
+  render();
+}
+
+function colorFor(v, max) {
+  // 0 = green, 0.5 = yellow, 1 = red
+  const t = Math.min(1, v / Math.max(1, max));
+  if (t < 0.25) return `rgb(${Math.round(16 + t*4*180)}, ${Math.round(185 - t*4*100)}, ${Math.round(129 - t*4*50)})`;
+  if (t < 0.5) return `rgb(${Math.round(132 + (t-0.25)*4*100)}, ${Math.round(204 - (t-0.25)*4*50)}, ${Math.round(22 - (t-0.25)*4*20)})`;
+  if (t < 0.75) return `rgb(${Math.round(245 + (t-0.5)*4*10)}, ${Math.round(158 - (t-0.5)*4*100)}, ${Math.round(11 - (t-0.5)*4*0)})`;
+  return `rgb(${Math.round(239 - (t-0.75)*4*120)}, ${Math.round(68 - (t-0.75)*4*60)}, ${Math.round(68 - (t-0.75)*4*40)})`;
+}
+
+function format(v) {
+  if (currentMetric === 'memory') return v >= 1000 ? (v/1000).toFixed(1) + 'g' : v + 'm';
+  if (currentMetric === 'latency') return v + 'ms';
+  if (currentMetric === 'connections') return v + '';
+  return v + '%';
+}
+
+function render() {
+  const filtered = currentTier === 'all' ? instances : instances.filter(i => i.tier === currentTier);
+  const max = Math.max(...filtered.map(valueOf), 1);
+
+  document.getElementById('metric-label').textContent =
+    ({cpu:'CPU %', memory:'Memory MB', connections:'Connections', latency:'Latency ms'})[currentMetric];
+
+  const heat = document.getElementById('heat');
+  heat.style.gridTemplateColumns = `repeat(${Math.min(10, Math.ceil(Math.sqrt(filtered.length)))}, 1fr)`;
+  heat.innerHTML = filtered.map(i => `
+    <div class="tile" style="background:${colorFor(valueOf(i), max)}" title="${i.name} (${i.tier}): ${format(valueOf(i))}">
+      <div>
+        <div>${i.name.length > 8 ? i.name.slice(0,7)+'…' : i.name}</div>
+        <div class="lbl">${format(valueOf(i))}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Stats
+  const total = filtered.reduce((s, i) => s + valueOf(i), 0);
+  const avg = filtered.length ? Math.round(total / filtered.length) : 0;
+  const maxInst = filtered.reduce((m, i) => valueOf(i) > valueOf(m) ? i : m, filtered[0] || {name:'(none)', cpu:0, memory:0, connections:0, latency:0});
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="l">Total</div><div class="v">${format(total)}</div></div>
+    <div class="stat"><div class="l">Avg</div><div class="v">${format(avg)}</div></div>
+    <div class="stat"><div class="l">Max</div><div class="v">${format(valueOf(maxInst))}</div></div>
+    <div class="stat"><div class="l">Hottest</div><div class="v">${maxInst.name}</div></div>
+  `;
+
+  // Mermaid
+  const mer = [
+    'graph LR',
+    '  classDef hot fill:#ef4444,color:#fff',
+    '  classDef warm fill:#f59e0b,color:#000',
+    '  classDef cool fill:#10b981,color:#000',
+    '  classDef cold fill:#3b82f6,color:#fff',
+    '',
+    ...filtered.slice(0, 15).map((i, idx) => {
+      const v = valueOf(i) / max;
+      const cls = v > 0.75 ? 'hot' : v > 0.5 ? 'warm' : v > 0.25 ? 'cool' : 'cold';
+      return `  ${i.name.replace(/-/g, '_')}[<span class="c">"${i.name}<br/>${format(valueOf(i))}"</span>]:::${cls}`;
+    }),
+  ].join('\n').replace(/<span class="c">|<\/span>/g, '');
+  document.getElementById('mermaid').textContent = mer;
+
+  // Markdown
+  const md = [
+    `# Quilt Fleet Heatmap`,
+    ``,
+    `**Metric:** ${currentMetric} | **Tier filter:** ${currentTier} | **Generated:** ${new Date().toISOString()}`,
+    ``,
+    `| Instance | Tier | CPU | Memory | Connections | Latency |`,
+    `|----------|------|-----|--------|-------------|---------|`,
+    ...filtered.map(i => `| ${i.name} | ${i.tier} | ${i.cpu}% | ${i.memory}MB | ${i.connections} | ${i.latency}ms |`),
+    ``,
+    `## Stats`,
+    ``,
+    `- **Total:** ${format(total)}`,
+    `- **Avg:** ${format(avg)}`,
+    `- **Max:** ${format(valueOf(maxInst))} (${maxInst.name})`,
+    `- **Count:** ${filtered.length}`,
+  ].join('\n');
+  document.getElementById('markdown').textContent = md;
+}
+
+// Wire up
+document.getElementById('metric').addEventListener('change', e => { currentMetric = e.target.value; render(); });
+document.getElementById('tier').addEventListener('change', e => { currentTier = e.target.value; render(); });
+
+render();
+</script>
+</body>
+</html>
