@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quilt Workspace — all the tools in one place</title>
+<style>
+:root{
+  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
+  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
+  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
+.m{font-family:'JetBrains Mono','SF Mono',monospace}
+.wrap{max-width:1300px;margin:0 auto;padding:18px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+h1{font-size:1.4rem;font-weight:800}
+h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
+p{color:var(--td);margin-bottom:11px;font-size:.85rem}
+.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
+.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
+.nav a:hover{text-decoration:underline}
+.nav a.cur{color:var(--a3);font-weight:700}
+.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
+.coffee-top:hover{filter:brightness(1.1);color:#422006}
+.intro{background:linear-gradient(135deg,rgba(124,58,237,.08) 0%,rgba(59,130,246,.08) 100%);border:1px solid var(--a1);border-radius:10px;padding:18px;margin-bottom:18px}
+.intro h2{color:var(--a3);font-size:1.1rem;margin-bottom:5px;margin-top:0}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:11px;margin-bottom:18px}
+.tool{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:14px;text-decoration:none;color:var(--t);transition:.2s;display:block}
+.tool:hover{border-color:var(--a2);transform:translateY(-2px);color:var(--t)}
+.tool .head{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.tool .icon{font-size:1.5rem}
+.tool .name{font-size:1rem;font-weight:800;color:var(--a3)}
+.tool .tag{font-size:.6rem;padding:1px 5px;border-radius:3px;background:var(--b);color:var(--td);text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-left:auto}
+.tool .desc{color:var(--td);font-size:.78rem;margin-bottom:7px}
+.tool .meta{display:flex;gap:7px;flex-wrap:wrap}
+.tool .meta span{background:var(--pe);border:1px solid var(--b);border-radius:4px;padding:2px 5px;font-size:.62rem;color:var(--td);font-family:'JetBrains Mono',monospace}
+.section{margin-bottom:18px}
+.section h2{color:var(--a3);font-size:1.05rem;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.section h2 .sub{color:var(--td);font-size:.74rem;font-weight:400}
+.workflow{background:rgba(16,185,129,.05);border:1px solid var(--a3);border-radius:8px;padding:14px;margin-bottom:11px;font-size:.78rem;color:var(--td)}
+.workflow h3{color:var(--a3);font-size:.92rem;margin-bottom:5px}
+.workflow ol{margin-left:18px;line-height:1.7}
+.workflow code{background:var(--bg);padding:1px 5px;border-radius:3px;color:var(--a4);font-family:'JetBrains Mono',monospace}
+.workflow a{color:var(--a2);text-decoration:none}
+.workflow a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <div>
+    <h1>🛠️ <span class="accent">Quilt workspace</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— every tool, one place</span></h1>
+    <p style="margin-top:3px">A site people come to do work. 20+ tools that compose together. Each one saves to localStorage so you can move between them.</p>
+  </div>
+  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
+</div>
+
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="workspace.html" class="cur">Workspace</a>
+  <a href="playground.html">Playground</a>
+  <a href="token-calculator.html">Token calc</a>
+  <a href="cron-builder.html">Cron builder</a>
+  <a href="json-to-sheet.html">JSON → sheet</a>
+  <a href="nail-builder.html">.nail builder</a>
+  <a href="puzzle.html">Puzzle</a>
+  <a href="pincher.html">Pincher</a>
+  <a href="vibe.html">Vibe</a>
+  <a href="debugger.html">Inspector</a>
+  <a href="from-react.html">From React</a>
+  <a href="cell-game.html">Cell game</a>
+  <a href="templates/finance.html">Finance</a>
+</div>
+
+<div class="intro">
+  <h2>Pick a tool. Or follow a workflow.</h2>
+  <p style="margin-bottom:0">Every tool below is a self-contained page that does real work in your browser. They share state through localStorage — start a reflex database in Pincher, ship it as a .nail bundle, load it on an ESP32. Compose them however you need.</p>
+</div>
+
+<!-- Workflows -->
+<div class="section">
+  <h2>🔁 Common workflows <span class="sub">— click to follow</span></h2>
+  <div class="workflow">
+    <h3>Build a reflex engine from scratch</h3>
+    <ol>
+      <li>Open <a href="playground.html">Playground</a> to learn how cells work</li>
+      <li>Try <a href="puzzle.html">Puzzle</a> to get the hang of composing cells</li>
+      <li>Open <a href="pincher.html">Pincher</a> and pinch DevOps tasks — it learns reflexes</li>
+      <li>Open <a href="nail-builder.html">.nail builder</a> and click "Load from Pincher demo"</li>
+      <li>Download the .nail bundle, ship it to a Worker / workstation / ESP32</li>
+    </ol>
+  </div>
+  <div class="workflow">
+    <h3>Build a Quilt sheet from real data</h3>
+    <ol>
+      <li>Open <a href="json-to-sheet.html">JSON → sheet</a> and paste your JSON</li>
+      <li>Copy the generated sheet, paste it into <a href="playground.html">Playground</a></li>
+      <li>Add derived cells, run it, see the values</li>
+      <li>Export the sheet as a .nail bundle from <a href="nail-builder.html">.nail builder</a></li>
+    </ol>
+  </div>
+  <div class="workflow">
+    <h3>Plan a deployment of quilt-elf</h3>
+    <ol>
+      <li>Open <a href="vibe.html">Vibe</a> to see the dashboard for invisible elves</li>
+      <li>Open <a href="token-calculator.html">Token calculator</a> and add your workload</li>
+      <li>See if you fit within free tiers or need a metered provider</li>
+      <li>Open <a href="cron-builder.html">Cron builder</a> and pick a 15-min trigger (the default)</li>
+      <li>Deploy <code>@quilt/elf</code> to Cloudflare Workers with the cron + tokens</li>
+    </ol>
+  </div>
+  <div class="workflow">
+    <h3>Learn Quilt from React</h3>
+    <ol>
+      <li>Open <a href="from-react.html">From React to Quilt</a> for the mental model bridge</li>
+      <li>Open <a href="playground.html">Playground</a> and load the "counter" example</li>
+      <li>Open <a href="debugger.html">Inspector</a> to see a dependency graph</li>
+      <li>Open <a href="puzzle.html">Puzzle</a> and solve puzzles to build intuition</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Tools -->
+<div class="section">
+  <h2>🔨 Build &amp; compose</h2>
+  <div class="tools">
+    <a class="tool" href="playground.html">
+      <div class="head">
+        <div class="icon">🧪</div>
+        <div class="name">Playground</div>
+        <div class="tag">live</div>
+      </div>
+      <div class="desc">Write a Quilt sheet, run it, see cells evaluate. 4 example sheets included.</div>
+      <div class="meta"><span>cells</span><span>formulas</span><span>live eval</span></div>
+    </a>
+
+    <a class="tool" href="json-to-sheet.html">
+      <div class="head">
+        <div class="icon">🔄</div>
+        <div class="name">JSON → sheet</div>
+        <div class="tag">convert</div>
+      </div>
+      <div class="desc">Paste JSON, get a Quilt sheet. Each top-level key becomes a cell, summary formulas added.</div>
+      <div class="meta"><span>JSON in</span><span>sheet out</span><span>summary</span></div>
+    </a>
+
+    <a class="tool" href="nail-builder.html">
+      <div class="head">
+        <div class="icon">🔨</div>
+        <div class="name">.nail builder</div>
+        <div class="tag">export</div>
+      </div>
+      <div class="desc">Build portable agent state. Pick a target runtime (cloud/workstation/ESP32/Jetson) and download.</div>
+      <div class="meta"><span>.nail</span><span>portable</span><span>multi-platform</span></div>
+    </a>
+
+    <a class="tool" href="puzzle.html">
+      <div class="head">
+        <div class="icon">🧩</div>
+        <div class="name">Puzzle</div>
+        <div class="tag">learn</div>
+      </div>
+      <div class="desc">Solve puzzles by composing cells. 9 puzzles from easy (sum) to hard (stddev).</div>
+      <div class="meta"><span>9 puzzles</span><span>par scores</span><span>hints</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="section">
+  <h2>📊 Plan &amp; estimate</h2>
+  <div class="tools">
+    <a class="tool" href="token-calculator.html">
+      <div class="head">
+        <div class="icon">🧮</div>
+        <div class="name">Token calculator</div>
+        <div class="tag">estimate</div>
+      </div>
+      <div class="desc">Multi-provider cost estimator. Add tasks, see tokens used across z.ai/Kimi/DeepSeek/CF AI.</div>
+      <div class="meta"><span>4 providers</span><span>free tiers</span><span>over-budget alert</span></div>
+    </a>
+
+    <a class="tool" href="cron-builder.html">
+      <div class="head">
+        <div class="icon">📅</div>
+        <div class="name">Cron builder</div>
+        <div class="tag">visual</div>
+      </div>
+      <div class="desc">Build cron expressions visually. 12 presets, calendar view, hour grid showing when it fires.</div>
+      <div class="meta"><span>12 presets</span><span>calendar</span><span>hour grid</span></div>
+    </a>
+
+    <a class="tool" href="vibe.html">
+      <div class="head">
+        <div class="icon">🧝</div>
+        <div class="name">Vibe</div>
+        <div class="tag">monitor</div>
+      </div>
+      <div class="desc">Live dashboard for the invisible elves. See current vibe, provider usage, backlog, audit.</div>
+      <div class="meta"><span>5 vibes</span><span>4 providers</span><span>audit loop</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🤖 Reflex &amp; introspect</h2>
+  <div class="tools">
+    <a class="tool" href="pincher.html">
+      <div class="head">
+        <div class="icon">🦀</div>
+        <div class="name">Pincher</div>
+        <div class="tag">reflex</div>
+      </div>
+      <div class="desc">A reflex engine in your browser. Pinch tasks, learn reflexes, see the three tiers in action.</div>
+      <div class="meta"><span>3 tiers</span><span>9 starters</span><span>localStorage</span></div>
+    </a>
+
+    <a class="tool" href="debugger.html">
+      <div class="head">
+        <div class="icon">🔍</div>
+        <div class="name">Inspector</div>
+        <div class="tag">debug</div>
+      </div>
+      <div class="desc">Visualize any Quilt sheet as a dependency graph. Filter, hover, see evaluations.</div>
+      <div class="meta"><span>force graph</span><span>filters</span><span>hover details</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="section">
+  <h2>📚 Learn</h2>
+  <div class="tools">
+    <a class="tool" href="from-react.html">
+      <div class="head">
+        <div class="icon">↔️</div>
+        <div class="name">From React to Quilt</div>
+        <div class="tag">learn</div>
+      </div>
+      <div class="desc">Mental model bridge for React developers. Side-by-side comparisons of components vs cells.</div>
+      <div class="meta"><span>9 comparisons</span><span>side-by-side</span><span>code samples</span></div>
+    </a>
+
+    <a class="tool" href="cell-game.html">
+      <div class="head">
+        <div class="icon">⏰</div>
+        <div class="name">Cell game</div>
+        <div class="tag">history</div>
+      </div>
+      <div class="desc">ScummVM-style clockwork + live spreadsheet. 5 eras of how humanity solved "count time".</div>
+      <div class="meta"><span>5 eras</span><span>live sheet</span><span>click cells</span></div>
+    </a>
+
+    <a class="tool" href="quilt.html">
+      <div class="head">
+        <div class="icon">🧵</div>
+        <div class="name">Quilt showcase</div>
+        <div class="tag">overview</div>
+      </div>
+      <div class="desc">The 1-page overview of Quilt: what it is, how it works, why it matters, where to start.</div>
+      <div class="meta"><span>overview</span><span>examples</span><span>ecosystem</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="section">
+  <h2>📝 Templates <span class="sub">— clone and use</span></h2>
+  <div class="tools">
+    <a class="tool" href="templates/finance.html">
+      <div class="head">
+        <div class="icon">💰</div>
+        <div class="name">Finance</div>
+        <div class="tag">template</div>
+      </div>
+      <div class="desc">Personal finance tracker. Categories, monthly budget, savings rate, charts. Self-contained.</div>
+      <div class="meta"><span>localStorage</span><span>JSON export</span><span>no backend</span></div>
+    </a>
+
+    <a class="tool" href="templates/ai-writer.html">
+      <div class="head">
+        <div class="icon">✍️</div>
+        <div class="name">AI writer</div>
+        <div class="tag">template</div>
+      </div>
+      <div class="desc">AI writing assistant. Pick a tone, set a length, write. Local-first with optional z.ai hookup.</div>
+      <div class="meta"><span>tone</span><span>length</span><span>localStorage</span></div>
+    </a>
+
+    <a class="tool" href="templates/weather.html">
+      <div class="head">
+        <div class="icon">🌤</div>
+        <div class="name">Weather</div>
+        <div class="tag">template</div>
+      </div>
+      <div class="desc">Multi-city weather. Add cities, see current conditions, hourly forecast.</div>
+      <div class="meta"><span>multi-city</span><span>hourly</span><span>self-contained</span></div>
+    </a>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>
