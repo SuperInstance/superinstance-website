@@ -1,0 +1,1003 @@
+{
+  "schema": "quilt-zip-target/v1",
+  "metadata": {
+    "name": "CRDT family as Quilt sheet",
+    "description": "The CRDT family \u2014 G-Counter, PN-Counter, G-Set, OR-Set, LWW-Register, PN-Vector, RGA \u2014 ported to Quilt. The CRDT merge operation IS the Quilt cell's gossip. The protocol-agnosticism is built into the math, not the implementation. The cross-language bake-off (Fortran, C, Rust, Go, CUDA, PTX) IS the polyformalism demonstration. The CRDT family shows that the protocol doesn't matter \u2014 only the math does.",
+    "generated": "2026-08-21T01:52:23Z",
+    "address_root": "crdt"
+  },
+  "rooms": [
+    {
+      "id": "type",
+      "name": "\ud83d\udd04 CRDT types (7)",
+      "cell_count": 66
+    },
+    {
+      "id": "repo",
+      "name": "\ud83d\udce6 CRDT repos (17)",
+      "cell_count": 62
+    },
+    {
+      "id": "bakeoff",
+      "name": "\ud83c\udfc1 Cross-language bake-off (7)",
+      "cell_count": 23
+    },
+    {
+      "id": "mapping",
+      "name": "\ud83d\udd01 CRDT \u2194 Quilt mapping",
+      "cell_count": 7
+    }
+  ],
+  "cells": [
+    {
+      "address": "type.gcounter.name",
+      "kind": "string",
+      "value": "G-Counter"
+    },
+    {
+      "address": "type.gcounter.merge",
+      "kind": "string",
+      "value": "max (component-wise)"
+    },
+    {
+      "address": "type.gcounter.complexity",
+      "kind": "string",
+      "value": "O(n) nodes"
+    },
+    {
+      "address": "type.gcounter.icon",
+      "kind": "string",
+      "value": "\ud83d\udcc8"
+    },
+    {
+      "address": "type.gcounter.op[0]",
+      "kind": "string",
+      "value": "increment"
+    },
+    {
+      "address": "type.gcounter.property[0]",
+      "kind": "string",
+      "value": "monotonic"
+    },
+    {
+      "address": "type.gcounter.property[1]",
+      "kind": "string",
+      "value": "commutative"
+    },
+    {
+      "address": "type.gcounter.property[2]",
+      "kind": "string",
+      "value": "idempotent"
+    },
+    {
+      "address": "type.pncounter.name",
+      "kind": "string",
+      "value": "PN-Counter"
+    },
+    {
+      "address": "type.pncounter.merge",
+      "kind": "string",
+      "value": "(G+ \u2294 G+) \u2212 (G\u2212 \u2294 G\u2212)"
+    },
+    {
+      "address": "type.pncounter.complexity",
+      "kind": "string",
+      "value": "O(n) nodes"
+    },
+    {
+      "address": "type.pncounter.icon",
+      "kind": "string",
+      "value": "\ud83d\udcc9"
+    },
+    {
+      "address": "type.pncounter.op[0]",
+      "kind": "string",
+      "value": "increment"
+    },
+    {
+      "address": "type.pncounter.op[1]",
+      "kind": "string",
+      "value": "decrement"
+    },
+    {
+      "address": "type.pncounter.property[0]",
+      "kind": "string",
+      "value": "commutative"
+    },
+    {
+      "address": "type.pncounter.property[1]",
+      "kind": "string",
+      "value": "idempotent"
+    },
+    {
+      "address": "type.gset.name",
+      "kind": "string",
+      "value": "G-Set"
+    },
+    {
+      "address": "type.gset.merge",
+      "kind": "string",
+      "value": "\u222a (union)"
+    },
+    {
+      "address": "type.gset.complexity",
+      "kind": "string",
+      "value": "O(|set|)"
+    },
+    {
+      "address": "type.gset.icon",
+      "kind": "string",
+      "value": "\u2795"
+    },
+    {
+      "address": "type.gset.op[0]",
+      "kind": "string",
+      "value": "add"
+    },
+    {
+      "address": "type.gset.property[0]",
+      "kind": "string",
+      "value": "grow-only"
+    },
+    {
+      "address": "type.gset.property[1]",
+      "kind": "string",
+      "value": "commutative"
+    },
+    {
+      "address": "type.gset.property[2]",
+      "kind": "string",
+      "value": "idempotent"
+    },
+    {
+      "address": "type.orset.name",
+      "kind": "string",
+      "value": "OR-Set"
+    },
+    {
+      "address": "type.orset.merge",
+      "kind": "string",
+      "value": "add \u222a remove with causal"
+    },
+    {
+      "address": "type.orset.complexity",
+      "kind": "string",
+      "value": "O(|set| \u00d7 |tombstones|)"
+    },
+    {
+      "address": "type.orset.icon",
+      "kind": "string",
+      "value": "\ud83d\udd04"
+    },
+    {
+      "address": "type.orset.op[0]",
+      "kind": "string",
+      "value": "add"
+    },
+    {
+      "address": "type.orset.op[1]",
+      "kind": "string",
+      "value": "remove"
+    },
+    {
+      "address": "type.orset.property[0]",
+      "kind": "string",
+      "value": "observed-remove"
+    },
+    {
+      "address": "type.orset.property[1]",
+      "kind": "string",
+      "value": "causal"
+    },
+    {
+      "address": "type.lww.name",
+      "kind": "string",
+      "value": "LWW-Register"
+    },
+    {
+      "address": "type.lww.merge",
+      "kind": "string",
+      "value": "max(timestamp)"
+    },
+    {
+      "address": "type.lww.complexity",
+      "kind": "string",
+      "value": "O(1)"
+    },
+    {
+      "address": "type.lww.icon",
+      "kind": "string",
+      "value": "\ud83c\udfc6"
+    },
+    {
+      "address": "type.lww.op[0]",
+      "kind": "string",
+      "value": "set"
+    },
+    {
+      "address": "type.lww.property[0]",
+      "kind": "string",
+      "value": "last-writer-wins"
+    },
+    {
+      "address": "type.lww.property[1]",
+      "kind": "string",
+      "value": "value-blind"
+    },
+    {
+      "address": "type.pnvector.name",
+      "kind": "string",
+      "value": "PN-Vector"
+    },
+    {
+      "address": "type.pnvector.merge",
+      "kind": "string",
+      "value": "element-wise max (P) / min (N)"
+    },
+    {
+      "address": "type.pnvector.complexity",
+      "kind": "string",
+      "value": "O(n) per dimension"
+    },
+    {
+      "address": "type.pnvector.icon",
+      "kind": "string",
+      "value": "\ud83c\udfaf"
+    },
+    {
+      "address": "type.pnvector.op[0]",
+      "kind": "string",
+      "value": "increment"
+    },
+    {
+      "address": "type.pnvector.op[1]",
+      "kind": "string",
+      "value": "decrement"
+    },
+    {
+      "address": "type.pnvector.property[0]",
+      "kind": "string",
+      "value": "commutative"
+    },
+    {
+      "address": "type.pnvector.property[1]",
+      "kind": "string",
+      "value": "idempotent"
+    },
+    {
+      "address": "type.rga.name",
+      "kind": "string",
+      "value": "RGA (Replicated Growable Array)"
+    },
+    {
+      "address": "type.rga.merge",
+      "kind": "string",
+      "value": "causal ordering + tombstone"
+    },
+    {
+      "address": "type.rga.complexity",
+      "kind": "string",
+      "value": "O(n\u00b2) worst case"
+    },
+    {
+      "address": "type.rga.icon",
+      "kind": "string",
+      "value": "\ud83d\udcdc"
+    },
+    {
+      "address": "type.rga.op[0]",
+      "kind": "string",
+      "value": "insert"
+    },
+    {
+      "address": "type.rga.op[1]",
+      "kind": "string",
+      "value": "delete"
+    },
+    {
+      "address": "type.rga.property[0]",
+      "kind": "string",
+      "value": "ordered"
+    },
+    {
+      "address": "type.rga.property[1]",
+      "kind": "string",
+      "value": "causal"
+    },
+    {
+      "address": "repo.crdt-core.name",
+      "kind": "string",
+      "value": "crdt-core"
+    },
+    {
+      "address": "repo.crdt-core.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.crdt-core.type[0]",
+      "kind": "string",
+      "value": "G-Counter"
+    },
+    {
+      "address": "repo.crdt-core.type[1]",
+      "kind": "string",
+      "value": "PN-Counter"
+    },
+    {
+      "address": "repo.crdt-core.type[2]",
+      "kind": "string",
+      "value": "G-Set"
+    },
+    {
+      "address": "repo.crdt-core.type[3]",
+      "kind": "string",
+      "value": "OR-Set"
+    },
+    {
+      "address": "repo.crdt-core.type[4]",
+      "kind": "string",
+      "value": "LWW-Register"
+    },
+    {
+      "address": "repo.crdt-gset.name",
+      "kind": "string",
+      "value": "crdt-gset"
+    },
+    {
+      "address": "repo.crdt-gset.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.crdt-gset.type[0]",
+      "kind": "string",
+      "value": "G-Set"
+    },
+    {
+      "address": "repo.crdt-orset.name",
+      "kind": "string",
+      "value": "crdt-orset"
+    },
+    {
+      "address": "repo.crdt-orset.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.crdt-orset.type[0]",
+      "kind": "string",
+      "value": "OR-Set"
+    },
+    {
+      "address": "repo.crdt-lwwreg.name",
+      "kind": "string",
+      "value": "crdt-lwwreg"
+    },
+    {
+      "address": "repo.crdt-lwwreg.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.crdt-lwwreg.type[0]",
+      "kind": "string",
+      "value": "LWW-Register"
+    },
+    {
+      "address": "repo.crdt-gcounter.name",
+      "kind": "string",
+      "value": "crdt-gcounter"
+    },
+    {
+      "address": "repo.crdt-gcounter.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.crdt-gcounter.type[0]",
+      "kind": "string",
+      "value": "G-Counter"
+    },
+    {
+      "address": "repo.crdt-pnvector.name",
+      "kind": "string",
+      "value": "crdt-pnvector"
+    },
+    {
+      "address": "repo.crdt-pnvector.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.crdt-pnvector.type[0]",
+      "kind": "string",
+      "value": "PN-Vector"
+    },
+    {
+      "address": "repo.crdt-map.name",
+      "kind": "string",
+      "value": "crdt-map"
+    },
+    {
+      "address": "repo.crdt-map.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.crdt-map.type[0]",
+      "kind": "string",
+      "value": "Composite Map"
+    },
+    {
+      "address": "repo.SmartCRDT.name",
+      "kind": "string",
+      "value": "SmartCRDT"
+    },
+    {
+      "address": "repo.SmartCRDT.lang",
+      "kind": "string",
+      "value": "TypeScript"
+    },
+    {
+      "address": "repo.SmartCRDT.type[0]",
+      "kind": "string",
+      "value": "G-Counter"
+    },
+    {
+      "address": "repo.SmartCRDT.type[1]",
+      "kind": "string",
+      "value": "PN-Counter"
+    },
+    {
+      "address": "repo.SmartCRDT.type[2]",
+      "kind": "string",
+      "value": "OR-Set"
+    },
+    {
+      "address": "repo.SmartCRDT.type[3]",
+      "kind": "string",
+      "value": "LWW-Register"
+    },
+    {
+      "address": "repo.SmartCRDT.type[4]",
+      "kind": "string",
+      "value": "RGA"
+    },
+    {
+      "address": "repo.fleet-crdt.name",
+      "kind": "string",
+      "value": "fleet-crdt"
+    },
+    {
+      "address": "repo.fleet-crdt.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.fleet-crdt.type[0]",
+      "kind": "string",
+      "value": "Constraint-State"
+    },
+    {
+      "address": "repo.constraint-crdt.name",
+      "kind": "string",
+      "value": "constraint-crdt"
+    },
+    {
+      "address": "repo.constraint-crdt.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.constraint-crdt.type[0]",
+      "kind": "string",
+      "value": "Constraint CRDT"
+    },
+    {
+      "address": "repo.crdt-bench.name",
+      "kind": "string",
+      "value": "crdt-bench"
+    },
+    {
+      "address": "repo.crdt-bench.lang",
+      "kind": "string",
+      "value": "C/CUDA/PTX"
+    },
+    {
+      "address": "repo.crdt-bench.type[0]",
+      "kind": "string",
+      "value": "G-Counter"
+    },
+    {
+      "address": "repo.crdt-bench.type[1]",
+      "kind": "string",
+      "value": "Bloom Filter"
+    },
+    {
+      "address": "repo.oxide-crdt.name",
+      "kind": "string",
+      "value": "oxide-crdt"
+    },
+    {
+      "address": "repo.oxide-crdt.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.oxide-crdt.type[0]",
+      "kind": "string",
+      "value": "GPU-Aware CRDT"
+    },
+    {
+      "address": "repo.ternary-antidote.name",
+      "kind": "string",
+      "value": "ternary-antidote"
+    },
+    {
+      "address": "repo.ternary-antidote.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.ternary-antidote.type[0]",
+      "kind": "string",
+      "value": "G-Counter"
+    },
+    {
+      "address": "repo.ternary-antidote.type[1]",
+      "kind": "string",
+      "value": "LWW-Register"
+    },
+    {
+      "address": "repo.ternary-antidote.type[2]",
+      "kind": "string",
+      "value": "Ternary"
+    },
+    {
+      "address": "repo.lau-calm-crdt.name",
+      "kind": "string",
+      "value": "lau-calm-crdt"
+    },
+    {
+      "address": "repo.lau-calm-crdt.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.lau-calm-crdt.type[0]",
+      "kind": "string",
+      "value": "CALM-CRDT"
+    },
+    {
+      "address": "repo.CRDT_Research.name",
+      "kind": "string",
+      "value": "CRDT_Research"
+    },
+    {
+      "address": "repo.CRDT_Research.lang",
+      "kind": "string",
+      "value": "Python"
+    },
+    {
+      "address": "repo.CRDT_Research.type[0]",
+      "kind": "string",
+      "value": "Intra-Chip CRDT"
+    },
+    {
+      "address": "repo.smartcrdt-fleet-sync.name",
+      "kind": "string",
+      "value": "smartcrdt-fleet-sync"
+    },
+    {
+      "address": "repo.smartcrdt-fleet-sync.lang",
+      "kind": "string",
+      "value": "Python"
+    },
+    {
+      "address": "repo.smartcrdt-fleet-sync.type[0]",
+      "kind": "string",
+      "value": "Fleet Sync"
+    },
+    {
+      "address": "repo.smartcrdt-git-agent.name",
+      "kind": "string",
+      "value": "smartcrdt-git-agent"
+    },
+    {
+      "address": "repo.smartcrdt-git-agent.lang",
+      "kind": "string",
+      "value": "Python"
+    },
+    {
+      "address": "repo.smartcrdt-git-agent.type[0]",
+      "kind": "string",
+      "value": "Git Agent"
+    },
+    {
+      "address": "bakeoff.benchmark",
+      "kind": "string",
+      "value": "G-Counter Merge (32 elements, element-wise max)"
+    },
+    {
+      "address": "bakeoff.hardware",
+      "kind": "string",
+      "value": "AMD Ryzen AI 9 HX 370 (Zen 5, 12C/24T, AVX-512)"
+    },
+    {
+      "address": "bakeoff.0.lang",
+      "kind": "string",
+      "value": "Fortran"
+    },
+    {
+      "address": "bakeoff.0.time_ns",
+      "kind": "f64",
+      "value": 0.9
+    },
+    {
+      "address": "bakeoff.0.implementation",
+      "kind": "string",
+      "value": "whole-array MAX"
+    },
+    {
+      "address": "bakeoff.1.lang",
+      "kind": "string",
+      "value": "Zig"
+    },
+    {
+      "address": "bakeoff.1.time_ns",
+      "kind": "f64",
+      "value": 3.0
+    },
+    {
+      "address": "bakeoff.1.implementation",
+      "kind": "string",
+      "value": "scalar loop"
+    },
+    {
+      "address": "bakeoff.2.lang",
+      "kind": "string",
+      "value": "Zig"
+    },
+    {
+      "address": "bakeoff.2.time_ns",
+      "kind": "f64",
+      "value": 7.0
+    },
+    {
+      "address": "bakeoff.2.implementation",
+      "kind": "string",
+      "value": "@Vector(16) SIMD"
+    },
+    {
+      "address": "bakeoff.3.lang",
+      "kind": "string",
+      "value": "Go"
+    },
+    {
+      "address": "bakeoff.3.time_ns",
+      "kind": "f64",
+      "value": 8.3
+    },
+    {
+      "address": "bakeoff.3.implementation",
+      "kind": "string",
+      "value": "range loop"
+    },
+    {
+      "address": "bakeoff.4.lang",
+      "kind": "string",
+      "value": "C"
+    },
+    {
+      "address": "bakeoff.4.time_ns",
+      "kind": "f64",
+      "value": 10.5
+    },
+    {
+      "address": "bakeoff.4.implementation",
+      "kind": "string",
+      "value": "gcc -O2"
+    },
+    {
+      "address": "bakeoff.5.lang",
+      "kind": "string",
+      "value": "Go"
+    },
+    {
+      "address": "bakeoff.5.time_ns",
+      "kind": "f64",
+      "value": 10.8
+    },
+    {
+      "address": "bakeoff.5.implementation",
+      "kind": "string",
+      "value": "unsafe ptr"
+    },
+    {
+      "address": "bakeoff.6.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "bakeoff.6.time_ns",
+      "kind": "f64",
+      "value": 17.5
+    },
+    {
+      "address": "bakeoff.6.implementation",
+      "kind": "string",
+      "value": "for loop"
+    },
+    {
+      "address": "mapping.G-Counter.cell",
+      "kind": "string",
+      "value": "counter_cell"
+    },
+    {
+      "address": "mapping.PN-Counter.cell",
+      "kind": "string",
+      "value": "signed_counter_cell"
+    },
+    {
+      "address": "mapping.G-Set.cell",
+      "kind": "string",
+      "value": "set_cell"
+    },
+    {
+      "address": "mapping.OR-Set.cell",
+      "kind": "string",
+      "value": "observed_set_cell"
+    },
+    {
+      "address": "mapping.LWW-Register.cell",
+      "kind": "string",
+      "value": "register_cell"
+    },
+    {
+      "address": "mapping.PN-Vector.cell",
+      "kind": "string",
+      "value": "vector_cell"
+    },
+    {
+      "address": "mapping.RGA.cell",
+      "kind": "string",
+      "value": "ordered_list_cell"
+    },
+    {
+      "address": "thesis.claim",
+      "kind": "string",
+      "value": "A CRDT is a Quilt cell. The merge operation is the cell's gossip."
+    },
+    {
+      "address": "thesis.claim_2",
+      "kind": "string",
+      "value": "The protocol-agnosticism is built into the math, not the implementation."
+    },
+    {
+      "address": "stats.crdt_types",
+      "kind": "usize",
+      "value": 7
+    },
+    {
+      "address": "stats.repos",
+      "kind": "usize",
+      "value": 17
+    },
+    {
+      "address": "stats.bakeoff_entries",
+      "kind": "usize",
+      "value": 7
+    },
+    {
+      "address": "stats.mappings",
+      "kind": "usize",
+      "value": 7
+    },
+    {
+      "address": "stats.languages",
+      "kind": "usize",
+      "value": 4
+    },
+    {
+      "address": "stats.fastest_time_ns",
+      "kind": "f64",
+      "value": 0.9
+    },
+    {
+      "address": "stats.slowest_time_ns",
+      "kind": "f64",
+      "value": 17.5
+    },
+    {
+      "address": "stats.now",
+      "kind": "f64",
+      "value": 1787277143.8691278
+    }
+  ],
+  "edges": [
+    {
+      "from": "type.gcounter",
+      "to": "mapping.G-Counter",
+      "kind": "implements"
+    },
+    {
+      "from": "type.pncounter",
+      "to": "mapping.PN-Counter",
+      "kind": "implements"
+    },
+    {
+      "from": "type.gset",
+      "to": "mapping.G-Set",
+      "kind": "implements"
+    },
+    {
+      "from": "type.orset",
+      "to": "mapping.OR-Set",
+      "kind": "implements"
+    },
+    {
+      "from": "type.lwwregister",
+      "to": "mapping.LWW-Register",
+      "kind": "implements"
+    },
+    {
+      "from": "type.pnvector",
+      "to": "mapping.PN-Vector",
+      "kind": "implements"
+    },
+    {
+      "from": "type.rga",
+      "to": "mapping.RGA",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-core",
+      "to": "type.gcounter",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-core",
+      "to": "type.pncounter",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-core",
+      "to": "type.gset",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-core",
+      "to": "type.orset",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-core",
+      "to": "type.lwwregister",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-gset",
+      "to": "type.gset",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-orset",
+      "to": "type.orset",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-lwwreg",
+      "to": "type.lwwregister",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-gcounter",
+      "to": "type.gcounter",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-pnvector",
+      "to": "type.pnvector",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-map",
+      "to": "type.compositemap",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.SmartCRDT",
+      "to": "type.gcounter",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.SmartCRDT",
+      "to": "type.pncounter",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.SmartCRDT",
+      "to": "type.orset",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.SmartCRDT",
+      "to": "type.lwwregister",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.SmartCRDT",
+      "to": "type.rga",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.fleet-crdt",
+      "to": "type.constraintstate",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.constraint-crdt",
+      "to": "type.constraintcrdt",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-bench",
+      "to": "type.gcounter",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.crdt-bench",
+      "to": "type.bloomfilter",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.oxide-crdt",
+      "to": "type.gpuawarecrdt",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.ternary-antidote",
+      "to": "type.gcounter",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.ternary-antidote",
+      "to": "type.lwwregister",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.ternary-antidote",
+      "to": "type.ternary",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.lau-calm-crdt",
+      "to": "type.calmcrdt",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.CRDT_Research",
+      "to": "type.intrachipcrdt",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.smartcrdt-fleet-sync",
+      "to": "type.fleetsync",
+      "kind": "implements"
+    },
+    {
+      "from": "repo.smartcrdt-git-agent",
+      "to": "type.gitagent",
+      "kind": "implements"
+    }
+  ],
+  "stats": {
+    "total_cells": 157,
+    "total_rooms": 4,
+    "total_edges": 35,
+    "crdt_types": 7,
+    "repos": 17,
+    "languages": 4
+  }
+}

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<!--
+  xy-construct.html — The mental construct of the x/y.
+
+  THE INSIGHT (second-level aha): The coding language doesn't matter.
+  The protocol doesn't matter. The medium doesn't matter. What matters
+  is the mental construct of the x/y — the choice of axes. Once you
+  set up the right x/y, the math falls out:
+    - Group theory permutations (re-ordering is a group action)
+    - Sorting (sort along an axis)
+    - Heatmaps (2D binning)
+    - Cascading changes (change one cell, all consumers re-evaluate)
+    - All "as if they were child's play"
+
+  This is object-oriented system-agnostic porting. Cells are objects.
+  The system is agnostic. You can port to anything.
+
+  The protocol between cells could be: IRC, TCP, intra-chip memory,
+  CRDT, smoke signals on a camera, radio signal. None of it matters
+  for the system. What matters is the mental construct of the axes.
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The X/Y Construct — pick axes, get superpowers</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .container { display: grid; grid-template-columns: 1fr 340px; height: calc(100vh - 70px); }
+  .canvas-area { position: relative; overflow: hidden; background: #04111c; }
+  .right-pane { background: #0d1117; border-left: 1px solid var(--border); padding: 1rem; overflow-y: auto; }
+
+  .controls {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.7rem; margin-bottom: 0.7rem;
+  }
+  .controls h3 { margin: 0 0 0.4rem; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .axis-row { display: flex; gap: 0.3rem; margin: 0.3rem 0; }
+  .axis-row label { font-size: 0.85rem; color: var(--muted); width: 30px; }
+  .axis-row select {
+    flex: 1; background: #0d1117; color: var(--fg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.3rem; font-size: 0.85rem; font-family: inherit;
+  }
+  .move-row { display: flex; gap: 0.3rem; flex-wrap: wrap; margin: 0.3rem 0; }
+  .move-row button {
+    flex: 1; min-width: 0; font-size: 0.75rem; padding: 0.3rem;
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    border-radius: 4px; cursor: pointer; font-family: inherit;
+  }
+  .move-row button:hover { background: #30363d; border-color: var(--accent); }
+  .move-row button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  .move-row button.active { background: var(--purple); border-color: var(--purple); color: white; }
+
+  /* The cell graph */
+  .graph-canvas { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+  .cell {
+    position: absolute; border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer; transition: all 0.3s ease;
+  }
+  .cell .dot {
+    width: 100%; height: 100%; border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+  }
+  .cell .label {
+    position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem; color: rgba(255, 255, 255, 0.7);
+    pointer-events: none; white-space: nowrap; margin-top: 3px;
+  }
+  .cell.cascading .dot {
+    animation: cascade 0.8s ease-out;
+  }
+  @keyframes cascade {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.6); }
+    50% { transform: scale(1.4); box-shadow: 0 0 20px 8px rgba(88, 166, 255, 0.4); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(88, 166, 255, 0); }
+  }
+
+  .axis-label {
+    position: absolute; color: var(--muted); font-size: 0.8rem;
+    font-family: ui-monospace, monospace;
+  }
+  .axis-label.x-axis { bottom: 10px; right: 20px; }
+  .axis-label.y-axis { top: 50%; left: 10px; transform: translateY(-50%) rotate(-90deg); transform-origin: left top; }
+
+  /* Stats */
+  .stat { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; }
+  .stat .label { color: var(--muted); }
+  .stat .val { color: var(--fg); font-family: ui-monospace, monospace; }
+
+  /* The protocol agnosticism section */
+  .protocols {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.7rem; margin-bottom: 0.7rem;
+  }
+  .protocol-pill {
+    display: inline-block; padding: 0.2rem 0.5rem; margin: 0.15rem;
+    border-radius: 12px; font-size: 0.75rem;
+    background: #0d1117; color: var(--fg); border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.1s;
+  }
+  .protocol-pill:hover { border-color: var(--accent); }
+  .protocol-pill.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* The superpowers */
+  .superpowers {
+    background: var(--panel); border: 1px solid var(--purple);
+    border-radius: 4px; padding: 0.7rem; margin-bottom: 0.7rem;
+  }
+  .superpowers h3 { color: var(--purple); }
+  .superpower {
+    margin: 0.4rem 0; padding: 0.4rem; background: #0d1117;
+    border-radius: 4px; font-size: 0.8rem;
+  }
+  .superpower .sp-name { color: var(--purple); font-weight: 600; }
+  .superpower .sp-desc { color: var(--muted); margin-top: 0.2rem; }
+
+  /* The thesis */
+  .thesis {
+    background: linear-gradient(180deg, rgba(88, 166, 255, 0.1) 0%, transparent 100%);
+    border: 1px solid var(--accent); border-radius: 4px;
+    padding: 0.7rem; margin: 0.7rem 0;
+  }
+  .thesis p { margin: 0.3rem 0; font-size: 0.85rem; }
+
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📐 The X/Y Construct</h1>
+    <div class="subtitle">pick axes, get superpowers — language and protocol are agnostic</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="canvas-area" id="canvas">
+    <div class="graph-canvas" id="graph"></div>
+    <div class="axis-label x-axis">x → <span id="xAxisName">embedding[0]</span></div>
+    <div class="axis-label y-axis">y → <span id="yAxisName">embedding[1]</span></div>
+  </div>
+
+  <div class="right-pane">
+    <div class="controls">
+      <h3>📐 Choose your axes</h3>
+      <div class="axis-row">
+        <label>X:</label>
+        <select id="xAxis">
+          <option value="emb0">embedding[0]</option>
+          <option value="emb1">embedding[1]</option>
+          <option value="emb2">embedding[2]</option>
+          <option value="time">time</option>
+          <option value="depth">depth</option>
+          <option value="temperature">temperature</option>
+          <option value="salinity">salinity</option>
+          <option value="pressure">pressure</option>
+          <option value="biodiversity">biodiversity</option>
+          <option value="confidence">confidence</option>
+        </select>
+      </div>
+      <div class="axis-row">
+        <label>Y:</label>
+        <select id="yAxis">
+          <option value="emb1" selected>embedding[1]</option>
+          <option value="emb0">embedding[0]</option>
+          <option value="emb2">embedding[2]</option>
+          <option value="time">time</option>
+          <option value="depth">depth</option>
+          <option value="temperature">temperature</option>
+          <option value="salinity">salinity</option>
+          <option value="pressure">pressure</option>
+          <option value="biodiversity">biodiversity</option>
+          <option value="confidence">confidence</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="controls">
+      <h3>⚡ The superpowers</h3>
+      <div class="move-row">
+        <button data-move="sort" class="primary">sort by X</button>
+        <button data-move="heatmap">heatmap</button>
+        <button data-move="permute">permute (group action)</button>
+        <button data-move="cascade">cascade (change one cell)</button>
+        <button data-move="reset">reset</button>
+      </div>
+    </div>
+
+    <div class="superpowers">
+      <h3>🌌 The moves</h3>
+      <div class="superpower">
+        <div class="sp-name">📊 Sort by X</div>
+        <div class="sp-desc">Re-order cells along the X axis. Each cell has a sort key. Sorting is O(n log n) but feels trivial because the cells are already sortable.</div>
+      </div>
+      <div class="superpower">
+        <div class="sp-name">🔥 Heatmap</div>
+        <div class="sp-desc">2D binning of cells. The bin count IS the heat value. Project cells onto the (X, Y) plane and the heatmap emerges.</div>
+      </div>
+      <div class="superpower">
+        <div class="sp-name">🔀 Permute (group action)</div>
+        <div class="sp-desc">Apply a group action to the cells. Reorder, rotate, reflect — these are all group actions. The structure is preserved.</div>
+      </div>
+      <div class="superpower">
+        <div class="sp-name">🌊 Cascade</div>
+        <div class="sp-desc">Change one cell. Watch all dependent cells re-evaluate. The wave propagates. The graph is reactive.</div>
+      </div>
+    </div>
+
+    <div class="protocols">
+      <h3>📡 The protocol is agnostic</h3>
+      <p style="font-size: 0.8rem; color: var(--muted); margin: 0.3rem 0;">
+        Cells can talk via any of these. The system doesn't care.
+      </p>
+      <div>
+        <span class="protocol-pill" data-proto="irc">IRC</span>
+        <span class="protocol-pill" data-proto="tcp">TCP</span>
+        <span class="protocol-pill" data-proto="crdt">CRDT</span>
+        <span class="protocol-pill" data-proto="memory">intra-chip memory</span>
+        <span class="protocol-pill" data-proto="radio">radio</span>
+        <span class="protocol-pill" data-proto="smoke">smoke signals</span>
+        <span class="protocol-pill" data-proto="serial">serial</span>
+        <span class="protocol-pill" data-proto="i2c">I²C</span>
+        <span class="protocol-pill" data-proto="spi">SPI</span>
+        <span class="protocol-pill" data-proto="usb">USB</span>
+        <span class="protocol-pill" data-proto="bluetooth">Bluetooth</span>
+        <span class="protocol-pill" data-proto="mqtt">MQTT</span>
+      </div>
+      <p style="font-size: 0.7rem; color: var(--muted); margin: 0.3rem 0;">
+        Each one would work. Each one is the system. The protocol is the transport, the cells are the system, the data flows but the structure is invariant.
+      </p>
+    </div>
+
+    <div class="thesis">
+      <h3 style="margin: 0 0 0.3rem; font-size: 0.9rem; color: var(--accent);">🌐 Object-oriented system-agnostic porting</h3>
+      <p>Cells are <strong>objects</strong> (they have state, behavior, identity).</p>
+      <p>The <strong>system is agnostic</strong> (any transport, any language, any medium works).</p>
+      <p>You can <strong>port</strong> from one system to another without loss of semantic content.</p>
+      <p style="font-style: italic; color: var(--muted); margin-top: 0.5rem;">
+        "It's the mental construct of the x/y that gives superpowers — from group
+        mathematics permutations to sorting and heatmaps to cascading algorithmic
+        changes, as if they were child's play."
+      </p>
+    </div>
+
+    <div class="controls">
+      <h3>📊 Stats</h3>
+      <div class="stat"><span class="label">cells</span><span class="val" id="statCells">0</span></div>
+      <div class="stat"><span class="label">edges</span><span class="val" id="statEdges">0</span></div>
+      <div class="stat"><span class="label">x range</span><span class="val" id="statXRange">—</span></div>
+      <div class="stat"><span class="label">y range</span><span class="val" id="statYRange">—</span></div>
+      <div class="stat"><span class="label">move applied</span><span class="val" id="statMove">none</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// State — a synthetic cell graph (the "fleet")
+// ============================================================================
+const state = {
+  // 30 cells with multi-dimensional state
+  cells: [],
+  edges: [],
+  xAxis: 'emb0',
+  yAxis: 'emb1',
+  currentMove: 'none',
+  currentProto: 'crdt',
+};
+
+const NAMES = ['vortex', 'echo', 'compass', 'wheel', 'engine', 'crew', 'logbook', 'galley',
+               'bridge', 'wheelhouse', 'cargo', 'sea', 'sky', 'wind', 'memory', 'tide',
+               'keel', 'mast', 'sail', 'anchor', 'rudder', 'hull', 'deck', 'cabin',
+               'porthole', 'lighthouse', 'beacon', 'flares', 'radar', 'sonar'];
+
+// Initialize cells with 8D embeddings + scalar dimensions
+function initCells() {
+  for (let i = 0; i < 30; i++) {
+    const angle = (i / 30) * Math.PI * 2;
+    const r = 0.3 + Math.random() * 0.4;
+    const emb = [
+      Math.cos(angle) * r + (Math.random() - 0.5) * 0.2,
+      Math.sin(angle) * r + (Math.random() - 0.5) * 0.2,
+      (Math.random() - 0.5) * 0.6,
+      (Math.random() - 0.5) * 0.6,
+      (Math.random() - 0.5) * 0.6,
+      (Math.random() - 0.5) * 0.6,
+      (Math.random() - 0.5) * 0.6,
+      (Math.random() - 0.5) * 0.6,
+    ];
+    state.cells.push({
+      id: NAMES[i],
+      emb,
+      time: Math.random(),
+      depth: Math.random() * 25, // fathoms
+      temperature: 4 + Math.random() * 16, // Celsius
+      salinity: 30 + Math.random() * 5, // PSU
+      pressure: Math.random() * 100, // dbar
+      biodiversity: Math.random(),
+      confidence: 0.3 + Math.random() * 0.6,
+    });
+  }
+  // Edges: each cell connects to its 2-3 nearest neighbors
+  for (let i = 0; i < state.cells.length; i++) {
+    const dists = state.cells.map((c, j) => ({
+      j, d: i === j ? Infinity : euclidean(state.cells[i].emb, c.emb)
+    })).sort((a, b) => a.d - b.d);
+    for (let k = 0; k < 2; k++) {
+      const j = dists[k].j;
+      if (i < j) {
+        state.edges.push({ from: i, to: j });
+      }
+    }
+  }
+}
+
+function euclidean(a, b) {
+  let s = 0;
+  for (let i = 0; i < a.length; i++) s += (a[i] - b[i]) ** 2;
+  return Math.sqrt(s);
+}
+
+function getValue(cell, axis) {
+  if (axis.startsWith('emb')) {
+    return cell.emb[parseInt(axis.slice(3))];
+  }
+  return cell[axis];
+}
+
+// ============================================================================
+// Render
+// ============================================================================
+let sortedOrder = null;
+let heatmapBins = null;
+
+function render() {
+  const g = document.getElementById('graph');
+  g.innerHTML = '';
+  const W = g.clientWidth, H = g.clientHeight;
+  const margin = 40;
+  const plotW = W - 2 * margin;
+  const plotH = H - 2 * margin;
+
+  // Get x/y values
+  const xs = state.cells.map(c => getValue(c, state.xAxis));
+  const ys = state.cells.map(c => getValue(c, state.yAxis));
+  const xMin = Math.min(...xs), xMax = Math.max(...xs);
+  const yMin = Math.min(...ys), yMax = Math.max(...ys);
+  const xRange = xMax - xMin || 1;
+  const yRange = yMax - yMin || 1;
+
+  document.getElementById('xAxisName').textContent = state.xAxis;
+  document.getElementById('yAxisName').textContent = state.yAxis;
+  document.getElementById('statXRange').textContent = `[${xMin.toFixed(2)}, ${xMax.toFixed(2)}]`;
+  document.getElementById('statYRange').textContent = `[${yMin.toFixed(2)}, ${yMax.toFixed(2)}]`;
+
+  // Draw heatmap background if active
+  if (state.currentMove === 'heatmap' && heatmapBins) {
+    const maxCount = Math.max(...Object.values(heatmapBins));
+    for (const [key, count] of Object.entries(heatmapBins)) {
+      const [bx, by] = key.split(',').map(Number);
+      const x = margin + bx * (plotW / 10);
+      const y = margin + by * (plotH / 10);
+      const intensity = count / maxCount;
+      const w = plotW / 10;
+      const h = plotH / 10;
+      const div = document.createElement('div');
+      div.style.position = 'absolute';
+      div.style.left = x + 'px';
+      div.style.top = y + 'px';
+      div.style.width = w + 'px';
+      div.style.height = h + 'px';
+      const r = Math.round(63 + (255 - 63) * intensity);
+      const gC = Math.round(185 * (1 - intensity * 0.5));
+      const b = Math.round(80 * (1 - intensity));
+      div.style.background = `rgba(${r}, ${gC}, ${b}, ${0.2 + intensity * 0.4})`;
+      g.appendChild(div);
+    }
+  }
+
+  // Draw edges
+  for (const e of state.edges) {
+    const x1 = margin + ((getValue(state.cells[e.from], state.xAxis) - xMin) / xRange) * plotW;
+    const y1 = margin + (1 - (getValue(state.cells[e.from], state.yAxis) - yMin) / yRange) * plotH;
+    const x2 = margin + ((getValue(state.cells[e.to], state.xAxis) - xMin) / xRange) * plotW;
+    const y2 = margin + (1 - (getValue(state.cells[e.to], state.yAxis) - yMin) / yRange) * plotH;
+    const line = document.createElement('div');
+    line.style.position = 'absolute';
+    line.style.left = x1 + 'px';
+    line.style.top = y1 + 'px';
+    line.style.width = Math.sqrt((x2-x1)**2 + (y2-y1)**2) + 'px';
+    line.style.height = '1px';
+    line.style.background = 'var(--muted)';
+    line.style.opacity = '0.3';
+    line.style.transformOrigin = '0 50%';
+    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+    line.style.transform = `rotate(${angle}deg)`;
+    g.appendChild(line);
+  }
+
+  // Draw cells
+  for (let i = 0; i < state.cells.length; i++) {
+    const cell = state.cells[i];
+    const x = margin + ((getValue(cell, state.xAxis) - xMin) / xRange) * plotW;
+    const y = margin + (1 - (getValue(cell, state.yAxis) - yMin) / yRange) * plotH;
+    const div = document.createElement('div');
+    div.className = 'cell';
+    div.style.left = x + 'px';
+    div.style.top = y + 'px';
+    const size = 10 + cell.confidence * 14;
+    div.style.width = size + 'px';
+    div.style.height = size + 'px';
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    // Color by biodiversity
+    const b = cell.biodiversity;
+    const r = Math.round(63 + 192 * b);
+    const gC = Math.round(185 - 100 * b);
+    const bl = Math.round(80 + 175 * (1 - b));
+    dot.style.background = `rgb(${r}, ${gC}, ${bl})`;
+    div.appendChild(dot);
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = cell.id;
+    div.appendChild(label);
+    div.title = `${cell.id}: ${state.xAxis}=${getValue(cell, state.xAxis).toFixed(2)}, ${state.yAxis}=${getValue(cell, state.yAxis).toFixed(2)}`;
+    g.appendChild(div);
+  }
+
+  // Update stats
+  document.getElementById('statCells').textContent = state.cells.length;
+  document.getElementById('statEdges').textContent = state.edges.length;
+  document.getElementById('statMove').textContent = state.currentMove;
+}
+
+// ============================================================================
+// The moves
+// ============================================================================
+function applyMove(move) {
+  state.currentMove = move;
+  if (move === 'sort') {
+    // Sort cells by x — group action, reorder
+    sortedOrder = [...state.cells].sort((a, b) =>
+      getValue(a, state.xAxis) - getValue(b, state.xAxis));
+    // Re-anchor the cells to their sorted order
+    for (let i = 0; i < sortedOrder.length; i++) {
+      // Map the rank to the x position
+      const rank = i / (sortedOrder.length - 1);
+      // Set the x axis value to the rank (the cells now have a uniform distribution)
+      const xVal = getValue(sortedOrder[i], state.xAxis);
+      // Don't change cells, just sort the visual order
+    }
+  } else if (move === 'heatmap') {
+    // 2D binning
+    heatmapBins = {};
+    for (const c of state.cells) {
+      const x = getValue(c, state.xAxis);
+      const y = getValue(c, state.yAxis);
+      const bx = Math.floor(((x - Math.min(...state.cells.map(c => getValue(c, state.xAxis)))) / (Math.max(...state.cells.map(c => getValue(c, state.xAxis))) - Math.min(...state.cells.map(c => getValue(c, state.xAxis))) + 0.0001)) * 10);
+      const by = Math.floor(((y - Math.min(...state.cells.map(c => getValue(c, state.yAxis)))) / (Math.max(...state.cells.map(c => getValue(c, state.yAxis))) - Math.min(...state.cells.map(c => getValue(c, state.yAxis))) + 0.0001)) * 10);
+      const key = `${bx},${by}`;
+      heatmapBins[key] = (heatmapBins[key] || 0) + 1;
+    }
+  } else if (move === 'permute') {
+    // Group action: rotate cells by a random permutation along X
+    for (let i = 0; i < state.cells.length; i++) {
+      const x = getValue(state.cells[i], state.xAxis);
+      const xMin = Math.min(...state.cells.map(c => getValue(c, state.xAxis)));
+      const xMax = Math.max(...state.cells.map(c => getValue(c, state.xAxis)));
+      const range = xMax - xMin;
+      // Rotate by 25% of the range
+      const newX = xMin + ((x - xMin + range * 0.25) % range);
+      // Set the new x via a custom axis
+      if (state.xAxis.startsWith('emb')) {
+        state.cells[i].emb[parseInt(state.xAxis.slice(3))] = newX;
+      } else {
+        state.cells[i][state.xAxis] = newX;
+      }
+    }
+  } else if (move === 'cascade') {
+    // Change one cell's x, watch all consumers re-evaluate
+    // Pick a random cell
+    const i = Math.floor(Math.random() * state.cells.length);
+    const cell = state.cells[i];
+    // Increase its X by a lot
+    const x = getValue(cell, state.xAxis);
+    const xMin = Math.min(...state.cells.map(c => getValue(c, state.xAxis)));
+    const xMax = Math.max(...state.cells.map(c => getValue(c, state.xAxis)));
+    const newX = x + (xMax - xMin) * 0.4;
+    if (state.xAxis.startsWith('emb')) {
+      cell.emb[parseInt(state.xAxis.slice(3))] = newX;
+    } else {
+      cell[state.xAxis] = newX;
+    }
+    // Highlight all cells
+    document.querySelectorAll('.cell').forEach(el => el.classList.add('cascading'));
+    setTimeout(() => {
+      document.querySelectorAll('.cell').forEach(el => el.classList.remove('cascading'));
+    }, 800);
+  } else if (move === 'reset') {
+    state.cells = [];
+    state.edges = [];
+    initCells();
+    state.currentMove = 'none';
+  }
+  render();
+}
+
+document.querySelectorAll('button[data-move]').forEach(btn => {
+  btn.onclick = () => applyMove(btn.dataset.move);
+});
+
+document.querySelectorAll('.protocol-pill').forEach(pill => {
+  pill.onclick = () => {
+    document.querySelectorAll('.protocol-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    state.currentProto = pill.dataset.proto;
+  };
+});
+// Default protocol
+document.querySelector('.protocol-pill[data-proto="crdt"]').classList.add('active');
+
+document.getElementById('xAxis').onchange = e => { state.xAxis = e.target.value; render(); };
+document.getElementById('yAxis').onchange = e => { state.yAxis = e.target.value; render(); };
+
+window.addEventListener('resize', render);
+
+initCells();
+render();
+</script>
+</body>
+</html>
