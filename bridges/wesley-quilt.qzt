@@ -1,0 +1,270 @@
+{
+  "format": "quilt_sheet",
+  "version": "1.0",
+  "metadata": {
+    "name": "Wesley System Architecture",
+    "description": "Complete architecture of the wesley repo - The Ensign system",
+    "created": "2026-08-21T02:21:44.343346",
+    "source_repo": "wesley",
+    "cell_count": 5,
+    "relationship_count": 10
+  },
+  "cells": [
+    {
+      "id": "wesley_core",
+      "name": "WesleyCore",
+      "type": "core",
+      "description": "The ensign's main loop - orchestrates all operations",
+      "state": {
+        "status": [
+          "idle",
+          "running",
+          "paused",
+          "error"
+        ],
+        "current_operation": null,
+        "last_heartbeat": null,
+        "active_cells": []
+      },
+      "methods": [
+        "initialize()",
+        "run_main_loop()",
+        "pause_operations()",
+        "resume_operations()",
+        "shutdown()",
+        "monitor_cells()"
+      ],
+      "transitions": {
+        "idle_to_running": "initialize() called",
+        "running_to_paused": "pause_operations() called",
+        "paused_to_running": "resume_operations() called",
+        "any_to_error": "critical failure detected",
+        "error_to_idle": "recovery procedure completed"
+      }
+    },
+    {
+      "id": "receipt_sorter",
+      "name": "ReceiptSorter",
+      "type": "processor",
+      "description": "Categorizes incoming items and receipts",
+      "state": {
+        "status": [
+          "ready",
+          "processing",
+          "waiting",
+          "error"
+        ],
+        "current_batch": null,
+        "categorization_rules": [
+          "beverage",
+          "inventory",
+          "supplies",
+          "misc"
+        ],
+        "processed_count": 0
+      },
+      "methods": [
+        "sort_receipt(receipt)",
+        "categorize_item(item)",
+        "batch_process(items)",
+        "update_rules(rules)",
+        "get_statistics()"
+      ],
+      "transitions": {
+        "ready_to_processing": "new batch received",
+        "processing_to_ready": "batch completed",
+        "processing_to_waiting": "awaiting more data",
+        "waiting_to_processing": "data received",
+        "any_to_error": "categorization failure"
+      }
+    },
+    {
+      "id": "vector_db",
+      "name": "VectorDB",
+      "type": "storage",
+      "description": "Growing embedding database for semantic search",
+      "state": {
+        "status": [
+          "initializing",
+          "active",
+          "indexing",
+          "backup",
+          "error"
+        ],
+        "vector_count": 0,
+        "dimensions": 768,
+        "index_type": "HNSW",
+        "last_index_update": null
+      },
+      "methods": [
+        "add_embedding(vector)",
+        "search(query_vector, k)",
+        "build_index()",
+        "optimize_index()",
+        "backup_database()",
+        "restore_database()"
+      ],
+      "transitions": {
+        "initializing_to_active": "initialization complete",
+        "active_to_indexing": "index rebuild triggered",
+        "indexing_to_active": "index build complete",
+        "active_to_backup": "backup initiated",
+        "backup_to_active": "backup complete",
+        "any_to_error": "database corruption detected"
+      }
+    },
+    {
+      "id": "counting_engine",
+      "name": "CountingEngine",
+      "type": "processor",
+      "description": "Counts bottles and other inventory items",
+      "state": {
+        "status": [
+          "idle",
+          "counting",
+          "verifying",
+          "error"
+        ],
+        "inventory_type": [
+          "bottles",
+          "cans",
+          "kegs",
+          "glasses",
+          "other"
+        ],
+        "current_count": 0,
+        "last_verification": null,
+        "accuracy_rate": 0.98
+      },
+      "methods": [
+        "count_inventory(type)",
+        "verify_count(expected, actual)",
+        "update_inventory(item, quantity)",
+        "generate_report()",
+        "reconcile_differences()"
+      ],
+      "transitions": {
+        "idle_to_counting": "inventory count requested",
+        "counting_to_verifying": "count complete",
+        "verifying_to_idle": "verification complete",
+        "any_to_error": "counting discrepancy detected"
+      }
+    },
+    {
+      "id": "highlight_reel",
+      "name": "HighlightReel",
+      "type": "recorder",
+      "description": "Records noteworthy events from The Tap",
+      "state": {
+        "status": [
+          "recording",
+          "paused",
+          "archiving",
+          "error"
+        ],
+        "event_types": [
+          "milestone",
+          "achievement",
+          "anomaly",
+          "celebration"
+        ],
+        "current_recording": null,
+        "archive_size": 0,
+        "highlight_count": 0
+      },
+      "methods": [
+        "record_event(event)",
+        "categorize_highlight(event)",
+        "archive_highlights()",
+        "generate_reel()",
+        "search_highlights(query)"
+      ],
+      "transitions": {
+        "recording_to_paused": "pause requested",
+        "paused_to_recording": "resume requested",
+        "recording_to_archiving": "archive threshold reached",
+        "archiving_to_recording": "archive complete",
+        "any_to_error": "recording failure"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source": "WesleyCore",
+      "target": "ReceiptSorter",
+      "type": "orchestrates",
+      "description": "WesleyCore dispatches receipt processing tasks"
+    },
+    {
+      "source": "WesleyCore",
+      "target": "VectorDB",
+      "type": "orchestrates",
+      "description": "WesleyCore manages database operations"
+    },
+    {
+      "source": "WesleyCore",
+      "target": "CountingEngine",
+      "type": "orchestrates",
+      "description": "WesleyCore triggers inventory counts"
+    },
+    {
+      "source": "WesleyCore",
+      "target": "HighlightReel",
+      "type": "orchestrates",
+      "description": "WesleyCore monitors and records events"
+    },
+    {
+      "source": "ReceiptSorter",
+      "target": "VectorDB",
+      "type": "feeds",
+      "description": "ReceiptSorter provides categorized data for embeddings"
+    },
+    {
+      "source": "CountingEngine",
+      "target": "VectorDB",
+      "type": "feeds",
+      "description": "CountingEngine provides inventory data for embeddings"
+    },
+    {
+      "source": "HighlightReel",
+      "target": "VectorDB",
+      "type": "feeds",
+      "description": "HighlightReel provides event data for embeddings"
+    },
+    {
+      "source": "VectorDB",
+      "target": "WesleyCore",
+      "type": "returns",
+      "description": "VectorDB returns search results to WesleyCore"
+    },
+    {
+      "source": "ReceiptSorter",
+      "target": "CountingEngine",
+      "type": "informs",
+      "description": "ReceiptSorter informs CountingEngine of new inventory"
+    },
+    {
+      "source": "HighlightReel",
+      "target": "WesleyCore",
+      "type": "reports",
+      "description": "HighlightReel reports notable events to WesleyCore"
+    }
+  ],
+  "system_flow": {
+    "main_loop": [
+      "WesleyCore.initialize()",
+      "WesleyCore.run_main_loop()",
+      "ReceiptSorter.sort_receipt()",
+      "CountingEngine.count_inventory()",
+      "VectorDB.add_embedding()",
+      "HighlightReel.record_event()",
+      "WesleyCore.monitor_cells()"
+    ],
+    "data_flow": [
+      "ReceiptSorter -> VectorDB (embeddings)",
+      "CountingEngine -> VectorDB (inventory data)",
+      "HighlightReel -> VectorDB (event data)",
+      "VectorDB -> WesleyCore (search results)"
+    ]
+  }
+}

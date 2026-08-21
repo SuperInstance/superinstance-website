@@ -1,0 +1,259 @@
+{
+  "metadata": {
+    "format_version": "1.0",
+    "description": "Hash-chained provenance log as Quilt sheet",
+    "created": "2026-08-21T02:21:44.399968",
+    "chain_type": "hash-linked",
+    "entry_count": 8,
+    "chain_valid": true
+  },
+  "cells": [
+    {
+      "id": "cell_0",
+      "type": "provenance_entry",
+      "position": {
+        "x": 0,
+        "y": 100
+      },
+      "content": {
+        "timestamp": "2026-08-21T02:21:44.400916",
+        "value": "Provenance event 1: Data transformation step",
+        "prev_hash": "0000000000000000...",
+        "this_hash": "ef1e138c10098498...",
+        "signature": "sig_ef1e138c10098498..."
+      },
+      "style": {
+        "background": "#f0f8ff",
+        "border": "2px solid #4682b4",
+        "border_radius": "8px",
+        "padding": "10px"
+      }
+    },
+    {
+      "id": "cell_1",
+      "type": "provenance_entry",
+      "position": {
+        "x": 200,
+        "y": 100
+      },
+      "content": {
+        "timestamp": "2026-08-21T02:21:44.400949",
+        "value": "Provenance event 2: Data transformation step",
+        "prev_hash": "ef1e138c10098498...",
+        "this_hash": "243f897aa4b89c11...",
+        "signature": "sig_243f897aa4b89c11..."
+      },
+      "style": {
+        "background": "#f0f8ff",
+        "border": "2px solid #4682b4",
+        "border_radius": "8px",
+        "padding": "10px"
+      }
+    },
+    {
+      "id": "cell_2",
+      "type": "provenance_entry",
+      "position": {
+        "x": 400,
+        "y": 100
+      },
+      "content": {
+        "timestamp": "2026-08-21T02:21:44.400957",
+        "value": "Provenance event 3: Data transformation step",
+        "prev_hash": "243f897aa4b89c11...",
+        "this_hash": "8efa47d7105f075c...",
+        "signature": "sig_8efa47d7105f075c..."
+      },
+      "style": {
+        "background": "#f0f8ff",
+        "border": "2px solid #4682b4",
+        "border_radius": "8px",
+        "padding": "10px"
+      }
+    },
+    {
+      "id": "cell_3",
+      "type": "provenance_entry",
+      "position": {
+        "x": 600,
+        "y": 100
+      },
+      "content": {
+        "timestamp": "2026-08-21T02:21:44.400963",
+        "value": "Provenance event 4: Data transformation step",
+        "prev_hash": "8efa47d7105f075c...",
+        "this_hash": "f78fac0fb13b64a4...",
+        "signature": "sig_f78fac0fb13b64a4..."
+      },
+      "style": {
+        "background": "#f0f8ff",
+        "border": "2px solid #4682b4",
+        "border_radius": "8px",
+        "padding": "10px"
+      }
+    },
+    {
+      "id": "cell_4",
+      "type": "provenance_entry",
+      "position": {
+        "x": 800,
+        "y": 100
+      },
+      "content": {
+        "timestamp": "2026-08-21T02:21:44.400969",
+        "value": "Provenance event 5: Data transformation step",
+        "prev_hash": "f78fac0fb13b64a4...",
+        "this_hash": "1c52aa72aa6b216c...",
+        "signature": "sig_1c52aa72aa6b216c..."
+      },
+      "style": {
+        "background": "#f0f8ff",
+        "border": "2px solid #4682b4",
+        "border_radius": "8px",
+        "padding": "10px"
+      }
+    },
+    {
+      "id": "cell_5",
+      "type": "provenance_entry",
+      "position": {
+        "x": 1000,
+        "y": 100
+      },
+      "content": {
+        "timestamp": "2026-08-21T02:21:44.400974",
+        "value": "Provenance event 6: Data transformation step",
+        "prev_hash": "1c52aa72aa6b216c...",
+        "this_hash": "fd14b86daed5444c...",
+        "signature": "sig_fd14b86daed5444c..."
+      },
+      "style": {
+        "background": "#f0f8ff",
+        "border": "2px solid #4682b4",
+        "border_radius": "8px",
+        "padding": "10px"
+      }
+    },
+    {
+      "id": "cell_6",
+      "type": "provenance_entry",
+      "position": {
+        "x": 1200,
+        "y": 100
+      },
+      "content": {
+        "timestamp": "2026-08-21T02:21:44.400987",
+        "value": "Provenance event 7: Data transformation step",
+        "prev_hash": "fd14b86daed5444c...",
+        "this_hash": "1a29033d6b13a0c2...",
+        "signature": "sig_1a29033d6b13a0c2..."
+      },
+      "style": {
+        "background": "#f0f8ff",
+        "border": "2px solid #4682b4",
+        "border_radius": "8px",
+        "padding": "10px"
+      }
+    },
+    {
+      "id": "cell_7",
+      "type": "provenance_entry",
+      "position": {
+        "x": 1400,
+        "y": 100
+      },
+      "content": {
+        "timestamp": "2026-08-21T02:21:44.400994",
+        "value": "Provenance event 8: Data transformation step",
+        "prev_hash": "1a29033d6b13a0c2...",
+        "this_hash": "7c884f9e31082feb...",
+        "signature": "sig_7c884f9e31082feb..."
+      },
+      "style": {
+        "background": "#f0f8ff",
+        "border": "2px solid #4682b4",
+        "border_radius": "8px",
+        "padding": "10px"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "from": "cell_0",
+      "to": "cell_1",
+      "type": "hash_chain",
+      "label": "hash: ef1e138c...",
+      "style": {
+        "stroke": "#4682b4",
+        "stroke_width": 2,
+        "arrow": "forward"
+      }
+    },
+    {
+      "from": "cell_1",
+      "to": "cell_2",
+      "type": "hash_chain",
+      "label": "hash: 243f897a...",
+      "style": {
+        "stroke": "#4682b4",
+        "stroke_width": 2,
+        "arrow": "forward"
+      }
+    },
+    {
+      "from": "cell_2",
+      "to": "cell_3",
+      "type": "hash_chain",
+      "label": "hash: 8efa47d7...",
+      "style": {
+        "stroke": "#4682b4",
+        "stroke_width": 2,
+        "arrow": "forward"
+      }
+    },
+    {
+      "from": "cell_3",
+      "to": "cell_4",
+      "type": "hash_chain",
+      "label": "hash: f78fac0f...",
+      "style": {
+        "stroke": "#4682b4",
+        "stroke_width": 2,
+        "arrow": "forward"
+      }
+    },
+    {
+      "from": "cell_4",
+      "to": "cell_5",
+      "type": "hash_chain",
+      "label": "hash: 1c52aa72...",
+      "style": {
+        "stroke": "#4682b4",
+        "stroke_width": 2,
+        "arrow": "forward"
+      }
+    },
+    {
+      "from": "cell_5",
+      "to": "cell_6",
+      "type": "hash_chain",
+      "label": "hash: fd14b86d...",
+      "style": {
+        "stroke": "#4682b4",
+        "stroke_width": 2,
+        "arrow": "forward"
+      }
+    },
+    {
+      "from": "cell_6",
+      "to": "cell_7",
+      "type": "hash_chain",
+      "label": "hash: 1a29033d...",
+      "style": {
+        "stroke": "#4682b4",
+        "stroke_width": 2,
+        "arrow": "forward"
+      }
+    }
+  ]
+}
