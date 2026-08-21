@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<!--
+  openers.html — The same cell rendered through 10+ openers.
+
+  The openers are the universal interface. A cell can be projected into
+  any medium. The cell is invariant across openers. The openers are the
+  lights-under-the-action work.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Openers — the same cell in 10+ media</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1.5rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { margin: 0; font-size: 1.8rem; }
+  .subtitle { color: var(--muted); margin-top: 0.3rem; }
+  .container { padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+  .intro {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;
+  }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 1rem;
+  }
+  .opener {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1rem;
+    min-height: 220px;
+  }
+  .opener .header {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+    margin-bottom: 0.7rem;
+  }
+  .opener .icon { font-size: 1.3rem; }
+  .opener .name { font-size: 1.05rem; color: var(--accent); font-weight: 500; }
+  .opener .count { color: var(--muted); font-size: 0.75rem; margin-left: auto; }
+  .opener .body { font-size: 0.85rem; color: var(--fg); }
+  .opener pre {
+    background: #0d1117; border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.75rem; line-height: 1.4;
+    overflow-x: auto; margin: 0.3rem 0;
+  }
+  .opener .label { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.4rem; }
+  .thesis {
+    background: linear-gradient(180deg, rgba(163, 113, 247, 0.1) 0%, transparent 100%);
+    border: 1px solid var(--purple); border-radius: 8px;
+    padding: 1.5rem; margin: 2rem 0;
+  }
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+  /* Specific opener styles */
+  .mud { background: #1a0d05; border-color: #8b4513; font-family: 'Courier New', monospace; }
+  .mud .name { color: #d4a373; }
+  .plato { background: #000080; border-color: #ff8c00; color: #ffa500; font-family: 'Courier New', monospace; }
+  .plato .name { color: #ff8c00; }
+  .lcd { background: #1a2f1a; border-color: #5fa15f; color: #b8e0b8; font-family: 'Courier New', monospace; font-weight: bold; }
+  .lcd .name { color: #b8e0b8; }
+  .telegram { background: #1c2733; border-color: #0088cc; }
+  .telegram .name { color: #0088cc; }
+  .irc { background: #1a1a1a; border-color: #00aa00; }
+  .irc .name { color: #00aa00; }
+  .esp32 { background: #0d1117; border-color: #ff6b35; }
+  .esp32 .name { color: #ff6b35; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔓 The Openers</h1>
+  <p class="subtitle">The same cell rendered through 10+ media. The cell is invariant across openers. The opener is the universal interface.</p>
+</header>
+
+<div class="container">
+  <div class="intro">
+    <h2 style="margin-top: 0;">What is an opener?</h2>
+    <p>
+      An <strong>opener</strong> is the layer that translates a Quilt cell into a
+      medium. The cell doesn't know about HTML, JSON, audio, voltage, prompts, rooms,
+      terminals, scenes, or LCDs. The cell just is. The opener does the rendering.
+    </p>
+    <p>
+      The openers are the universal interface. Add a new opener — a new medium — and
+      the cell appears in it. The cell is invariant across openers. The opener is the
+      rendering. The cell is the canonical thing.
+    </p>
+    <p>
+      Below: the <strong>same cell</strong> rendered through 10 different openers.
+      The cell is a depth sensor reading 12 fathoms, on a vessel named "Eileen."
+    </p>
+  </div>
+
+  <h2>🎨 The 10 openers</h2>
+  <div class="grid">
+
+    <!-- 1. Web (HTML) -->
+    <div class="opener">
+      <div class="header">
+        <span class="icon">🌐</span>
+        <span class="name">Web (HTML/CSS/JS)</span>
+        <span class="count">12,000+ cells live</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>┌──────────────────────────┐
+│  F/V Eileen             │
+│  Depth: 12 fathoms       │
+│  [progress bar: 60%]     │
+│  Status: ● live          │
+└──────────────────────────┘</pre>
+        <div class="label">opener</div>
+        <pre>quilt-llm-worker → HTML</pre>
+      </div>
+    </div>
+
+    <!-- 2. REST (JSON) -->
+    <div class="opener">
+      <div class="header">
+        <span class="icon">📡</span>
+        <span class="name">REST (JSON)</span>
+        <span class="count">17 bridges live</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>{
+  "id": "depth-12",
+  "value": 12.0,
+  "unit": "fathoms",
+  "vessel": "eileen",
+  "timestamp": 1787280000
+}</pre>
+        <div class="label">opener</div>
+        <pre>Cell → JSON over HTTP</pre>
+      </div>
+    </div>
+
+    <!-- 3. TTS (Speech) -->
+    <div class="opener">
+      <div class="header">
+        <span class="icon">🗣</span>
+        <span class="name">TTS (Speech)</span>
+        <span class="count">Web Speech API</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre style="font-style: italic; color: var(--ok);">"Depth on the Eileen is twelve fathoms. We're holding on the line."</pre>
+        <div class="label">opener</div>
+        <pre>Cell value → speech synthesis</pre>
+      </div>
+    </div>
+
+    <!-- 4. GPIO (Voltage) -->
+    <div class="opener">
+      <div class="header">
+        <span class="icon">⚡</span>
+        <span class="name">GPIO (Voltage)</span>
+        <span class="count">ESP32 live</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>Pin 12 → 2.4V
+Pin 13 → 0.0V (low)
+Pin 14 → 3.3V (high)
+Pin 15 → 1.2V (PWM 36%)
+
+depth_12_fathoms = 36% PWM</pre>
+        <div class="label">opener</div>
+        <pre>Cell value → PWM duty cycle</pre>
+      </div>
+    </div>
+
+    <!-- 5. LLM Prompt (String) -->
+    <div class="opener">
+      <div class="header">
+        <span class="icon">🤖</span>
+        <span class="name">LLM Prompt (String)</span>
+        <span class="count">4 providers</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>System: You are the bridge of the F/V Eileen.
+         The current depth is 12 fathoms.
+
+User: What's our depth?
+
+Assistant: We are at 12 fathoms.</pre>
+        <div class="label">opener</div>
+        <pre>Cell → system prompt</pre>
+      </div>
+    </div>
+
+    <!-- 6. MUD (Room) -->
+    <div class="opener mud">
+      <div class="header">
+        <span class="icon">🏰</span>
+        <span class="name">MUD (Room)</span>
+        <span class="count">3 worlds</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>[The Bridge of F/V Eileen]
+
+The depth sounder reads: 12 fathoms.
+The wheelhouse is to the north.
+The engine room hums below.
+
+&gt; look depth</pre>
+        <div class="label">opener</div>
+        <pre>Cell → MUD room description</pre>
+      </div>
+    </div>
+
+    <!-- 7. PLATO (Terminal) -->
+    <div class="opener plato">
+      <div class="header">
+        <span class="icon">📺</span>
+        <span class="name">PLATO (Terminal)</span>
+        <span class="count">1970s vibe</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>DEPTH:    12.0 FM
+COURSE:   090° T
+SPEED:    6.2 KTS
+TEMP:     8.4°C
+SALINITY: 34.2 PSU
+
+PRESS [ENTER] FOR MENU</pre>
+        <div class="label">opener</div>
+        <pre>Cell → PLATO termcap</pre>
+      </div>
+    </div>
+
+    <!-- 8. ESP32 LCD (16x2) -->
+    <div class="opener lcd">
+      <div class="header">
+        <span class="icon">🖥</span>
+        <span class="name">ESP32 LCD (16×2)</span>
+        <span class="count">HD44780</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>┌────────────────┐
+│DEPTH: 12.0 FM  │
+│COURSE: 090°    │
+└────────────────┘</pre>
+        <div class="label">opener</div>
+        <pre>Cell → HD44780 driver</pre>
+      </div>
+    </div>
+
+    <!-- 9. Telegram (Chat) -->
+    <div class="opener telegram">
+      <div class="header">
+        <span class="icon">✈️</span>
+        <span class="name">Telegram (Chat)</span>
+        <span class="count">Bot API</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>@quilt_bot: 📊 F/V Eileen update
+- Depth: 12.0 fathoms
+- Course: 090° T
+- Speed: 6.2 kts
+- Status: ● live
+Time: 2026-08-21 14:32:01 UTC</pre>
+        <div class="label">opener</div>
+        <pre>Cell → Telegram message</pre>
+      </div>
+    </div>
+
+    <!-- 10. IRC (Channel) -->
+    <div class="opener irc">
+      <div class="header">
+        <span class="icon">💬</span>
+        <span class="name">IRC (Channel)</span>
+        <span class="count">RFC 1459</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>&lt;quilt-bot&gt; [eileen] depth=12.0fm
+                course=090°T speed=6.2kts
+                status=● live</pre>
+        <div class="label">opener</div>
+        <pre>Cell → PRIVMSG</pre>
+      </div>
+    </div>
+
+    <!-- 11. 3D Scene -->
+    <div class="opener">
+      <div class="header">
+        <span class="icon">🎮</span>
+        <span class="name">3D Scene (Three.js)</span>
+        <span class="count">WebGL</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>[Cannonball chain visualization]
+Cell 1: 0fm ──────── camera 1
+Cell 2: 5fm ──────── camera 2
+Cell 3: 12fm ────► camera 3 (target)
+Cell 4: 18fm ──────── camera 4
+Cell 5: 25fm ──────── camera 5</pre>
+        <div class="label">opener</div>
+        <pre>Cell → 3D scene node</pre>
+      </div>
+    </div>
+
+    <!-- 12. Serial (UART) -->
+    <div class="opener esp32">
+      <div class="header">
+        <span class="icon">📟</span>
+        <span class="name">Serial (UART)</span>
+        <span class="count">115200 baud</span>
+      </div>
+      <div class="body">
+        <div class="label">rendered</div>
+        <pre>$DEPTH,12.0,FM,090,T,6.2,KTS
+$STATUS,LIVE
+$TIME,20260821T143201
+$CRC,4F2A</pre>
+        <div class="label">opener</div>
+        <pre>Cell → NMEA 0183 / CSV</pre>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="thesis">
+    <h2>🌌 The thesis</h2>
+    <p>
+      The same cell — depth 12 fathoms on the F/V Eileen — appears in 12 different
+      media. Web, JSON, speech, voltage, prompt, room, terminal, LCD, Telegram, IRC,
+      3D scene, serial. The cell is invariant across all of them.
+    </p>
+    <p>
+      The opener is the rendering. The cell is the system. Add a new opener — a new
+      medium — and the cell appears in it. The 12 openers are the universal interface.
+    </p>
+    <p style="font-style: italic; color: var(--muted);">
+      "The opener is the lights-under-the-action work. The work is to translate the
+      cell into the medium without the medium knowing it's a translation. The cell
+      is real. The openers are the witnesses to the cell's reality."
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

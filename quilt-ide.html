@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<!--
+  quilt-ide.html — The Quilt IDE.
+
+  A real cell graph editor. Users compose Quilt sheets in the browser:
+  - 8 cell kinds (number, string, boolean, array, object, formula, cell, sheet)
+  - 8 primitives per cell (Z_in, Z_out, JEPA, DoubleEntry, Vibe, GC, Murmur, Graph)
+  - Drag from palette to canvas to add a cell
+  - Click cell to select and edit
+  - Drag from edge port to another cell to create an edge
+  - Live β₁ computation
+  - Save/Load .qzt JSON files
+  - localStorage persistence
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quilt IDE — compose cell graphs in the browser</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+    overflow: hidden;
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 1rem; background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    height: 50px;
+  }
+  .topbar h1 { margin: 0; font-size: 1.1rem; }
+  .topbar .beta1 {
+    display: flex; gap: 1rem; padding: 0 1rem;
+    border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+    font-family: ui-monospace, monospace; font-size: 0.8rem;
+    color: var(--muted);
+    height: 100%; align-items: center;
+  }
+  .topbar .beta1 .metric strong { color: var(--accent); }
+  .topbar .beta1 .metric.warn strong { color: var(--warn); }
+  .topbar .beta1 .metric.err strong { color: var(--err); }
+  .topbar .spacer { flex: 1; }
+  .topbar button {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.35rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  .topbar button:hover { background: #30363d; border-color: var(--accent); }
+  .topbar button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  .topbar button.warn { background: #d29922; border-color: #d29922; color: #0d1117; }
+  .topbar button.ok { background: var(--ok); border-color: var(--ok); color: #0d1117; }
+
+  /* Main layout */
+  .main { display: grid; grid-template-columns: 220px 1fr 300px; height: calc(100vh - 50px); }
+
+  /* Left sidebar: palette */
+  .palette {
+    background: #0d1117; border-right: 1px solid var(--border);
+    padding: 0.7rem; overflow-y: auto;
+  }
+  .palette h3 { margin: 0 0 0.4rem; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .palette-section { margin-bottom: 1rem; }
+  .palette-item {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem; margin-bottom: 0.3rem;
+    cursor: grab; user-select: none;
+    display: flex; align-items: center; gap: 0.4rem;
+    transition: all 0.1s;
+  }
+  .palette-item:hover { border-color: var(--accent); transform: translateX(2px); }
+  .palette-item:active { cursor: grabbing; }
+  .palette-item .icon { font-size: 0.9rem; }
+  .palette-item .name { font-size: 0.8rem; }
+  .palette-item .kind { color: var(--muted); font-size: 0.7rem; margin-left: auto; font-family: ui-monospace, monospace; }
+
+  /* Center: canvas */
+  .canvas-wrap {
+    position: relative; overflow: hidden;
+    background: radial-gradient(ellipse at center, #0d1117 0%, #050a0f 100%);
+  }
+  .canvas {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    overflow: auto;
+  }
+  .canvas-inner {
+    position: relative;
+    width: 3000px; height: 3000px;
+  }
+  .canvas svg { position: absolute; top: 0; left: 0; pointer-events: none; }
+  .canvas svg .edge {
+    stroke: var(--muted); stroke-width: 1.5;
+    opacity: 0.5; pointer-events: auto; cursor: pointer;
+    fill: none;
+  }
+  .canvas svg .edge:hover { stroke: var(--accent); opacity: 1; stroke-width: 2; }
+  .canvas svg .edge.selected { stroke: var(--err); opacity: 1; stroke-width: 2; }
+  .canvas svg .edge.phantom { stroke: var(--purple); stroke-dasharray: 4 4; opacity: 0.6; }
+
+  .cell {
+    position: absolute; width: 120px; min-height: 80px;
+    background: var(--panel); border: 2px solid var(--border);
+    border-radius: 6px; padding: 0.5rem; cursor: move;
+    user-select: none;
+    transition: border-color 0.1s, box-shadow 0.1s;
+  }
+  .cell:hover { border-color: var(--accent); }
+  .cell.selected { border-color: var(--err); box-shadow: 0 0 12px rgba(248, 81, 73, 0.4); }
+  .cell.dragging { opacity: 0.7; }
+  .cell .cell-header {
+    display: flex; align-items: center; gap: 0.3rem;
+    padding-bottom: 0.3rem; border-bottom: 1px solid var(--border);
+    margin-bottom: 0.3rem;
+  }
+  .cell .cell-icon { font-size: 0.9rem; }
+  .cell .cell-name {
+    flex: 1; font-size: 0.78rem; color: var(--accent);
+    font-family: ui-monospace, monospace;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .cell .cell-kind {
+    font-size: 0.65rem; color: var(--muted);
+    font-family: ui-monospace, monospace;
+    text-transform: uppercase;
+  }
+  .cell .cell-ports {
+    display: flex; justify-content: space-between;
+    font-size: 0.65rem; color: var(--muted);
+    margin-top: 0.3rem;
+  }
+  .cell .port {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); cursor: crosshair;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+  }
+  .cell .port:hover { background: var(--ok); }
+  .cell .cell-value {
+    font-size: 0.7rem; color: var(--muted);
+    font-family: ui-monospace, monospace;
+    text-align: center; padding-top: 0.2rem;
+  }
+
+  /* Right sidebar: inspector */
+  .inspector {
+    background: #0d1117; border-left: 1px solid var(--border);
+    padding: 0.7rem; overflow-y: auto;
+  }
+  .inspector h3 { margin: 0 0 0.4rem; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .inspector-section {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.6rem; margin-bottom: 0.6rem;
+  }
+  .inspector-section .empty {
+    color: var(--muted); font-size: 0.8rem; font-style: italic;
+    text-align: center; padding: 1rem 0;
+  }
+  .inspector input, .inspector select {
+    width: 100%; background: #0d1117; color: var(--fg);
+    border: 1px solid var(--border); border-radius: 3px;
+    padding: 0.3rem; font-size: 0.8rem; font-family: inherit;
+    margin-top: 0.2rem;
+  }
+  .inspector label {
+    font-size: 0.7rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .inspector .field { margin-bottom: 0.5rem; }
+  .inspector .field-row { display: flex; gap: 0.3rem; }
+  .inspector .field-row > * { flex: 1; }
+  .inspector button {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.3rem 0.5rem; border-radius: 3px; cursor: pointer;
+    font-size: 0.75rem; font-family: inherit;
+  }
+  .inspector button:hover { background: #30363d; border-color: var(--accent); }
+  .inspector button.danger { color: var(--err); border-color: var(--err); }
+  .inspector button.danger:hover { background: rgba(248, 81, 73, 0.1); }
+
+  /* Status bar */
+  .status-bar {
+    position: absolute; bottom: 0; left: 220px; right: 300px;
+    background: rgba(13, 17, 23, 0.9); border-top: 1px solid var(--border);
+    padding: 0.3rem 0.7rem; font-size: 0.75rem; color: var(--muted);
+    font-family: ui-monospace, monospace;
+    height: 24px;
+  }
+
+  /* Empty state */
+  .empty-canvas {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    text-align: center; color: var(--muted);
+    font-size: 0.9rem; pointer-events: none;
+  }
+  .empty-canvas .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🌀 Quilt IDE</h1>
+  <div class="beta1">
+    <div class="metric" id="metricV"><strong>V:</strong> 0</div>
+    <div class="metric" id="metricE"><strong>E:</strong> 0</div>
+    <div class="metric" id="metricC"><strong>C:</strong> 0</div>
+    <div class="metric" id="metricBeta1"><strong>β₁:</strong> 0</div>
+  </div>
+  <div class="spacer"></div>
+  <button id="newCellBtn" class="primary">+ New cell</button>
+  <button id="tickBtn">⏱ Tick</button>
+  <button id="gcBtn" class="warn">🧹 GC</button>
+  <button id="sampleBtn">📦 Sample</button>
+  <button id="loadBtn">📂 Load .qzt</button>
+  <button id="saveBtn" class="ok">💾 Save .qzt</button>
+  <button id="clearBtn" class="danger">⌫ Clear</button>
+</div>
+
+<div class="main">
+  <div class="palette">
+    <h3>📐 Cell kinds</h3>
+    <div class="palette-section" id="paletteKinds"></div>
+    <h3>🧩 8 Primitives</h3>
+    <p style="font-size: 0.7rem; color: var(--muted); margin: 0 0 0.5rem;">
+      Click a cell to edit its 8 primitives in the inspector →
+    </p>
+    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; font-size: 0.7rem; color: var(--muted); font-family: ui-monospace, monospace; line-height: 1.6;">
+      Z_in · Z_out · JEPA<br>
+      DoubleEntry · Vibe<br>
+      GC · Murmur · Graph
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <div class="canvas" id="canvas">
+      <div class="canvas-inner" id="canvasInner">
+        <svg id="edgesSvg" width="3000" height="3000"></svg>
+      </div>
+      <div class="empty-canvas" id="emptyState">
+        <div class="icon">🌀</div>
+        <div>drag a cell kind from the palette to start</div>
+        <div style="margin-top: 0.3rem;">or click <strong>Sample</strong> to load an example</div>
+      </div>
+    </div>
+    <div class="status-bar" id="statusBar">ready</div>
+  </div>
+
+  <div class="inspector">
+    <h3>🔍 Inspector</h3>
+    <div id="inspectorBody">
+      <div class="inspector-section">
+        <div class="empty">select a cell to edit</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept=".qzt,.json" style="display:none">
+
+<script>
+// ============================================================================
+// State
+// ============================================================================
+const state = {
+  cells: [],   // {id, name, kind, x, y, primitives}
+  edges: [],   // {id, from, to, kind}
+  nextId: 1,
+  selected: null,
+  pan: { x: 0, y: 0 },
+  zoom: 1,
+  pendingEdge: null, // {fromCellId, fromPort} — when dragging a port
+  phantomEdge: null, // mouse position
+};
+
+const KINDS = [
+  { id: 'number', icon: '🔢', name: 'number' },
+  { id: 'string', icon: '🔤', name: 'string' },
+  { id: 'boolean', icon: '✓', name: 'boolean' },
+  { id: 'array', icon: '📋', name: 'array' },
+  { id: 'object', icon: '📦', name: 'object' },
+  { id: 'formula', icon: '∑', name: 'formula' },
+  { id: 'cell', icon: '🧬', name: 'cell' },
+  { id: 'sheet', icon: '📄', name: 'sheet' },
+];
+
+const GC_PHASES = ['Mark', 'Sweep', 'Rebalance'];
+
+// ============================================================================
+// Render
+// ============================================================================
+function renderPalette() {
+  const pal = document.getElementById('paletteKinds');
+  pal.innerHTML = '';
+  for (const kind of KINDS) {
+    const item = document.createElement('div');
+    item.className = 'palette-item';
+    item.draggable = true;
+    item.dataset.kind = kind.id;
+    item.innerHTML = `<span class="icon">${kind.icon}</span><span class="name">${kind.name}</span><span class="kind">${kind.id}</span>`;
+    item.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/kind', kind.id);
+      e.dataTransfer.effectAllowed = 'copy';
+    });
+    pal.appendChild(item);
+  }
+}
+
+function renderCells() {
+  const inner = document.getElementById('canvasInner');
+  // Remove existing cell DOM
+  inner.querySelectorAll('.cell').forEach(el => el.remove());
+  for (const cell of state.cells) {
+    const div = document.createElement('div');
+    div.className = 'cell' + (state.selected === cell.id ? ' selected' : '');
+    div.dataset.cellId = cell.id;
+    div.style.left = (cell.x + state.pan.x) + 'px';
+    div.style.top = (cell.y + state.pan.y) + 'px';
+    const kind = KINDS.find(k => k.id === cell.kind) || { icon: '🧬', name: cell.kind };
+    const prim = cell.primitives || {};
+    const vibeStr = prim.vibe ? `${prim.vibe.pos||0},${prim.vibe.vel||0},${prim.vibe.acc||0}` : '0,0,0';
+    const gcStr = prim.gc ? `${prim.gc.phase||0}/3` : '0/3';
+    const jepaStr = prim.jepa != null ? prim.jepa.toFixed(2) : '—';
+    div.innerHTML = `
+      <div class="cell-header">
+        <span class="cell-icon">${kind.icon}</span>
+        <span class="cell-name" title="${cell.name}">${cell.name}</span>
+        <span class="cell-kind">${cell.kind}</span>
+      </div>
+      <div class="cell-value">jepa: ${jepaStr} · vibe: ${vibeStr}</div>
+      <div class="cell-value">gc: ${gcStr} · z_in: ${(prim.z_in||[]).length} z_out: ${(prim.z_out||[]).length}</div>
+      <div class="cell-ports">
+        <div class="port" data-port="z_in" data-cell="${cell.id}"></div>
+        <div style="font-size: 0.6rem; color: var(--muted); align-self: center;">${cell.id}</div>
+        <div class="port" data-port="z_out" data-cell="${cell.id}"></div>
+      </div>
+    `;
+    // Drag to move
+    div.addEventListener('mousedown', e => {
+      if (e.target.classList.contains('port')) {
+        // Start edge drag
+        const port = e.target.dataset.port;
+        const cellId = e.target.dataset.cell;
+        state.pendingEdge = { fromCellId: cellId, fromPort: port };
+        state.phantomEdge = { x: e.clientX, y: e.clientY };
+        e.preventDefault();
+        return;
+      }
+      state.selected = cell.id;
+      renderAll();
+    });
+    // Drag to move
+    div.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/move-cell', cell.id);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    div.draggable = true;
+    inner.appendChild(div);
+  }
+  // Empty state
+  document.getElementById('emptyState').style.display = state.cells.length === 0 ? 'block' : 'none';
+}
+
+function renderEdges() {
+  const svg = document.getElementById('edgesSvg');
+  svg.innerHTML = '';
+  // Draw real edges
+  for (const e of state.edges) {
+    const from = state.cells.find(c => c.id === e.from);
+    const to = state.cells.find(c => c.id === e.to);
+    if (!from || !to) continue;
+    // Calculate endpoints (right port of from, left port of to)
+    const x1 = from.x + 130 + state.pan.x;
+    const y1 = from.y + 70 + state.pan.y;
+    const x2 = to.x - 10 + state.pan.x;
+    const y2 = to.y + 70 + state.pan.y;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    // Bezier curve
+    const cx1 = x1 + 50, cx2 = x2 - 50;
+    path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`);
+    path.setAttribute('class', 'edge' + (state.selected === e.id ? ' selected' : ''));
+    path.dataset.edgeId = e.id;
+    path.addEventListener('click', ev => {
+      ev.stopPropagation();
+      state.selected = e.id;
+      renderAll();
+    });
+    svg.appendChild(path);
+  }
+  // Draw phantom edge
+  if (state.pendingEdge && state.phantomEdge) {
+    const from = state.cells.find(c => c.id === state.pendingEdge.fromCellId);
+    if (from) {
+      const isOut = state.pendingEdge.fromPort === 'z_out';
+      const x1 = isOut ? (from.x + 130 + state.pan.x) : (from.x - 10 + state.pan.x);
+      const y1 = from.y + 70 + state.pan.y;
+      const canvas = document.getElementById('canvas');
+      const rect = canvas.getBoundingClientRect();
+      const x2 = state.phantomEdge.x - rect.left + canvas.scrollLeft;
+      const y2 = state.phantomEdge.y - rect.top + canvas.scrollTop;
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      const cx1 = x1 + (isOut ? 50 : -50), cx2 = x2 + (isOut ? -50 : 50);
+      path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`);
+      path.setAttribute('class', 'edge phantom');
+      svg.appendChild(path);
+    }
+  }
+}
+
+function renderInspector() {
+  const body = document.getElementById('inspectorBody');
+  if (!state.selected) {
+    body.innerHTML = '<div class="inspector-section"><div class="empty">select a cell to edit</div></div>';
+    return;
+  }
+  const cell = state.cells.find(c => c.id === state.selected);
+  const edge = state.edges.find(e => e.id === state.selected);
+  if (edge) {
+    const from = state.cells.find(c => c.id === edge.from);
+    const to = state.cells.find(c => c.id === edge.to);
+    body.innerHTML = `
+      <div class="inspector-section">
+        <div class="field">
+          <label>Edge</label>
+          <div style="margin-top: 0.3rem; font-family: ui-monospace, monospace; font-size: 0.85rem;">
+            ${from ? from.name : '?'} → ${to ? to.name : '?'}
+          </div>
+        </div>
+        <div class="field">
+          <label>kind</label>
+          <select id="edgeKind">
+            <option value="depends_on" ${edge.kind === 'depends_on' ? 'selected' : ''}>depends_on</option>
+            <option value="cites" ${edge.kind === 'cites' ? 'selected' : ''}>cites</option>
+            <option value="murmur" ${edge.kind === 'murmur' ? 'selected' : ''}>murmur</option>
+            <option value="exemplifies" ${edge.kind === 'exemplifies' ? 'selected' : ''}>exemplifies</option>
+          </select>
+        </div>
+        <button class="danger" id="deleteEdgeBtn">delete edge</button>
+      </div>
+    `;
+    document.getElementById('edgeKind').onchange = e => { edge.kind = e.target.value; saveLocal(); renderAll(); };
+    document.getElementById('deleteEdgeBtn').onclick = () => {
+      state.edges = state.edges.filter(x => x.id !== edge.id);
+      state.selected = null;
+      saveLocal(); renderAll();
+    };
+    return;
+  }
+  if (!cell) {
+    body.innerHTML = '<div class="inspector-section"><div class="empty">select a cell to edit</div></div>';
+    return;
+  }
+  // Cell inspector
+  const prim = cell.primitives || {};
+  const vibe = prim.vibe || { pos: 0, vel: 0, acc: 0 };
+  const gc = prim.gc || { phase: 0, progress: 0 };
+  body.innerHTML = `
+    <div class="inspector-section">
+      <div class="field">
+        <label>name</label>
+        <input type="text" id="cellName" value="${cell.name}" />
+      </div>
+      <div class="field">
+        <label>kind</label>
+        <select id="cellKind">
+          ${KINDS.map(k => `<option value="${k.id}" ${k.id === cell.kind ? 'selected' : ''}>${k.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Z_in (input cells)</label>
+        <input type="text" id="cellZin" value="${(prim.z_in||[]).join(', ')}" placeholder="cell-1, cell-2" />
+      </div>
+      <div class="field">
+        <label>Z_out (output cells)</label>
+        <input type="text" id="cellZout" value="${(prim.z_out||[]).join(', ')}" placeholder="cell-3" />
+      </div>
+      <div class="field">
+        <label>JEPA (surprise)</label>
+        <input type="number" step="0.01" id="cellJepa" value="${prim.jepa != null ? prim.jepa : 0}" />
+      </div>
+      <div class="field">
+        <label>DoubleEntry (invariant)</label>
+        <input type="number" step="0.01" id="cellDE" value="${prim.double_entry != null ? prim.double_entry : 0}" />
+      </div>
+      <div class="field">
+        <label>Vibe (pos, vel, acc)</label>
+        <div class="field-row">
+          <input type="number" step="0.1" id="cellVibePos" value="${vibe.pos || 0}" />
+          <input type="number" step="0.1" id="cellVibeVel" value="${vibe.vel || 0}" />
+          <input type="number" step="0.1" id="cellVibeAcc" value="${vibe.acc || 0}" />
+        </div>
+      </div>
+      <div class="field">
+        <label>GC Phase</label>
+        <select id="cellGcPhase">
+          ${GC_PHASES.map((p, i) => `<option value="${i}" ${gc.phase === i ? 'selected' : ''}>${p}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Murmur (gossip partner)</label>
+        <input type="text" id="cellMurmur" value="${prim.murmur || ''}" placeholder="cell-4" />
+      </div>
+      <div class="field">
+        <label>Graph (sheet id)</label>
+        <input type="text" id="cellGraph" value="${prim.graph || 'sheet-0'}" />
+      </div>
+      <button class="danger" id="deleteCellBtn" style="margin-top: 0.5rem;">delete cell</button>
+    </div>
+  `;
+  // Wire up
+  const update = () => {
+    const newName = document.getElementById('cellName').value;
+    const newKind = document.getElementById('cellKind').value;
+    const zin = document.getElementById('cellZin').value.split(',').map(s => s.trim()).filter(Boolean);
+    const zout = document.getElementById('cellZout').value.split(',').map(s => s.trim()).filter(Boolean);
+    const jepa = parseFloat(document.getElementById('cellJepa').value);
+    const de = parseFloat(document.getElementById('cellDE').value);
+    const vibePos = parseFloat(document.getElementById('cellVibePos').value);
+    const vibeVel = parseFloat(document.getElementById('cellVibeVel').value);
+    const vibeAcc = parseFloat(document.getElementById('cellVibeAcc').value);
+    const gcPhase = parseInt(document.getElementById('cellGcPhase').value);
+    const murmur = document.getElementById('cellMurmur').value.trim();
+    const graph = document.getElementById('cellGraph').value.trim();
+    cell.name = newName;
+    cell.kind = newKind;
+    cell.primitives = {
+      z_in: zin, z_out: zout,
+      jepa, double_entry: de,
+      vibe: { pos: vibePos, vel: vibeVel, acc: vibeAcc },
+      gc: { phase: gcPhase, progress: gc.progress || 0 },
+      murmur: murmur || null,
+      graph: graph || null,
+    };
+    saveLocal();
+    renderCells();
+  };
+  document.getElementById('cellName').onchange = update;
+  document.getElementById('cellKind').onchange = update;
+  document.getElementById('cellZin').onchange = update;
+  document.getElementById('cellZout').onchange = update;
+  document.getElementById('cellJepa').onchange = update;
+  document.getElementById('cellDE').onchange = update;
+  document.getElementById('cellVibePos').onchange = update;
+  document.getElementById('cellVibeVel').onchange = update;
+  document.getElementById('cellVibeAcc').onchange = update;
+  document.getElementById('cellGcPhase').onchange = update;
+  document.getElementById('cellMurmur').onchange = update;
+  document.getElementById('cellGraph').onchange = update;
+  document.getElementById('deleteCellBtn').onclick = () => {
+    state.cells = state.cells.filter(c => c.id !== cell.id);
+    state.edges = state.edges.filter(e => e.from !== cell.id && e.to !== cell.id);
+    state.selected = null;
+    saveLocal();
+    renderAll();
+  };
+}
+
+function renderStats() {
+  const V = state.cells.length;
+  const E = state.edges.length;
+  // Count components
+  const adj = new Map();
+  for (const c of state.cells) adj.set(c.id, new Set());
+  for (const e of state.edges) {
+    if (adj.has(e.from) && adj.has(e.to)) {
+      adj.get(e.from).add(e.to);
+      adj.get(e.to).add(e.from);
+    }
+  }
+  const visited = new Set();
+  let C = 0;
+  for (const node of adj.keys()) {
+    if (visited.has(node)) continue;
+    C++;
+    const queue = [node];
+    while (queue.length > 0) {
+      const n = queue.shift();
+      if (visited.has(n)) continue;
+      visited.add(n);
+      for (const nb of adj.get(n)) queue.push(nb);
+    }
+  }
+  const b1 = E - V + C;
+  document.getElementById('metricV').innerHTML = `<strong>V:</strong> ${V}`;
+  document.getElementById('metricE').innerHTML = `<strong>E:</strong> ${E}`;
+  document.getElementById('metricC').innerHTML = `<strong>C:</strong> ${C}`;
+  const b1El = document.getElementById('metricBeta1');
+  b1El.innerHTML = `<strong>β₁:</strong> ${b1}`;
+  b1El.className = 'metric ' + (b1 < 0 ? 'err' : (b1 === 0 ? '' : 'warn'));
+}
+
+function renderAll() {
+  renderCells();
+  renderEdges();
+  renderInspector();
+  renderStats();
+}
+
+function setStatus(text) {
+  document.getElementById('statusBar').textContent = text;
+}
+
+// ============================================================================
+// Operations
+// ============================================================================
+function addCell(kind, x, y) {
+  const id = 'cell-' + state.nextId++;
+  const cell = {
+    id,
+    name: `${kind}-${state.cells.length + 1}`,
+    kind,
+    x, y,
+    primitives: {
+      z_in: [], z_out: [],
+      jepa: 0, double_entry: 0,
+      vibe: { pos: 0, vel: 0, acc: 0 },
+      gc: { phase: 0, progress: 0 },
+      murmur: null,
+      graph: 'sheet-0',
+    },
+  };
+  state.cells.push(cell);
+  state.selected = id;
+  saveLocal();
+  renderAll();
+  setStatus(`added ${kind} cell: ${id}`);
+}
+
+function tickAll() {
+  for (const cell of state.cells) {
+    // Update JEPA based on differences
+    const prim = cell.primitives;
+    if (prim.z_in && prim.z_out) {
+      // JEPA: simulate surprise by adding small noise
+      prim.jepa = Math.max(0, Math.min(1, (prim.jepa || 0) + (Math.random() - 0.5) * 0.1));
+    }
+    // Vibe: simple update
+    if (prim.vibe) {
+      prim.vibe.vel = (prim.vibe.vel || 0) + (prim.vibe.acc || 0) * 0.1;
+      prim.vibe.pos = (prim.vibe.pos || 0) + prim.vibe.vel * 0.1;
+    }
+  }
+  setStatus(`ticked ${state.cells.length} cells`);
+  saveLocal();
+  renderAll();
+}
+
+function gcAll() {
+  // Phase 1: Mark (similar cells) — merge cells with the same name
+  const byName = {};
+  for (const cell of state.cells) {
+    if (!byName[cell.name]) byName[cell.name] = [];
+    byName[cell.name].push(cell);
+  }
+  let merged = 0;
+  for (const [name, cells] of Object.entries(byName)) {
+    if (cells.length > 1) {
+      // Merge into the first one
+      for (let i = 1; i < cells.length; i++) {
+        // Move edges
+        state.edges = state.edges.map(e => {
+          if (e.from === cells[i].id) e.from = cells[0].id;
+          if (e.to === cells[i].id) e.to = cells[0].id;
+          return e;
+        });
+        // Remove the merged cell
+        state.cells = state.cells.filter(c => c.id !== cells[i].id);
+        merged++;
+      }
+    }
+  }
+  // Phase 2: Decay old cells
+  let decayed = 0;
+  for (const cell of state.cells) {
+    if (cell.primitives.jepa != null) {
+      cell.primitives.jepa = Math.max(0, cell.primitives.jepa * 0.95);
+      decayed++;
+    }
+  }
+  // Phase 3: Prune weak cells
+  const weakIds = state.cells.filter(c => (c.primitives.jepa || 0) < 0.05).map(c => c.id);
+  state.cells = state.cells.filter(c => !weakIds.includes(c.id));
+  state.edges = state.edges.filter(e => !weakIds.includes(e.from) && !weakIds.includes(e.to));
+  setStatus(`GC: merged ${merged}, decayed ${decayed}, pruned ${weakIds.length}`);
+  saveLocal();
+  renderAll();
+}
+
+function loadSample() {
+  state.cells = [];
+  state.edges = [];
+  state.nextId = 1;
+  // Sample: 3 cells with a flow
+  addCell('number', 100, 100);
+  addCell('formula', 350, 100);
+  addCell('number', 600, 100);
+  state.selected = null;
+  // Add edges: cell-1 → cell-2 → cell-3
+  state.edges.push({ id: 'e-1', from: 'cell-1', to: 'cell-2', kind: 'depends_on' });
+  state.edges.push({ id: 'e-2', from: 'cell-2', to: 'cell-3', kind: 'depends_on' });
+  // Update primitives to reflect the flow
+  state.cells[0].primitives.z_out = ['cell-2'];
+  state.cells[1].primitives.z_in = ['cell-1'];
+  state.cells[1].primitives.z_out = ['cell-3'];
+  state.cells[2].primitives.z_in = ['cell-2'];
+  state.cells[0].primitives.jepa = 0.42;
+  state.cells[1].primitives.jepa = 0.18;
+  state.cells[1].primitives.vibe = { pos: 5, vel: 1.2, acc: 0.1 };
+  state.cells[2].primitives.jepa = 0.05;
+  state.cells[2].primitives.gc = { phase: 2, progress: 0.8 };
+  state.cells[1].primitives.murmur = 'cell-3';
+  saveLocal();
+  renderAll();
+  setStatus('loaded sample: 3 cells with depends_on flow');
+}
+
+function saveLocal() {
+  localStorage.setItem('quilt_ide_state', JSON.stringify({
+    cells: state.cells,
+    edges: state.edges,
+    nextId: state.nextId,
+  }));
+}
+
+function loadLocal() {
+  const s = localStorage.getItem('quilt_ide_state');
+  if (s) {
+    const parsed = JSON.parse(s);
+    state.cells = parsed.cells || [];
+    state.edges = parsed.edges || [];
+    state.nextId = parsed.nextId || 1;
+  }
+}
+
+function saveQzt() {
+  const sheet = {
+    schema: 'quilt-zip-target/v1',
+    metadata: {
+      name: 'Quilt IDE export',
+      description: 'Exported from quilt-ide.html',
+      generated: new Date().toISOString(),
+    },
+    cells: state.cells.map(c => {
+      // Each cell becomes a set of cell addresses
+      const cells = [];
+      cells.push({ address: `cell.${c.id}.name`, kind: 'string', value: c.name });
+      cells.push({ address: `cell.${c.id}.kind`, kind: 'string', value: c.kind });
+      if (c.primitives) {
+        const p = c.primitives;
+        for (let i = 0; i < (p.z_in || []).length; i++) {
+          cells.push({ address: `cell.${c.id}.z_in[${i}]`, kind: 'string', value: p.z_in[i] });
+        }
+        for (let i = 0; i < (p.z_out || []).length; i++) {
+          cells.push({ address: `cell.${c.id}.z_out[${i}]`, kind: 'string', value: p.z_out[i] });
+        }
+        if (p.jepa != null) cells.push({ address: `cell.${c.id}.jepa`, kind: 'f64', value: p.jepa });
+        if (p.double_entry != null) cells.push({ address: `cell.${c.id}.double_entry`, kind: 'f64', value: p.double_entry });
+        if (p.vibe) {
+          cells.push({ address: `cell.${c.id}.vibe.pos`, kind: 'f64', value: p.vibe.pos });
+          cells.push({ address: `cell.${c.id}.vibe.vel`, kind: 'f64', value: p.vibe.vel });
+          cells.push({ address: `cell.${c.id}.vibe.acc`, kind: 'f64', value: p.vibe.acc });
+        }
+        if (p.gc) cells.push({ address: `cell.${c.id}.gc.phase`, kind: 'usize', value: p.gc.phase });
+        if (p.murmur) cells.push({ address: `cell.${c.id}.murmur`, kind: 'string', value: p.murmur });
+        if (p.graph) cells.push({ address: `cell.${c.id}.graph`, kind: 'string', value: p.graph });
+      }
+      return cells;
+    }).flat(),
+    edges: state.edges.map(e => ({
+      from: `cell.${e.from}`,
+      to: `cell.${e.to}`,
+      kind: e.kind,
+    })),
+  };
+  const blob = new Blob([JSON.stringify(sheet, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'quilt-sheet.qzt';
+  a.click();
+  URL.revokeObjectURL(url);
+  setStatus(`saved .qzt: ${state.cells.length} cells, ${state.edges.length} edges`);
+}
+
+function loadQzt(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const sheet = JSON.parse(e.target.result);
+      // Group cells by id
+      const byId = {};
+      for (const c of sheet.cells || []) {
+        const m = c.address.match(/^cell\.([^.]+)\.(.+)$/);
+        if (!m) continue;
+        const id = m[1], field = m[2];
+        if (!byId[id]) byId[id] = { id, name: id, kind: 'number', primitives: {} };
+        // Map field to kind
+        if (field === 'name') byId[id].name = c.value;
+        else if (field === 'kind') byId[id].kind = c.value;
+        else if (field.startsWith('z_in[')) {
+          byId[id].primitives.z_in = byId[id].primitives.z_in || [];
+          const i = parseInt(field.match(/\[(\d+)\]/)[1]);
+          byId[id].primitives.z_in[i] = c.value;
+        } else if (field.startsWith('z_out[')) {
+          byId[id].primitives.z_out = byId[id].primitives.z_out || [];
+          const i = parseInt(field.match(/\[(\d+)\]/)[1]);
+          byId[id].primitives.z_out[i] = c.value;
+        } else if (field === 'jepa') byId[id].primitives.jepa = c.value;
+        else if (field === 'double_entry') byId[id].primitives.double_entry = c.value;
+        else if (field === 'vibe.pos') byId[id].primitives.vibe = byId[id].primitives.vibe || {};
+        else if (field === 'vibe.vel') byId[id].primitives.vibe = byId[id].primitives.vibe || {};
+        else if (field === 'vibe.acc') byId[id].primitives.vibe = byId[id].primitives.vibe || {};
+        else if (field === 'vibe.pos') byId[id].primitives.vibe.pos = c.value;
+        else if (field === 'vibe.vel') byId[id].primitives.vibe.vel = c.value;
+        else if (field === 'vibe.acc') byId[id].primitives.vibe.acc = c.value;
+        else if (field === 'gc.phase') byId[id].primitives.gc = { phase: c.value, progress: 0 };
+        else if (field === 'murmur') byId[id].primitives.murmur = c.value;
+        else if (field === 'graph') byId[id].primitives.graph = c.value;
+      }
+      state.cells = Object.values(byId).map((c, i) => ({
+        ...c,
+        x: 100 + (i % 4) * 250,
+        y: 100 + Math.floor(i / 4) * 200,
+      }));
+      state.edges = (sheet.edges || []).map((e, i) => {
+        const from = e.from.replace('cell.', '');
+        const to = e.to.replace('cell.', '');
+        return { id: 'e-' + i, from, to, kind: e.kind };
+      });
+      // Update nextId
+      const maxId = state.cells.reduce((m, c) => {
+        const n = parseInt(c.id.replace('cell-', ''));
+        return Math.max(m, n);
+      }, 0);
+      state.nextId = maxId + 1;
+      saveLocal();
+      renderAll();
+      setStatus(`loaded .qzt: ${state.cells.length} cells, ${state.edges.length} edges`);
+    } catch (err) {
+      setStatus('error loading .qzt: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function clearAll() {
+  if (!confirm('Clear the entire canvas? This cannot be undone.')) return;
+  state.cells = [];
+  state.edges = [];
+  state.selected = null;
+  state.nextId = 1;
+  saveLocal();
+  renderAll();
+  setStatus('cleared canvas');
+}
+
+// ============================================================================
+// Wire up
+// ============================================================================
+renderPalette();
+loadLocal();
+renderAll();
+
+// Drag from palette to canvas
+const canvas = document.getElementById('canvas');
+canvas.addEventListener('dragover', e => e.preventDefault());
+canvas.addEventListener('drop', e => {
+  e.preventDefault();
+  const kind = e.dataTransfer.getData('text/kind');
+  const moveId = e.dataTransfer.getData('text/move-cell');
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left + canvas.scrollLeft - state.pan.x;
+  const y = e.clientY - rect.top + canvas.scrollTop - state.pan.y;
+  if (kind) {
+    addCell(kind, x, y);
+  } else if (moveId) {
+    const cell = state.cells.find(c => c.id === moveId);
+    if (cell) {
+      cell.x = x - 60;
+      cell.y = y - 40;
+      saveLocal();
+      renderAll();
+    }
+  }
+});
+
+// Track phantom edge mouse position
+canvas.addEventListener('mousemove', e => {
+  if (state.pendingEdge) {
+    state.phantomEdge = { x: e.clientX, y: e.clientY };
+    renderEdges();
+  }
+});
+canvas.addEventListener('mouseup', e => {
+  if (state.pendingEdge) {
+    // Check if mouse is over a cell port
+    const target = e.target;
+    if (target.classList && target.classList.contains('port')) {
+      const toCell = target.dataset.cell;
+      const toPort = target.dataset.port;
+      if (toCell && toCell !== state.pendingEdge.fromCellId) {
+        // Create edge
+        const edge = {
+          id: 'e-' + Date.now(),
+          from: state.pendingEdge.fromPort === 'z_out' ? state.pendingEdge.fromCellId : toCell,
+          to: state.pendingEdge.fromPort === 'z_out' ? toCell : state.pendingEdge.fromCellId,
+          kind: 'depends_on',
+        };
+        state.edges.push(edge);
+        setStatus(`created edge: ${edge.from} → ${edge.to}`);
+        saveLocal();
+      }
+    }
+    state.pendingEdge = null;
+    state.phantomEdge = null;
+    renderAll();
+  }
+});
+
+// Deselect on background click
+canvas.addEventListener('click', e => {
+  if (e.target.id === 'canvas' || e.target.id === 'canvasInner' || e.target.id === 'emptyState') {
+    state.selected = null;
+    renderAll();
+  }
+});
+
+// Buttons
+document.getElementById('newCellBtn').onclick = () => addCell('number', 200 + state.cells.length * 30, 200 + state.cells.length * 30);
+document.getElementById('tickBtn').onclick = tickAll;
+document.getElementById('gcBtn').onclick = gcAll;
+document.getElementById('sampleBtn').onclick = loadSample;
+document.getElementById('loadBtn').onclick = () => document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange = e => {
+  if (e.target.files[0]) loadQzt(e.target.files[0]);
+};
+document.getElementById('saveBtn').onclick = saveQzt;
+document.getElementById('clearBtn').onclick = clearAll;
+</script>
+</body>
+</html>
