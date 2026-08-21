@@ -1,0 +1,639 @@
+{
+  "schema": "quilt-zip-target/v1",
+  "metadata": {
+    "name": "Sonar-Vision as Quilt sheet",
+    "description": "The sonar-vision project (pure-Python active sonar simulation, signal processing, multi-object tracking, spatial mapping) ported to Quilt. The 5-stage pipeline is a cell chain. The components are cells. The cannonball is a vertical column of depth cells. The cameras are draggable assets. The ML training uses the camera daisy chain as supervised data. The STT input is human supervision. The confidence tiers progress from trigger-everything to trigger-only-unusual. This is what the Quilt IDE for sonar-vision looks like.",
+    "generated": "2026-08-21T01:45:38Z",
+    "address_root": "sonarvision"
+  },
+  "rooms": [
+    {
+      "id": "pipeline",
+      "name": "\ud83d\udce1 Sonar pipeline (5 stages)",
+      "cell_count": 12
+    },
+    {
+      "id": "component",
+      "name": "\ud83e\udde9 Components (5 classes)",
+      "cell_count": 40
+    },
+    {
+      "id": "cannonball",
+      "name": "\u2693 The cannonball (6 depth cells)",
+      "cell_count": 12
+    },
+    {
+      "id": "camera",
+      "name": "\ud83d\udcf7 Cameras (6)",
+      "cell_count": 12
+    },
+    {
+      "id": "tier",
+      "name": "\ud83d\udcca Confidence tiers (3)",
+      "cell_count": 6
+    },
+    {
+      "id": "species",
+      "name": "\ud83d\udc1f Species (8)",
+      "cell_count": 8
+    }
+  ],
+  "cells": [
+    {
+      "address": "pipeline.ping.name",
+      "kind": "string",
+      "value": "Ping (emit)"
+    },
+    {
+      "address": "pipeline.ping.description",
+      "kind": "string",
+      "value": "Active sonar ping \u2014 emits acoustic signal"
+    },
+    {
+      "address": "pipeline.propagation.name",
+      "kind": "string",
+      "value": "Propagation"
+    },
+    {
+      "address": "pipeline.propagation.description",
+      "kind": "string",
+      "value": "Two-way transmission loss: spreading + absorption"
+    },
+    {
+      "address": "pipeline.echo.name",
+      "kind": "string",
+      "value": "Echo (return)"
+    },
+    {
+      "address": "pipeline.echo.description",
+      "kind": "string",
+      "value": "Acoustic echo returns with target strength"
+    },
+    {
+      "address": "pipeline.detection.name",
+      "kind": "string",
+      "value": "Detection"
+    },
+    {
+      "address": "pipeline.detection.description",
+      "kind": "string",
+      "value": "SNR threshold \u2014 extract detections from echo"
+    },
+    {
+      "address": "pipeline.tracker.name",
+      "kind": "string",
+      "value": "ObjectTracker"
+    },
+    {
+      "address": "pipeline.tracker.description",
+      "kind": "string",
+      "value": "Multi-target gating, velocity estimation"
+    },
+    {
+      "address": "pipeline.map.name",
+      "kind": "string",
+      "value": "SpatialMap"
+    },
+    {
+      "address": "pipeline.map.description",
+      "kind": "string",
+      "value": "Occupancy grid from sonar returns"
+    },
+    {
+      "address": "component.Sonar.name",
+      "kind": "string",
+      "value": "Sonar"
+    },
+    {
+      "address": "component.Sonar.n_methods",
+      "kind": "usize",
+      "value": 8
+    },
+    {
+      "address": "component.Sonar.method[0]",
+      "kind": "string",
+      "value": "ping"
+    },
+    {
+      "address": "component.Sonar.method[1]",
+      "kind": "string",
+      "value": "ping_return_signal"
+    },
+    {
+      "address": "component.Sonar.method[2]",
+      "kind": "string",
+      "value": "round_trip_time"
+    },
+    {
+      "address": "component.Sonar.method[3]",
+      "kind": "string",
+      "value": "spreading_loss"
+    },
+    {
+      "address": "component.Sonar.method[4]",
+      "kind": "string",
+      "value": "absorption_loss"
+    },
+    {
+      "address": "component.Sonar.method[5]",
+      "kind": "string",
+      "value": "total_loss"
+    },
+    {
+      "address": "component.Sonar.method[6]",
+      "kind": "string",
+      "value": "in_beam"
+    },
+    {
+      "address": "component.Sonar.method[7]",
+      "kind": "string",
+      "value": "beam_coverage"
+    },
+    {
+      "address": "component.Signal.name",
+      "kind": "string",
+      "value": "Signal"
+    },
+    {
+      "address": "component.Signal.n_methods",
+      "kind": "usize",
+      "value": 9
+    },
+    {
+      "address": "component.Signal.method[0]",
+      "kind": "string",
+      "value": "sine"
+    },
+    {
+      "address": "component.Signal.method[1]",
+      "kind": "string",
+      "value": "chirp"
+    },
+    {
+      "address": "component.Signal.method[2]",
+      "kind": "string",
+      "value": "noise"
+    },
+    {
+      "address": "component.Signal.method[3]",
+      "kind": "string",
+      "value": "lowpass"
+    },
+    {
+      "address": "component.Signal.method[4]",
+      "kind": "string",
+      "value": "highpass"
+    },
+    {
+      "address": "component.Signal.method[5]",
+      "kind": "string",
+      "value": "bandpass"
+    },
+    {
+      "address": "component.Signal.method[6]",
+      "kind": "string",
+      "value": "fft"
+    },
+    {
+      "address": "component.Signal.method[7]",
+      "kind": "string",
+      "value": "energy"
+    },
+    {
+      "address": "component.Signal.method[8]",
+      "kind": "string",
+      "value": "envelope"
+    },
+    {
+      "address": "component.ObjectTracker.name",
+      "kind": "string",
+      "value": "ObjectTracker"
+    },
+    {
+      "address": "component.ObjectTracker.n_methods",
+      "kind": "usize",
+      "value": 3
+    },
+    {
+      "address": "component.ObjectTracker.method[0]",
+      "kind": "string",
+      "value": "update"
+    },
+    {
+      "address": "component.ObjectTracker.method[1]",
+      "kind": "string",
+      "value": "predict"
+    },
+    {
+      "address": "component.ObjectTracker.method[2]",
+      "kind": "string",
+      "value": "track"
+    },
+    {
+      "address": "component.SpatialMap.name",
+      "kind": "string",
+      "value": "SpatialMap"
+    },
+    {
+      "address": "component.SpatialMap.n_methods",
+      "kind": "usize",
+      "value": 7
+    },
+    {
+      "address": "component.SpatialMap.method[0]",
+      "kind": "string",
+      "value": "add_obstacle"
+    },
+    {
+      "address": "component.SpatialMap.method[1]",
+      "kind": "string",
+      "value": "set_cell"
+    },
+    {
+      "address": "component.SpatialMap.method[2]",
+      "kind": "string",
+      "value": "get_cell"
+    },
+    {
+      "address": "component.SpatialMap.method[3]",
+      "kind": "string",
+      "value": "mark_free_ray"
+    },
+    {
+      "address": "component.SpatialMap.method[4]",
+      "kind": "string",
+      "value": "ray_cast"
+    },
+    {
+      "address": "component.SpatialMap.method[5]",
+      "kind": "string",
+      "value": "occupancy_count"
+    },
+    {
+      "address": "component.SpatialMap.method[6]",
+      "kind": "string",
+      "value": "coverage"
+    },
+    {
+      "address": "component.SonarDisplay.name",
+      "kind": "string",
+      "value": "SonarDisplay"
+    },
+    {
+      "address": "component.SonarDisplay.n_methods",
+      "kind": "usize",
+      "value": 3
+    },
+    {
+      "address": "component.SonarDisplay.method[0]",
+      "kind": "string",
+      "value": "radar_sweep"
+    },
+    {
+      "address": "component.SonarDisplay.method[1]",
+      "kind": "string",
+      "value": "occupancy_map"
+    },
+    {
+      "address": "component.SonarDisplay.method[2]",
+      "kind": "string",
+      "value": "tracker_overlay"
+    },
+    {
+      "address": "cannonball.cell-0.depth",
+      "kind": "f64",
+      "value": 0
+    },
+    {
+      "address": "cannonball.cell-0.name",
+      "kind": "string",
+      "value": "Surface cell"
+    },
+    {
+      "address": "cannonball.cell-5.depth",
+      "kind": "f64",
+      "value": 5
+    },
+    {
+      "address": "cannonball.cell-5.name",
+      "kind": "string",
+      "value": "Shallow cell"
+    },
+    {
+      "address": "cannonball.cell-10.depth",
+      "kind": "f64",
+      "value": 10
+    },
+    {
+      "address": "cannonball.cell-10.name",
+      "kind": "string",
+      "value": "Mid cell"
+    },
+    {
+      "address": "cannonball.cell-15.depth",
+      "kind": "f64",
+      "value": 15
+    },
+    {
+      "address": "cannonball.cell-15.name",
+      "kind": "string",
+      "value": "Deep cell"
+    },
+    {
+      "address": "cannonball.cell-20.depth",
+      "kind": "f64",
+      "value": 20
+    },
+    {
+      "address": "cannonball.cell-20.name",
+      "kind": "string",
+      "value": "Deeper cell"
+    },
+    {
+      "address": "cannonball.cell-25.depth",
+      "kind": "f64",
+      "value": 25
+    },
+    {
+      "address": "cannonball.cell-25.name",
+      "kind": "string",
+      "value": "Bottom cell"
+    },
+    {
+      "address": "camera.cam-1.name",
+      "kind": "string",
+      "value": "GoPro 12 Black"
+    },
+    {
+      "address": "camera.cam-1.specs",
+      "kind": "string",
+      "value": "5.3K \u00b7 240fps \u00b7 low-light"
+    },
+    {
+      "address": "camera.cam-2.name",
+      "kind": "string",
+      "value": "Sony A7S III"
+    },
+    {
+      "address": "camera.cam-2.specs",
+      "kind": "string",
+      "value": "4K \u00b7 120fps \u00b7 full-frame"
+    },
+    {
+      "address": "camera.cam-3.name",
+      "kind": "string",
+      "value": "Insta360 X4"
+    },
+    {
+      "address": "camera.cam-3.specs",
+      "kind": "string",
+      "value": "5.7K \u00b7 360\u00b0 \u00b7 waterproof"
+    },
+    {
+      "address": "camera.cam-4.name",
+      "kind": "string",
+      "value": "Olympus TG-7"
+    },
+    {
+      "address": "camera.cam-4.specs",
+      "kind": "string",
+      "value": "4K \u00b7 macro \u00b7 15m depth"
+    },
+    {
+      "address": "camera.cam-5.name",
+      "kind": "string",
+      "value": "Nikon Z9"
+    },
+    {
+      "address": "camera.cam-5.specs",
+      "kind": "string",
+      "value": "8K \u00b7 120fps \u00b7 flagship"
+    },
+    {
+      "address": "camera.cam-6.name",
+      "kind": "string",
+      "value": "Garmin VIRB"
+    },
+    {
+      "address": "camera.cam-6.specs",
+      "kind": "string",
+      "value": "4K \u00b7 rugged \u00b7 action"
+    },
+    {
+      "address": "tier.1.name",
+      "kind": "string",
+      "value": "trigger review on everything"
+    },
+    {
+      "address": "tier.1.description",
+      "kind": "string",
+      "value": "Low confidence \u2014 every event is flagged for human review"
+    },
+    {
+      "address": "tier.2.name",
+      "kind": "string",
+      "value": "trigger review with predicted answer"
+    },
+    {
+      "address": "tier.2.description",
+      "kind": "string",
+      "value": "Medium confidence \u2014 ML prediction shown alongside review request"
+    },
+    {
+      "address": "tier.3.name",
+      "kind": "string",
+      "value": "review only the unusual few"
+    },
+    {
+      "address": "tier.3.description",
+      "kind": "string",
+      "value": "High confidence \u2014 only low-confidence events surface to human"
+    },
+    {
+      "address": "species.0",
+      "kind": "string",
+      "value": "cod"
+    },
+    {
+      "address": "species.1",
+      "kind": "string",
+      "value": "haddock"
+    },
+    {
+      "address": "species.2",
+      "kind": "string",
+      "value": "pollock"
+    },
+    {
+      "address": "species.3",
+      "kind": "string",
+      "value": "halibut"
+    },
+    {
+      "address": "species.4",
+      "kind": "string",
+      "value": "flounder"
+    },
+    {
+      "address": "species.5",
+      "kind": "string",
+      "value": "lumpfish"
+    },
+    {
+      "address": "species.6",
+      "kind": "string",
+      "value": "shark"
+    },
+    {
+      "address": "species.7",
+      "kind": "string",
+      "value": "mackerel"
+    },
+    {
+      "address": "stats.pipeline_stages",
+      "kind": "usize",
+      "value": 6
+    },
+    {
+      "address": "stats.components",
+      "kind": "usize",
+      "value": 5
+    },
+    {
+      "address": "stats.cannonball_cells",
+      "kind": "usize",
+      "value": 6
+    },
+    {
+      "address": "stats.cameras",
+      "kind": "usize",
+      "value": 6
+    },
+    {
+      "address": "stats.tiers",
+      "kind": "usize",
+      "value": 3
+    },
+    {
+      "address": "stats.species",
+      "kind": "usize",
+      "value": 8
+    },
+    {
+      "address": "stats.total_methods",
+      "kind": "usize",
+      "value": 30
+    },
+    {
+      "address": "stats.polyformalism_ports",
+      "kind": "usize",
+      "value": 12
+    },
+    {
+      "address": "stats.now",
+      "kind": "f64",
+      "value": 1787276738.7507317
+    }
+  ],
+  "edges": [
+    {
+      "from": "pipeline.ping",
+      "to": "pipeline.propagation",
+      "kind": "flows_to"
+    },
+    {
+      "from": "pipeline.propagation",
+      "to": "pipeline.echo",
+      "kind": "flows_to"
+    },
+    {
+      "from": "pipeline.echo",
+      "to": "pipeline.detection",
+      "kind": "flows_to"
+    },
+    {
+      "from": "pipeline.detection",
+      "to": "pipeline.tracker",
+      "kind": "flows_to"
+    },
+    {
+      "from": "pipeline.tracker",
+      "to": "pipeline.map",
+      "kind": "flows_to"
+    },
+    {
+      "from": "component.Sonar",
+      "to": "pipeline.ping",
+      "kind": "implements"
+    },
+    {
+      "from": "component.Sonar",
+      "to": "pipeline.propagation",
+      "kind": "implements"
+    },
+    {
+      "from": "component.Sonar",
+      "to": "pipeline.echo",
+      "kind": "implements"
+    },
+    {
+      "from": "component.Signal",
+      "to": "pipeline.echo",
+      "kind": "filters"
+    },
+    {
+      "from": "component.ObjectTracker",
+      "to": "pipeline.tracker",
+      "kind": "implements"
+    },
+    {
+      "from": "component.SpatialMap",
+      "to": "pipeline.map",
+      "kind": "implements"
+    },
+    {
+      "from": "component.SonarDisplay",
+      "to": "pipeline.map",
+      "kind": "renders"
+    },
+    {
+      "from": "cannonball.cell-0",
+      "to": "pipeline.detection",
+      "kind": "feeds"
+    },
+    {
+      "from": "cannonball.cell-5",
+      "to": "pipeline.detection",
+      "kind": "feeds"
+    },
+    {
+      "from": "cannonball.cell-10",
+      "to": "pipeline.detection",
+      "kind": "feeds"
+    },
+    {
+      "from": "cannonball.cell-15",
+      "to": "pipeline.detection",
+      "kind": "feeds"
+    },
+    {
+      "from": "cannonball.cell-20",
+      "to": "pipeline.detection",
+      "kind": "feeds"
+    },
+    {
+      "from": "cannonball.cell-25",
+      "to": "pipeline.detection",
+      "kind": "feeds"
+    }
+  ],
+  "stats": {
+    "total_cells": 99,
+    "total_rooms": 6,
+    "total_edges": 18,
+    "pipeline_stages": 6,
+    "components": 5,
+    "cannonball_cells": 6,
+    "cameras": 6
+  }
+}
