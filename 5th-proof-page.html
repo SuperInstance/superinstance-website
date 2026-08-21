@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The 5th Impossibility Proof</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #000;
+      color: #0f0;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
+      border-bottom: 1px solid #0f0;
+      padding-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      color: #0f0;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+
+    .proof {
+      margin-bottom: 60px;
+      border-left: 2px solid #0f0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .proof h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #0f0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .demo {
+      background-color: #0a0a0a;
+      border: 1px solid #0f0;
+      border-radius: 4px;
+      padding: 20px;
+      margin-top: 15px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+    }
+
+    .demo canvas {
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #0f0;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+    }
+
+    .controls {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .controls button {
+      background-color: #000;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 6px 12px;
+      margin: 0 5px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .controls button:hover {
+      background-color: #0f0;
+      color: #000;
+    }
+
+    .controls button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      margin-top: 15px;
+      color: #0f0;
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    .final-proof {
+      background-color: #0a0a0a;
+      border: 2px solid #f00;
+      border-radius: 6px;
+      padding: 25px;
+      margin-top: 40px;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .final-proof h2 {
+      color: #f00;
+      text-transform: uppercase;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .final-proof p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .final-proof .demo {
+      background-color: #110000;
+      border-color: #f00;
+    }
+
+    .final-proof .controls {
+      margin-top: 10px;
+    }
+
+    .final-proof .controls button {
+      background-color: #110000;
+      color: #f00;
+      border: 1px solid #f00;
+    }
+
+    .final-proof .controls button:hover {
+      background-color: #f00;
+      color: #000;
+    }
+
+    .open-question {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 1.3rem;
+      color: #f00;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .open-question p {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      color: #fff;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .animation {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      position: relative;
+      height: 150px;
+      border: 1px solid #0f0;
+      background-color: #000;
+    }
+
+    .device {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #0f0;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: bold;
+      position: absolute;
+      top: 20px;
+      z-index: 10;
+      box-shadow: 0 0 8px #0f0;
+      transition: transform 0.3s ease;
+    }
+
+    .device.voltmeter {
+      left: 10%;
+    }
+
+    .device.walkie-talkie {
+      right: 10%;
+    }
+
+    .signal {
+      position: absolute;
+      top: 80px;
+      width: 2px;
+      height: 60px;
+      background-color: #0f0;
+      z-index: 5;
+      opacity: 0.7;
+    }
+
+    .signal::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -8px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #0f0;
+      border-radius: 50%;
+      background-color: #000;
+      box-shadow: 0 0 5px #0f0;
+    }
+
+    .signal::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: -8px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #0f0;
+      border-radius: 50%;
+      background-color: #000;
+      box-shadow: 0 0 5px #0f0;
+    }
+
+    .pulse {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #0f0;
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 10px #0f0;
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 1;
+      }
+    }
+
+    .pulse:nth-child(1) {
+      left: 25%;
+      top: 70px;
+      animation-delay: 0s;
+    }
+
+    .pulse:nth-child(2) {
+      left: 45%;
+      top: 70px;
+      animation-delay: 0.5s;
+    }
+
+    .pulse:nth-child(3) {
+      left: 65%;
+      top: 70px;
+      animation-delay: 1s;
+    }
+
+    .pulse:nth-child(4) {
+      left: 85%;
+      top: 70px;
+      animation-delay: 1.2s;
+    }
+
+    .heisenberg {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      height: 150px;
+      background-color: #000;
+      border: 1px solid #0f0;
+      position: relative;
+    }
+
+    .uncertainty-box {
+      width: 120px;
+      height: 120px;
+      border: 2px solid #0f0;
+      position: relative;
+      background-color: #0a0a0a;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+    }
+
+    .particle {
+      width: 12px;
+      height: 12px;
+      background-color: #0f0;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 8px #0f0;
+      transition: top 0.5s, left 0.5s;
+    }
+
+    .particle.move {
+      animation: moveParticle 1.5s infinite alternate;
+    }
+
+    @keyframes moveParticle {
+      0% {
+        top: 20%;
+        left: 20%;
+      }
+      100% {
+        top: 80%;
+        left: 80%;
+      }
+    }
+
+    .box-label {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #0f0;
+    }
+
+    .box-label::before {
+      content: '↕';
+      margin-right: 5px;
+    }
+
+    .box-label::after {
+      content: '→';
+      margin-left: 5px;
+    }
+
+    .layer {
+      width: 20px;
+      height: 20px;
+      background-color: #0f0;
+      border: 1px solid #000;
+      position: absolute;
+      border-radius: 2px;
+      box-shadow: 0 0 5px #0f0;
+    }
+
+    .layer:nth-child(1) { top: 10px; left: 10px; }
+    .layer:nth-child(2) { top: 30px; left: 10px; }
+    .layer:nth-child(3) { top: 50px; left: 10px; }
+    .layer:nth-child(4) { top: 70px; left: 10px; }
+    .layer:nth-child(5) { top: 90px; left: 10px; }
+    .layer:nth-child(6) { top: 110px; left: 10px; }
+    .layer:nth-child(7) { top: 130px; left: 10px; }
+
+    .layer-label {
+      position: absolute;
+      top: 5px;
+      right: -25px;
+      font-size: 0.8rem;
+      color: #0f0;
+      width: 70px;
+      text-align: right;
+    }
+
+    .tax {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      height: 120px;
+      background-color: #000;
+      border: 1px solid #0f0;
+      position: relative;
+    }
+
+    .tax-bar {
+      width: 80%;
+      height: 30px;
+      background-color: #0a0a0a;
+      border: 1px solid #0f0;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .tax-fill {
+      width: 100%;
+      height: 100%;
+      background-color: #0f0;
+      position: relative;
+      transition: width 1s ease;
+    }
+
+    .tax-fill::before {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      color: #000;
+    }
+
+    .tax-label {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #0f0;
+      text-align: center;
+    }
+
+    .tax-claim {
+      font-size: 0.9rem;
+      margin-top: 10px;
+      text-align: center;
+      color: #0f0;
+      opacity: 0.8;
+    }
+
+    .disrupt {
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+      border-radius: 50%;
+      position: absolute;
+      top: 60px;
+      left: 45%;
+      animation: blink 1.5s infinite;
+      box-shadow: 0 0 10px #f00;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .disruption {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 0, 0, 0.15);
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .disruption.active {
+      opacity: 1;
+    }
+
+    .fascia {
+      width: 100%;
+      height: 100px;
+      background-color: #000;
+      border: 2px solid #f00;
+      position: relative;
+      overflow: hidden;
+      margin: 20px 0;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    }
+
+    .fascia::before {
+      content: 'FASCIA';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #f00;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #f00;
+      opacity: 0.6;
+    }
+
+    .fascia-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+      background-size: 10px 10px;
+      opacity: 0.3;
+    }
+
+    .fascia-perturb {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background-color: rgba(255, 0, 0, 0.3);
+      border: 2px solid #f00;
+      border-radius: 50%;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .fascia-perturb.active {
+      opacity: 1;
+    }
+
+    .fascia-interrupt {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 0, 0, 0.1);
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .fascia-interrupt.active {
+      opacity: 1;
+    }
+
+    .fascia-observation {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: #0f0;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 5px #0f0;
+      opacity: 0;
+    }
+
+    .fascia-observation.active {
+      opacity: 1;
+    }
+
+    .fascia-ripple {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px solid #f00;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+      opacity: 0;
+      animation: ripple 1.5s infinite;
+    }
+
+    @keyframes ripple {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(2);
+      }
+    }
+
+    .fascia-ripple.active {
+      opacity: 0.3;
+    }
+
+    .fascia-attributes {
+      font-size: 0.9rem;
+      margin-top: 10px;
+      text-align: center;
+      color: #f00;
+      letter-spacing: 0.5px;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .device {
+        width: 50px;
+        height: 50px;
+        font-size: 0.9rem;
+      }
+      
+      .uncertainty-box {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .particle {
+        width: 10px;
+        height: 10px;
+      }
+      
+      .fascia {
+        height: 80px;
+      }
+      
+      .fascia-ripple {
+        border-width: 1px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>The 5th Impossibility Proof</h1>
+  <p class="subtitle">the fascia cannot be observed without perturbing it</p>
+
+  <div class="proof">
+    <h2>Proof 1: Budget cannot be created (γ+η conservation)</h2>
+    <div class="demo">
+      <div class="tax">
+        <div class="tax-bar">
+          <div class="tax-fill" id="budget-fill"></div>
+        </div>
+        <div class="tax-label">Budget Budget</div>
+        <div class="tax-claim">Total budget is fixed: γ + η = constant</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="budget-increase">Increase γ</button>
+      <button id="budget-decrease">Decrease γ</button>
+      <button id="budget-reset">Reset</button>
+    </div>
+    <div class="note">Any increase in γ (effort) must be offset by decrease in η (reserves), and vice versa.</div>
+  </div>
+
+  <div class="proof">
+    <h2>Proof 2: Perfect observation is impossible (uncertainty)</h2>
+    <div class="demo">
+      <div class="heisenberg">
+        <div class="uncertainty-box">
+          <div class="particle" id="particle"></div>
+          <div class="box-label">Position</div>
+          <div class="box-label" style="right: -25px; top: -25px;">Momentum</div>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="observe-position">Observe Position</button>
+      <button id="observe-momentum">Observe Momentum</button>
+      <button id="observe-both">Observe Both</button>
+    </div>
+    <div class="note">Observing one variable disturbs the other. Perfect knowledge is impossible.</div>
+  </div>
+
+  <div class="proof">
+    <h2>Proof 3: Substrate-agnosticism requires all 7 layers</h2>
+    <div class="demo">
+      <div style="display: flex; justify-content: center; align-items: center; height: 120px; background-color: #000; border: 1px solid #0f0;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div style="display: flex; gap: 5px;">
+            <div class="layer" style="background-color: #0f0;"></div>
+            <div class="layer" style="background-color: #0f0;"></div>
+            <div class="layer" style="background-color: #0f0;"></div>
+            <div class="layer" style="background-color: #0f0;"></div>
+            <div class="layer" style="background-color: #0f0;"></div>
+            <div class="layer" style="background-color: #0f0;"></div>
+            <div class="layer" style="background-color: #0f0;"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; width: 140px; font-size: 0.8rem; color: #0f0;">
+            <span>Layer 1</span>
+            <span>Layer 7</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="layer-1-toggle">Toggle Layer 1</button>
+      <button id="layer-7-toggle">Toggle Layer 7</button>
+      <button id="layer-reset">Reset All</button>
+    </div>
+    <div class="note">Removing any layer breaks the substrate-agnostic stack. All 7 are required.</div>
+  </div>
+
+  <div class="proof">
+    <h2>Proof 4: Composition has a tax</h2>
+    <div class="demo">
+      <div class="tax">
+        <div class="tax-bar">
+          <div class="tax-fill" id="composition-fill"></div>
+        </div>
+        <div class="tax-label">Composition Tax</div>
+        <div class="tax-claim">Each layer adds 14.3% overhead</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="composition-add-layer">Add Layer</button>
+      <button id="composition-reset">Reset</button>
+    </div>
+    <div class="note">Every compositional layer introduces entropy tax that cannot be eliminated.</div>
+  </div>
+
+  <div class="final-proof">
+    <h2>Proof 5: The Fascia cannot be observed without perturbing it</h2>
+    <p>The fascia is the boundary condition between observation and the observed. To see it, you must touch it. To touch it, you alter it. The act of seeing is an act of changing.</p>
+    
+    <div class="demo">
+      <div class="fascia">
+        <div class="fascia-grid"></div>
+        <div class="fascia-perturb" id="fascia-perturb"></div>
+        <div class="fascia-interrupt" id="fascia-interrupt"></div>
+        <div class="fascia-observation" id="fascia-observation"></div>
+        <div class="fascia-ripple" id="fascia-ripple"></div>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <button id="fascia-observe">Observe Fascia</button>
+      <button id="fascia-observe-again">Observe Again</button>
+      <button id="fascia-reset">Reset Fascia</button>
+    </div>
+    
+    <div class="fascia-attributes">
+      <div>Observation: <span id="obs-count">0</span></div>
+      <div>Perturbation: <span id="perturb-count">0</span></div>
+      <div>State: <span id="fascia-state">Stable</span></div>
+    </div>
+    
+    <div class="note">Each observation creates a ripple. The fascia is not a mirror—it is a self-revealing wound.</div>
+  </div>
+
+  <div class="open-question">
+    <h2>6th Proof: Open Question</h2>
+    <p>What if the fascia is not a boundary but a lens? What if the perturbation is not an error but the mechanism of revelation? Can the observer become the observed in the same moment? If all observation perturbs, is there a state of pure being that is not a state of observation?</p>
+  </div>
+
+  <script>
+    // Proof 1: Budget γ+η conservation
+    const budgetFill = document.getElementById('budget-fill');
+    let budgetG = 50;
+    let budgetH = 50;
+    
+    document.getElementById('budget-increase').addEventListener('click', () => {
+      if (budgetG < 100) {
+        const diff = Math.min(10, 100 - budgetG);
+        budgetG += diff;
+        budgetH -= diff;
+        budgetFill.style.width = `${budgetG}%`;
+      }
+    });
+    
+    document.getElementById('budget-decrease').addEventListener('click', () => {
+      if (budgetH < 100) {
+        const diff = Math.min(10, 100 - budgetH);
+        budgetH += diff;
+        budgetG -= diff;
+        budgetFill.style.width = `${budgetG}%`;
+      }
+    });
+    
+    document.getElementById('budget-reset').addEventListener('click', () => {
+      budgetG = 50;
+      budgetH = 50;
+      budgetFill.style.width = '50%';
+    });
+
+    // Proof 2: Heisenberg Uncertainty
+    const particle = document.getElementById('particle');
+    let positionObserve = false;
+    let momentumObserve = false;
+    
+    document.getElementById('observe-position').addEventListener('click', () => {
+      particle.style.top = '20%';
+      particle.style.left = '20%';
+      positionObserve = true;
+      momentumObserve = false;
+    });
+    
+    document.getElementById('observe-momentum').addEventListener('click', () => {
+      particle.style.top = '80%';
+      particle.style.left = '80%';
+      momentumObserve = true;
+      positionObserve = false;
+    });
+    
+    document.getElementById('observe-both').addEventListener('click', () => {
+      particle.classList.add('move');
+      setTimeout(() => {
+        particle.classList.remove('move');
+      }, 1500);
+      positionObserve = true;
+      momentumObserve = true;
+    });
+
+    // Proof 3: 7 Layers
+    const layers = document.querySelectorAll('.layer');
+    let layerStates = [true, true, true, true, true, true, true];
+    
+    document.getElementById('layer-1-toggle').addEventListener('click', () => {
+      layerStates[0] = !layerStates[0];
+      layers[0].style.opacity = layerStates[0] ? 1 : 0.2;
+    });
+    
+    document.getElementById('layer-7-toggle').addEventListener('click', () => {
+      layerStates[6] = !layerStates[6];
+      layers[6].style.opacity = layerStates[6] ? 1 : 0.2;
+    });
+    
+    document.getElementById('layer-reset').addEventListener('click', () => {
+      layerStates = [true, true, true, true, true, true, true];
+      layers.forEach((layer, i) => {
+        layer.style.opacity = 1;
+      });
+    });
+
+    // Proof 4: Composition Tax
+    const compositionFill = document.getElementById('composition-fill');
+    let layerCount = 1;
+    let totalTax = 100;
+    
+    document.getElementById('composition-add-layer').addEventListener('click', () => {
+      layerCount++;
+      totalTax *= 1.143;
+      compositionFill.style.width = `${100 * (1 - Math.pow(0.857, layerCount))}%`;
+    });
+    
+    document.getElementById('composition-reset').addEventListener('click', () => {
+      layerCount = 1;
+      totalTax = 100;
+      compositionFill.style.width = '100%';
+    });
+
+    // Proof 5: Fascia Observation
+    const fasciaPerturb = document.getElementById('fascia-perturb');
+    const fasciaInterrupt = document.getElementById('fascia-interrupt');
+    const fasciaObservation = document.getElementById('fascia-observation');
+    const fasciaRipple = document.getElementById('fascia-ripple');
+    const obsCount = document.getElementById('obs-count');
+    const perturbCount = document.getElementById('perturb-count');
+    const fasciaState = document.getElementById('fascia-state');
+    
+    let observationCount = 0;
+    let perturbationCount = 0;
+    
+    document.getElementById('fascia-observe').addEventListener('click', () => {
+      fasciaPerturb.classList.add('active');
+      fasciaInterrupt.classList.add('active');
+      fasciaObservation.classList.add('active');
+      fasciaRipple.classList.add('active');
+      
+      setTimeout(() => {
+        fasciaPerturb.classList.remove('active');
+        fasciaInterrupt.classList.remove('active');
+        fasciaObservation.classList.remove('active');
+        fasciaRipple.classList.remove('active');
+      }, 500);
+      
+      observationCount++;
+      obsCount.textContent = observationCount;
+      perturbationCount++;
+      perturbCount.textContent = perturbationCount;
+      fasciaState.textContent = 'Perturbed';
+    });
+    
+    document.getElementById('fascia-observe-again').addEventListener('click', () => {
+      fasciaPerturb.classList.add('active');
+      fasciaInterrupt.classList.add('active');
+      fasciaObservation.classList.add('active');
+      fasciaRipple.classList.add('active');
+      
+      setTimeout(() => {
+        fasciaPerturb.classList.remove('active');
+        fasciaInterrupt.classList.remove('active');
+        fasciaObservation.classList.remove('active');
+        fasciaRipple.classList.remove('active');
+      }, 500);
+      
+      observationCount++;
+      obsCount.textContent = observationCount;
+      fasciaState.textContent = 'Further Perturbed';
+    });
+    
+    document.getElementById('fascia-reset').addEventListener('click', () => {
+      fasciaPerturb.classList.remove('active');
+      fasciaInterrupt.classList.remove('active');
+      fasciaObservation.classList.remove('active');
+      fasciaRipple.classList.remove('active');
+      
+      observationCount = 0;
+      perturbationCount = 0;
+      obsCount.textContent = '0';
+      perturbCount.textContent = '0';
+      fasciaState.textContent = 'Stable';
+    });
+
+    // Animation setup
+    const animCanvas = document.createElement('canvas');
+    animCanvas.width = 200;
+    animCanvas.height = 100;
+    const ctx = animCanvas.getContext('2d');
+    
+    function animate() {
+      ctx.clearRect(0, 0, animCanvas.width, animCanvas.height);
+      
+      // Draw signal
+      ctx.strokeStyle = '#0f0';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(100, 20);
+      ctx.lineTo(100, 80);
+      ctx.stroke();
+      
+      // Draw pulses
+      const time = Date.now() % 1500;
+      const pulseOffset = (time / 1500) * 400;
+      const pulses = [
+        { x: 40, y: 60 },
+        { x: 80, y: 60 },
+        { x: 120, y: 60 },
+        { x: 160, y: 60 }
+      ];
+      
+      pulses.forEach((p, i) => {
+        const offset = (i * 300) % 400;
+        const progress = (time + offset) % 400;
+        const scale = 0.5 + 0.5 * Math.sin(progress / 100);
+        const opacity = 0.5 + 0.5 * Math.sin(progress / 100);
+        
+        ctx.fillStyle = `rgba(0, 255, 0, ${opacity})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 6 * scale, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
+      // Draw devices
+      ctx.fillStyle = '#0f0';
+      ctx.fillRect(30, 10, 30, 30);
+      ctx.fillRect(140, 10, 30, 30);
+      
+      ctx.font = 'bold 12px monospace';
+      ctx.fillStyle = '#000';
+      ctx.textAlign = 'center';
+      ctx.fillText('V', 45, 30);
+      ctx.fillText('W', 155, 30);
+      
+      requestAnimationFrame(animate);
+    }
+    
+    // Start animation
+    animate();
+  </script>
+</body>
+</html>

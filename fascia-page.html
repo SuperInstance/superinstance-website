@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Fascia</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+    
+    body, html {
+      margin: 0;
+      padding: 0;
+      background-color: #0a192f;
+      color: #00d4ff;
+      font-family: 'Ubuntu Mono', monospace;
+      overflow: hidden;
+      height: 100%;
+      line-height: 1.6;
+    }
+    
+    #header {
+      background-color: #000a15;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #0055aa;
+      position: relative;
+      z-index: 10;
+    }
+    
+    #title {
+      font-size: 2.4em;
+      margin: 0;
+      color: #00d4ff;
+      text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+      letter-spacing: 1px;
+    }
+    
+    #subtitle {
+      font-size: 1.1em;
+      margin-top: 5px;
+      color: #0088cc;
+      opacity: 0.8;
+    }
+    
+    #controls {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px;
+      background-color: #001122;
+      border-bottom: 1px solid #003366;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.9em;
+    }
+    
+    button {
+      background-color: #003366;
+      color: #00d4ff;
+      border: 1px solid #0088cc;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Ubuntu Mono', monospace;
+      font-size: 0.9em;
+      transition: all 0.2s;
+      box-shadow: 0 0 6px rgba(0, 133, 204, 0.3);
+    }
+    
+    button:hover {
+      background-color: #004488;
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+      transform: translateY(-1px);
+    }
+    
+    #status {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background-color: #001122;
+      font-size: 0.9em;
+      border-bottom: 1px solid #003366;
+    }
+    
+    .meter {
+      height: 12px;
+      width: 200px;
+      background-color: #112233;
+      border: 1px solid #0055aa;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #0088cc, #00d4ff);
+      transition: width 0.3s ease;
+    }
+    
+    .info {
+      font-size: 0.8em;
+      color: #00aaee;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-left: 10px;
+    }
+    
+    #canvas-container {
+      position: relative;
+      width: 100vw;
+      height: calc(100vh - 180px);
+      overflow: hidden;
+    }
+    
+    #canvas {
+      background-color: #000a15;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    
+    #rooms {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 15px;
+      background-color: #001122;
+      border-top: 1px solid #003366;
+      font-size: 0.8em;
+      color: #0088cc;
+    }
+    
+    .room {
+      border: 1px solid #0055aa;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background-color: #001a33;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      width: 120px;
+      height: 80px;
+      overflow: hidden;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .room:hover {
+      background-color: #002244;
+      border-color: #00aaee;
+      transform: scale(1.05);
+    }
+    
+    #modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #0a192f;
+      border: 2px solid #00d4ff;
+      padding: 20px 30px;
+      width: 70%;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+      z-index: 100;
+      display: none;
+      text-align: left;
+      font-size: 0.9em;
+      color: #00d4ff;
+    }
+    
+    #modal h3 {
+      margin-top: 0;
+      color: #00aaee;
+      border-bottom: 1px dashed #0088cc;
+      padding-bottom: 5px;
+    }
+    
+    #modal p {
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+    
+    #close-modal {
+      margin-top: 15px;
+      background-color: #003366;
+      color: #00d4ff;
+      border: 1px solid #0088cc;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Ubuntu Mono', monospace;
+      float: right;
+    }
+    
+    .node {
+      position: absolute;
+      font-size: 0.7em;
+      text-align: center;
+      color: #00d4ff;
+      white-space: nowrap;
+      border-radius: 4px;
+      padding: 4px 6px;
+      background-color: rgba(0, 30, 60, 0.8);
+      border: 1px solid #0055aa;
+      box-shadow: 0 0 6px rgba(0, 133, 204, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .node:hover {
+      background-color: rgba(0, 45, 90, 0.9);
+      transform: scale(1.1);
+      z-index: 5;
+    }
+    
+    .edge {
+      position: absolute;
+      height: 1px;
+      background-color: #0055aa;
+      opacity: 0.6;
+      transform-origin: 0 0;
+      z-index: 1;
+    }
+    
+    .edge-label {
+      position: absolute;
+      font-size: 0.6em;
+      color: #00aaff;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h1 id="title">The Fascia</h1>
+    <p id="subtitle">the body's most mysterious system</p>
+  </div>
+
+  <div id="status">
+    <div>
+      <span>Total Budget: <span id="total-budget">284</span></span>
+    </div>
+    <div>
+      <span>Mean Surprise: <span id="mean-surprise">0.032</span></span>
+    </div>
+    <div>
+      <span>5th Proof: <span id="proof-status">Active</span></span>
+    </div>
+  </div>
+
+  <div id="controls">
+    <button id="subscribe-btn">Subscribe to JEPA</button>
+    <button id="transfer-btn">Transfer Gamma</button>
+    <button id="info-btn">Info: 5th Proof</button>
+  </div>
+
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div id="rooms">
+    <div class="room" data-room="1">┌────────┐<br>│  C1    │<br>│  1.2   │<br>└────────┘</div>
+    <div class="room" data-room="2">┌────────┐<br>│  C2    │<br>│  0.8   │<br>└────────┘</div>
+    <div class="room" data-room="3">┌────────┐<br>│  C3    │<br>│  1.5   │<br>└────────┘</div>
+    <div class="room" data-room="4">┌────────┐<br>│  C4    │<br>│  0.9   │<br>└────────┘</div>
+    <div class="room" data-room="5">┌────────┐<br>│  C5    │<br>│  1.1   │<br>└────────┘</div>
+    <div class="room" data-room="6">┌────────┐<br>│  C6    │<br>│  1.3   │<br>└────────┘</div>
+    <div class="room" data-room="7">┌────────┐<br>│  C7    │<br>│  1.0   │<br>└────────┘</div>
+  </div>
+
+  <div id="modal">
+    <h3>5th Impossibility Proof</h3>
+    <p>When the field is saturated, the system cannot compress further. The 5th proof asserts that no agent may achieve perfect prediction without violating the laws of entropy in a closed system. This is the foundation of the Fascia's resilience.</p>
+    <p>In practice: the system shuns certainty. Surprise is not error—it is feedback. The 5th Proof ensures that no node becomes a black box. It is the unbroken thread between cells.</p>
+    <p>When you see a node flicker, know: someone has thought too hard. The system is correcting.</p>
+    <button id="close-modal">Close</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const width = window.innerWidth;
+      const height = window.innerHeight - 180;
+      
+      canvas.width = width;
+      canvas.height = height;
+
+      // Mock data
+      let nodes = [
+        { id: 1, x: 150, y: 120, value: 1.2, vibe: 0.8, budget: 43, room: 1 },
+        { id: 2, x: 300, y: 80, value: 0.8, vibe: 0.6, budget: 37, room: 2 },
+        { id: 3, x: 450, y: 100, value: 1.5, vibe: 0.9, budget: 52, room: 3 },
+        { id: 4, x: 600, y: 140, value: 0.9, vibe: 0.7, budget: 34, room: 4 },
+        { id: 5, x: 750, y: 90, value: 1.1, vibe: 0.85, budget: 41, room: 5 },
+        { id: 6, x: 900, y: 130, value: 1.3, vibe: 0.88, budget: 48, room: 6 },
+        { id: 7, x: 1050, y: 110, value: 1.0, vibe: 0.75, budget: 39, room: 7 }
+      ];
+
+      let edges = [
+        { from: 1, to: 2, jeva: 0.64, surprise: 0.12 },
+        { from: 1, to: 3, jeva: 0.71, surprise: 0.09 },
+        { from: 2, to: 4, jeva: 0.58, surprise: 0.15 },
+        { from: 3, to: 5, jeva: 0.68, surprise: 0.11 },
+        { from: 4, to: 6, jeva: 0.73, surprise: 0.14 },
+        { from: 5, to: 7, jeva: 0.62, surprise: 0.13 },
+        { from: 6, to: 1, jeva: 0.81, surprise: 0.16 },
+        { from: 7, to: 3, jeva: 0.69, surprise: 0.10 }
+      ];
+
+      let totalBudget = nodes.reduce((sum, n) => sum + n.budget, 0);
+      let meanSurprise = edges.reduce((sum, e) => sum + e.surprise, 0) / edges.length;
+
+      // Update UI
+      document.getElementById('total-budget').textContent = totalBudget.toFixed(0);
+      document.getElementById('mean-surprise').textContent = meanSurprise.toFixed(3);
+
+      // Event Listeners
+      document.getElementById('subscribe-btn').addEventListener('click', () => {
+        const node = nodes[Math.floor(Math.random() * nodes.length)];
+        node.budget += 10;
+        totalBudget += 10;
+        document.getElementById('total-budget').textContent = totalBudget.toFixed(0);
+        alert(`Subscribed to JEPA on Node ${node.id}. Budget increased.`);
+      });
+
+      document.getElementById('transfer-btn').addEventListener('click', () => {
+        const from = nodes[Math.floor(Math.random() * nodes.length)];
+        const to = nodes[Math.floor(Math.random() * nodes.length)];
+        if (from.id === to.id) return;
+        const amount = Math.min(5, from.budget);
+        from.budget -= amount;
+        to.budget += amount;
+        totalBudget = nodes.reduce((sum, n) => sum + n.budget, 0);
+        document.getElementById('total-budget').textContent = totalBudget.toFixed(0);
+        alert(`Transferred ${amount} gamma from Node ${from.id} to Node ${to.id}.`);
+      });
+
+      document.getElementById('info-btn').addEventListener('click', () => {
+        document.getElementById('modal').style.display = 'block';
+      });
+
+      document.getElementById('close-modal').addEventListener('click', () => {
+        document.getElementById('modal').style.display = 'none';
+      });
+
+      // Room click handlers
+      document.querySelectorAll('.room').forEach(roomEl => {
+        roomEl.addEventListener('click', () => {
+          const roomId = parseInt(roomEl.getAttribute('data-room'));
+          const roomNodes = nodes.filter(n => n.room === roomId);
+          
+          // Reset all nodes' styles
+          document.querySelectorAll('.node').forEach(el => el.style.border = '1px solid #0055aa');
+          
+          // Highlight room nodes
+          roomNodes.forEach(node => {
+            const el = document.querySelector(`.node[data-id="${node.id}"]`);
+            if (el) el.style.border = '1px solid #00aaee';
+          });
+        });
+      });
+
+      // Animation loop
+      function render() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Draw edges
+        edges.forEach(edge => {
+          const fromNode = nodes.find(n => n.id === edge.from);
+          const toNode = nodes.find(n => n.id === edge.to);
+          if (!fromNode || !toNode) return;
+          
+          const dx = toNode.x - fromNode.x;
+          const dy = toNode.y - fromNode.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          const angle = Math.atan2(dy, dx);
+          
+          // Edge line
+          ctx.beginPath();
+          ctx.moveTo(fromNode.x, fromNode.y);
+          ctx.lineTo(toNode.x, toNode.y);
+          ctx.strokeStyle = `rgba(0, 85, 170, ${0.3 + 0.7 * Math.sin(Date.now() * 0.001 + edge.from + edge.to) * 0.3})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          
+          // Edge label - JEPA signal and surprise
+          const midX = (fromNode.x + toNode.x) / 2;
+          const midY = (fromNode.y + toNode.y) / 2;
+          
+          ctx.fillStyle = '#00aaff';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${edge.jeva.toFixed(2)}|${edge.surprise.toFixed(2)}`, midX, midY - 10);
+        });
+        
+        // Draw nodes
+        nodes.forEach(node => {
+          const existingEl = document.querySelector(`.node[data-id="${node.id}"]`);
+          if (existingEl) {
+            existingEl.remove();
+          }
+          
+          const el = document.createElement('div');
+          el.className = 'node';
+          el.setAttribute('data-id', node.id);
+          el.style.left = `${node.x - 60}px`;
+          el.style.top = `${node.y - 30}px`;
+          
+          el.innerHTML = `
+            <div>ID: ${node.id}</div>
+            <div>Value: ${node.value.toFixed(2)}</div>
+            <div>Vibe: ${node.vibe.toFixed(2)}</div>
+            <div>Budget: ${node.budget.toFixed(0)}</div>
+          `;
+          
+          document.getElementById('canvas-container').appendChild(el);
+          
+          // Add hover effect
+          el.addEventListener('mouseover', () => {
+            el.style.borderColor = '#00aaee';
+            el.style.boxShadow = '0 0 12px rgba(0, 212, 255, 0.8)';
+          });
+          
+          el.addEventListener('mouseout', () => {
+            el.style.borderColor = '#0055aa';
+            el.style.boxShadow = '0 0 6px rgba(0, 133, 204, 0.3)';
+          });
+          
+          // Add click to subscribe
+          el.addEventListener('click', () => {
+            node.budget += 5;
+            totalBudget += 5;
+            document.getElementById('total-budget').textContent = totalBudget.toFixed(0);
+            alert(`Subscribed to JEPA on Node ${node.id}. Budget increased.`);
+          });
+        });
+
+        // Update mean surprise
+        meanSurprise = edges.reduce((sum, e) => sum + e.surprise, 0) / edges.length;
+        document.getElementById('mean-surprise').textContent = meanSurprise.toFixed(3);
+        
+        requestAnimationFrame(render);
+      }
+
+      // Initialize
+      render();
+
+      // Resize handler
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight - 180;
+      });
+    });
+  </script>
+</body>
+</html>

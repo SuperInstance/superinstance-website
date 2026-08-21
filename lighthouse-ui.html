@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quilt Lighthouse</title>
+  <style>
+    :root {
+      --bg: #0a111f;
+      --text: #c7d3e8;
+      --accent: #4a90e2;
+      --border: #2a3c5a;
+      --card: #121e2e;
+      --highlight: #e6d57d;
+      --danger: #e85a4f;
+      --success: #5cb85c;
+      --shadow: rgba(0,0,0,0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--highlight);
+      font-style: italic;
+      margin-top: 0.25rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+
+    nav button {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 0.9rem;
+    }
+
+    nav button:hover {
+      background: var(--border);
+    }
+
+    nav button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .content {
+      padding: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .tab {
+      display: none;
+      padding: 1rem 0;
+    }
+
+    .tab.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 6px var(--shadow);
+    }
+
+    .card h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .cell-card {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.8rem;
+      background: rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .cell-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .cell-card h3 {
+      font-size: 1rem;
+      color: var(--highlight);
+      margin-bottom: 0.3rem;
+    }
+
+    .cell-card .id {
+      font-size: 0.8rem;
+      color: #88a1c6;
+    }
+
+    .cell-card .kind {
+      font-size: 0.75rem;
+      background: rgba(74, 144, 226, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      margin-top: 0.3rem;
+    }
+
+    .add-cell {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+    }
+
+    .add-cell label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--highlight);
+    }
+
+    .add-cell input, .add-cell select, .add-cell button {
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .add-cell button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .add-cell button:hover {
+      background: #3a7bc8;
+    }
+
+    .details {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(0,0,0,0.2);
+      border-left: 3px solid var(--accent);
+      font-size: 0.9rem;
+    }
+
+    .details p {
+      margin-bottom: 0.5rem;
+    }
+
+    .details .key {
+      font-weight: bold;
+      color: var(--highlight);
+    }
+
+    .graph-display {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .metric {
+      text-align: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      min-width: 120px;
+    }
+
+    .metric h3 {
+      font-size: 1.2rem;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .metric .value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--highlight);
+    }
+
+    .edges {
+      margin-top: 1.5rem;
+    }
+
+    .edges table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .edges th, .edges td {
+      padding: 0.6rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .edges th {
+      background: rgba(74, 144, 226, 0.1);
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .edges tr:hover {
+      background: rgba(0,0,0,0.1);
+    }
+
+    .fascia-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .budget-meter {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .budget-meter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #1a3e6e, #4a90e2, #60d399, #e6d57d, #e85a4f);
+      background-size: 300% 100%;
+      animation: gradient 10s ease infinite;
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    .budget-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: var(--success);
+      width: 65%;
+      border-radius: 6px;
+      z-index: 1;
+      transition: width 0.5s ease;
+    }
+
+    .budget-amount {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 5px rgba(0,0,0,0.5);
+      z-index: 2;
+    }
+
+    .transfer-form {
+      margin-top: 1.5rem;
+    }
+
+    .transfer-form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--highlight);
+    }
+
+    .transfer-form input, .transfer-form button {
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .transfer-form button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .surprise {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--highlight);
+      font-style: italic;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .surprise::before {
+      content: '>';
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 2rem;
+      color: var(--accent);
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    .surprise-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .surprise button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .watch-log {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .watch-log .event {
+      margin-bottom: 0.5rem;
+      padding: 0.3rem 0;
+      border-bottom: 1px dotted var(--border);
+      font-family: 'Courier New', monospace;
+    }
+
+    .watch-log .event .type {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .watch-log .event .time {
+      color: #88a1c6;
+      margin-right: 0.5rem;
+    }
+
+    .dials-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .dial {
+      text-align: center;
+    }
+
+    .dial label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--highlight);
+      font-size: 0.9rem;
+    }
+
+    .dial input {
+      width: 100%;
+      height: 150px;
+      -webkit-appearance: none;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .dial input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+    }
+
+    .dial input::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+    }
+
+    .dial-value {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .import-export {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .import-export button {
+      padding: 0.6rem 1rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .export-btn {
+      background: var(--success);
+      color: white;
+    }
+
+    .import-btn {
+      background: var(--accent);
+      color: white;
+    }
+
+    .import-btn:hover, .export-btn:hover {
+      opacity: 0.9;
+    }
+
+    .import-file {
+      display: none;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Quilt Lighthouse</h1>
+      <div class="subtitle">the watch at the door</div>
+    </div>
+    <nav>
+      <button data-tab="cells">Cells</button>
+      <button data-tab="graph">Graph</button>
+      <button data-tab="fascia">Fascia</button>
+      <button data-tab="watch">Watch</button>
+      <button data-tab="dials">Dials</button>
+      <button data-tab="import-export">Import/Export</button>
+    </nav>
+  </header>
+
+  <div class="content">
+    <!-- Cells Tab -->
+    <div id="cells" class="tab active">
+      <div class="card">
+        <h2>Cells</h2>
+        <div class="grid" id="cells-list">
+          <!-- Cells will be populated here -->
+        </div>
+        <div class="add-cell">
+          <form id="add-cell-form">
+            <label for="cell-id">ID</label>
+            <input type="text" id="cell-id" required />
+
+            <label for="cell-kind">Kind</label>
+            <select id="cell-kind" required>
+              <option value="value">value</option>
+              <option value="edge">edge</option>
+              <option value="state">state</option>
+              <option value="link">link</option>
+              <option value="control">control</option>
+              <option value="data">data</option>
+            </select>
+
+            <label for="cell-value">Value</label>
+            <input type="text" id="cell-value" />
+
+            <button type="submit">Add Cell</button>
+          </form>
+        </div>
+      </div>
+      <div class="card" id="cell-details" style="display: none;">
+        <h2>Cell Details</h2>
+        <div class="details" id="details-content"></div>
+      </div>
+    </div>
+
+    <!-- Graph Tab -->
+    <div id="graph" class="tab">
+      <div class="card">
+        <h2>Graph State</h2>
+        <div class="graph-display">
+          <div class="metric">
+            <h3>V</h3>
+            <div class="value" id="graph-v">--</div>
+          </div>
+          <div class="metric">
+            <h3>E</h3>
+            <div class="value" id="graph-e">--</div>
+          </div>
+          <div class="metric">
+            <h3>C</h3>
+            <div class="value" id="graph-c">--</div>
+          </div>
+          <div class="metric">
+            <h3>β₁</h3>
+            <div class="value" id="graph-beta1">--</div>
+          </div>
+        </div>
+        <div class="edges">
+          <h2>Edges</h2>
+          <table id="edges-table">
+            <thead>
+              <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Type</th>
+                <th>Weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Edges will be populated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fascia Tab -->
+    <div id="fascia" class="tab">
+      <div class="card">
+        <h2>Fascia</h2>
+        <div class="fascia-content">
+          <div>
+            <h3>JEPA Subscriptions</h3>
+            <div id="jepa-subscriptions">
+              <!-- Subscriptions will be populated here -->
+            </div>
+          </div>
+          <div>
+            <h3>DoubleEntry Budget</h3>
+            <div class="budget-meter">
+              <div class="budget-fill" id="budget-fill"></div>
+              <div class="budget-amount" id="budget-amount">65%</div>
+            </div>
+            <div class="transfer-form">
+              <label for="transfer-amount">Transfer Amount</label>
+              <input type="number" id="transfer-amount" min="0" step="0.01" />
+
+              <label for="transfer-to">To Account</label>
+              <input type="text" id="transfer-to" />
+
+              <button id="submit-transfer">Transfer</button>
+            </div>
+          </div>
+        </div>
+        <div class="surprise">
+          <div class="surprise-content">
+            <p>The watch has seen the shape of things to come.</p>
+            <button id="revealsurprise">Reveal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Watch Tab -->
+    <div id="watch" class="tab">
+      <div class="card">
+        <h2>Live Events</h2>
+        <div class="watch-log" id="watch-log">
+          <!-- Events will be streamed here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Dials Tab -->
+    <div id="dials" class="tab">
+      <div class="card">
+        <h2>Elephant Dials</h2>
+        <div class="dials-container" id="dials-container">
+          <!-- Dials will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Import/Export Tab -->
+    <div id="import-export" class="tab">
+      <div class="card">
+        <h2>Import/Export</h2>
+        <p>Manage Quilt data via .qzt files.</p>
+        <div class="import-export">
+          <button class="export-btn" id="export-btn">Export .qzt</button>
+          <label class="import-btn" for="import-file">Import .qzt</label>
+          <input type="file" id="import-file" class="import-file" accept=".qzt" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Set up tab navigation
+    document.querySelectorAll('nav button').forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.getAttribute('data-tab');
+        document.querySelectorAll('.tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+        document.querySelectorAll('nav button').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+        button.classList.add('active');
+      });
+    });
+
+    // Fetch data and populate the UI
+    async function fetchData(endpoint, callback) {
+      try {
+        const response = await fetch(`http://localhost:7333${endpoint}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        callback(data);
+      } catch (error) {
+        console.error('Fetch error:', error);
+        document.getElementById('watch-log').innerHTML += `<div class="event"><span class="time">[ERROR]</span> Failed to fetch ${endpoint}: ${error.message}</div>`;
+      }
+    }
+
+    // Cells Tab
+    function loadCells() {
+      const container = document.getElementById('cells-list');
+      container.innerHTML = '';
+
+      fetchData('/cells', (data) => {
+        if (Array.isArray(data)) {
+          data.forEach(cell => {
+            const card = document.createElement('div');
+            card.className = 'cell-card';
+            card.dataset.id = cell.id;
+            card.innerHTML = `
+              <h3>${cell.id}</h3>
+              <div class="id">ID: ${cell.id}</div>
+              <div class="kind">${cell.kind}</div>
+              <div class="value">${cell.value ? cell.value : '—'}</div>
+            `;
+            card.addEventListener('click', () => showCellDetails(cell));
+            container.appendChild(card);
+          });
+        } else {
+          container.innerHTML = '<p>No cells found.</p>';
+        }
+      });
+    }
+
+    function showCellDetails(cell) {
+      const details = document.getElementById('details-content');
+      details.innerHTML = `
+        <p><span class="key">ID:</span> ${cell.id}</p>
+        <p><span class="key">Kind:</span> ${cell.kind}</p>
+        <p><span class="key">Value:</span> ${cell.value || '—'}</p>
+        <p><span class="key">Timestamp:</span> ${cell.timestamp || '—'}</p>
+      `;
+      document.getElementById('cell-details').style.display = 'block';
+    }
+
+    document.getElementById('add-cell-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('cell-id').value.trim();
+      const kind = document.getElementById('cell-kind').value;
+      const value = document.getElementById('cell-value').value || undefined;
+
+      const response = await fetch('http://localhost:7333/cells', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, kind, value })
+      });
+
+      if (response.ok) {
+        alert('Cell added successfully');
+        document.getElementById('add-cell-form').reset();
+        loadCells();
+      } else {
+        alert('Failed to add cell');
+      }
+    });
+
+    // Graph Tab
+    function loadGraph() {
+      fetchData('/graph', (data) => {
+        if (data) {
+          document.getElementById('graph-v').textContent = data.V || '--';
+          document.getElementById('graph-e').textContent = data.E || '--';
+          document.getElementById('graph-c').textContent = data.C || '--';
+          document.getElementById('graph-beta1').textContent = data.beta1 || '--';
+
+          const tbody = document.querySelector('#edges-table tbody');
+          tbody.innerHTML = '';
+          if (data.edges && Array.isArray(data.edges)) {
+            data.edges.forEach(edge => {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td>${edge.from}</td>
+                <td>${edge.to}</td>
+                <td>${edge.type}</td>
+                <td>${edge.weight || '--'}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+          } else {
+            tbody.innerHTML = '<tr><td colspan="4">No edges.</td></tr>';
+          }
+        }
+      });
+    }
+
+    // Fascia Tab
+    function loadFascia() {
+      fetchData('/fascia', (data) => {
+        if (data) {
+          // JEPA Subscriptions
+          const subsContainer = document.getElementById('jepa-subscriptions');
+          subsContainer.innerHTML = '';
+          if (Array.isArray(data.subscriptions)) {
+            data.subscriptions.forEach(sub => {
+              const p = document.createElement('p');
+              p.textContent = `${sub.channel} → ${sub.target}`;
+              subsContainer.appendChild(p);
+            });
+          } else {
+            subsContainer.innerHTML = '<p>No subscriptions.</p>';
+          }
+
+          // Budget
+          if (data.budget && typeof data.budget.percent === 'number') {
+            const fill = document.getElementById('budget-fill');
+            const amount = document.getElementById('budget-amount');
+            fill.style.width = `${data.budget.percent}%`;
+            amount.textContent = `${Math.round(data.budget.percent)}%`;
+          }
+
+          // Transfer
+          document.getElementById('submit-transfer').addEventListener('click', async () => {
+            const amount = document.getElementById('transfer-amount').value;
+            const to = document.getElementById('transfer-to').value;
+            if (!amount || !to) {
+              alert('Please fill in all fields');
+              return;
+            }
+
+            const response = await fetch('http://localhost:7333/fascia/transfer', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ amount: parseFloat(amount), to })
+            });
+
+            if (response.ok) {
+              alert('Transfer successful');
+              document.getElementById('transfer-amount').value = '';
+              document.getElementById('transfer-to').value = '';
+            } else {
+              alert('Transfer failed');
+            }
+          });
+
+          // Surprise
+          document.getElementById('revealsurprise').addEventListener('click', () => {
+            const surprise = document.querySelector('.surprise-content');
+            surprise.innerHTML = `
+              <p>Heed the tide. The cells federate.</p>
+              <p class="key">The room is a place.</p>
+              <p class="key">The cell is a place.</p>
+              <p class="key">The place is a cell.</p>
+              <p class="key">The room IS the cell.</p>
+              <button id="close-surprise">Close</button>
+            `;
+            document.getElementById('close-surprise').addEventListener('click', () => {
+              const close = document.getElementById('close-surprise');
+              close.remove();
+              surprise.innerHTML = '<p>The watch has seen the shape of things to come.</p><button>Reveal</button>';
+            });
+          });
+        }
+      });
+    }
+
+    // Watch Tab
+    function setupWatch() {
+      const log = document.getElementById('watch-log');
+      const eventSource = new EventSource('http://localhost:7333/watch');
+
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        const timestamp = new Date().toISOString().slice(11, 19);
+        const div = document.createElement('div');
+        div.className = 'event';
+        div.innerHTML = `<span class="time">[${timestamp}]</span><span class="type">${data.type}</span> ${data.message}`;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+      };
+
+      eventSource.onerror = (error) => {
+        log.innerHTML += `<div class="event"><span class="time">[ERROR]</span> Connection lost</div>`;
+        eventSource.close();
+      };
+    }
+
+    // Dials Tab
+    function loadDials() {
+      const container = document.getElementById('dials-container');
+      container.innerHTML = '';
+
+      // Create 9 dials
+      for (let i = 1; i <= 9; i++) {
+        const dial = document.createElement('div');
+        dial.className = 'dial';
+        dial.innerHTML = `
+          <label>Elephant ${i}</label>
+          <input type="range" id="dial-${i}" min="0" max="100" value="50" step="0.1" />
+          <div class="dial-value" id="dial-value-${i}">50.0</div>
+        `;
+        container.appendChild(dial);
+
+        const input = document.getElementById(`dial-${i}`);
+        const valueDisplay = document.getElementById(`dial-value-${i}`);
+
+        input.addEventListener('input', () => {
+          valueDisplay.textContent = input.value;
+          // Send value to server
+          fetch('http://localhost:7333/dials', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dial: i, value: parseFloat(input.value) })
+          }).catch(err => console.error('Failed to update dial:', err));
+        });
+      }
+    }
+
+    // Import/Export Tab
+    document.getElementById('export-btn').addEventListener('click', async () => {
+      try {
+        const response = await fetch('http://localhost:7333/export');
+        if (!response.ok) throw new Error('Export failed');
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `quilt-${new Date().toISOString().slice(0,10)}.qzt`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        alert('Export failed: ' + error.message);
+      }
+    });
+
+    document.getElementById('import-file').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('http://localhost:7333/import', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          alert('Import successful');
+          // Reload all tabs
+          loadCells();
+          loadGraph();
+          loadFascia();
+          loadDials();
+        } else {
+          alert('Import failed');
+        }
+      } catch (error) {
+        alert('Import failed: ' + error.message);
+      }
+    });
+
+    // Initialize all tabs
+    window.addEventListener('load', () => {
+      loadCells();
+      loadGraph();
+      loadFascia();
+      setupWatch();
+      loadDials();
+    });
+  </script>
+</body>
+</html>
