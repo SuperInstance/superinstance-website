@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Quilt Kitchen</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 20px;
+      background-color: #121212;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 8px;
+      color: #c0a060;
+    }
+    .subtitle {
+      text-align: center;
+      font-style: italic;
+      margin-bottom: 30px;
+      color: #888;
+      font-size: 1.2em;
+    }
+    .kitchen {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .stove {
+      display: flex;
+      justify-content: space-around;
+      background-color: #333;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #555;
+      flex-wrap: wrap;
+    }
+    .burner {
+      width: 100px;
+      height: 100px;
+      background-color: #442200;
+      border: 2px solid #884400;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      font-size: 0.9em;
+      text-align: center;
+      color: #f0e0b0;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .burner::before {
+      content: "🔥";
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      font-size: 0.7em;
+      opacity: 0.6;
+    }
+    .burner.active {
+      border-color: #ff8800;
+      box-shadow: 0 0 15px rgba(255, 136, 0, 0.5);
+    }
+    .burner-label {
+      font-weight: bold;
+      margin-bottom: 4px;
+      color: #ffcc66;
+    }
+    .recipe-book {
+      background-color: #222;
+      border: 1px solid #555;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .recipe-book h2 {
+      color: #c0a060;
+      margin-top: 0;
+      font-size: 1.5em;
+      border-bottom: 1px solid #555;
+      padding-bottom: 8px;
+    }
+    .recipes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .recipe {
+      background-color: #333;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #555;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .recipe:hover {
+      background-color: #444;
+      transform: translateY(-2px);
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    button {
+      background-color: #444;
+      color: #fff;
+      border: 1px solid #666;
+      padding: 10px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background-color: #555;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    button:active {
+      transform: translateY(1px);
+    }
+    .kitchen-ascii {
+      background-color: #111;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 15px;
+      text-align: center;
+      font-size: 0.8em;
+      white-space: pre;
+      color: #666;
+      line-height: 1.4;
+    }
+    .cell-inspector {
+      margin-top: 20px;
+      background-color: #222;
+      border: 1px solid #555;
+      border-radius: 6px;
+      padding: 15px;
+    }
+    .cell-inspector h3 {
+      margin-top: 0;
+      color: #c0a060;
+    }
+    .cell-data {
+      white-space: pre-wrap;
+      font-size: 0.9em;
+      background-color: #1a1a1a;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #444;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>The Quilt Kitchen</h1>
+    <p class="subtitle">where cells are cooked</p>
+
+    <div class="kitchen">
+      <div class="stove">
+        <div class="burner" id="z_in">
+          <div class="burner-label">Z_in</div>
+          <div class="burner-desc">Input</div>
+        </div>
+        <div class="burner" id="z_out">
+          <div class="burner-label">Z_out</div>
+          <div class="burner-desc">Output</div>
+        </div>
+        <div class="burner" id="jepa">
+          <div class="burner-label">JEPA</div>
+          <div class="burner-desc">Prediction</div>
+        </div>
+        <div class="burner" id="doubleentry">
+          <div class="burner-label">DoubleEntry</div>
+          <div class="burner-desc">Budget</div>
+        </div>
+        <div class="burner" id="vibe">
+          <div class="burner-label">Vibe</div>
+          <div class="burner-desc">State</div>
+        </div>
+        <div class="burner" id="gc">
+          <div class="burner-label">GC</div>
+          <div class="burner-desc">Lifecycle</div>
+        </div>
+        <div class="burner" id="murmur">
+          <div class="burner-label">Murmur</div>
+          <div class="burner-desc">Gossip</div>
+        </div>
+        <div class="burner" id="graph">
+          <div class="burner-label">Graph</div>
+          <div class="burner-desc">Topology</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="cook">Cook</button>
+        <button id="taste">Taste</button>
+        <button id="feed">Feed</button>
+      </div>
+
+      <div class="recipe-book">
+        <h2>Recipe Book</h2>
+        <div class="recipes">
+          <div class="recipe" data-recipe="mood.feeling">mood.feeling</div>
+          <div class="recipe" data-recipe="weather.now">weather.now</div>
+          <div class="recipe" data-recipe="stock.AAPL">stock.AAPL</div>
+          <div class="recipe" data-recipe="time.zone">time.zone</div>
+          <div class="recipe" data-recipe="user.location">user.location</div>
+          <div class="recipe" data-recipe="memory.footprint">memory.footprint</div>
+          <div class="recipe" data-recipe="network.latency">network.latency</div>
+          <div class="recipe" data-recipe="alert.urgent">alert.urgent</div>
+        </div>
+      </div>
+
+      <div class="kitchen-ascii">
+        <pre>
+             .-.           .-.
+           /   \         /   \
+          |  o  |       |  o  |
+           \   /         \   /
+            '-'           '-'
+           /   \         /   \
+          |  o  |       |  o  |
+           \   /         \   /
+            '-'           '-'
+           /   \         /   \
+          |  o  |       |  o  |
+           \   /         \   /
+            '-'           '-'
+           /   \         /   \
+          |  o  |       |  o  |
+           \   /         \   /
+            '-'           '-'
+           /   \         /   \
+          |  o  |       |  o  |
+           \   /         \   /
+            '-'           '-'
+        </pre>
+      </div>
+
+      <div class="cell-inspector">
+        <h3>Cell Inspector</h3>
+        <div class="cell-data" id="cell-data">
+          No cell cooked yet. Select a recipe and press Cook.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    const state = {
+      ingredients: {},
+      cell: null,
+      activeBurners: new Set(),
+      recipeHistory: []
+    };
+
+    // Elements
+    const cookBtn = document.getElementById('cook');
+    const tasteBtn = document.getElementById('taste');
+    const feedBtn = document.getElementById('feed');
+    const cellData = document.getElementById('cell-data');
+    const recipeItems = document.querySelectorAll('.recipe');
+    const burners = document.querySelectorAll('.burner');
+
+    // Initialize burners
+    burners.forEach(burner => {
+      burner.addEventListener('click', () => {
+        const id = burner.id;
+        if (state.activeBurners.has(id)) {
+          state.activeBurners.delete(id);
+          burner.classList.remove('active');
+        } else {
+          state.activeBurners.add(id);
+          burner.classList.add('active');
+        }
+      });
+    });
+
+    // Recipe selection
+    recipeItems.forEach(recipe => {
+      recipe.addEventListener('click', () => {
+        const recipeName = recipe.dataset.recipe;
+        state.ingredients = { recipe: recipeName, timestamp: Date.now() };
+        updateCellData();
+      });
+    });
+
+    // Cook button
+    cookBtn.addEventListener('click', () => {
+      if (!state.ingredients.recipe) {
+        cellData.textContent = "No recipe selected. Choose one from the book.";
+        return;
+      }
+
+      const cell = {
+        id: `cell_${Date.now()}`,
+        recipe: state.ingredients.recipe,
+        inputs: Array.from(state.activeBurners),
+        state: {},
+        metadata: {
+          created: Date.now(),
+          version: "1.0.0"
+        }
+      };
+
+      // Initialize cell state based on active burners
+      state.activeBurners.forEach(burnerId => {
+        cell.state[burnerId] = { value: null, timestamp: Date.now() };
+      });
+
+      state.cell = cell;
+      state.recipeHistory.push(cell);
+      updateCellData();
+    });
+
+    // Taste button (JEPA prediction)
+    tasteBtn.addEventListener('click', () => {
+      if (!state.cell) {
+        cellData.textContent = "No cell to taste. Cook one first.";
+        return;
+      }
+
+      // Simulate JEPA prediction
+      const prediction = {
+        status: "predicted",
+        confidence: Math.random().toFixed(3),
+        timestamp: Date.now(),
+        suggestions: [
+          "Consider updating Vibe state",
+          "Check DoubleEntry budget",
+          "Validate Graph topology"
+        ]
+      };
+
+      cellData.textContent = `JEPA Prediction: ${JSON.stringify(prediction, null, 2)}`;
+    });
+
+    // Feed button (export .qzt)
+    feedBtn.addEventListener('click', () => {
+      if (!state.cell) {
+        cellData.textContent = "No cell to export. Cook one first.";
+        return;
+      }
+
+      // Create .qzt file content
+      const qztContent = JSON.stringify(state.cell, null, 2);
+      const blob = new Blob([qztContent], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cell_${state.cell.id}.qzt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Update cell data display
+    function updateCellData() {
+      if (!state.cell) {
+        cellData.textContent = "No cell cooked yet. Select a recipe and press Cook.";
+        return;
+      }
+
+      const data = {
+        id: state.cell.id,
+        recipe: state.cell.recipe,
+        status: "cooking",
+        burners: Array.from(state.activeBurners),
+        state: state.cell.state,
+        metadata: state.cell.metadata
+      };
+
+      cellData.textContent = JSON.stringify(data, null, 2);
+    }
+
+    // Initialize
+    updateCellData();
+  </script>
+</body>
+</html>
