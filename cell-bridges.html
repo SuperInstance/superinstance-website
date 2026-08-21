@@ -334,6 +334,50 @@ const BRIDGES = [
     duration: null,
     dt: null,
   },
+  {
+    id: "spreadsheet-engine",
+    name: "spreadsheet-engine (the gold)",
+    desc: "The 7 cell types (Value, Agent, Training, Simulation, A2A, MIDI, Formula) map directly to the 8 Quilt primitives. The conservation law γ+η=budget IS the DoubleEntry. The spreadsheet IS the cell.",
+    views: ["TOP", "FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/spreadsheet-engine",
+    github: "SuperInstance/spreadsheet-engine",
+    api: "spreadsheet_engine_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "ternary-spreadsheet",
+    name: "ternary-spreadsheet",
+    desc: "Cells in {-1, 0, +1}. Formulas: SUM, AVG, ENTROPY, EVOLVE, BEST, SPECIES, EXHAUSTIVE. The ternary is the natural Quilt cell kind.",
+    views: ["TOP", "FRONT"],
+    source: "https://github.com/SuperInstance/ternary-spreadsheet",
+    github: "SuperInstance/ternary-spreadsheet",
+    api: "ternary_spreadsheet_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "cudaclaw",
+    name: "cudaclaw (GPU substrate)",
+    desc: "GPU-resident persistent worker kernel. Lock-free command queue in unified memory. Sub-microsecond host-device communication. Warp-level parallelism. The GPU substrate.",
+    views: ["FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/cudaclaw",
+    github: "SuperInstance/cudaclaw",
+    api: "cudaclaw_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "spectral-spreadsheet",
+    name: "spectral-spreadsheet",
+    desc: "Cells hold graphs, formulas compute spectral quantities (CR, Fiedler vectors, spectral gaps). The spectral graph theory as a cell kind.",
+    views: ["TOP", "FRONT"],
+    source: "https://github.com/SuperInstance/spectral-spreadsheet",
+    github: "SuperInstance/spectral-spreadsheet",
+    api: "spectral_spreadsheet_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
 ];
 
 // -----------------------------------------------------------------------------
@@ -421,4 +465,10 @@ const loadId = params.get('load');
 if (loadId) {
   // Find and click the generate button for the requested bridge
   setTimeout(() => {
-    const card = document.
+    const card = document.querySelector(`.bridge[data-id="${loadId}"]`);
+    if (card) card.querySelector('button.primary').click();
+  }, 500);
+}
+</script>
+</body>
+</html>
