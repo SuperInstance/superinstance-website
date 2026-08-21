@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<!--
+  quilt-overlay.html — The bathy/overlay demo.
+
+  The essence of Quilt: the address IS the data. The path encodes
+  spatial meaning (quadrant prefix, position, distance from origin).
+  A Quilt cell at "bathy.cell_+5_+7" doesn't just point to a depth
+  reading — it says "5 cells east, 7 cells north, in the upper-right
+  quadrant." The grid spacing implies distance.
+
+  This is how TimeZero Pro shows bathy data: too many soundings per
+  square inch to plot. Aggregate into a grid overlay. Each cell
+  shows avg depth, slope direction, sample count.
+
+  The chart underneath is continuous. The Quilt on top is discrete,
+  navigable, addressable. The Quilt IS the bridge.
+
+  Author: Mavis
+  Date: 2026-08-20
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quilt Overlay — the essence of addressable data</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .toolbar { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  button, select, input[type="text"], input[type="number"] {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  button.warn { background: #d29922; border-color: #d29922; color: #0d1117; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .container { display: grid; grid-template-columns: 1fr 320px; height: calc(100vh - 70px); }
+  .canvas-area { padding: 1rem; overflow: auto; }
+  .right-pane { background: #0d1117; border-left: 1px solid var(--border); padding: 1rem; overflow-y: auto; }
+
+  /* The bathy chart */
+  .chart {
+    position: relative; background: #04111c;
+    border: 1px solid var(--border); border-radius: 4px;
+    width: 800px; height: 600px;
+    background-image:
+      linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent);
+    background-size: 50px 50px;
+  }
+  .sounding { position: absolute; width: 3px; height: 3px; background: var(--accent); border-radius: 50%; }
+  .quilt-cell {
+    position: absolute; border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(88, 166, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, monospace; font-size: 0.65rem;
+    color: rgba(255,255,255,0.7);
+  }
+  .quilt-cell:hover { background: rgba(88, 166, 255, 0.25); border-color: var(--accent); z-index: 5; }
+  .quilt-cell.selected { background: rgba(88, 166, 255, 0.4); border-color: var(--accent); z-index: 10; }
+  .quilt-cell .arrow {
+    position: absolute; top: 2px; right: 2px;
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 6px solid var(--warn);
+    transform-origin: 50% 100%;
+  }
+  .quilt-cell .count {
+    position: absolute; bottom: 1px; right: 3px;
+    font-size: 0.55rem; color: var(--muted);
+  }
+  .quilt-cell .depth {
+    font-weight: bold; color: var(--fg);
+  }
+  .quilt-cell.shallow { color: var(--warn); }
+  .quilt-cell.medium { color: var(--ok); }
+  .quilt-cell.deep { color: var(--accent); }
+
+  /* The Quilt address label */
+  .quilt-cell .addr {
+    position: absolute; top: 1px; left: 2px;
+    font-size: 0.5rem; color: var(--muted);
+  }
+
+  /* Side panel: cell inspector */
+  .cell-info {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.8rem; margin-bottom: 0.7rem;
+  }
+  .cell-info .addr {
+    font-family: ui-monospace, monospace;
+    color: var(--accent);
+    font-size: 0.95rem; word-break: break-all;
+  }
+  .cell-info .meta { color: var(--muted); font-size: 0.8rem; margin: 0.3rem 0; }
+  .cell-info .stat { display: flex; justify-content: space-between; padding: 0.2rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .cell-info .stat:last-child { border-bottom: none; }
+  .cell-info .stat .label { color: var(--muted); }
+  .cell-info .stat .val { color: var(--fg); font-family: ui-monospace, monospace; }
+
+  /* The Quilt path table */
+  .quilt-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; font-family: ui-monospace, monospace; }
+  .quilt-table th, .quilt-table td { padding: 0.2rem 0.3rem; text-align: left; border-bottom: 1px solid var(--border); }
+  .quilt-table th { color: var(--muted); }
+  .quilt-table .addr { color: var(--accent); }
+
+  /* Examples */
+  .examples { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+  .example-chip {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 0.3rem 0.6rem; border-radius: 4px;
+    font-size: 0.75rem; cursor: pointer;
+  }
+  .example-chip:hover { border-color: var(--accent); }
+
+  .legend { font-size: 0.75rem; color: var(--muted); margin: 0.5rem 0; }
+  .legend span { display: inline-block; margin-right: 0.7rem; }
+  .legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.2rem; vertical-align: middle; }
+
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🗺 Quilt Overlay</h1>
+    <div class="subtitle">the essence of addressable data — a Quilt grid on top of dense soundings</div>
+  </div>
+  <div class="toolbar">
+    <span style="color: var(--muted); font-size: 0.8rem;">Grid spacing:</span>
+    <select id="spacingSelect">
+      <option value="20">1 mi (very dense)</option>
+      <option value="40" selected>2 mi (TimeZero default)</option>
+      <option value="100">5 mi (regional)</option>
+      <option value="200">10 mi (broad)</option>
+    </select>
+    <span style="color: var(--muted); font-size: 0.8rem;">Mode:</span>
+    <select id="modeSelect">
+      <option value="depth">depth</option>
+      <option value="count">sample count</option>
+      <option value="slope">slope</option>
+    </select>
+    <button class="primary" id="regenBtn">Regenerate survey</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="canvas-area">
+    <div class="chart" id="chart"></div>
+    <div class="legend">
+      <span><span class="swatch" style="background: var(--accent)"></span>sounding</span>
+      <span><span class="swatch" style="background: rgba(88,166,255,0.3); border: 1px solid var(--accent)"></span>quilt cell</span>
+      <span><span class="swatch" style="background: var(--warn)"></span>slope arrow</span>
+      <span>Click a cell to inspect. The address encodes quadrant + position.</span>
+    </div>
+    <div class="examples">
+      <span style="color: var(--muted); font-size: 0.8rem;">Examples:</span>
+      <div class="example-chip" data-example="harbor">📍 Sheltered harbor</div>
+      <div class="example-chip" data-example="canyon">🌊 Underwater canyon</div>
+      <div class="example-chip" data-example="ridge">⛰ Underwater ridge</div>
+      <div class="example-chip" data-example="uniform">〰 Uniform flat</div>
+    </div>
+  </div>
+
+  <div class="right-pane">
+    <h3 style="margin: 0 0 0.5rem; font-size: 0.95rem;">📍 Selected cell</h3>
+    <div class="cell-info" id="cellInfo">
+      <div class="subtitle">Click a quilt cell to inspect.</div>
+    </div>
+
+    <h3 style="margin: 1.2rem 0 0.5rem; font-size: 0.95rem;">📜 The Quilt path</h3>
+    <p style="font-size: 0.8rem; color: var(--muted); margin: 0 0 0.5rem;">
+      The address encodes <strong>quadrant + position + aggregate</strong>:
+    </p>
+    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.7rem; font-family: ui-monospace, monospace; font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.7rem;">
+      <code style="color: var(--accent)">bathy</code>.<code style="color: var(--ok)">cell_+5_+7</code>.<code style="color: var(--warn)">depth</code><br>
+      <span style="color: var(--muted); font-size: 0.75rem;">↑ namespace ↑ position (5E, 7N) ↑ cell kind</span>
+    </div>
+
+    <p style="font-size: 0.8rem; color: var(--muted);">
+      The grid spacing implies distance. 2 mi × 2 mi cells, the <code>+5_+7</code>
+      cell is roughly 14 miles ENE of the origin. The <code>+</code> prefix says
+      which quadrant of the survey.
+    </p>
+
+    <h3 style="margin: 1.2rem 0 0.5rem; font-size: 0.95rem;">🌊 The full Quilt</h3>
+    <p style="font-size: 0.8rem; color: var(--muted); margin: 0 0 0.5rem;" id="quiltSummary">
+      0 cells.
+    </p>
+    <div style="max-height: 200px; overflow-y: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 4px;">
+      <table class="quilt-table" id="quiltTable">
+        <thead><tr><th>path</th><th>depth</th><th>slope</th><th>n</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// Data generation
+// ============================================================================
+let chart, spacing = 40, mode = 'depth';
+const CHART_W = 800, CHART_H = 600;
+
+function seedRandom(seed) {
+  // Simple seeded RNG
+  let s = seed | 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) | 0;
+    return ((s >>> 0) / 0xffffffff);
+  };
+}
+
+let exampleType = 'harbor';
+let rand = seedRandom(42);
+
+function generateSoundings(type = exampleType) {
+  exampleType = type;
+  // Each example produces a different bathy profile
+  const soundings = [];
+  const N = 600;
+  if (type === 'harbor') {
+    // Sheltered: shallow in center, deeper on edges, lots of variation
+    for (let i = 0; i < N; i++) {
+      const x = rand() * CHART_W;
+      const y = rand() * CHART_H;
+      const cx = CHART_W / 2, cy = CHART_H / 2;
+      const d = Math.sqrt((x-cx)**2 + (y-cy)**2);
+      const depth = 5 + d * 0.05 + (rand() - 0.5) * 3;
+      soundings.push({ x, y, depth });
+    }
+  } else if (type === 'canyon') {
+    // A canyon cutting through
+    for (let i = 0; i < N; i++) {
+      const x = rand() * CHART_W;
+      const y = rand() * CHART_H;
+      // Distance from a diagonal canyon
+      const distFromCanyon = Math.abs((x - 200) - (y * 0.5));
+      const inCanyon = distFromCanyon < 60;
+      const baseDepth = inCanyon ? 60 : 20;
+      const depth = baseDepth + (rand() - 0.5) * 5;
+      soundings.push({ x, y, depth });
+    }
+  } else if (type === 'ridge') {
+    // A ridge running across
+    for (let i = 0; i < N; i++) {
+      const x = rand() * CHART_W;
+      const y = rand() * CHART_H;
+      // Distance from a horizontal ridge at y=300
+      const distFromRidge = Math.abs(y - 300);
+      const onRidge = distFromRidge < 40;
+      const baseDepth = onRidge ? 8 : 30;
+      const depth = baseDepth + (rand() - 0.5) * 4;
+      soundings.push({ x, y, depth });
+    }
+  } else if (type === 'uniform') {
+    // All roughly the same depth
+    for (let i = 0; i < N; i++) {
+      const x = rand() * CHART_W;
+      const y = rand() * CHART_H;
+      const depth = 25 + (rand() - 0.5) * 2;
+      soundings.push({ x, y, depth });
+    }
+  }
+  return soundings;
+}
+
+// ============================================================================
+// Quilt: aggregate soundings into grid cells
+// ============================================================================
+function makeQuilt(soundings, cellSize) {
+  const cells = new Map();
+  for (const s of soundings) {
+    // Cell coordinates (grid indices)
+    const cx = Math.floor(s.x / cellSize);
+    const cy = Math.floor(s.y / cellSize);
+    const key = `${cx}_${cy}`;
+    if (!cells.has(key)) cells.set(key, { cx, cy, soundings: [] });
+    cells.get(key).soundings.push(s);
+  }
+  // For each cell, compute aggregate
+  const quilt = [];
+  for (const c of cells.values()) {
+    const depths = c.soundings.map(s => s.depth);
+    const avgDepth = depths.reduce((a, b) => a + b, 0) / depths.length;
+    const minDepth = Math.min(...depths);
+    const maxDepth = Math.max(...depths);
+    // Slope: gradient direction (rough)
+    let dx = 0, dy = 0;
+    if (c.soundings.length > 1) {
+      // Use linear regression on depth vs x and depth vs y
+      const xs = c.soundings.map(s => s.x);
+      const ys = c.soundings.map(s => s.y);
+      const meanX = xs.reduce((a, b) => a + b, 0) / xs.length;
+      const meanY = ys.reduce((a, b) => a + b, 0) / ys.length;
+      const meanD = avgDepth;
+      let numX = 0, numY = 0, denX = 0, denY = 0;
+      for (let i = 0; i < c.soundings.length; i++) {
+        numX += (xs[i] - meanX) * (depths[i] - meanD);
+        numY += (ys[i] - meanY) * (depths[i] - meanD);
+        denX += (xs[i] - meanX) ** 2;
+        denY += (ys[i] - meanY) ** 2;
+      }
+      const slopeX = denX > 0 ? numX / denX : 0;  // depth change per pixel
+      const slopeY = denY > 0 ? numY / denY : 0;
+      // Direction of steepest descent: opposite of gradient
+      dx = -slopeX;
+      dy = -slopeY;
+    }
+    // Cell address: encode quadrant + position
+    const ax = c.cx >= 0 ? '+' + c.cx : '-' + Math.abs(c.cx);
+    const ay = c.cy >= 0 ? '+' + c.cy : '-' + Math.abs(c.cy);
+    quilt.push({
+      cx: c.cx, cy: c.cy,
+      addr: `bathy.cell_${ax}_${ay}`,
+      x: c.cx * cellSize,
+      y: c.cy * cellSize,
+      w: cellSize,
+      h: cellSize,
+      count: c.soundings.length,
+      avgDepth: Math.round(avgDepth * 10) / 10,
+      minDepth: Math.round(minDepth * 10) / 10,
+      maxDepth: Math.round(maxDepth * 10) / 10,
+      slope: { dx, dy, magnitude: Math.sqrt(dx*dx + dy*dy) },
+      // Approx physical position: cell center, scaled
+      approxMiles: {
+        x: ((c.cx * cellSize + cellSize/2) / CHART_W) * 20,  // 20 mi wide
+        y: ((c.cy * cellSize + cellSize/2) / CHART_H) * 15,  // 15 mi tall
+      },
+    });
+  }
+  return quilt;
+}
+
+// ============================================================================
+// Render
+// ============================================================================
+function renderChart() {
+  chart.innerHTML = '';
+  // Show underlying soundings (small dots)
+  for (const s of state.soundings) {
+    const d = document.createElement('div');
+    d.className = 'sounding';
+    d.style.left = s.x + 'px';
+    d.style.top = s.y + 'px';
+    chart.appendChild(d);
+  }
+  // Show the Quilt overlay
+  for (const cell of state.quilt) {
+    const div = document.createElement('div');
+    let cls = 'quilt-cell';
+    if (cell.avgDepth < 15) cls += ' shallow';
+    else if (cell.avgDepth < 35) cls += ' medium';
+    else cls += ' deep';
+    div.className = cls;
+    div.style.left = cell.x + 'px';
+    div.style.top = cell.y + 'px';
+    div.style.width = cell.w + 'px';
+    div.style.height = cell.h + 'px';
+    // Direction arrow
+    if (cell.slope.magnitude > 0.01) {
+      const angle = Math.atan2(cell.slope.dy, cell.slope.dx) * 180 / Math.PI;
+      const arrow = document.createElement('div');
+      arrow.className = 'arrow';
+      arrow.style.transform = `rotate(${angle}deg)`;
+      div.appendChild(arrow);
+    }
+    // Depth
+    const depth = document.createElement('div');
+    depth.className = 'depth';
+    if (mode === 'depth') depth.textContent = cell.avgDepth;
+    else if (mode === 'count') depth.textContent = cell.count;
+    else if (mode === 'slope') depth.textContent = (cell.slope.magnitude * 100).toFixed(0);
+    div.appendChild(depth);
+    // Address
+    const addr = document.createElement('div');
+    addr.className = 'addr';
+    addr.textContent = `${cell.cx >= 0 ? '+' : ''}${cell.cx},${cell.cy >= 0 ? '+' : ''}${cell.cy}`;
+    div.appendChild(addr);
+    // Count
+    const count = document.createElement('div');
+    count.className = 'count';
+    count.textContent = 'n=' + cell.count;
+    div.appendChild(count);
+
+    div.onclick = () => selectCell(cell);
+    chart.appendChild(div);
+  }
+}
+
+function selectCell(cell) {
+  document.querySelectorAll('.quilt-cell').forEach(c => c.classList.remove('selected'));
+  const idx = Array.from(document.querySelectorAll('.quilt-cell')).findIndex(c =>
+    c.style.left === cell.x + 'px' && c.style.top === cell.y + 'px'
+  );
+  if (idx >= 0) document.querySelectorAll('.quilt-cell')[idx].classList.add('selected');
+
+  const info = document.getElementById('cellInfo');
+  info.innerHTML = `
+    <div class="addr">${cell.addr}</div>
+    <div class="meta">cell at grid (${cell.cx}, ${cell.cy})</div>
+    <div class="meta">≈ ${cell.approxMiles.x.toFixed(1)} mi E, ${cell.approxMiles.y.toFixed(1)} mi N of origin</div>
+    <div class="stat"><span class="label">avg depth</span><span class="val">${cell.avgDepth} m</span></div>
+    <div class="stat"><span class="label">min depth</span><span class="val">${cell.minDepth} m</span></div>
+    <div class="stat"><span class="label">max depth</span><span class="val">${cell.maxDepth} m</span></div>
+    <div class="stat"><span class="label">sample count</span><span class="val">${cell.count}</span></div>
+    <div class="stat"><span class="label">slope magnitude</span><span class="val">${(cell.slope.magnitude * 100).toFixed(2)}</span></div>
+    <div class="stat"><span class="label">slope direction</span><span class="val">${(Math.atan2(cell.slope.dy, cell.slope.dx) * 180 / Math.PI).toFixed(0)}°</span></div>
+  `;
+}
+
+function renderQuiltTable() {
+  const tbody = document.querySelector('#quiltTable tbody');
+  tbody.innerHTML = '';
+  for (const cell of state.quilt.slice(0, 100)) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="addr">${cell.addr.split('.').pop()}</td>
+      <td>${cell.avgDepth}</td>
+      <td>${(cell.slope.magnitude * 100).toFixed(0)}</td>
+      <td>${cell.count}</td>
+    `;
+    tr.style.cursor = 'pointer';
+    tr.onclick = () => selectCell(cell);
+    tbody.appendChild(tr);
+  }
+  document.getElementById('quiltSummary').textContent =
+    `${state.quilt.length} cells. ${state.soundings.length} soundings. ` +
+    `Each cell aggregates ~${Math.round(state.soundings.length / state.quilt.length)} soundings.`;
+}
+
+// ============================================================================
+// State + init
+// ============================================================================
+const state = {
+  soundings: generateSoundings('harbor'),
+  quilt: makeQuilt(generateSoundings('harbor'), 40),
+};
+
+chart = document.getElementById('chart');
+renderChart();
+renderQuiltTable();
+
+document.getElementById('spacingSelect').onchange = (e) => {
+  spacing = parseInt(e.target.value);
+  state.quilt = makeQuilt(state.soundings, spacing);
+  renderChart();
+  renderQuiltTable();
+};
+document.getElementById('modeSelect').onchange = (e) => {
+  mode = e.target.value;
+  renderChart();
+};
+document.getElementById('regenBtn').onclick = () => {
+  rand = seedRandom(Math.floor(Math.random() * 10000));
+  state.soundings = generateSoundings(exampleType);
+  state.quilt = makeQuilt(state.soundings, spacing);
+  renderChart();
+  renderQuiltTable();
+};
+document.querySelectorAll('.example-chip').forEach(chip => {
+  chip.onclick = () => {
+    rand = seedRandom(Math.floor(Math.random() * 10000));
+    state.soundings = generateSoundings(chip.dataset.example);
+    state.quilt = makeQuilt(state.soundings, spacing);
+    renderChart();
+    renderQuiltTable();
+  };
+});
+</script>
+</body>
+</html>
