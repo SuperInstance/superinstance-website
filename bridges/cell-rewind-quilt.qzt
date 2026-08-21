@@ -1,0 +1,486 @@
+{
+  "name": "Time-Travel DAW Quilt",
+  "version": "1.0",
+  "created_at": "2026-08-21T02:24:14.697143",
+  "metadata": {
+    "source": "cell-rewind.html",
+    "source_type": "Time-Travel DAW",
+    "description": "Mapping of Time-Travel DAW to Quilt sheet",
+    "features": [
+      "multi_model_system",
+      "bookmark_rewind",
+      "cascade_preview",
+      "per_event_regeneration",
+      "multiple_views",
+      "voice_commands",
+      "audio_feedback"
+    ],
+    "models": [
+      "GLM-5.3",
+      "GLM-5",
+      "Kimi K3",
+      "DeepSeek V3"
+    ],
+    "views": [
+      "DAW",
+      "Front (Theater)",
+      "Top (Spatial)"
+    ],
+    "keyboard_shortcuts": {
+      "space": "play",
+      "b": "bookmark",
+      "r": "rewind",
+      "g": "regenerate",
+      "1": "DAW view",
+      "2": "Front view",
+      "3": "Top view"
+    }
+  },
+  "cells": [
+    {
+      "id": "model_glm53",
+      "type": "model",
+      "name": "GLM-5.3",
+      "description": "Latest GLM model with advanced reasoning",
+      "properties": {
+        "provider": "GLM-5.3",
+        "version": "latest",
+        "status": "active",
+        "capabilities": [
+          "text_generation",
+          "code_generation",
+          "analysis"
+        ]
+      },
+      "connections": [
+        {
+          "target": "op_regenerate",
+          "type": "model_used"
+        },
+        {
+          "target": "op_cascade",
+          "type": "model_used"
+        }
+      ]
+    },
+    {
+      "id": "model_glm5",
+      "type": "model",
+      "name": "GLM-5",
+      "description": "GLM-5 model for general tasks",
+      "properties": {
+        "provider": "GLM-5",
+        "version": "latest",
+        "status": "active",
+        "capabilities": [
+          "text_generation",
+          "code_generation",
+          "analysis"
+        ]
+      },
+      "connections": [
+        {
+          "target": "op_regenerate",
+          "type": "model_used"
+        },
+        {
+          "target": "op_cascade",
+          "type": "model_used"
+        }
+      ]
+    },
+    {
+      "id": "model_kimi",
+      "type": "model",
+      "name": "Kimi K3",
+      "description": "Kimi K3 model with specialized capabilities",
+      "properties": {
+        "provider": "Kimi",
+        "version": "K3",
+        "status": "active",
+        "capabilities": [
+          "text_generation",
+          "code_generation",
+          "analysis"
+        ]
+      },
+      "connections": [
+        {
+          "target": "op_regenerate",
+          "type": "model_used"
+        },
+        {
+          "target": "op_cascade",
+          "type": "model_used"
+        }
+      ]
+    },
+    {
+      "id": "model_deepseek",
+      "type": "model",
+      "name": "DeepSeek V3",
+      "description": "DeepSeek V3 model for deep analysis",
+      "properties": {
+        "provider": "DeepSeek",
+        "version": "V3",
+        "status": "active",
+        "capabilities": [
+          "text_generation",
+          "code_generation",
+          "analysis"
+        ]
+      },
+      "connections": [
+        {
+          "target": "op_regenerate",
+          "type": "model_used"
+        },
+        {
+          "target": "op_cascade",
+          "type": "model_used"
+        }
+      ]
+    },
+    {
+      "id": "key_space",
+      "type": "keyboard",
+      "name": "Key Space",
+      "description": "Play/Pause timeline",
+      "properties": {
+        "key": "Space",
+        "action": "play_pause",
+        "category": "shortcut"
+      },
+      "connections": [
+        {
+          "target": "op_bookmark",
+          "type": "trigger"
+        }
+      ]
+    },
+    {
+      "id": "key_b",
+      "type": "keyboard",
+      "name": "Key B",
+      "description": "Bookmark current position",
+      "properties": {
+        "key": "B",
+        "action": "bookmark",
+        "category": "shortcut"
+      },
+      "connections": [
+        {
+          "target": "op_bookmark",
+          "type": "trigger"
+        }
+      ]
+    },
+    {
+      "id": "key_r",
+      "type": "keyboard",
+      "name": "Key R",
+      "description": "Rewind to previous bookmark",
+      "properties": {
+        "key": "R",
+        "action": "rewind",
+        "category": "shortcut"
+      },
+      "connections": [
+        {
+          "target": "op_rewind",
+          "type": "trigger"
+        }
+      ]
+    },
+    {
+      "id": "key_g",
+      "type": "keyboard",
+      "name": "Key G",
+      "description": "Regenerate current event",
+      "properties": {
+        "key": "G",
+        "action": "regenerate",
+        "category": "shortcut"
+      },
+      "connections": [
+        {
+          "target": "op_regenerate",
+          "type": "trigger"
+        }
+      ]
+    },
+    {
+      "id": "key_1",
+      "type": "keyboard",
+      "name": "Key 1",
+      "description": "Switch to DAW view",
+      "properties": {
+        "key": "1",
+        "action": "view_daw",
+        "category": "shortcut"
+      },
+      "connections": [
+        {
+          "target": "view_daw",
+          "type": "switch_view"
+        }
+      ]
+    },
+    {
+      "id": "key_2",
+      "type": "keyboard",
+      "name": "Key 2",
+      "description": "Switch to Front (theater) view",
+      "properties": {
+        "key": "2",
+        "action": "view_front",
+        "category": "shortcut"
+      },
+      "connections": [
+        {
+          "target": "view_front",
+          "type": "switch_view"
+        }
+      ]
+    },
+    {
+      "id": "key_3",
+      "type": "keyboard",
+      "name": "Key 3",
+      "description": "Switch to Top (spatial) view",
+      "properties": {
+        "key": "3",
+        "action": "view_top",
+        "category": "shortcut"
+      },
+      "connections": [
+        {
+          "target": "view_top",
+          "type": "switch_view"
+        }
+      ]
+    },
+    {
+      "id": "view_daw",
+      "type": "view",
+      "name": "DAW View",
+      "description": "Main timeline view with tracks and events",
+      "properties": {
+        "view_type": "daw",
+        "is_active": false,
+        "render_mode": "canvas"
+      },
+      "connections": [
+        {
+          "target": "audio_tts",
+          "type": "audio_description"
+        }
+      ]
+    },
+    {
+      "id": "view_front",
+      "type": "view",
+      "name": "Front (Theater)",
+      "description": "Theater-style presentation view",
+      "properties": {
+        "view_type": "front",
+        "is_active": false,
+        "render_mode": "canvas"
+      },
+      "connections": [
+        {
+          "target": "audio_tts",
+          "type": "audio_description"
+        }
+      ]
+    },
+    {
+      "id": "view_top",
+      "type": "view",
+      "name": "Top (Spatial)",
+      "description": "Spatial/top-down view of the composition",
+      "properties": {
+        "view_type": "top",
+        "is_active": false,
+        "render_mode": "canvas"
+      },
+      "connections": [
+        {
+          "target": "audio_tts",
+          "type": "audio_description"
+        }
+      ]
+    },
+    {
+      "id": "op_bookmark",
+      "type": "operation",
+      "name": "Bookmark",
+      "description": "Save current position as bookmark",
+      "properties": {
+        "operation_type": "bookmark",
+        "is_async": true,
+        "undoable": true
+      },
+      "connections": [
+        {
+          "target": "view_daw",
+          "type": "updates"
+        },
+        {
+          "target": "view_front",
+          "type": "updates"
+        },
+        {
+          "target": "view_top",
+          "type": "updates"
+        },
+        {
+          "target": "audio_tts",
+          "type": "audio_feedback"
+        }
+      ]
+    },
+    {
+      "id": "op_rewind",
+      "type": "operation",
+      "name": "Rewind",
+      "description": "Jump back to previous bookmark",
+      "properties": {
+        "operation_type": "rewind",
+        "is_async": true,
+        "undoable": true
+      },
+      "connections": [
+        {
+          "target": "view_daw",
+          "type": "updates"
+        },
+        {
+          "target": "view_front",
+          "type": "updates"
+        },
+        {
+          "target": "view_top",
+          "type": "updates"
+        },
+        {
+          "target": "audio_tts",
+          "type": "audio_feedback"
+        }
+      ]
+    },
+    {
+      "id": "op_regenerate",
+      "type": "operation",
+      "name": "Regenerate",
+      "description": "Regenerate current event with selected model",
+      "properties": {
+        "operation_type": "regenerate",
+        "is_async": true,
+        "undoable": true
+      },
+      "connections": [
+        {
+          "target": "view_daw",
+          "type": "updates"
+        },
+        {
+          "target": "view_front",
+          "type": "updates"
+        },
+        {
+          "target": "view_top",
+          "type": "updates"
+        },
+        {
+          "target": "audio_tts",
+          "type": "audio_feedback"
+        }
+      ]
+    },
+    {
+      "id": "op_cascade",
+      "type": "operation",
+      "name": "Cascade Preview",
+      "description": "Preview cascading changes across timeline",
+      "properties": {
+        "operation_type": "cascade",
+        "is_async": true,
+        "undoable": true
+      },
+      "connections": [
+        {
+          "target": "view_daw",
+          "type": "updates"
+        },
+        {
+          "target": "view_front",
+          "type": "updates"
+        },
+        {
+          "target": "view_top",
+          "type": "updates"
+        },
+        {
+          "target": "audio_tts",
+          "type": "audio_feedback"
+        }
+      ]
+    },
+    {
+      "id": "audio_stt",
+      "type": "audio_input",
+      "name": "STT Voice Input",
+      "description": "Live speech-to-text for voice commands",
+      "properties": {
+        "input_type": "microphone",
+        "processing": "real_time",
+        "language": "en",
+        "commands_enabled": true
+      },
+      "connections": [
+        {
+          "target": "op_bookmark",
+          "type": "voice_command"
+        },
+        {
+          "target": "op_rewind",
+          "type": "voice_command"
+        },
+        {
+          "target": "op_regenerate",
+          "type": "voice_command"
+        },
+        {
+          "target": "op_cascade",
+          "type": "voice_command"
+        },
+        {
+          "target": "view_daw",
+          "type": "voice_command"
+        },
+        {
+          "target": "view_front",
+          "type": "voice_command"
+        },
+        {
+          "target": "view_top",
+          "type": "voice_command"
+        }
+      ]
+    },
+    {
+      "id": "audio_tts",
+      "type": "audio_output",
+      "name": "TTS Voice Output",
+      "description": "Text-to-speech for audio feedback",
+      "properties": {
+        "output_type": "speaker",
+        "voice": "default",
+        "rate": 1.0,
+        "pitch": 1.0
+      },
+      "connections": []
+    }
+  ]
+}
