@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<!--
+  spline-spectral-quilt.html — The spline-spectral insight as a Quilt sheet.
+
+  THE INSIGHT: B-spline basis functions are eigenvectors of the path graph
+  Laplacian. The Cox-de Boor recurrence is Fibonacci for function spaces.
+  Spline smoothing and spectral filtering solve the same variational problem.
+
+  Visualize:
+  - The 5-node path graph with its Laplacian
+  - The 5 eigenvalues (B-spline basis modes)
+  - The Cox-de Boor basis function evaluations
+  - The smoothing solution (low-pass filtered)
+  - The unified theorem
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spline Spectral — the function space is a graph</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .toolbar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-left: auto; }
+  button {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  button.active { background: #1f6feb; border-color: #1f6feb; color: white; }
+  .container { display: grid; grid-template-columns: 1fr 320px; height: calc(100vh - 70px); }
+  .canvas-area { padding: 1rem; overflow: auto; }
+  .right-pane { background: #0d1117; border-left: 1px solid var(--border); padding: 1rem; overflow-y: auto; }
+
+  /* The path graph */
+  .graph-vis {
+    position: relative; background: #04111c;
+    border: 1px solid var(--border); border-radius: 4px;
+    width: 100%; height: 200px; margin-bottom: 1rem; overflow: hidden;
+  }
+  .graph-node {
+    position: absolute; width: 36px; height: 36px;
+    background: var(--accent); border: 2px solid var(--fg);
+    border-radius: 50%; transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.8rem;
+  }
+  .graph-edge {
+    position: absolute; height: 2px; background: var(--muted);
+    transform-origin: 0 50%; opacity: 0.6;
+  }
+  .eigenvec-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+
+  /* The spline chart */
+  .chart-vis {
+    position: relative; background: #04111c;
+    border: 1px solid var(--border); border-radius: 4px;
+    width: 100%; height: 260px; margin-bottom: 1rem; overflow: hidden;
+  }
+  .chart-svg { width: 100%; height: 100%; }
+
+  /* Theorem box */
+  .theorem-box {
+    background: var(--panel); border: 2px solid var(--purple);
+    border-radius: 6px; padding: 1rem; margin: 1rem 0;
+  }
+  .theorem-box h3 { margin: 0 0 0.5rem; color: var(--purple); font-size: 0.95rem; }
+  .theorem-box p { margin: 0.3rem 0; color: var(--fg); font-size: 0.85rem; }
+  .theorem-box code { background: #0d1117; padding: 0.1rem 0.4rem; border-radius: 3px;
+    color: var(--warn); font-family: ui-monospace, monospace; }
+
+  /* Stat */
+  .stat { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .stat .label { color: var(--muted); }
+  .stat .val { color: var(--fg); font-family: ui-monospace, monospace; }
+
+  /* Eigenvalue bars */
+  .eig-row { display: flex; align-items: center; gap: 0.4rem; margin: 0.2rem 0; font-family: ui-monospace, monospace; font-size: 0.8rem; }
+  .eig-row .name { width: 60px; color: var(--muted); }
+  .eig-row .bar-bg { flex: 1; background: #0d1117; border-radius: 2px; height: 12px; }
+  .eig-row .bar { background: var(--accent); height: 100%; border-radius: 2px; }
+  .eig-row .val { width: 70px; text-align: right; color: var(--fg); }
+
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>〰️ Spline Spectral</h1>
+    <div class="subtitle">the function space is a graph — the basis functions are the eigenvectors</div>
+  </div>
+  <div class="toolbar">
+    <button class="primary active" data-mode="graph" id="btnGraph">Path graph</button>
+    <button data-mode="laplacian" id="btnLap">Laplacian</button>
+    <button data-mode="eig" id="btnEig">Eigenvalues</button>
+    <button data-mode="spline" id="btnSpline">B-spline</button>
+    <button data-mode="smooth" id="btnSmooth">Smoothing</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="canvas-area">
+    <h3 style="margin: 0 0 0.5rem; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;" id="viewTitle">Path graph (5 nodes, 4 edges)</h3>
+    <div class="graph-vis" id="graphVis"></div>
+
+    <h3 style="margin: 0 0 0.5rem; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;" id="viewTitle2">Cox-de Boor basis functions (degree 3)</h3>
+    <div class="chart-vis" id="chartVis"></div>
+
+    <div class="theorem-box">
+      <h3>📜 The Theorem</h3>
+      <p><strong>1.</strong> B-spline basis functions are eigenvectors of the path graph Laplacian. λ<sub>k</sub> = <code>2(1 - cos(kπ/n))</code></p>
+      <p><strong>2.</strong> The Cox-de Boor recurrence is Fibonacci for function spaces. Each level builds on the two previous levels.</p>
+      <p><strong>3.</strong> Spline smoothing and spectral filtering solve the same variational problem: <code>min f<sup>T</sup>L f</code> subject to fitting constraints.</p>
+      <p style="margin-top: 0.5rem; color: var(--muted); font-style: italic;">
+        "The B-spline basis doesn't just look smooth — it is the eigenbasis of a diffusion operator."
+      </p>
+    </div>
+  </div>
+
+  <div class="right-pane">
+    <h3 style="margin: 0 0 0.5rem; font-size: 0.95rem;">〰️ The structure</h3>
+    <p style="font-size: 0.85rem; color: var(--muted);">
+      The path graph is the simplest non-trivial graph: 5 nodes, 4 edges,
+      like a string of pearls. The Laplacian L = D - A is the discrete
+      second derivative. Its eigenvalues are the frequencies.
+    </p>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">📊 Eigenvalues</h3>
+    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.7rem;" id="eigBox">
+      <!-- Filled by JS -->
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🧮 Cox-de Boor</h3>
+    <pre style="background: #04111c; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; font-size: 0.7rem; color: var(--muted); margin: 0;">B_{i,0}(t) = 1 if t_i ≤ t &lt; t_{i+1}, else 0
+
+B_{i,p}(t) = (t - t_i) / (t_{i+p} - t_i) · B_{i,p-1}(t)
+         + (t_{i+p+1} - t) / (t_{i+p+1} - t_{i+1}) · B_{i+1,p-1}(t)</pre>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">📈 Stats</h3>
+    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.7rem;">
+      <div class="stat"><span class="label">graph nodes</span><span class="val">5</span></div>
+      <div class="stat"><span class="label">graph edges</span><span class="val">4</span></div>
+      <div class="stat"><span class="label">spline degree</span><span class="val">3</span></div>
+      <div class="stat"><span class="label">control points</span><span class="val">5</span></div>
+      <div class="stat"><span class="label">knots</span><span class="val">9</span></div>
+      <div class="stat"><span class="label">basis functions</span><span class="val">5 × 4 = 20</span></div>
+      <div class="stat"><span class="label">sample t values</span><span class="val">9</span></div>
+      <div class="stat"><span class="label">eigenvalues</span><span class="val">5</span></div>
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🔁 The Fibonacci</h3>
+    <p style="font-size: 0.85rem; color: var(--muted);">
+      The Cox-de Boor recurrence at each level <em>p</em> depends on the
+      two previous levels <em>p-1</em> and <em>p-2</em>. This is the
+      Fibonacci recurrence, but for function spaces instead of numbers.
+    </p>
+    <pre style="background: #04111c; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; font-size: 0.7rem; color: var(--muted); margin: 0;">Fibonacci:    F(n) = F(n-1) + F(n-2)
+Cox-de Boor:  B_p = c_1 · B_{p-1} + c_2 · B_{p-2}
+
+Same structure, different object.</pre>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// The path graph (5 nodes)
+// ============================================================================
+const N = 5;
+const nodes = Array.from({ length: N }, (_, i) => ({
+  id: i,
+  x: 50 + i * (700 / (N - 1)),
+  y: 100,
+}));
+
+const ADJ = [
+  [0, 1, 0, 0, 0],
+  [1, 0, 1, 0, 0],
+  [0, 1, 0, 1, 0],
+  [0, 0, 1, 0, 1],
+  [0, 0, 0, 1, 0],
+];
+const DEG = [1, 2, 2, 2, 1];
+const LAP = ADJ.map((row, i) => row.map((v, j) => (i === j ? DEG[i] : -v)));
+
+// Eigenvalues of path graph Laplacian: λ_k = 2(1 - cos(kπ/n)) for k = 0..n-1
+const EIG = Array.from({ length: N }, (_, k) => 2 * (1 - Math.cos(k * Math.PI / N)));
+
+// B-spline (degree 3, 5 control points)
+const KNOTS = [0, 0, 0, 0, 0.5, 1, 1, 1, 1];
+const CONTROLS = [0, 1, 0.5, 2, 1];
+const SAMPLE_TS = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+
+function coxDeBoor(t, i, p, knots = KNOTS) {
+  if (p === 0) return (knots[i] <= t && t < knots[i + 1]) ? 1 : 0;
+  let left = 0, right = 0;
+  if (knots[i + p] !== knots[i]) {
+    left = (t - knots[i]) / (knots[i + p] - knots[i]) * coxDeBoor(t, i, p - 1, knots);
+  }
+  if (knots[i + p + 1] !== knots[i + 1]) {
+    right = (knots[i + p + 1] - t) / (knots[i + p + 1] - knots[i + 1]) * coxDeBoor(t, i + 1, p - 1, knots);
+  }
+  return left + right;
+}
+
+function renderGraph(mode) {
+  const g = document.getElementById('graphVis');
+  g.innerHTML = '';
+  const W = g.clientWidth;
+  const H = g.clientHeight;
+  // Scale node positions to fit
+  const scaleX = (W - 80) / (nodes[nodes.length - 1].x - nodes[0].x);
+  for (const n of nodes) n.x = 40 + (n.x - 50) * scaleX;
+  // Draw edges
+  for (let i = 0; i < N - 1; i++) {
+    const n1 = nodes[i], n2 = nodes[i + 1];
+    const line = document.createElement('div');
+    line.className = 'graph-edge';
+    line.style.left = n1.x + 18 + 'px';
+    line.style.top = n1.y + 'px';
+    line.style.width = (n2.x - n1.x) + 'px';
+    g.appendChild(line);
+  }
+  // Draw nodes (colored by Laplacian value if mode is laplacian)
+  for (let i = 0; i < N; i++) {
+    const n = nodes[i];
+    const div = document.createElement('div');
+    div.className = 'graph-node';
+    div.style.left = n.x + 'px';
+    div.style.top = n.y + 'px';
+    if (mode === 'laplacian') {
+      // Color by the diagonal value
+      const lapVal = LAP[i][i];
+      const ratio = lapVal / 2;
+      const r = Math.round(63 + (248 - 63) * ratio);
+      const g2 = Math.round(185 - 185 * ratio);
+      const b = Math.round(80 - 80 * ratio);
+      div.style.background = `rgb(${r}, ${g2}, ${b})`;
+      div.textContent = lapVal;
+    } else {
+      div.textContent = i;
+    }
+    g.appendChild(div);
+  }
+  // Overlay: eigenvectors as modes
+  if (mode === 'eig' || mode === 'spline' || mode === 'smooth') {
+    const overlay = document.createElement('div');
+    overlay.className = 'eigenvec-overlay';
+    g.appendChild(overlay);
+  }
+}
+
+function renderChart(mode) {
+  const c = document.getElementById('chartVis');
+  c.innerHTML = '';
+  const W = c.clientWidth;
+  const H = c.clientHeight;
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+  svg.setAttribute('class', 'chart-svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  c.appendChild(svg);
+
+  // Axes
+  const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  xAxis.setAttribute('x1', 30); xAxis.setAttribute('y1', H / 2);
+  xAxis.setAttribute('x2', W - 10); xAxis.setAttribute('y2', H / 2);
+  xAxis.setAttribute('stroke', 'var(--muted)');
+  xAxis.setAttribute('stroke-width', '1');
+  svg.appendChild(xAxis);
+
+  if (mode === 'eig') {
+    // Plot the eigenvalues as bars
+    const maxEig = Math.max(...EIG);
+    for (let k = 0; k < N; k++) {
+      const x = 30 + k * (W - 40) / N;
+      const h = (EIG[k] / maxEig) * (H / 2 - 10);
+      const bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bar.setAttribute('x', x); bar.setAttribute('y', H / 2 - h);
+      bar.setAttribute('width', (W - 40) / N - 5);
+      bar.setAttribute('height', h);
+      bar.setAttribute('fill', 'var(--accent)');
+      svg.appendChild(bar);
+      // Label
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('x', x + (W - 40) / N / 2);
+      t.setAttribute('y', H - 5);
+      t.setAttribute('fill', 'var(--muted)');
+      t.setAttribute('font-size', '10');
+      t.setAttribute('text-anchor', 'middle');
+      t.textContent = `λ${k}`;
+      svg.appendChild(t);
+      // Value
+      const t2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t2.setAttribute('x', x + (W - 40) / N / 2);
+      t2.setAttribute('y', H / 2 - h - 5);
+      t2.setAttribute('fill', 'var(--fg)');
+      t2.setAttribute('font-size', '9');
+      t2.setAttribute('text-anchor', 'middle');
+      t2.textContent = EIG[k].toFixed(2);
+      svg.appendChild(t2);
+    }
+  } else if (mode === 'spline') {
+    // Plot Cox-de Boor basis functions B_{i,p} for p=0..3
+    const colors = ['#58a6ff', '#3fb950', '#f0883e', '#a371f7'];
+    for (let p = 0; p < 4; p++) {
+      const pts = [];
+      for (let t_idx = 0; t_idx < 100; t_idx++) {
+        const t = t_idx / 99;
+        let val = 0;
+        for (let i = 0; i < N; i++) {
+          val += CONTROLS[i] * coxDeBoor(t, i, p, KNOTS);
+        }
+        const x = 30 + t * (W - 40);
+        const y = H / 2 - val * (H / 2 - 20);
+        pts.push(`${x},${y}`);
+      }
+      const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      poly.setAttribute('points', pts.join(' '));
+      poly.setAttribute('fill', 'none');
+      poly.setAttribute('stroke', colors[p]);
+      poly.setAttribute('stroke-width', '2');
+      poly.setAttribute('opacity', '0.8');
+      svg.appendChild(poly);
+    }
+    // Control points
+    for (let i = 0; i < CONTROLS.length; i++) {
+      const x = 30 + (i / (CONTROLS.length - 1)) * (W - 40);
+      const y = H / 2 - CONTROLS[i] * (H / 2 - 20);
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 4);
+      c.setAttribute('fill', 'var(--warn)');
+      svg.appendChild(c);
+    }
+  } else if (mode === 'smooth') {
+    // The smoothing solution: low-pass filtered
+    const pts = [];
+    for (let t_idx = 0; t_idx < 100; t_idx++) {
+      const t = t_idx / 99;
+      // Build a smooth function from low-frequency eigenmodes only
+      let val = 0;
+      for (let k = 0; k < N; k++) {
+        const coef = (k === 0) ? 0.5 : 1.0 / (1 + EIG[k]);
+        val += coef * Math.sin(k * Math.PI * t);
+      }
+      const x = 30 + t * (W - 40);
+      const y = H / 2 - val * (H / 2 - 20);
+      pts.push(`${x},${y}`);
+    }
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    poly.setAttribute('points', pts.join(' '));
+    poly.setAttribute('fill', 'none');
+    poly.setAttribute('stroke', 'var(--ok)');
+    poly.setAttribute('stroke-width', '2');
+    svg.appendChild(poly);
+  } else {
+    // Default: show a function on the graph
+    const pts = [];
+    for (let t_idx = 0; t_idx < 100; t_idx++) {
+      const t = t_idx / 99;
+      const val = 0.5 * Math.sin(t * Math.PI * 3) + 0.3 * Math.cos(t * Math.PI * 5);
+      const x = 30 + t * (W - 40);
+      const y = H / 2 - val * (H / 2 - 20);
+      pts.push(`${x},${y}`);
+    }
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    poly.setAttribute('points', pts.join(' '));
+    poly.setAttribute('fill', 'none');
+    poly.setAttribute('stroke', 'var(--accent)');
+    poly.setAttribute('stroke-width', '2');
+    svg.appendChild(poly);
+  }
+}
+
+function renderEigBox() {
+  const box = document.getElementById('eigBox');
+  const maxEig = Math.max(...EIG);
+  box.innerHTML = EIG.map((lam, k) => `
+    <div class="eig-row">
+      <div class="name">λ${k}</div>
+      <div class="bar-bg"><div class="bar" style="width: ${(lam / maxEig * 100).toFixed(0)}%"></div></div>
+      <div class="val">${lam.toFixed(3)}</div>
+    </div>
+  `).join('');
+}
+
+let currentMode = 'graph';
+function setMode(mode) {
+  currentMode = mode;
+  // Update active button
+  document.querySelectorAll('button[data-mode]').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  const titles = {
+    'graph': ['Path graph (5 nodes, 4 edges)', 'Function on the path graph'],
+    'laplacian': ['Laplacian (degree − adjacency)', 'Diagonal of L'],
+    'eig': ['Eigenvalues λ_k = 2(1 − cos(kπ/n))', 'Eigenvalues as bars'],
+    'spline': ['Cox-de Boor basis B_{i,p}(t)', 'B-spline = sum of basis × control'],
+    'smooth': ['min f^T L f subject to f(u) = v', 'Low-pass filtered solution'],
+  };
+  document.getElementById('viewTitle').textContent = titles[mode][0];
+  document.getElementById('viewTitle2').textContent = titles[mode][1];
+  renderGraph(mode);
+  renderChart(mode);
+}
+
+document.getElementById('btnGraph').onclick = () => setMode('graph');
+document.getElementById('btnLap').onclick = () => setMode('laplacian');
+document.getElementById('btnEig').onclick = () => setMode('eig');
+document.getElementById('btnSpline').onclick = () => setMode('spline');
+document.getElementById('btnSmooth').onclick = () => setMode('smooth');
+
+renderEigBox();
+setMode('graph');
+window.addEventListener('resize', () => setMode(currentMode));
+</script>
+</body>
+</html>

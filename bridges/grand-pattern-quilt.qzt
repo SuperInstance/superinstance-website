@@ -1,0 +1,2798 @@
+{
+  "schema": "quilt-zip-target/v1",
+  "metadata": {
+    "name": "Grand Pattern as Quilt sheet",
+    "description": "The Grand Pattern (Fibonacci dual-direction architecture) is the Quilt cell model. Perception DB \u2192 Z_in cell; Prediction DB \u2192 Z_out cell; JEPA \u2192 the cell evaluator; double-entry \u2192 the cell's input/output balance; Vibe \u2192 the cell's metadata; GC \u2192 the cell's lifecycle; Cellular graph \u2192 the Quilt sheet. The 12 polyformalism ports are the back-pressure demonstrating the pattern survives translation.",
+    "generated": "2026-08-21T01:31:22Z",
+    "address_root": "grandpattern"
+  },
+  "rooms": [
+    {
+      "id": "pattern",
+      "name": "\ud83c\udfdb Pattern \u2014 the 8 primitives",
+      "cell_count": 104
+    },
+    {
+      "id": "port",
+      "name": "\ud83c\udf10 12 language ports \u2014 polyformalism",
+      "cell_count": 144
+    },
+    {
+      "id": "family",
+      "name": "\ud83c\udf00 Fibonacci family \u2014 the supports",
+      "cell_count": 156
+    }
+  ],
+  "cells": [
+    {
+      "address": "pattern.z_in.name",
+      "kind": "string",
+      "value": "Z_in"
+    },
+    {
+      "address": "pattern.z_in.description",
+      "kind": "string",
+      "value": "Perception database \u2014 incoming sensor embeddings"
+    },
+    {
+      "address": "pattern.z_in.kind",
+      "kind": "string",
+      "value": "perception_db"
+    },
+    {
+      "address": "pattern.z_in.icon",
+      "kind": "string",
+      "value": "\ud83d\udc41"
+    },
+    {
+      "address": "pattern.z_in.address",
+      "kind": "string",
+      "value": "pattern.z_in"
+    },
+    {
+      "address": "pattern.z_in.embed[0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "pattern.z_in.embed[1]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "pattern.z_in.embed[2]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "pattern.z_in.embed[3]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "pattern.z_in.embed[4]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "pattern.z_in.embed[5]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "pattern.z_in.embed[6]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "pattern.z_in.embed[7]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "pattern.z_out.name",
+      "kind": "string",
+      "value": "Z_out"
+    },
+    {
+      "address": "pattern.z_out.description",
+      "kind": "string",
+      "value": "Prediction database \u2014 predicted future embeddings"
+    },
+    {
+      "address": "pattern.z_out.kind",
+      "kind": "string",
+      "value": "prediction_db"
+    },
+    {
+      "address": "pattern.z_out.icon",
+      "kind": "string",
+      "value": "\ud83d\udd2e"
+    },
+    {
+      "address": "pattern.z_out.address",
+      "kind": "string",
+      "value": "pattern.z_out"
+    },
+    {
+      "address": "pattern.z_out.embed[0]",
+      "kind": "f64",
+      "value": 0.4958324052262343
+    },
+    {
+      "address": "pattern.z_out.embed[1]",
+      "kind": "f64",
+      "value": -0.1277705510134156
+    },
+    {
+      "address": "pattern.z_out.embed[2]",
+      "kind": "f64",
+      "value": -0.4629073411638662
+    },
+    {
+      "address": "pattern.z_out.embed[3]",
+      "kind": "f64",
+      "value": 0.24705667556930408
+    },
+    {
+      "address": "pattern.z_out.embed[4]",
+      "kind": "f64",
+      "value": 0.39924355631174513
+    },
+    {
+      "address": "pattern.z_out.embed[5]",
+      "kind": "f64",
+      "value": -0.34993734379677116
+    },
+    {
+      "address": "pattern.z_out.embed[6]",
+      "kind": "f64",
+      "value": -0.30906855611851664
+    },
+    {
+      "address": "pattern.z_out.embed[7]",
+      "kind": "f64",
+      "value": 0.4295809074282479
+    },
+    {
+      "address": "pattern.jepa.name",
+      "kind": "string",
+      "value": "JEPA"
+    },
+    {
+      "address": "pattern.jepa.description",
+      "kind": "string",
+      "value": "JEPA mapping \u2014 cross-DB comparison, computes surprise"
+    },
+    {
+      "address": "pattern.jepa.kind",
+      "kind": "string",
+      "value": "jepa_mapping"
+    },
+    {
+      "address": "pattern.jepa.icon",
+      "kind": "string",
+      "value": "\ud83e\udde0"
+    },
+    {
+      "address": "pattern.jepa.address",
+      "kind": "string",
+      "value": "pattern.jepa"
+    },
+    {
+      "address": "pattern.jepa.embed[0]",
+      "kind": "f64",
+      "value": -0.1277705510134156
+    },
+    {
+      "address": "pattern.jepa.embed[1]",
+      "kind": "f64",
+      "value": 0.24705667556930408
+    },
+    {
+      "address": "pattern.jepa.embed[2]",
+      "kind": "f64",
+      "value": -0.34993734379677116
+    },
+    {
+      "address": "pattern.jepa.embed[3]",
+      "kind": "f64",
+      "value": 0.4295809074282479
+    },
+    {
+      "address": "pattern.jepa.embed[4]",
+      "kind": "f64",
+      "value": -0.4806987459397784
+    },
+    {
+      "address": "pattern.jepa.embed[5]",
+      "kind": "f64",
+      "value": 0.4998964500713346
+    },
+    {
+      "address": "pattern.jepa.embed[6]",
+      "kind": "f64",
+      "value": -0.48589922287193166
+    },
+    {
+      "address": "pattern.jepa.embed[7]",
+      "kind": "f64",
+      "value": 0.43963653082536214
+    },
+    {
+      "address": "pattern.doubleentry.name",
+      "kind": "string",
+      "value": "DoubleEntry"
+    },
+    {
+      "address": "pattern.doubleentry.description",
+      "kind": "string",
+      "value": "Double-entry bookkeeping \u2014 every tick updates BOTH databases"
+    },
+    {
+      "address": "pattern.doubleentry.kind",
+      "kind": "string",
+      "value": "bookkeeping"
+    },
+    {
+      "address": "pattern.doubleentry.icon",
+      "kind": "string",
+      "value": "\ud83d\udcd2"
+    },
+    {
+      "address": "pattern.doubleentry.address",
+      "kind": "string",
+      "value": "pattern.doubleentry"
+    },
+    {
+      "address": "pattern.doubleentry.embed[0]",
+      "kind": "f64",
+      "value": -0.4629073411638662
+    },
+    {
+      "address": "pattern.doubleentry.embed[1]",
+      "kind": "f64",
+      "value": -0.34993734379677116
+    },
+    {
+      "address": "pattern.doubleentry.embed[2]",
+      "kind": "f64",
+      "value": 0.19837028656530684
+    },
+    {
+      "address": "pattern.doubleentry.embed[3]",
+      "kind": "f64",
+      "value": 0.4998964500713346
+    },
+    {
+      "address": "pattern.doubleentry.embed[4]",
+      "kind": "f64",
+      "value": 0.17952917701108415
+    },
+    {
+      "address": "pattern.doubleentry.embed[5]",
+      "kind": "f64",
+      "value": -0.36418038391579793
+    },
+    {
+      "address": "pattern.doubleentry.embed[6]",
+      "kind": "f64",
+      "value": -0.4548333359167626
+    },
+    {
+      "address": "pattern.doubleentry.embed[7]",
+      "kind": "f64",
+      "value": 0.020346628674932428
+    },
+    {
+      "address": "pattern.vibe.name",
+      "kind": "string",
+      "value": "Vibe"
+    },
+    {
+      "address": "pattern.vibe.description",
+      "kind": "string",
+      "value": "Vibe \u2014 (position, velocity, acceleration) tuple on the embedding manifold"
+    },
+    {
+      "address": "pattern.vibe.kind",
+      "kind": "string",
+      "value": "vibe"
+    },
+    {
+      "address": "pattern.vibe.icon",
+      "kind": "string",
+      "value": "\ud83c\udf0a"
+    },
+    {
+      "address": "pattern.vibe.address",
+      "kind": "string",
+      "value": "pattern.vibe"
+    },
+    {
+      "address": "pattern.vibe.embed[0]",
+      "kind": "f64",
+      "value": 0.24705667556930408
+    },
+    {
+      "address": "pattern.vibe.embed[1]",
+      "kind": "f64",
+      "value": 0.4295809074282479
+    },
+    {
+      "address": "pattern.vibe.embed[2]",
+      "kind": "f64",
+      "value": 0.4998964500713346
+    },
+    {
+      "address": "pattern.vibe.embed[3]",
+      "kind": "f64",
+      "value": 0.43963653082536214
+    },
+    {
+      "address": "pattern.vibe.embed[4]",
+      "kind": "f64",
+      "value": 0.2645413430600119
+    },
+    {
+      "address": "pattern.vibe.embed[5]",
+      "kind": "f64",
+      "value": 0.020346628674932428
+    },
+    {
+      "address": "pattern.vibe.embed[6]",
+      "kind": "f64",
+      "value": -0.22916272724588294
+    },
+    {
+      "address": "pattern.vibe.embed[7]",
+      "kind": "f64",
+      "value": -0.4188136285735138
+    },
+    {
+      "address": "pattern.gc.name",
+      "kind": "string",
+      "value": "GC"
+    },
+    {
+      "address": "pattern.gc.description",
+      "kind": "string",
+      "value": "3-phase garbage collection \u2014 merge similar \u2192 decay old \u2192 prune weak"
+    },
+    {
+      "address": "pattern.gc.kind",
+      "kind": "string",
+      "value": "gc"
+    },
+    {
+      "address": "pattern.gc.icon",
+      "kind": "string",
+      "value": "\ud83e\uddf9"
+    },
+    {
+      "address": "pattern.gc.address",
+      "kind": "string",
+      "value": "pattern.gc"
+    },
+    {
+      "address": "pattern.gc.embed[0]",
+      "kind": "f64",
+      "value": 0.39924355631174513
+    },
+    {
+      "address": "pattern.gc.embed[1]",
+      "kind": "f64",
+      "value": -0.4806987459397784
+    },
+    {
+      "address": "pattern.gc.embed[2]",
+      "kind": "f64",
+      "value": 0.17952917701108415
+    },
+    {
+      "address": "pattern.gc.embed[3]",
+      "kind": "f64",
+      "value": 0.2645413430600119
+    },
+    {
+      "address": "pattern.gc.embed[4]",
+      "kind": "f64",
+      "value": -0.498043251559797
+    },
+    {
+      "address": "pattern.gc.embed[5]",
+      "kind": "f64",
+      "value": 0.33511458792168736
+    },
+    {
+      "address": "pattern.gc.embed[6]",
+      "kind": "f64",
+      "value": 0.09455731017544576
+    },
+    {
+      "address": "pattern.gc.embed[7]",
+      "kind": "f64",
+      "value": -0.44896384034464565
+    },
+    {
+      "address": "pattern.cellulargraph.name",
+      "kind": "string",
+      "value": "CellularGraph"
+    },
+    {
+      "address": "pattern.cellulargraph.description",
+      "kind": "string",
+      "value": "Cellular graph \u2014 rooms as nodes, algorithms as edges, murmur as gossip"
+    },
+    {
+      "address": "pattern.cellulargraph.kind",
+      "kind": "string",
+      "value": "graph"
+    },
+    {
+      "address": "pattern.cellulargraph.icon",
+      "kind": "string",
+      "value": "\ud83d\udd78"
+    },
+    {
+      "address": "pattern.cellulargraph.address",
+      "kind": "string",
+      "value": "pattern.cellulargraph"
+    },
+    {
+      "address": "pattern.cellulargraph.embed[0]",
+      "kind": "f64",
+      "value": -0.34993734379677116
+    },
+    {
+      "address": "pattern.cellulargraph.embed[1]",
+      "kind": "f64",
+      "value": 0.4998964500713346
+    },
+    {
+      "address": "pattern.cellulargraph.embed[2]",
+      "kind": "f64",
+      "value": -0.36418038391579793
+    },
+    {
+      "address": "pattern.cellulargraph.embed[3]",
+      "kind": "f64",
+      "value": 0.020346628674932428
+    },
+    {
+      "address": "pattern.cellulargraph.embed[4]",
+      "kind": "f64",
+      "value": 0.33511458792168736
+    },
+    {
+      "address": "pattern.cellulargraph.embed[5]",
+      "kind": "f64",
+      "value": -0.49906830796635165
+    },
+    {
+      "address": "pattern.cellulargraph.embed[6]",
+      "kind": "f64",
+      "value": 0.37782011286971057
+    },
+    {
+      "address": "pattern.cellulargraph.embed[7]",
+      "kind": "f64",
+      "value": -0.040659550569395096
+    },
+    {
+      "address": "pattern.murmur.name",
+      "kind": "string",
+      "value": "Murmur"
+    },
+    {
+      "address": "pattern.murmur.description",
+      "kind": "string",
+      "value": "Murmur protocol \u2014 gossip between rooms"
+    },
+    {
+      "address": "pattern.murmur.kind",
+      "kind": "string",
+      "value": "gossip"
+    },
+    {
+      "address": "pattern.murmur.icon",
+      "kind": "string",
+      "value": "\ud83d\udce1"
+    },
+    {
+      "address": "pattern.murmur.address",
+      "kind": "string",
+      "value": "pattern.murmur"
+    },
+    {
+      "address": "pattern.murmur.embed[0]",
+      "kind": "f64",
+      "value": -0.30906855611851664
+    },
+    {
+      "address": "pattern.murmur.embed[1]",
+      "kind": "f64",
+      "value": -0.48589922287193166
+    },
+    {
+      "address": "pattern.murmur.embed[2]",
+      "kind": "f64",
+      "value": -0.4548333359167626
+    },
+    {
+      "address": "pattern.murmur.embed[3]",
+      "kind": "f64",
+      "value": -0.22916272724588294
+    },
+    {
+      "address": "pattern.murmur.embed[4]",
+      "kind": "f64",
+      "value": 0.09455731017544576
+    },
+    {
+      "address": "pattern.murmur.embed[5]",
+      "kind": "f64",
+      "value": 0.37782011286971057
+    },
+    {
+      "address": "pattern.murmur.embed[6]",
+      "kind": "f64",
+      "value": 0.49942902584761834
+    },
+    {
+      "address": "pattern.murmur.embed[7]",
+      "kind": "f64",
+      "value": 0.407352531629229
+    },
+    {
+      "address": "port.fortran.name",
+      "kind": "string",
+      "value": "fortran"
+    },
+    {
+      "address": "port.fortran.lang",
+      "kind": "string",
+      "value": "Fortran 2018"
+    },
+    {
+      "address": "port.fortran.repo",
+      "kind": "string",
+      "value": "grand-pattern-fortran"
+    },
+    {
+      "address": "port.fortran.icon",
+      "kind": "string",
+      "value": "\ud83d\udfe6"
+    },
+    {
+      "address": "port.fortran.embed[0]",
+      "kind": "f64",
+      "value": 0.21928043650588908
+    },
+    {
+      "address": "port.fortran.embed[1]",
+      "kind": "f64",
+      "value": 0.36145108904656725
+    },
+    {
+      "address": "port.fortran.embed[2]",
+      "kind": "f64",
+      "value": 0.45879801284117216
+    },
+    {
+      "address": "port.fortran.embed[3]",
+      "kind": "f64",
+      "value": 0.49924916760912796
+    },
+    {
+      "address": "port.fortran.embed[4]",
+      "kind": "f64",
+      "value": 0.47778818559355074
+    },
+    {
+      "address": "port.fortran.embed[5]",
+      "kind": "f64",
+      "value": 0.3970764538137127
+    },
+    {
+      "address": "port.fortran.embed[6]",
+      "kind": "f64",
+      "value": 0.26712307414141784
+    },
+    {
+      "address": "port.fortran.embed[7]",
+      "kind": "f64",
+      "value": 0.10404362961557757
+    },
+    {
+      "address": "port.c.name",
+      "kind": "string",
+      "value": "c"
+    },
+    {
+      "address": "port.c.lang",
+      "kind": "string",
+      "value": "C"
+    },
+    {
+      "address": "port.c.repo",
+      "kind": "string",
+      "value": "grand-pattern-c"
+    },
+    {
+      "address": "port.c.icon",
+      "kind": "string",
+      "value": "\ud83d\udd37"
+    },
+    {
+      "address": "port.c.embed[0]",
+      "kind": "f64",
+      "value": 0.417352242357282
+    },
+    {
+      "address": "port.c.embed[1]",
+      "kind": "f64",
+      "value": -0.43773337160005144
+    },
+    {
+      "address": "port.c.embed[2]",
+      "kind": "f64",
+      "value": -0.010596800910650794
+    },
+    {
+      "address": "port.c.embed[3]",
+      "kind": "f64",
+      "value": 0.4475802480595489
+    },
+    {
+      "address": "port.c.embed[4]",
+      "kind": "f64",
+      "value": -0.4053086639086364
+    },
+    {
+      "address": "port.c.embed[5]",
+      "kind": "f64",
+      "value": -0.07095485185623861
+    },
+    {
+      "address": "port.c.embed[6]",
+      "kind": "f64",
+      "value": 0.47124211555311657
+    },
+    {
+      "address": "port.c.embed[7]",
+      "kind": "f64",
+      "value": -0.3669379549895263
+    },
+    {
+      "address": "port.cpp.name",
+      "kind": "string",
+      "value": "cpp"
+    },
+    {
+      "address": "port.cpp.lang",
+      "kind": "string",
+      "value": "C++"
+    },
+    {
+      "address": "port.cpp.repo",
+      "kind": "string",
+      "value": "grand-pattern-cpp"
+    },
+    {
+      "address": "port.cpp.icon",
+      "kind": "string",
+      "value": "\u2795"
+    },
+    {
+      "address": "port.cpp.embed[0]",
+      "kind": "f64",
+      "value": -0.32682751372514496
+    },
+    {
+      "address": "port.cpp.embed[1]",
+      "kind": "f64",
+      "value": 0.48494857594273133
+    },
+    {
+      "address": "port.cpp.embed[2]",
+      "kind": "f64",
+      "value": -0.4668087226175663
+    },
+    {
+      "address": "port.cpp.embed[3]",
+      "kind": "f64",
+      "value": 0.279001121177093
+    },
+    {
+      "address": "port.cpp.embed[4]",
+      "kind": "f64",
+      "value": 0.010213094275013008
+    },
+    {
+      "address": "port.cpp.embed[5]",
+      "kind": "f64",
+      "value": -0.2957152267624808
+    },
+    {
+      "address": "port.cpp.embed[6]",
+      "kind": "f64",
+      "value": 0.4737357845124753
+    },
+    {
+      "address": "port.cpp.embed[7]",
+      "kind": "f64",
+      "value": -0.47957086271707156
+    },
+    {
+      "address": "port.rust.name",
+      "kind": "string",
+      "value": "rust"
+    },
+    {
+      "address": "port.rust.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "port.rust.repo",
+      "kind": "string",
+      "value": "grand-pattern-rs"
+    },
+    {
+      "address": "port.rust.icon",
+      "kind": "string",
+      "value": "\ud83e\udd80"
+    },
+    {
+      "address": "port.rust.embed[0]",
+      "kind": "f64",
+      "value": -0.33313239090172164
+    },
+    {
+      "address": "port.rust.embed[1]",
+      "kind": "f64",
+      "value": -0.49996144183077273
+    },
+    {
+      "address": "port.rust.embed[2]",
+      "kind": "f64",
+      "value": -0.3422898135967472
+    },
+    {
+      "address": "port.rust.embed[3]",
+      "kind": "f64",
+      "value": 0.03754550105279321
+    },
+    {
+      "address": "port.rust.embed[4]",
+      "kind": "f64",
+      "value": 0.39301185527503624
+    },
+    {
+      "address": "port.rust.embed[5]",
+      "kind": "f64",
+      "value": 0.4933933103720815
+    },
+    {
+      "address": "port.rust.embed[6]",
+      "kind": "f64",
+      "value": 0.2735371412955946
+    },
+    {
+      "address": "port.rust.embed[7]",
+      "kind": "f64",
+      "value": -0.12385869524352419
+    },
+    {
+      "address": "port.go.name",
+      "kind": "string",
+      "value": "go"
+    },
+    {
+      "address": "port.go.lang",
+      "kind": "string",
+      "value": "Go"
+    },
+    {
+      "address": "port.go.repo",
+      "kind": "string",
+      "value": "grand-pattern-go"
+    },
+    {
+      "address": "port.go.icon",
+      "kind": "string",
+      "value": "\ud83d\udc39"
+    },
+    {
+      "address": "port.go.embed[0]",
+      "kind": "f64",
+      "value": 0.4126720626035202
+    },
+    {
+      "address": "port.go.embed[1]",
+      "kind": "f64",
+      "value": 0.48177506070009934
+    },
+    {
+      "address": "port.go.embed[2]",
+      "kind": "f64",
+      "value": 0.2080528604236611
+    },
+    {
+      "address": "port.go.embed[3]",
+      "kind": "f64",
+      "value": -0.21371719239864104
+    },
+    {
+      "address": "port.go.embed[4]",
+      "kind": "f64",
+      "value": -0.48340872381864725
+    },
+    {
+      "address": "port.go.embed[5]",
+      "kind": "f64",
+      "value": -0.4091125623150344
+    },
+    {
+      "address": "port.go.embed[6]",
+      "kind": "f64",
+      "value": -0.04369694118495517
+    },
+    {
+      "address": "port.go.embed[7]",
+      "kind": "f64",
+      "value": 0.3528128850047539
+    },
+    {
+      "address": "port.chapel.name",
+      "kind": "string",
+      "value": "chapel"
+    },
+    {
+      "address": "port.chapel.lang",
+      "kind": "string",
+      "value": "Chapel 2.x"
+    },
+    {
+      "address": "port.chapel.repo",
+      "kind": "string",
+      "value": "grand-pattern-chapel"
+    },
+    {
+      "address": "port.chapel.icon",
+      "kind": "string",
+      "value": "\u26ea"
+    },
+    {
+      "address": "port.chapel.embed[0]",
+      "kind": "f64",
+      "value": 0.22679134446963498
+    },
+    {
+      "address": "port.chapel.embed[1]",
+      "kind": "f64",
+      "value": -0.4315970739986508
+    },
+    {
+      "address": "port.chapel.embed[2]",
+      "kind": "f64",
+      "value": 0.4995685146925844
+    },
+    {
+      "address": "port.chapel.embed[3]",
+      "kind": "f64",
+      "value": -0.409155882484814
+    },
+    {
+      "address": "port.chapel.embed[4]",
+      "kind": "f64",
+      "value": 0.1890237559259762
+    },
+    {
+      "address": "port.chapel.embed[5]",
+      "kind": "f64",
+      "value": 0.09103679177682535
+    },
+    {
+      "address": "port.chapel.embed[6]",
+      "kind": "f64",
+      "value": -0.3422348762909349
+    },
+    {
+      "address": "port.chapel.embed[7]",
+      "kind": "f64",
+      "value": 0.4849302189352441
+    },
+    {
+      "address": "port.mojo.name",
+      "kind": "string",
+      "value": "mojo"
+    },
+    {
+      "address": "port.mojo.lang",
+      "kind": "string",
+      "value": "Mojo \ud83d\udd25"
+    },
+    {
+      "address": "port.mojo.repo",
+      "kind": "string",
+      "value": "grand-pattern-mojo"
+    },
+    {
+      "address": "port.mojo.icon",
+      "kind": "string",
+      "value": "\ud83d\udd25"
+    },
+    {
+      "address": "port.mojo.embed[0]",
+      "kind": "f64",
+      "value": -0.4711136947811076
+    },
+    {
+      "address": "port.mojo.embed[1]",
+      "kind": "f64",
+      "value": 0.3527594814288723
+    },
+    {
+      "address": "port.mojo.embed[2]",
+      "kind": "f64",
+      "value": 0.16959869860431898
+    },
+    {
+      "address": "port.mojo.embed[3]",
+      "kind": "f64",
+      "value": -0.4977210023896565
+    },
+    {
+      "address": "port.mojo.embed[4]",
+      "kind": "f64",
+      "value": 0.25581962190338997
+    },
+    {
+      "address": "port.mojo.embed[5]",
+      "kind": "f64",
+      "value": 0.27906365544116307
+    },
+    {
+      "address": "port.mojo.embed[6]",
+      "kind": "f64",
+      "value": -0.49434439992671453
+    },
+    {
+      "address": "port.mojo.embed[7]",
+      "kind": "f64",
+      "value": 0.14346857317592907
+    },
+    {
+      "address": "port.cuda.name",
+      "kind": "string",
+      "value": "cuda"
+    },
+    {
+      "address": "port.cuda.lang",
+      "kind": "string",
+      "value": "CUDA C++"
+    },
+    {
+      "address": "port.cuda.repo",
+      "kind": "string",
+      "value": "grand-pattern-cuda"
+    },
+    {
+      "address": "port.cuda.icon",
+      "kind": "string",
+      "value": "\ud83d\udfe2"
+    },
+    {
+      "address": "port.cuda.embed[0]",
+      "kind": "f64",
+      "value": -0.10539053295009576
+    },
+    {
+      "address": "port.cuda.embed[1]",
+      "kind": "f64",
+      "value": -0.25049738412273204
+    },
+    {
+      "address": "port.cuda.embed[2]",
+      "kind": "f64",
+      "value": -0.3713594481615761
+    },
+    {
+      "address": "port.cuda.embed[3]",
+      "kind": "f64",
+      "value": -0.45627889825911855
+    },
+    {
+      "address": "port.cuda.embed[4]",
+      "kind": "f64",
+      "value": -0.49703667057832013
+    },
+    {
+      "address": "port.cuda.embed[5]",
+      "kind": "f64",
+      "value": -0.4896879593983369
+    },
+    {
+      "address": "port.cuda.embed[6]",
+      "kind": "f64",
+      "value": -0.43494402140115135
+    },
+    {
+      "address": "port.cuda.embed[7]",
+      "kind": "f64",
+      "value": -0.3381033355639461
+    },
+    {
+      "address": "port.ptx.name",
+      "kind": "string",
+      "value": "ptx"
+    },
+    {
+      "address": "port.ptx.lang",
+      "kind": "string",
+      "value": "NVIDIA PTX"
+    },
+    {
+      "address": "port.ptx.repo",
+      "kind": "string",
+      "value": "grand-pattern-ptx"
+    },
+    {
+      "address": "port.ptx.icon",
+      "kind": "string",
+      "value": "\ud83d\udfe1"
+    },
+    {
+      "address": "port.ptx.embed[0]",
+      "kind": "f64",
+      "value": 0.49827167462409183
+    },
+    {
+      "address": "port.ptx.embed[1]",
+      "kind": "f64",
+      "value": 0.13160135500263134
+    },
+    {
+      "address": "port.ptx.embed[2]",
+      "kind": "f64",
+      "value": -0.45032991050678245
+    },
+    {
+      "address": "port.ptx.embed[3]",
+      "kind": "f64",
+      "value": -0.29565445570248033
+    },
+    {
+      "address": "port.ptx.embed[4]",
+      "kind": "f64",
+      "value": 0.3426243616145788
+    },
+    {
+      "address": "port.ptx.embed[5]",
+      "kind": "f64",
+      "value": 0.42047092377794415
+    },
+    {
+      "address": "port.ptx.embed[6]",
+      "kind": "f64",
+      "value": -0.1894487514884894
+    },
+    {
+      "address": "port.ptx.embed[7]",
+      "kind": "f64",
+      "value": -0.4894862265154688
+    },
+    {
+      "address": "port.opencl.name",
+      "kind": "string",
+      "value": "opencl"
+    },
+    {
+      "address": "port.opencl.lang",
+      "kind": "string",
+      "value": "OpenCL"
+    },
+    {
+      "address": "port.opencl.repo",
+      "kind": "string",
+      "value": "grand-pattern-opencl"
+    },
+    {
+      "address": "port.opencl.icon",
+      "kind": "string",
+      "value": "\ud83d\udd35"
+    },
+    {
+      "address": "port.opencl.embed[0]",
+      "kind": "f64",
+      "value": -0.02300859092734367
+    },
+    {
+      "address": "port.opencl.embed[1]",
+      "kind": "f64",
+      "value": -0.003966520192373497
+    },
+    {
+      "address": "port.opencl.embed[2]",
+      "kind": "f64",
+      "value": 0.030930082062572792
+    },
+    {
+      "address": "port.opencl.embed[3]",
+      "kind": "f64",
+      "value": -0.057803585337854645
+    },
+    {
+      "address": "port.opencl.embed[4]",
+      "kind": "f64",
+      "value": 0.08450878289478883
+    },
+    {
+      "address": "port.opencl.embed[5]",
+      "kind": "f64",
+      "value": -0.11096791766310087
+    },
+    {
+      "address": "port.opencl.embed[6]",
+      "kind": "f64",
+      "value": 0.13710394902902545
+    },
+    {
+      "address": "port.opencl.embed[7]",
+      "kind": "f64",
+      "value": -0.16284077715371373
+    },
+    {
+      "address": "port.claude.name",
+      "kind": "string",
+      "value": "claude"
+    },
+    {
+      "address": "port.claude.lang",
+      "kind": "string",
+      "value": "Claude"
+    },
+    {
+      "address": "port.claude.repo",
+      "kind": "string",
+      "value": "grand-pattern-claude"
+    },
+    {
+      "address": "port.claude.icon",
+      "kind": "string",
+      "value": "\ud83e\udd16"
+    },
+    {
+      "address": "port.claude.embed[0]",
+      "kind": "f64",
+      "value": -0.4923426140991175
+    },
+    {
+      "address": "port.claude.embed[1]",
+      "kind": "f64",
+      "value": -0.12393170589702557
+    },
+    {
+      "address": "port.claude.embed[2]",
+      "kind": "f64",
+      "value": 0.4737116757066608
+    },
+    {
+      "address": "port.claude.embed[3]",
+      "kind": "f64",
+      "value": 0.1951458716506245
+    },
+    {
+      "address": "port.claude.embed[4]",
+      "kind": "f64",
+      "value": -0.4443749479827198
+    },
+    {
+      "address": "port.claude.embed[5]",
+      "kind": "f64",
+      "value": -0.2619497796504805
+    },
+    {
+      "address": "port.claude.embed[6]",
+      "kind": "f64",
+      "value": 0.4049954351191035
+    },
+    {
+      "address": "port.claude.embed[7]",
+      "kind": "f64",
+      "value": 0.3228336749080726
+    },
+    {
+      "address": "port.kimi.name",
+      "kind": "string",
+      "value": "kimi"
+    },
+    {
+      "address": "port.kimi.lang",
+      "kind": "string",
+      "value": "Kimi"
+    },
+    {
+      "address": "port.kimi.repo",
+      "kind": "string",
+      "value": "grand-pattern-kimi"
+    },
+    {
+      "address": "port.kimi.icon",
+      "kind": "string",
+      "value": "\ud83c\udf19"
+    },
+    {
+      "address": "port.kimi.embed[0]",
+      "kind": "f64",
+      "value": 0.14987986119482166
+    },
+    {
+      "address": "port.kimi.embed[1]",
+      "kind": "f64",
+      "value": 0.2436004187214138
+    },
+    {
+      "address": "port.kimi.embed[2]",
+      "kind": "f64",
+      "value": 0.32717485769822136
+    },
+    {
+      "address": "port.kimi.embed[3]",
+      "kind": "f64",
+      "value": 0.39712224746817104
+    },
+    {
+      "address": "port.kimi.embed[4]",
+      "kind": "f64",
+      "value": 0.45052923298630454
+    },
+    {
+      "address": "port.kimi.embed[5]",
+      "kind": "f64",
+      "value": 0.48517137798394766
+    },
+    {
+      "address": "port.kimi.embed[6]",
+      "kind": "f64",
+      "value": 0.499605814210701
+    },
+    {
+      "address": "port.kimi.embed[7]",
+      "kind": "f64",
+      "value": 0.493231337851222
+    },
+    {
+      "address": "family.growth.name",
+      "kind": "string",
+      "value": "growth"
+    },
+    {
+      "address": "family.growth.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.growth.repo",
+      "kind": "string",
+      "value": "fibonacci-growth"
+    },
+    {
+      "address": "family.growth.desc",
+      "kind": "string",
+      "value": "CR = 1/\u03c6 attractor \u2014 Penrose outward, Mandelbrot inward"
+    },
+    {
+      "address": "family.growth.icon",
+      "kind": "string",
+      "value": "\ud83d\udcc8"
+    },
+    {
+      "address": "family.growth.embed[0]",
+      "kind": "f64",
+      "value": 0.36145108904656725
+    },
+    {
+      "address": "family.growth.embed[1]",
+      "kind": "f64",
+      "value": 0.49924916760912796
+    },
+    {
+      "address": "family.growth.embed[2]",
+      "kind": "f64",
+      "value": 0.3970764538137127
+    },
+    {
+      "address": "family.growth.embed[3]",
+      "kind": "f64",
+      "value": 0.10404362961557757
+    },
+    {
+      "address": "family.growth.embed[4]",
+      "kind": "f64",
+      "value": -0.23899915725958032
+    },
+    {
+      "address": "family.growth.embed[5]",
+      "kind": "f64",
+      "value": -0.46716380139265024
+    },
+    {
+      "address": "family.growth.embed[6]",
+      "kind": "f64",
+      "value": -0.4707799137414305
+    },
+    {
+      "address": "family.growth.embed[7]",
+      "kind": "f64",
+      "value": -0.24810936152194898
+    },
+    {
+      "address": "family.fence.name",
+      "kind": "string",
+      "value": "fence"
+    },
+    {
+      "address": "family.fence.lang",
+      "kind": "string",
+      "value": "Python"
+    },
+    {
+      "address": "family.fence.repo",
+      "kind": "string",
+      "value": "fibonacci-fence"
+    },
+    {
+      "address": "family.fence.desc",
+      "kind": "string",
+      "value": "Budget governor scaling by golden ratio"
+    },
+    {
+      "address": "family.fence.icon",
+      "kind": "string",
+      "value": "\ud83d\udea7"
+    },
+    {
+      "address": "family.fence.embed[0]",
+      "kind": "f64",
+      "value": 0.2960246107937126
+    },
+    {
+      "address": "family.fence.embed[1]",
+      "kind": "f64",
+      "value": -0.4896727274295413
+    },
+    {
+      "address": "family.fence.embed[2]",
+      "kind": "f64",
+      "value": 0.4314031821248149
+    },
+    {
+      "address": "family.fence.embed[3]",
+      "kind": "f64",
+      "value": -0.1511934001949784
+    },
+    {
+      "address": "family.fence.embed[4]",
+      "kind": "f64",
+      "value": -0.2067995331018698
+    },
+    {
+      "address": "family.fence.embed[5]",
+      "kind": "f64",
+      "value": 0.4584021122884235
+    },
+    {
+      "address": "family.fence.embed[6]",
+      "kind": "f64",
+      "value": -0.47417455046937274
+    },
+    {
+      "address": "family.fence.embed[7]",
+      "kind": "f64",
+      "value": 0.24600253878684814
+    },
+    {
+      "address": "family.heap.name",
+      "kind": "string",
+      "value": "heap"
+    },
+    {
+      "address": "family.heap.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.heap.repo",
+      "kind": "string",
+      "value": "fibonacci-heap"
+    },
+    {
+      "address": "family.heap.desc",
+      "kind": "string",
+      "value": "Classic Fibonacci heap data structure"
+    },
+    {
+      "address": "family.heap.icon",
+      "kind": "string",
+      "value": "\ud83e\udd5e"
+    },
+    {
+      "address": "family.heap.embed[0]",
+      "kind": "f64",
+      "value": -0.43773337160005144
+    },
+    {
+      "address": "family.heap.embed[1]",
+      "kind": "f64",
+      "value": 0.4475802480595489
+    },
+    {
+      "address": "family.heap.embed[2]",
+      "kind": "f64",
+      "value": -0.07095485185623861
+    },
+    {
+      "address": "family.heap.embed[3]",
+      "kind": "f64",
+      "value": -0.3669379549895263
+    },
+    {
+      "address": "family.heap.embed[4]",
+      "kind": "f64",
+      "value": 0.4879907180535599
+    },
+    {
+      "address": "family.heap.embed[5]",
+      "kind": "f64",
+      "value": -0.18767796585592858
+    },
+    {
+      "address": "family.heap.embed[6]",
+      "kind": "f64",
+      "value": -0.27468914487844065
+    },
+    {
+      "address": "family.heap.embed[7]",
+      "kind": "f64",
+      "value": 0.499870324023669
+    },
+    {
+      "address": "family.ternary.name",
+      "kind": "string",
+      "value": "ternary"
+    },
+    {
+      "address": "family.ternary.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.ternary.repo",
+      "kind": "string",
+      "value": "ternary-fib"
+    },
+    {
+      "address": "family.ternary.desc",
+      "kind": "string",
+      "value": "Fib in Z\u2083 \u2014 balanced ternary, tribonacci"
+    },
+    {
+      "address": "family.ternary.icon",
+      "kind": "string",
+      "value": "3\ufe0f\u20e3"
+    },
+    {
+      "address": "family.ternary.embed[0]",
+      "kind": "f64",
+      "value": -0.18322554099355529
+    },
+    {
+      "address": "family.ternary.embed[1]",
+      "kind": "f64",
+      "value": -0.37576682228694125
+    },
+    {
+      "address": "family.ternary.embed[2]",
+      "kind": "f64",
+      "value": -0.4850418916031704
+    },
+    {
+      "address": "family.ternary.embed[3]",
+      "kind": "f64",
+      "value": -0.4868364741690207
+    },
+    {
+      "address": "family.ternary.embed[4]",
+      "kind": "f64",
+      "value": -0.380752908234044
+    },
+    {
+      "address": "family.ternary.embed[5]",
+      "kind": "f64",
+      "value": -0.1902982629818382
+    },
+    {
+      "address": "family.ternary.embed[6]",
+      "kind": "f64",
+      "value": 0.04232459554662042
+    },
+    {
+      "address": "family.ternary.embed[7]",
+      "kind": "f64",
+      "value": 0.265568742236751
+    },
+    {
+      "address": "family.spline.name",
+      "kind": "string",
+      "value": "spline"
+    },
+    {
+      "address": "family.spline.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.spline.repo",
+      "kind": "string",
+      "value": "spline-spectral"
+    },
+    {
+      "address": "family.spline.desc",
+      "kind": "string",
+      "value": "B-splines as spectral objects (Cox-de Boor = Fibonacci)"
+    },
+    {
+      "address": "family.spline.icon",
+      "kind": "string",
+      "value": "\u3030\ufe0f"
+    },
+    {
+      "address": "family.spline.embed[0]",
+      "kind": "f64",
+      "value": 0.48494857594273133
+    },
+    {
+      "address": "family.spline.embed[1]",
+      "kind": "f64",
+      "value": 0.279001121177093
+    },
+    {
+      "address": "family.spline.embed[2]",
+      "kind": "f64",
+      "value": -0.2957152267624808
+    },
+    {
+      "address": "family.spline.embed[3]",
+      "kind": "f64",
+      "value": -0.47957086271707156
+    },
+    {
+      "address": "family.spline.embed[4]",
+      "kind": "f64",
+      "value": -0.029555152576046143
+    },
+    {
+      "address": "family.spline.embed[5]",
+      "kind": "f64",
+      "value": 0.4595249916327094
+    },
+    {
+      "address": "family.spline.embed[6]",
+      "kind": "f64",
+      "value": 0.3412293595892087
+    },
+    {
+      "address": "family.spline.embed[7]",
+      "kind": "f64",
+      "value": -0.22808515267721655
+    },
+    {
+      "address": "family.deadband.name",
+      "kind": "string",
+      "value": "deadband"
+    },
+    {
+      "address": "family.deadband.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.deadband.repo",
+      "kind": "string",
+      "value": "deadband-rs"
+    },
+    {
+      "address": "family.deadband.desc",
+      "kind": "string",
+      "value": "Eisenstein, Berlekamp-Massey, Fibonacci spiral"
+    },
+    {
+      "address": "family.deadband.icon",
+      "kind": "string",
+      "value": "\ud83d\udccf"
+    },
+    {
+      "address": "family.deadband.embed[0]",
+      "kind": "f64",
+      "value": 0.05825963294018763
+    },
+    {
+      "address": "family.deadband.embed[1]",
+      "kind": "f64",
+      "value": -0.16370873707641287
+    },
+    {
+      "address": "family.deadband.embed[2]",
+      "kind": "f64",
+      "value": 0.2614943438080439
+    },
+    {
+      "address": "family.deadband.embed[3]",
+      "kind": "f64",
+      "value": -0.34703893481322007
+    },
+    {
+      "address": "family.deadband.embed[4]",
+      "kind": "f64",
+      "value": 0.4163380155069356
+    },
+    {
+      "address": "family.deadband.embed[5]",
+      "kind": "f64",
+      "value": -0.4661475725608579
+    },
+    {
+      "address": "family.deadband.embed[6]",
+      "kind": "f64",
+      "value": 0.4941359319420307
+    },
+    {
+      "address": "family.deadband.embed[7]",
+      "kind": "f64",
+      "value": -0.4989929087250294
+    },
+    {
+      "address": "family.spectral-v2.name",
+      "kind": "string",
+      "value": "spectral-v2"
+    },
+    {
+      "address": "family.spectral-v2.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.spectral-v2.repo",
+      "kind": "string",
+      "value": "spectral-graph-v2"
+    },
+    {
+      "address": "family.spectral-v2.desc",
+      "kind": "string",
+      "value": "Fib growth + adaptive thresholds + negative space"
+    },
+    {
+      "address": "family.spectral-v2.icon",
+      "kind": "string",
+      "value": "\ud83c\udf10"
+    },
+    {
+      "address": "family.spectral-v2.embed[0]",
+      "kind": "f64",
+      "value": -0.49996144183077273
+    },
+    {
+      "address": "family.spectral-v2.embed[1]",
+      "kind": "f64",
+      "value": 0.03754550105279321
+    },
+    {
+      "address": "family.spectral-v2.embed[2]",
+      "kind": "f64",
+      "value": 0.4933933103720815
+    },
+    {
+      "address": "family.spectral-v2.embed[3]",
+      "kind": "f64",
+      "value": -0.12385869524352419
+    },
+    {
+      "address": "family.spectral-v2.embed[4]",
+      "kind": "f64",
+      "value": -0.47172572917466166
+    },
+    {
+      "address": "family.spectral-v2.embed[5]",
+      "kind": "f64",
+      "value": 0.20638140807947486
+    },
+    {
+      "address": "family.spectral-v2.embed[6]",
+      "kind": "f64",
+      "value": 0.4356217971220478
+    },
+    {
+      "address": "family.spectral-v2.embed[7]",
+      "kind": "f64",
+      "value": -0.28258817452367574
+    },
+    {
+      "address": "family.growth-v2.name",
+      "kind": "string",
+      "value": "growth-v2"
+    },
+    {
+      "address": "family.growth-v2.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.growth-v2.repo",
+      "kind": "string",
+      "value": "fibonacci-growth-v2"
+    },
+    {
+      "address": "family.growth-v2.desc",
+      "kind": "string",
+      "value": "Scaling dynamics for distributed agent systems"
+    },
+    {
+      "address": "family.growth-v2.icon",
+      "kind": "string",
+      "value": "\ud83d\udcca"
+    },
+    {
+      "address": "family.growth-v2.embed[0]",
+      "kind": "f64",
+      "value": 0.07057492533969568
+    },
+    {
+      "address": "family.growth-v2.embed[1]",
+      "kind": "f64",
+      "value": 0.09111089196175097
+    },
+    {
+      "address": "family.growth-v2.embed[2]",
+      "kind": "f64",
+      "value": 0.11148903564023255
+    },
+    {
+      "address": "family.growth-v2.embed[3]",
+      "kind": "f64",
+      "value": 0.13167405720776695
+    },
+    {
+      "address": "family.growth-v2.embed[4]",
+      "kind": "f64",
+      "value": 0.15163099202471217
+    },
+    {
+      "address": "family.growth-v2.embed[5]",
+      "kind": "f64",
+      "value": 0.1713252705446636
+    },
+    {
+      "address": "family.growth-v2.embed[6]",
+      "kind": "f64",
+      "value": 0.1907227781962476
+    },
+    {
+      "address": "family.growth-v2.embed[7]",
+      "kind": "f64",
+      "value": 0.20978991447736114
+    },
+    {
+      "address": "family.lau-growth.name",
+      "kind": "string",
+      "value": "lau-growth"
+    },
+    {
+      "address": "family.lau-growth.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.lau-growth.repo",
+      "kind": "string",
+      "value": "lau-fibonacci-growth"
+    },
+    {
+      "address": "family.lau-growth.desc",
+      "kind": "string",
+      "value": "Fib growth patterns for agent capability dev"
+    },
+    {
+      "address": "family.lau-growth.icon",
+      "kind": "string",
+      "value": "\ud83c\udf31"
+    },
+    {
+      "address": "family.lau-growth.embed[0]",
+      "kind": "f64",
+      "value": 0.48177506070009934
+    },
+    {
+      "address": "family.lau-growth.embed[1]",
+      "kind": "f64",
+      "value": -0.21371719239864104
+    },
+    {
+      "address": "family.lau-growth.embed[2]",
+      "kind": "f64",
+      "value": -0.4091125623150344
+    },
+    {
+      "address": "family.lau-growth.embed[3]",
+      "kind": "f64",
+      "value": 0.3528128850047539
+    },
+    {
+      "address": "family.lau-growth.embed[4]",
+      "kind": "f64",
+      "value": 0.2891584051450931
+    },
+    {
+      "address": "family.lau-growth.embed[5]",
+      "kind": "f64",
+      "value": -0.4511249202279525
+    },
+    {
+      "address": "family.lau-growth.embed[6]",
+      "kind": "f64",
+      "value": -0.1357787756467826
+    },
+    {
+      "address": "family.lau-growth.embed[7]",
+      "kind": "f64",
+      "value": 0.4972888481526491
+    },
+    {
+      "address": "family.grand-c.name",
+      "kind": "string",
+      "value": "grand-c"
+    },
+    {
+      "address": "family.grand-c.lang",
+      "kind": "string",
+      "value": "C"
+    },
+    {
+      "address": "family.grand-c.repo",
+      "kind": "string",
+      "value": "grand-pattern-c"
+    },
+    {
+      "address": "family.grand-c.desc",
+      "kind": "string",
+      "value": "Grand Pattern \u2014 C"
+    },
+    {
+      "address": "family.grand-c.icon",
+      "kind": "string",
+      "value": "\ud83d\udd37"
+    },
+    {
+      "address": "family.grand-c.embed[0]",
+      "kind": "f64",
+      "value": -0.19472305345991103
+    },
+    {
+      "address": "family.grand-c.embed[1]",
+      "kind": "f64",
+      "value": 0.3221318987066211
+    },
+    {
+      "address": "family.grand-c.embed[2]",
+      "kind": "f64",
+      "value": -0.42075992127888423
+    },
+    {
+      "address": "family.grand-c.embed[3]",
+      "kind": "f64",
+      "value": 0.48179521636470835
+    },
+    {
+      "address": "family.grand-c.embed[4]",
+      "kind": "f64",
+      "value": -0.4997845953421253
+    },
+    {
+      "address": "family.grand-c.embed[5]",
+      "kind": "f64",
+      "value": 0.47312080004012513
+    },
+    {
+      "address": "family.grand-c.embed[6]",
+      "kind": "f64",
+      "value": -0.40418610296093105
+    },
+    {
+      "address": "family.grand-c.embed[7]",
+      "kind": "f64",
+      "value": 0.29913946352681076
+    },
+    {
+      "address": "family.grand-claude.name",
+      "kind": "string",
+      "value": "grand-claude"
+    },
+    {
+      "address": "family.grand-claude.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.grand-claude.repo",
+      "kind": "string",
+      "value": "grand-pattern-claude"
+    },
+    {
+      "address": "family.grand-claude.desc",
+      "kind": "string",
+      "value": "Claude's Grand Pattern \u2014 AI-authored"
+    },
+    {
+      "address": "family.grand-claude.icon",
+      "kind": "string",
+      "value": "\ud83e\udd16"
+    },
+    {
+      "address": "family.grand-claude.embed[0]",
+      "kind": "f64",
+      "value": -0.4315970739986508
+    },
+    {
+      "address": "family.grand-claude.embed[1]",
+      "kind": "f64",
+      "value": -0.409155882484814
+    },
+    {
+      "address": "family.grand-claude.embed[2]",
+      "kind": "f64",
+      "value": 0.09103679177682535
+    },
+    {
+      "address": "family.grand-claude.embed[3]",
+      "kind": "f64",
+      "value": 0.4849302189352441
+    },
+    {
+      "address": "family.grand-claude.embed[4]",
+      "kind": "f64",
+      "value": 0.3125941452038619
+    },
+    {
+      "address": "family.grand-claude.embed[5]",
+      "kind": "f64",
+      "value": -0.22474295322854562
+    },
+    {
+      "address": "family.grand-claude.embed[6]",
+      "kind": "f64",
+      "value": -0.4996586036544461
+    },
+    {
+      "address": "family.grand-claude.embed[7]",
+      "kind": "f64",
+      "value": -0.19114713257870178
+    },
+    {
+      "address": "family.grand-kimi.name",
+      "kind": "string",
+      "value": "grand-kimi"
+    },
+    {
+      "address": "family.grand-kimi.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "family.grand-kimi.repo",
+      "kind": "string",
+      "value": "grand-pattern-kimi"
+    },
+    {
+      "address": "family.grand-kimi.desc",
+      "kind": "string",
+      "value": "Kimi's Grand Pattern \u2014 AI-authored"
+    },
+    {
+      "address": "family.grand-kimi.icon",
+      "kind": "string",
+      "value": "\ud83c\udf19"
+    },
+    {
+      "address": "family.grand-kimi.embed[0]",
+      "kind": "f64",
+      "value": 0.3059408669374699
+    },
+    {
+      "address": "family.grand-kimi.embed[1]",
+      "kind": "f64",
+      "value": 0.46901043663252867
+    },
+    {
+      "address": "family.grand-kimi.embed[2]",
+      "kind": "f64",
+      "value": 0.4895796833982025
+    },
+    {
+      "address": "family.grand-kimi.embed[3]",
+      "kind": "f64",
+      "value": 0.3613990143094984
+    },
+    {
+      "address": "family.grand-kimi.embed[4]",
+      "kind": "f64",
+      "value": 0.12341380309749947
+    },
+    {
+      "address": "family.grand-kimi.embed[5]",
+      "kind": "f64",
+      "value": -0.15206845598738317
+    },
+    {
+      "address": "family.grand-kimi.embed[6]",
+      "kind": "f64",
+      "value": -0.38134747012726217
+    },
+    {
+      "address": "family.grand-kimi.embed[7]",
+      "kind": "f64",
+      "value": -0.4947609652998267
+    },
+    {
+      "address": "stats.phi",
+      "kind": "f64",
+      "value": 1.618033988749895
+    },
+    {
+      "address": "stats.inv_phi",
+      "kind": "f64",
+      "value": 0.618033988749895
+    },
+    {
+      "address": "stats.embedding_dim",
+      "kind": "usize",
+      "value": 8
+    },
+    {
+      "address": "stats.cr_target",
+      "kind": "f64",
+      "value": 0.618033988749895
+    },
+    {
+      "address": "stats.ports_count",
+      "kind": "usize",
+      "value": 12
+    },
+    {
+      "address": "stats.primitives_count",
+      "kind": "usize",
+      "value": 8
+    },
+    {
+      "address": "stats.family_count",
+      "kind": "usize",
+      "value": 12
+    },
+    {
+      "address": "stats.now",
+      "kind": "f64",
+      "value": 1787275882.358322
+    }
+  ],
+  "edges": [
+    {
+      "from": "pattern.z_in",
+      "to": "pattern.z_out",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_in",
+      "to": "pattern.jepa",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_in",
+      "to": "pattern.doubleentry",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_in",
+      "to": "pattern.vibe",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_in",
+      "to": "pattern.gc",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_in",
+      "to": "pattern.cellulargraph",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_in",
+      "to": "pattern.murmur",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_out",
+      "to": "pattern.jepa",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_out",
+      "to": "pattern.doubleentry",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_out",
+      "to": "pattern.vibe",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_out",
+      "to": "pattern.gc",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_out",
+      "to": "pattern.cellulargraph",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.z_out",
+      "to": "pattern.murmur",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.jepa",
+      "to": "pattern.doubleentry",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.jepa",
+      "to": "pattern.vibe",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.jepa",
+      "to": "pattern.gc",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.jepa",
+      "to": "pattern.cellulargraph",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.jepa",
+      "to": "pattern.murmur",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.doubleentry",
+      "to": "pattern.vibe",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.doubleentry",
+      "to": "pattern.gc",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.doubleentry",
+      "to": "pattern.cellulargraph",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.doubleentry",
+      "to": "pattern.murmur",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.vibe",
+      "to": "pattern.gc",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.vibe",
+      "to": "pattern.cellulargraph",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.vibe",
+      "to": "pattern.murmur",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.gc",
+      "to": "pattern.cellulargraph",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.gc",
+      "to": "pattern.murmur",
+      "kind": "tick"
+    },
+    {
+      "from": "pattern.cellulargraph",
+      "to": "pattern.murmur",
+      "kind": "tick"
+    },
+    {
+      "from": "port.fortran",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.fortran",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.fortran",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.fortran",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.fortran",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.fortran",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.fortran",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.fortran",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.c",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.c",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.c",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.c",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.c",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.c",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.c",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.c",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cpp",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cpp",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cpp",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cpp",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cpp",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cpp",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cpp",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cpp",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.rust",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.rust",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.rust",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.rust",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.rust",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.rust",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.rust",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.rust",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.go",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.go",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.go",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.go",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.go",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.go",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.go",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.go",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.chapel",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.chapel",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.chapel",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.chapel",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.chapel",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.chapel",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.chapel",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.chapel",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.mojo",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.mojo",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.mojo",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.mojo",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.mojo",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.mojo",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.mojo",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.mojo",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cuda",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cuda",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cuda",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cuda",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cuda",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cuda",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cuda",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.cuda",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.ptx",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.ptx",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.ptx",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.ptx",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.ptx",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.ptx",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.ptx",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.ptx",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.opencl",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.opencl",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.opencl",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.opencl",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.opencl",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.opencl",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.opencl",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.opencl",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.claude",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.claude",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.claude",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.claude",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.claude",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.claude",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.claude",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.claude",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "port.kimi",
+      "to": "pattern.z_in",
+      "kind": "implements"
+    },
+    {
+      "from": "port.kimi",
+      "to": "pattern.z_out",
+      "kind": "implements"
+    },
+    {
+      "from": "port.kimi",
+      "to": "pattern.jepa",
+      "kind": "implements"
+    },
+    {
+      "from": "port.kimi",
+      "to": "pattern.doubleentry",
+      "kind": "implements"
+    },
+    {
+      "from": "port.kimi",
+      "to": "pattern.vibe",
+      "kind": "implements"
+    },
+    {
+      "from": "port.kimi",
+      "to": "pattern.gc",
+      "kind": "implements"
+    },
+    {
+      "from": "port.kimi",
+      "to": "pattern.cellulargraph",
+      "kind": "implements"
+    },
+    {
+      "from": "port.kimi",
+      "to": "pattern.murmur",
+      "kind": "implements"
+    },
+    {
+      "from": "family.growth",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.fence",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.heap",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.ternary",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.spline",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.deadband",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.spectral-v2",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.growth-v2",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.lau-growth",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.grand-c",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.grand-claude",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "family.grand-kimi",
+      "to": "pattern.growth",
+      "kind": "scales"
+    },
+    {
+      "from": "pattern.z_in",
+      "to": "pattern.jepa",
+      "kind": "input"
+    },
+    {
+      "from": "pattern.z_out",
+      "to": "pattern.jepa",
+      "kind": "input"
+    },
+    {
+      "from": "pattern.jepa",
+      "to": "pattern.vibe",
+      "kind": "surprise_drives"
+    },
+    {
+      "from": "pattern.vibe",
+      "to": "pattern.gc",
+      "kind": "weak_vibes_pruned"
+    }
+  ],
+  "stats": {
+    "total_cells": 412,
+    "total_rooms": 3,
+    "total_edges": 140,
+    "pattern_primitives": 8,
+    "polyformalism_ports": 12,
+    "family_members": 12
+  }
+}

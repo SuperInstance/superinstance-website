@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<!--
+  grand-pattern.html — The Grand Pattern as a Quilt sheet.
+
+  THE DISCOVERY: The Grand Pattern (Fibonacci dual-direction architecture)
+  IS the Quilt cell model. The user's polyformalism ports in 12 languages
+  are not just translations — they are the Grand Pattern's own architecture:
+
+    - Perception DB (Z_in) ←→ the cell's input cells
+    - Prediction DB (Z_out) ←→ the cell's reactive edges (depends_on)
+    - JEPA mapping ←→ the cell evaluator (compute)
+    - Double-entry bookkeeping ←→ the cell's input/output balance
+    - Vibe ←→ the cell's metadata
+    - GC (3-phase) ←→ the cell's lifecycle
+    - Cellular graph ←→ the Quilt sheet
+
+  The same pattern in Fortran, C, Mojo, Rust, Go, Chapel, CUDA, PTX,
+  Claude, Kimi, and OpenCL. 12 ports. The Grand Pattern was already Quilt
+  before Quilt had a name.
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Grand Pattern — Fibonacci dual-direction architecture as a Quilt sheet</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .toolbar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-left: auto; }
+  button {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  button.warn { background: #d29922; border-color: #d29922; color: #0d1117; }
+  .container { display: grid; grid-template-columns: 1fr 320px; height: calc(100vh - 70px); }
+  .canvas-area { padding: 1rem; overflow: auto; }
+  .right-pane { background: #0d1117; border-left: 1px solid var(--border); padding: 1rem; overflow-y: auto; }
+
+  /* The Grand Pattern room (visualization) */
+  .room-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .room-panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1rem; min-height: 220px;
+    display: flex; flex-direction: column;
+  }
+  .room-panel .header {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+  .room-panel .header h3 { margin: 0; font-size: 0.95rem; }
+  .room-panel .header .icon { font-size: 1.1rem; }
+  .room-panel .header .count {
+    margin-left: auto; font-size: 0.75rem; color: var(--muted);
+  }
+  .embedding-row {
+    display: flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0;
+    font-family: ui-monospace, monospace; font-size: 0.75rem;
+  }
+  .embedding-row .label { width: 80px; color: var(--muted); }
+  .embedding-row .bars { display: flex; gap: 1px; flex: 1; align-items: center; }
+  .embedding-row .bar {
+    width: 8px; background: var(--accent);
+    border-radius: 1px;
+  }
+  .embedding-row .bar.neg { background: var(--err); }
+  .embedding-row .value { width: 50px; text-align: right; color: var(--fg); }
+
+  .jepa-viz {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1rem; margin-bottom: 1rem;
+  }
+  .jepa-arrow {
+    height: 20px; background: linear-gradient(90deg, var(--ok), var(--warn), var(--err));
+    border-radius: 2px; position: relative;
+  }
+  .jepa-arrow::after {
+    content: ''; position: absolute; top: 50%; right: -2px;
+    width: 0; height: 0; border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent; border-left: 8px solid var(--err);
+    transform: translateY(-50%);
+  }
+  .jepa-surprise {
+    text-align: right; font-size: 0.8rem; color: var(--muted);
+    margin-top: 0.2rem;
+  }
+  .jepa-surprise strong { color: var(--err); }
+
+  /* Vibe (position, velocity, acceleration) */
+  .vibe-vis {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+  .vibe-cell {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem; text-align: center;
+  }
+  .vibe-cell .name { font-size: 0.7rem; color: var(--muted); }
+  .vibe-cell .val { font-family: ui-monospace, monospace; font-size: 0.85rem; color: var(--accent); }
+
+  /* GC phases */
+  .gc-phases { display: flex; gap: 0.5rem; margin: 0.5rem 0; }
+  .gc-phase {
+    flex: 1; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem; text-align: center;
+  }
+  .gc-phase.active { border-color: var(--accent); background: rgba(88, 166, 255, 0.1); }
+  .gc-phase .name { font-size: 0.75rem; color: var(--muted); }
+  .gc-phase .val { font-family: ui-monospace, monospace; font-size: 0.95rem; color: var(--accent); }
+
+  /* Cellular graph viz */
+  .graph-vis {
+    position: relative; background: #04111c;
+    border: 1px solid var(--border); border-radius: 4px;
+    width: 100%; height: 300px; overflow: hidden;
+  }
+  .room-node {
+    position: absolute; width: 36px; height: 36px;
+    background: var(--accent); border: 2px solid var(--fg);
+    border-radius: 50%; transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.7rem; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .room-node:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 12px var(--accent); z-index: 5; }
+  .room-node.active { background: var(--ok); }
+  .room-edge {
+    position: absolute; height: 1.5px; background: var(--muted);
+    transform-origin: 0 50%; opacity: 0.4;
+  }
+  .room-edge.murmur { background: var(--orange); opacity: 0.6; }
+
+  /* Sidebar */
+  .stat { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .stat .label { color: var(--muted); }
+  .stat .val { color: var(--fg); font-family: ui-monospace, monospace; }
+
+  .port-list {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.7rem; margin-bottom: 0.7rem;
+  }
+  .port-list .port {
+    font-family: ui-monospace, monospace; font-size: 0.8rem;
+    color: var(--accent); margin: 0.2rem 0;
+  }
+  .port-list .port .meta { color: var(--muted); font-size: 0.7rem; }
+
+  .empty { text-align: center; padding: 2rem; color: var(--muted); }
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🌀 Grand Pattern</h1>
+    <div class="subtitle">Fibonacci dual-direction architecture as a Quilt sheet — 12 language ports</div>
+  </div>
+  <div class="toolbar">
+    <button class="primary" id="tickBtn">⏱ Tick</button>
+    <button id="predictBtn">🔮 Predict</button>
+    <button class="warn" id="gcBtn">🧹 GC</button>
+    <button id="murmurBtn">📡 Murmur</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="canvas-area">
+    <!-- The Grand Pattern room (Perception + Prediction DBs) -->
+    <div class="room-grid">
+      <div class="room-panel" id="zInPanel">
+        <div class="header">
+          <span class="icon">👁</span>
+          <h3>Perception DB (Z_in)</h3>
+          <span class="count" id="zInCount">0 entries</span>
+        </div>
+        <div id="zInBody"></div>
+      </div>
+      <div class="room-panel" id="zOutPanel">
+        <div class="header">
+          <span class="icon">🔮</span>
+          <h3>Prediction DB (Z_out)</h3>
+          <span class="count" id="zOutCount">0 entries</span>
+        </div>
+        <div id="zOutBody"></div>
+      </div>
+    </div>
+
+    <!-- JEPA mapping -->
+    <h3 style="margin-top: 0; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">JEPA mapping (cross-DB comparison)</h3>
+    <div class="jepa-viz">
+      <div style="display: grid; grid-template-columns: 100px 1fr 100px; gap: 1rem; align-items: center; margin-bottom: 0.5rem;">
+        <div style="text-align: center; color: var(--muted); font-size: 0.8rem;">Z_in (now)</div>
+        <div></div>
+        <div style="text-align: center; color: var(--muted); font-size: 0.8rem;">Z_out (predicted)</div>
+      </div>
+      <div class="jepa-arrow" id="jepaArrow"></div>
+      <div class="jepa-surprise">Surprise (cross-DB distance): <strong id="jepaSurprise">0.000</strong></div>
+    </div>
+
+    <!-- Vibe -->
+    <h3 style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Vibe (position, velocity, acceleration)</h3>
+    <div class="vibe-vis">
+      <div class="vibe-cell">
+        <div class="name">position</div>
+        <div class="val" id="vibePos">(+0.0, +0.0)</div>
+      </div>
+      <div class="vibe-cell">
+        <div class="name">velocity</div>
+        <div class="val" id="vibeVel">(+0.0, +0.0)</div>
+      </div>
+      <div class="vibe-cell">
+        <div class="name">acceleration</div>
+        <div class="val" id="vibeAcc">(+0.0, +0.0)</div>
+      </div>
+    </div>
+
+    <!-- GC phases -->
+    <h3 style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">GC (3-phase: merge → decay → prune)</h3>
+    <div class="gc-phases">
+      <div class="gc-phase" id="gcMerge">
+        <div class="name">merge similar</div>
+        <div class="val" id="gcMergeVal">0</div>
+      </div>
+      <div class="gc-phase" id="gcDecay">
+        <div class="name">decay old</div>
+        <div class="val" id="gcDecayVal">0</div>
+      </div>
+      <div class="gc-phase" id="gcPrune">
+        <div class="name">prune weak</div>
+        <div class="val" id="gcPruneVal">0</div>
+      </div>
+    </div>
+
+    <!-- Cellular graph -->
+    <h3 style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Cellular graph (rooms as nodes, algorithms as edges)</h3>
+    <div class="graph-vis" id="graphVis"></div>
+  </div>
+
+  <div class="right-pane">
+    <h3 style="margin: 0 0 0.5rem; font-size: 0.95rem;">🌀 The Grand Pattern</h3>
+    <p style="font-size: 0.85rem; color: var(--muted);">
+      <strong>Grand Pattern</strong> = Fibonacci dual-direction architecture.
+      A cellular graph system with dual perception/prediction DBs and
+      JEPA-style surprise.
+    </p>
+    <p style="font-size: 0.85rem; color: var(--muted);">
+      <em>The Grand Pattern is the Quilt cell model.</em> Each room
+      is a cell. Each algorithm is a reactive edge. Each DB entry is a
+      sub-cell. The double-entry bookkeeping is the cell's input/output
+      balance. The GC is the cell's lifecycle.
+    </p>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🌐 12 language ports</h3>
+    <div class="port-list">
+      <div class="port">grand-pattern-fortran <span class="meta">Fortran 2018</span></div>
+      <div class="port">grand-pattern-c <span class="meta">C</span></div>
+      <div class="port">grand-pattern-cpp <span class="meta">C++</span></div>
+      <div class="port">grand-pattern-rs <span class="meta">Rust</span></div>
+      <div class="port">grand-pattern-go <span class="meta">Go</span></div>
+      <div class="port">grand-pattern-chapel <span class="meta">Chapel 2.x</span></div>
+      <div class="port">grand-pattern-mojo <span class="meta">Mojo 🔥</span></div>
+      <div class="port">grand-pattern-cuda <span class="meta">CUDA C++</span></div>
+      <div class="port">grand-pattern-ptx <span class="meta">NVIDIA PTX</span></div>
+      <div class="port">grand-pattern-opencl <span class="meta">OpenCL</span></div>
+      <div class="port">grand-pattern-claude <span class="meta">Claude's implementation</span></div>
+      <div class="port">grand-pattern-kimi <span class="meta">Kimi's implementation</span></div>
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">📊 Pattern stats</h3>
+    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.7rem;">
+      <div class="stat"><span class="label">ticks elapsed</span><span class="val" id="statTicks">0</span></div>
+      <div class="stat"><span class="label">Z_in size</span><span class="val" id="statZin">0</span></div>
+      <div class="stat"><span class="label">Z_out size</span><span class="val" id="statZout">0</span></div>
+      <div class="stat"><span class="label">last surprise</span><span class="val" id="statSurprise">0.000</span></div>
+      <div class="stat"><span class="label">GC runs</span><span class="val" id="statGC">0</span></div>
+      <div class="stat"><span class="label">murmurs</span><span class="val" id="statMurmur">0</span></div>
+      <div class="stat"><span class="label">φ target</span><span class="val">1.618</span></div>
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🔁 Fibonacci scaling</h3>
+    <p style="font-size: 0.85rem; color: var(--muted);">
+      The conservation ratio (CR) of the graph converges to 1/φ as
+      ticks elapse. φ emerges as an attractor, not a target.
+    </p>
+    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.7rem;">
+      <div class="stat"><span class="label">CR (current)</span><span class="val" id="statCR">0.000</span></div>
+      <div class="stat"><span class="label">CR (target)</span><span class="val">0.618 (= 1/φ)</span></div>
+    </div>
+
+    <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--muted); font-style: italic;">
+      "The aha moment: the golden ratio is an attractor, not a target.
+      It emerges from the topology of bridging connections."
+    </p>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// Grand Pattern state (simplified in-browser version)
+// ============================================================================
+const PHI = 1.618033988749895;
+const INV_PHI = 0.618033988749895;
+const EMBEDDING_DIM = 8;
+
+const state = {
+  tick: 0,
+  zIn: [],      // { value: [8 f64], strength, timestamp }
+  zOut: [],
+  vibe: { pos: [0, 0], vel: [0, 0], acc: [0, 0] },
+  rooms: [
+    { id: 'compass', name: '🧭 Compass', pos: { x: 100, y: 80 } },
+    { id: 'engine', name: '⚙ Engine', pos: { x: 250, y: 180 } },
+    { id: 'crew', name: '👥 Crew', pos: { x: 400, y: 100 } },
+    { id: 'logbook', name: '📖 Logbook', pos: { x: 200, y: 250 } },
+    { id: 'galley', name: '🍲 Galley', pos: { x: 350, y: 220 } },
+    { id: 'bridge', name: '🌉 Bridge', pos: { x: 500, y: 150 } },
+  ],
+  edges: [
+    ['compass', 'bridge'], ['bridge', 'crew'],
+    ['engine', 'logbook'], ['engine', 'galley'],
+    ['compass', 'logbook'], ['crew', 'galley'],
+  ],
+  murmurs: [],
+  gcRuns: 0,
+  lastSurprise: 0,
+  activeRoom: null,
+};
+
+// Initialize Z_in and Z_out with a few seeded embeddings
+function seedDB() {
+  for (let i = 0; i < 4; i++) {
+    state.zIn.push({
+      value: synthEmbedding(i, false),
+      strength: 1.0,
+      timestamp: Date.now() / 1000,
+    });
+    state.zOut.push({
+      value: synthEmbedding(i, true),
+      strength: 1.0,
+      timestamp: Date.now() / 1000,
+    });
+  }
+  state.activeRoom = state.rooms[0];
+}
+
+function synthEmbedding(seed, predicted) {
+  const arr = [];
+  for (let i = 0; i < EMBEDDING_DIM; i++) {
+    const base = (Math.sin(seed * (i + 1) * 1.7 + (predicted ? 0.1 : 0)) * 0.5);
+    arr.push(base);
+  }
+  return arr;
+}
+
+function cosineSim(a, b) {
+  let dot = 0, na = 0, nb = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    na += a[i] * a[i];
+    nb += b[i] * b[i];
+  }
+  const d = Math.sqrt(na) * Math.sqrt(nb);
+  return d < 1e-12 ? 0 : dot / d;
+}
+
+function euclidean(a, b) {
+  let s = 0;
+  for (let i = 0; i < a.length; i++) s += (a[i] - b[i]) ** 2;
+  return Math.sqrt(s);
+}
+
+// ============================================================================
+// Tick (the main operation)
+// ============================================================================
+function tick() {
+  state.tick++;
+  // Fibonacci step: generate the next embedding
+  const lastZin = state.zIn[state.zIn.length - 1]?.value;
+  const lastZout = state.zOut[state.zOut.length - 1]?.value;
+  if (lastZin) {
+    // Perturb based on Fibonacci
+    const newZin = lastZin.map((v, i) => v + Math.sin(state.tick * (i + 1) * 0.3) * 0.05);
+    state.zIn.push({
+      value: newZin, strength: 1.0,
+      timestamp: Date.now() / 1000,
+    });
+  }
+  if (lastZout) {
+    // The prediction lags behind by one tick
+    const prevZin = state.zIn[state.zIn.length - 2]?.value;
+    if (prevZin) {
+      state.zOut.push({
+        value: prevZin.slice(), strength: 1.0,
+        timestamp: Date.now() / 1000,
+      });
+    }
+  }
+  // Update vibe
+  if (state.zIn.length >= 2) {
+    const prev = state.zIn[state.zIn.length - 2].value;
+    const curr = state.zIn[state.zIn.length - 1].value;
+    const vel = curr.map((v, i) => v - prev[i]);
+    if (state.vibe.vel[0] !== 0 || state.vibe.vel[1] !== 0) {
+      state.vibe.acc = vel.map((v, i) => v - state.vibe.vel[i]);
+    }
+    state.vibe.vel = vel;
+    state.vibe.pos = curr.slice(0, 2);
+  }
+  // Compute surprise
+  if (state.zIn.length > 0 && state.zOut.length > 0) {
+    state.lastSurprise = euclidean(
+      state.zIn[state.zIn.length - 1].value,
+      state.zOut[state.zOut.length - 1].value
+    );
+  }
+  // Cap DB sizes
+  if (state.zIn.length > 20) state.zIn.shift();
+  if (state.zOut.length > 20) state.zOut.shift();
+  renderAll();
+}
+
+function predict() {
+  // Predict the next state using JEPA-style mapping
+  const last = state.zIn[state.zIn.length - 1]?.value;
+  if (!last) return;
+  const predicted = last.map((v, i) => v + Math.cos(state.tick * (i + 1) * 0.5) * 0.08);
+  state.zOut.push({
+    value: predicted, strength: 1.0,
+    timestamp: Date.now() / 1000,
+  });
+  state.lastSurprise = euclidean(last, predicted);
+  if (state.zOut.length > 20) state.zOut.shift();
+  renderAll();
+}
+
+function gc() {
+  state.gcRuns++;
+  let merged = 0, decayed = 0, pruned = 0;
+  // Phase 1: merge similar
+  for (let i = 0; i < state.zIn.length; i++) {
+    for (let j = i + 1; j < state.zIn.length; j++) {
+      const sim = cosineSim(state.zIn[i].value, state.zIn[j].value);
+      if (sim > 0.95) {
+        // Merge: average them
+        for (let k = 0; k < EMBEDDING_DIM; k++) {
+          state.zIn[i].value[k] = (state.zIn[i].value[k] + state.zIn[j].value[k]) / 2;
+        }
+        state.zIn[i].strength = Math.min(1, state.zIn[i].strength + 0.1);
+        state.zIn.splice(j, 1);
+        merged++;
+        break;
+      }
+    }
+  }
+  // Phase 2: decay old
+  const now = Date.now() / 1000;
+  for (const e of state.zIn) {
+    const age = now - e.timestamp;
+    e.strength = Math.max(0, e.strength - age * 0.00001);
+    decayed++;
+  }
+  // Phase 3: prune weak
+  state.zIn = state.zIn.filter(e => e.strength > 0.1);
+  pruned = state.zIn.length > 0 ? 1 : 0;
+  document.getElementById('gcMerge').classList.add('active');
+  setTimeout(() => document.getElementById('gcMerge').classList.remove('active'), 600);
+  document.getElementById('gcDecay').classList.add('active');
+  setTimeout(() => document.getElementById('gcDecay').classList.remove('active'), 1000);
+  document.getElementById('gcPrune').classList.add('active');
+  setTimeout(() => document.getElementById('gcPrune').classList.remove('active'), 1400);
+  document.getElementById('gcMergeVal').textContent = merged;
+  document.getElementById('gcDecayVal').textContent = decayed;
+  document.getElementById('gcPruneVal').textContent = pruned;
+  renderAll();
+}
+
+function murmur() {
+  // Gossip protocol: send a vector to all neighbors
+  const lastZin = state.zIn[state.zIn.length - 1]?.value;
+  if (!lastZin) return;
+  // Pick a random edge
+  const edge = state.edges[Math.floor(Math.random() * state.edges.length)];
+  state.murmurs.push({
+    from: edge[0], to: edge[1],
+    payload: lastZin.slice(),
+    tick: state.tick,
+  });
+  if (state.murmurs.length > 10) state.murmurs.shift();
+  renderGraph();
+  document.getElementById('statMurmur').textContent = state.murmurs.length;
+}
+
+// ============================================================================
+// Render
+// ============================================================================
+function renderAll() {
+  renderDB('zIn', state.zIn, 'in');
+  renderDB('zOut', state.zOut, 'out');
+  renderJEPA();
+  renderVibe();
+  renderGraph();
+  document.getElementById('statTicks').textContent = state.tick;
+  document.getElementById('statZin').textContent = state.zIn.length;
+  document.getElementById('statZout').textContent = state.zOut.length;
+  document.getElementById('statSurprise').textContent = state.lastSurprise.toFixed(3);
+  // Compute CR (conservation ratio)
+  const cr = computeCR();
+  document.getElementById('statCR').textContent = cr.toFixed(3);
+}
+
+function renderDB(prefix, db, dir) {
+  const body = document.getElementById(prefix + 'Body');
+  const count = document.getElementById(prefix + 'Count');
+  count.textContent = `${db.length} entries`;
+  body.innerHTML = '';
+  if (db.length === 0) {
+    body.innerHTML = '<div class="empty">empty</div>';
+    return;
+  }
+  // Show last 5 entries
+  const start = Math.max(0, db.length - 5);
+  for (let i = start; i < db.length; i++) {
+    const e = db[i];
+    const row = document.createElement('div');
+    row.className = 'embedding-row';
+    const bars = e.value.map((v, j) => {
+      const h = Math.abs(v) * 60;
+      const cls = v < 0 ? 'bar neg' : 'bar';
+      return `<div class="${cls}" style="height:${Math.max(1, h)}px"></div>`;
+    }).join('');
+    row.innerHTML = `
+      <div class="label">t-${db.length - 1 - i}</div>
+      <div class="bars">${bars}</div>
+      <div class="value">${e.strength.toFixed(2)}</div>
+    `;
+    body.appendChild(row);
+  }
+}
+
+function renderJEPA() {
+  const arrow = document.getElementById('jepaArrow');
+  const surprise = state.lastSurprise;
+  // Color the arrow by surprise
+  const ratio = Math.min(1, surprise / 2);
+  const r = Math.round(63 + (248 - 63) * ratio);
+  const g = Math.round(185 - 185 * ratio);
+  const b = Math.round(80 - 80 * ratio);
+  arrow.style.background = `linear-gradient(90deg, var(--ok), rgb(${r}, ${g}, ${b}))`;
+  arrow.style.width = `${20 + ratio * 60}%`;
+  document.getElementById('jepaSurprise').textContent = surprise.toFixed(3);
+}
+
+function renderVibe() {
+  document.getElementById('vibePos').textContent =
+    `(${state.vibe.pos[0]?.toFixed(2) || '0.00'}, ${state.vibe.pos[1]?.toFixed(2) || '0.00'})`;
+  document.getElementById('vibeVel').textContent =
+    `(${state.vibe.vel[0]?.toFixed(2) || '0.00'}, ${state.vibe.vel[1]?.toFixed(2) || '0.00'})`;
+  document.getElementById('vibeAcc').textContent =
+    `(${state.vibe.acc[0]?.toFixed(2) || '0.00'}, ${state.vibe.acc[1]?.toFixed(2) || '0.00'})`;
+}
+
+function renderGraph() {
+  const g = document.getElementById('graphVis');
+  g.innerHTML = '';
+  // Draw edges
+  for (const e of state.edges) {
+    const r1 = state.rooms.find(r => r.id === e[0]);
+    const r2 = state.rooms.find(r => r.id === e[1]);
+    if (!r1 || !r2) continue;
+    const dx = r2.pos.x - r1.pos.x;
+    const dy = r2.pos.y - r1.pos.y;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const line = document.createElement('div');
+    line.className = 'room-edge';
+    line.style.left = r1.pos.x + 'px';
+    line.style.top = r1.pos.y + 'px';
+    line.style.width = len + 'px';
+    line.style.transform = `rotate(${angle}deg)`;
+    g.appendChild(line);
+  }
+  // Draw murmur edges
+  for (const m of state.murmurs) {
+    const r1 = state.rooms.find(r => r.id === m.from);
+    const r2 = state.rooms.find(r => r.id === m.to);
+    if (!r1 || !r2) continue;
+    const dx = r2.pos.x - r1.pos.x;
+    const dy = r2.pos.y - r1.pos.y;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const line = document.createElement('div');
+    line.className = 'room-edge murmur';
+    line.style.left = r1.pos.x + 'px';
+    line.style.top = r1.pos.y + 'px';
+    line.style.width = len + 'px';
+    line.style.transform = `rotate(${angle}deg)`;
+    line.style.opacity = 0.4;
+    g.appendChild(line);
+  }
+  // Draw room nodes
+  for (const r of state.rooms) {
+    const div = document.createElement('div');
+    div.className = 'room-node' + (state.activeRoom === r ? ' active' : '');
+    div.style.left = r.pos.x + 'px';
+    div.style.top = r.pos.y + 'px';
+    div.textContent = r.name.split(' ')[0];
+    div.title = r.name;
+    g.appendChild(div);
+  }
+}
+
+function computeCR() {
+  // CR = conservation ratio = sum of strengths / max possible
+  if (state.zIn.length === 0) return 0;
+  const totalStrength = state.zIn.reduce((s, e) => s + e.strength, 0);
+  const maxPossible = state.zIn.length;
+  return totalStrength / maxPossible;
+}
+
+// ============================================================================
+// Wire up
+// ============================================================================
+seedDB();
+renderAll();
+
+document.getElementById('tickBtn').onclick = tick;
+document.getElementById('predictBtn').onclick = predict;
+document.getElementById('gcBtn').onclick = gc;
+document.getElementById('murmurBtn').onclick = murmur;
+
+// Auto-tick every 2 seconds
+setInterval(tick, 2000);
+</script>
+</body>
+</html>

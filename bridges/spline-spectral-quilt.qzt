@@ -1,0 +1,1603 @@
+{
+  "schema": "quilt-zip-target/v1",
+  "metadata": {
+    "name": "Spline-spectral as Quilt sheet",
+    "description": "The spline-spectral insight: B-spline basis functions are eigenvectors of the path graph Laplacian. The Cox-de Boor recurrence is Fibonacci for function spaces. Spline smoothing and spectral filtering solve the same variational problem. The function space is a graph; the basis functions are the eigenvectors; the recurrence is Fibonacci; the smoothing is filtering.",
+    "generated": "2026-08-21T01:31:46Z",
+    "address_root": "splinespectral"
+  },
+  "rooms": [
+    {
+      "id": "graph",
+      "name": "\ud83d\udd78 Path graph (Laplacian, eigenvalues)",
+      "cell_count": 61
+    },
+    {
+      "id": "spline",
+      "name": "\u3030\ufe0f B-spline (degree 3, 5 control points)",
+      "cell_count": 17
+    },
+    {
+      "id": "eval",
+      "name": "\ud83d\udcd0 Cox-de Boor evaluations (9 samples \u00d7 5 i \u00d7 4 p)",
+      "cell_count": 180
+    },
+    {
+      "id": "graphspline",
+      "name": "\ud83c\udfaf GraphSpline smoothing (constrained min f^T L f)",
+      "cell_count": 7
+    },
+    {
+      "id": "theorem",
+      "name": "\ud83d\udcdc The theorem (3 claims + objective)",
+      "cell_count": 4
+    },
+    {
+      "id": "repo",
+      "name": "\ud83d\udcda Supporting repos (4 spectral/graph)",
+      "cell_count": 20
+    }
+  ],
+  "cells": [
+    {
+      "address": "graph.path.n",
+      "kind": "usize",
+      "value": 5
+    },
+    {
+      "address": "graph.path.adj[0][0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[0][1]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.adj[0][2]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[0][3]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[0][4]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[1][0]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.adj[1][1]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[1][2]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.adj[1][3]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[1][4]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[2][0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[2][1]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.adj[2][2]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[2][3]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.adj[2][4]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[3][0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[3][1]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[3][2]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.adj[3][3]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[3][4]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.adj[4][0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[4][1]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[4][2]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.adj[4][3]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.adj[4][4]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.deg[0]",
+      "kind": "usize",
+      "value": 1
+    },
+    {
+      "address": "graph.path.deg[1]",
+      "kind": "usize",
+      "value": 2
+    },
+    {
+      "address": "graph.path.deg[2]",
+      "kind": "usize",
+      "value": 2
+    },
+    {
+      "address": "graph.path.deg[3]",
+      "kind": "usize",
+      "value": 2
+    },
+    {
+      "address": "graph.path.deg[4]",
+      "kind": "usize",
+      "value": 1
+    },
+    {
+      "address": "graph.path.lap[0][0]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.lap[0][1]",
+      "kind": "f64",
+      "value": -1.0
+    },
+    {
+      "address": "graph.path.lap[0][2]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[0][3]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[0][4]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[1][0]",
+      "kind": "f64",
+      "value": -1.0
+    },
+    {
+      "address": "graph.path.lap[1][1]",
+      "kind": "f64",
+      "value": 2.0
+    },
+    {
+      "address": "graph.path.lap[1][2]",
+      "kind": "f64",
+      "value": -1.0
+    },
+    {
+      "address": "graph.path.lap[1][3]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[1][4]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[2][0]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[2][1]",
+      "kind": "f64",
+      "value": -1.0
+    },
+    {
+      "address": "graph.path.lap[2][2]",
+      "kind": "f64",
+      "value": 2.0
+    },
+    {
+      "address": "graph.path.lap[2][3]",
+      "kind": "f64",
+      "value": -1.0
+    },
+    {
+      "address": "graph.path.lap[2][4]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[3][0]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[3][1]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[3][2]",
+      "kind": "f64",
+      "value": -1.0
+    },
+    {
+      "address": "graph.path.lap[3][3]",
+      "kind": "f64",
+      "value": 2.0
+    },
+    {
+      "address": "graph.path.lap[3][4]",
+      "kind": "f64",
+      "value": -1.0
+    },
+    {
+      "address": "graph.path.lap[4][0]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[4][1]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[4][2]",
+      "kind": "f64",
+      "value": -0.0
+    },
+    {
+      "address": "graph.path.lap[4][3]",
+      "kind": "f64",
+      "value": -1.0
+    },
+    {
+      "address": "graph.path.lap[4][4]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graph.path.eig[0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graph.path.eig[1]",
+      "kind": "f64",
+      "value": 0.3819660112501051
+    },
+    {
+      "address": "graph.path.eig[2]",
+      "kind": "f64",
+      "value": 1.381966011250105
+    },
+    {
+      "address": "graph.path.eig[3]",
+      "kind": "f64",
+      "value": 2.618033988749895
+    },
+    {
+      "address": "graph.path.eig[4]",
+      "kind": "f64",
+      "value": 3.618033988749895
+    },
+    {
+      "address": "spline.degree",
+      "kind": "usize",
+      "value": 3
+    },
+    {
+      "address": "spline.n_control",
+      "kind": "usize",
+      "value": 5
+    },
+    {
+      "address": "spline.n_knots",
+      "kind": "usize",
+      "value": 9
+    },
+    {
+      "address": "spline.knot[0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.knot[1]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.knot[2]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.knot[3]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.knot[4]",
+      "kind": "f64",
+      "value": 0.5
+    },
+    {
+      "address": "spline.knot[5]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.knot[6]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.knot[7]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.knot[8]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.control[0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.control[1]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.control[2]",
+      "kind": "f64",
+      "value": 0.5
+    },
+    {
+      "address": "spline.control[3]",
+      "kind": "f64",
+      "value": 2.0
+    },
+    {
+      "address": "spline.control[4]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t0_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i0_p3",
+      "kind": "f64",
+      "value": 0.5120000000000001
+    },
+    {
+      "address": "spline.eval.t0_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i1_p2",
+      "kind": "f64",
+      "value": 0.6400000000000001
+    },
+    {
+      "address": "spline.eval.t0_i1_p3",
+      "kind": "f64",
+      "value": 0.43400000000000016
+    },
+    {
+      "address": "spline.eval.t0_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i2_p1",
+      "kind": "f64",
+      "value": 0.8
+    },
+    {
+      "address": "spline.eval.t0_i2_p2",
+      "kind": "f64",
+      "value": 0.3400000000000001
+    },
+    {
+      "address": "spline.eval.t0_i2_p3",
+      "kind": "f64",
+      "value": 0.05200000000000002
+    },
+    {
+      "address": "spline.eval.t0_i3_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t0_i3_p1",
+      "kind": "f64",
+      "value": 0.2
+    },
+    {
+      "address": "spline.eval.t0_i3_p2",
+      "kind": "f64",
+      "value": 0.020000000000000004
+    },
+    {
+      "address": "spline.eval.t0_i3_p3",
+      "kind": "f64",
+      "value": 0.0020000000000000005
+    },
+    {
+      "address": "spline.eval.t0_i4_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i4_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i4_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t0_i4_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i0_p3",
+      "kind": "f64",
+      "value": 0.216
+    },
+    {
+      "address": "spline.eval.t1_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i1_p2",
+      "kind": "f64",
+      "value": 0.36
+    },
+    {
+      "address": "spline.eval.t1_i1_p3",
+      "kind": "f64",
+      "value": 0.5920000000000001
+    },
+    {
+      "address": "spline.eval.t1_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i2_p1",
+      "kind": "f64",
+      "value": 0.6
+    },
+    {
+      "address": "spline.eval.t1_i2_p2",
+      "kind": "f64",
+      "value": 0.56
+    },
+    {
+      "address": "spline.eval.t1_i2_p3",
+      "kind": "f64",
+      "value": 0.17600000000000005
+    },
+    {
+      "address": "spline.eval.t1_i3_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t1_i3_p1",
+      "kind": "f64",
+      "value": 0.4
+    },
+    {
+      "address": "spline.eval.t1_i3_p2",
+      "kind": "f64",
+      "value": 0.08000000000000002
+    },
+    {
+      "address": "spline.eval.t1_i3_p3",
+      "kind": "f64",
+      "value": 0.016000000000000004
+    },
+    {
+      "address": "spline.eval.t1_i4_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i4_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i4_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t1_i4_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i0_p3",
+      "kind": "f64",
+      "value": 0.06400000000000002
+    },
+    {
+      "address": "spline.eval.t2_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i1_p2",
+      "kind": "f64",
+      "value": 0.16000000000000003
+    },
+    {
+      "address": "spline.eval.t2_i1_p3",
+      "kind": "f64",
+      "value": 0.5579999999999999
+    },
+    {
+      "address": "spline.eval.t2_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i2_p1",
+      "kind": "f64",
+      "value": 0.4
+    },
+    {
+      "address": "spline.eval.t2_i2_p2",
+      "kind": "f64",
+      "value": 0.6599999999999999
+    },
+    {
+      "address": "spline.eval.t2_i2_p3",
+      "kind": "f64",
+      "value": 0.32399999999999995
+    },
+    {
+      "address": "spline.eval.t2_i3_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t2_i3_p1",
+      "kind": "f64",
+      "value": 0.6
+    },
+    {
+      "address": "spline.eval.t2_i3_p2",
+      "kind": "f64",
+      "value": 0.18
+    },
+    {
+      "address": "spline.eval.t2_i3_p3",
+      "kind": "f64",
+      "value": 0.054
+    },
+    {
+      "address": "spline.eval.t2_i4_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i4_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i4_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t2_i4_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i0_p3",
+      "kind": "f64",
+      "value": 0.007999999999999995
+    },
+    {
+      "address": "spline.eval.t3_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i1_p2",
+      "kind": "f64",
+      "value": 0.03999999999999998
+    },
+    {
+      "address": "spline.eval.t3_i1_p3",
+      "kind": "f64",
+      "value": 0.4159999999999999
+    },
+    {
+      "address": "spline.eval.t3_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i2_p1",
+      "kind": "f64",
+      "value": 0.19999999999999996
+    },
+    {
+      "address": "spline.eval.t3_i2_p2",
+      "kind": "f64",
+      "value": 0.6399999999999999
+    },
+    {
+      "address": "spline.eval.t3_i2_p3",
+      "kind": "f64",
+      "value": 0.44799999999999995
+    },
+    {
+      "address": "spline.eval.t3_i3_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t3_i3_p1",
+      "kind": "f64",
+      "value": 0.8
+    },
+    {
+      "address": "spline.eval.t3_i3_p2",
+      "kind": "f64",
+      "value": 0.32000000000000006
+    },
+    {
+      "address": "spline.eval.t3_i3_p3",
+      "kind": "f64",
+      "value": 0.12800000000000003
+    },
+    {
+      "address": "spline.eval.t3_i4_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i4_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i4_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t3_i4_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i0_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i1_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i1_p3",
+      "kind": "f64",
+      "value": 0.25
+    },
+    {
+      "address": "spline.eval.t4_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i2_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i2_p2",
+      "kind": "f64",
+      "value": 0.5
+    },
+    {
+      "address": "spline.eval.t4_i2_p3",
+      "kind": "f64",
+      "value": 0.5
+    },
+    {
+      "address": "spline.eval.t4_i3_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i3_p1",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t4_i3_p2",
+      "kind": "f64",
+      "value": 0.5
+    },
+    {
+      "address": "spline.eval.t4_i3_p3",
+      "kind": "f64",
+      "value": 0.25
+    },
+    {
+      "address": "spline.eval.t4_i4_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t4_i4_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i4_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t4_i4_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i0_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i1_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i1_p3",
+      "kind": "f64",
+      "value": 0.12800000000000003
+    },
+    {
+      "address": "spline.eval.t5_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i2_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i2_p2",
+      "kind": "f64",
+      "value": 0.32000000000000006
+    },
+    {
+      "address": "spline.eval.t5_i2_p3",
+      "kind": "f64",
+      "value": 0.44799999999999995
+    },
+    {
+      "address": "spline.eval.t5_i3_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t5_i3_p1",
+      "kind": "f64",
+      "value": 0.8
+    },
+    {
+      "address": "spline.eval.t5_i3_p2",
+      "kind": "f64",
+      "value": 0.6399999999999999
+    },
+    {
+      "address": "spline.eval.t5_i3_p3",
+      "kind": "f64",
+      "value": 0.4159999999999999
+    },
+    {
+      "address": "spline.eval.t5_i4_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t5_i4_p1",
+      "kind": "f64",
+      "value": 0.19999999999999996
+    },
+    {
+      "address": "spline.eval.t5_i4_p2",
+      "kind": "f64",
+      "value": 0.03999999999999998
+    },
+    {
+      "address": "spline.eval.t5_i4_p3",
+      "kind": "f64",
+      "value": 0.007999999999999995
+    },
+    {
+      "address": "spline.eval.t6_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i0_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i1_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i1_p3",
+      "kind": "f64",
+      "value": 0.05400000000000002
+    },
+    {
+      "address": "spline.eval.t6_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i2_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i2_p2",
+      "kind": "f64",
+      "value": 0.18000000000000005
+    },
+    {
+      "address": "spline.eval.t6_i2_p3",
+      "kind": "f64",
+      "value": 0.32400000000000007
+    },
+    {
+      "address": "spline.eval.t6_i3_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t6_i3_p1",
+      "kind": "f64",
+      "value": 0.6000000000000001
+    },
+    {
+      "address": "spline.eval.t6_i3_p2",
+      "kind": "f64",
+      "value": 0.66
+    },
+    {
+      "address": "spline.eval.t6_i3_p3",
+      "kind": "f64",
+      "value": 0.5579999999999999
+    },
+    {
+      "address": "spline.eval.t6_i4_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t6_i4_p1",
+      "kind": "f64",
+      "value": 0.3999999999999999
+    },
+    {
+      "address": "spline.eval.t6_i4_p2",
+      "kind": "f64",
+      "value": 0.15999999999999992
+    },
+    {
+      "address": "spline.eval.t6_i4_p3",
+      "kind": "f64",
+      "value": 0.06399999999999996
+    },
+    {
+      "address": "spline.eval.t7_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i0_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i1_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i1_p3",
+      "kind": "f64",
+      "value": 0.01599999999999999
+    },
+    {
+      "address": "spline.eval.t7_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i2_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i2_p2",
+      "kind": "f64",
+      "value": 0.07999999999999996
+    },
+    {
+      "address": "spline.eval.t7_i2_p3",
+      "kind": "f64",
+      "value": 0.17599999999999993
+    },
+    {
+      "address": "spline.eval.t7_i3_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t7_i3_p1",
+      "kind": "f64",
+      "value": 0.3999999999999999
+    },
+    {
+      "address": "spline.eval.t7_i3_p2",
+      "kind": "f64",
+      "value": 0.5599999999999999
+    },
+    {
+      "address": "spline.eval.t7_i3_p3",
+      "kind": "f64",
+      "value": 0.592
+    },
+    {
+      "address": "spline.eval.t7_i4_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t7_i4_p1",
+      "kind": "f64",
+      "value": 0.6000000000000001
+    },
+    {
+      "address": "spline.eval.t7_i4_p2",
+      "kind": "f64",
+      "value": 0.3600000000000001
+    },
+    {
+      "address": "spline.eval.t7_i4_p3",
+      "kind": "f64",
+      "value": 0.21600000000000008
+    },
+    {
+      "address": "spline.eval.t8_i0_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i0_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i0_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i0_p3",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i1_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i1_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i1_p2",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i1_p3",
+      "kind": "f64",
+      "value": 0.0019999999999999987
+    },
+    {
+      "address": "spline.eval.t8_i2_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i2_p1",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i2_p2",
+      "kind": "f64",
+      "value": 0.01999999999999999
+    },
+    {
+      "address": "spline.eval.t8_i2_p3",
+      "kind": "f64",
+      "value": 0.05199999999999998
+    },
+    {
+      "address": "spline.eval.t8_i3_p0",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "spline.eval.t8_i3_p1",
+      "kind": "f64",
+      "value": 0.19999999999999996
+    },
+    {
+      "address": "spline.eval.t8_i3_p2",
+      "kind": "f64",
+      "value": 0.33999999999999997
+    },
+    {
+      "address": "spline.eval.t8_i3_p3",
+      "kind": "f64",
+      "value": 0.434
+    },
+    {
+      "address": "spline.eval.t8_i4_p0",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "spline.eval.t8_i4_p1",
+      "kind": "f64",
+      "value": 0.8
+    },
+    {
+      "address": "spline.eval.t8_i4_p2",
+      "kind": "f64",
+      "value": 0.6400000000000001
+    },
+    {
+      "address": "spline.eval.t8_i4_p3",
+      "kind": "f64",
+      "value": 0.5120000000000001
+    },
+    {
+      "address": "graphspline.constrain[0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graphspline.constrain[4]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "graphspline.solution[0]",
+      "kind": "f64",
+      "value": 0.0
+    },
+    {
+      "address": "graphspline.solution[1]",
+      "kind": "f64",
+      "value": 0.25
+    },
+    {
+      "address": "graphspline.solution[2]",
+      "kind": "f64",
+      "value": 0.5
+    },
+    {
+      "address": "graphspline.solution[3]",
+      "kind": "f64",
+      "value": 0.75
+    },
+    {
+      "address": "graphspline.solution[4]",
+      "kind": "f64",
+      "value": 1.0
+    },
+    {
+      "address": "theorem.claim",
+      "kind": "string",
+      "value": "B-spline basis functions are eigenvectors of the path graph Laplacian"
+    },
+    {
+      "address": "theorem.claim_2",
+      "kind": "string",
+      "value": "Cox-de Boor recurrence is Fibonacci for function spaces"
+    },
+    {
+      "address": "theorem.claim_3",
+      "kind": "string",
+      "value": "Spline smoothing and spectral filtering solve the same variational problem"
+    },
+    {
+      "address": "theorem.objective",
+      "kind": "string",
+      "value": "min f^T L f subject to f(u) = v"
+    },
+    {
+      "address": "theorem.eigenvalue_formula",
+      "kind": "string",
+      "value": "\u03bb_k = 2(1 - cos(k\u03c0/n))"
+    },
+    {
+      "address": "repo.spline-spectral.name",
+      "kind": "string",
+      "value": "spline-spectral"
+    },
+    {
+      "address": "repo.spline-spectral.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.spline-spectral.desc",
+      "kind": "string",
+      "value": "B-splines as spectral objects"
+    },
+    {
+      "address": "repo.spline-spectral.icon",
+      "kind": "string",
+      "value": "\u3030\ufe0f"
+    },
+    {
+      "address": "repo.spline-spectral.n_cells",
+      "kind": "string",
+      "value": "208"
+    },
+    {
+      "address": "repo.spectral-graph-v2.name",
+      "kind": "string",
+      "value": "spectral-graph-v2"
+    },
+    {
+      "address": "repo.spectral-graph-v2.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.spectral-graph-v2.desc",
+      "kind": "string",
+      "value": "Fib growth + adaptive thresholds + negative space"
+    },
+    {
+      "address": "repo.spectral-graph-v2.icon",
+      "kind": "string",
+      "value": "\ud83c\udf10"
+    },
+    {
+      "address": "repo.spectral-graph-v2.n_cells",
+      "kind": "string",
+      "value": "23"
+    },
+    {
+      "address": "repo.deadband-rs.name",
+      "kind": "string",
+      "value": "deadband-rs"
+    },
+    {
+      "address": "repo.deadband-rs.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.deadband-rs.desc",
+      "kind": "string",
+      "value": "Eisenstein, Berlekamp-Massey, Fibonacci spiral"
+    },
+    {
+      "address": "repo.deadband-rs.icon",
+      "kind": "string",
+      "value": "\ud83d\udccf"
+    },
+    {
+      "address": "repo.deadband-rs.n_cells",
+      "kind": "string",
+      "value": "12"
+    },
+    {
+      "address": "repo.grand-pattern-rs.name",
+      "kind": "string",
+      "value": "grand-pattern-rs"
+    },
+    {
+      "address": "repo.grand-pattern-rs.lang",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.grand-pattern-rs.desc",
+      "kind": "string",
+      "value": "JEPA surprise \u2014 Prediction as spectral filtering"
+    },
+    {
+      "address": "repo.grand-pattern-rs.icon",
+      "kind": "string",
+      "value": "\ud83c\udf00"
+    },
+    {
+      "address": "repo.grand-pattern-rs.n_cells",
+      "kind": "string",
+      "value": "12"
+    },
+    {
+      "address": "stats.eig_n",
+      "kind": "usize",
+      "value": 5
+    },
+    {
+      "address": "stats.graph_size",
+      "kind": "usize",
+      "value": 5
+    },
+    {
+      "address": "stats.spline_degree",
+      "kind": "usize",
+      "value": 3
+    },
+    {
+      "address": "stats.control_count",
+      "kind": "usize",
+      "value": 5
+    },
+    {
+      "address": "stats.knot_count",
+      "kind": "usize",
+      "value": 9
+    },
+    {
+      "address": "stats.sample_count",
+      "kind": "usize",
+      "value": 9
+    },
+    {
+      "address": "stats.basis_count",
+      "kind": "usize",
+      "value": 20
+    },
+    {
+      "address": "stats.evaluation_count",
+      "kind": "usize",
+      "value": 180
+    },
+    {
+      "address": "stats.now",
+      "kind": "f64",
+      "value": 1787275906.241447
+    }
+  ],
+  "edges": [
+    {
+      "from": "graph.path.adj",
+      "to": "graph.path.lap",
+      "kind": "D_minus_A"
+    },
+    {
+      "from": "graph.path.lap",
+      "to": "graph.path.eig",
+      "kind": "diagonalize"
+    },
+    {
+      "from": "spline.knot",
+      "to": "spline.eval",
+      "kind": "cox_de_boor"
+    },
+    {
+      "from": "spline.control",
+      "to": "spline.eval",
+      "kind": "evaluate"
+    },
+    {
+      "from": "spline.eval",
+      "to": "graph.path.eig",
+      "kind": "eigenvectors_are_spline_basis"
+    },
+    {
+      "from": "graphspline.constrain",
+      "to": "graphspline.solution",
+      "kind": "min_fTf_smoothing"
+    },
+    {
+      "from": "graph.path.eig",
+      "to": "graphspline.solution",
+      "kind": "low_pass_filter"
+    },
+    {
+      "from": "repo.spline-spectral",
+      "to": "graph.path.lap",
+      "kind": "uses_spectral"
+    },
+    {
+      "from": "repo.spectral-graph-v2",
+      "to": "graph.path.lap",
+      "kind": "uses_spectral"
+    },
+    {
+      "from": "repo.deadband-rs",
+      "to": "graph.path.lap",
+      "kind": "uses_spectral"
+    },
+    {
+      "from": "repo.grand-pattern-rs",
+      "to": "graph.path.lap",
+      "kind": "uses_spectral"
+    }
+  ],
+  "stats": {
+    "total_cells": 299,
+    "total_rooms": 6,
+    "total_edges": 11,
+    "eigenvalues": 5,
+    "spline_basis_count": 20,
+    "evaluation_count": 180
+  }
+}

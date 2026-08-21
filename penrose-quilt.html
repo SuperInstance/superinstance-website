@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<!--
+  penrose-quilt.html — The Penrose floor as a Quilt sheet.
+
+  THE INSIGHT: encode the nature of gravities and weights of cells
+  INTO the coordinate system itself. The Penrose floor is aperiodic
+  (never repeats) but has long-range order. The golden ratio (φ)
+  appears in the geometry. Each tile has a unique address. Each
+  position encodes meaning.
+
+  The user's hypothesis: high-dimensional embeddings (e.g. 1536-d
+  LLM vectors) get projected to 2D Penrose coordinates. The
+  position on the floor IS the address. The distance between
+  positions encodes similarity. The position encodes gravities
+  (other cells in the neighborhood) — so calculation and inference
+  can think in higher abstractions and simpler terms.
+
+  Inspired by:
+  - SuperInstance/penrose-memory (Penrose memory palace for AI agents)
+  - SuperInstance/penrose-lattice (Fibonacci substitution, golden ratio)
+  - SuperInstance/lau-twistor-agents (twistor theory for agent trajectories)
+  - SuperInstance/fibonacci-growth (golden ratio as attractor)
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Penrose Quilt — the aperiodic floor where cells live</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+    --thick: #58a6ff; --thin: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .toolbar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-left: auto; }
+  button, input[type="text"] {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  .container { display: grid; grid-template-columns: 1fr 320px; height: calc(100vh - 70px); }
+  .canvas-area { padding: 1rem; overflow: auto; }
+  .right-pane { background: #0d1117; border-left: 1px solid var(--border); padding: 1rem; overflow-y: auto; }
+
+  /* The Penrose floor */
+  .floor {
+    position: relative; background: #04111c;
+    border: 1px solid var(--border); border-radius: 4px;
+    width: 800px; height: 800px;
+    overflow: hidden;
+  }
+  .tile {
+    position: absolute; cursor: pointer;
+    transition: filter 0.1s;
+  }
+  .tile:hover { filter: brightness(1.4); }
+  .tile.selected { filter: brightness(1.6) drop-shadow(0 0 6px var(--accent)); }
+  .tile-label {
+    position: absolute; font-size: 0.55rem; color: rgba(255,255,255,0.6);
+    pointer-events: none; text-align: center;
+  }
+
+  .cell-dot {
+    position: absolute; width: 8px; height: 8px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.8);
+    cursor: pointer; z-index: 10;
+    transform: translate(-50%, -50%);
+  }
+  .cell-dot:hover { box-shadow: 0 0 8px var(--accent); }
+  .cell-dot .weight-ring {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid currentColor;
+    border-radius: 50%; opacity: 0.4;
+  }
+  .cell-dot .gravity-vector {
+    position: absolute; pointer-events: none;
+    border-top: 1px solid currentColor; opacity: 0.5;
+    transform-origin: 0 50%;
+  }
+
+  .floor-info {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(13,17,23,0.85);
+    border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem 0.7rem;
+    font-size: 0.75rem; color: var(--muted);
+    pointer-events: none;
+  }
+  .floor-info strong { color: var(--accent); }
+
+  /* Side panel */
+  .stat { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .stat:last-child { border-bottom: none; }
+  .stat .label { color: var(--muted); }
+  .stat .val { color: var(--fg); font-family: ui-monospace, monospace; }
+  .cell-info { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.8rem; margin-bottom: 0.7rem; }
+  .cell-info .path { font-family: ui-monospace, monospace; color: var(--accent); font-size: 0.95rem; word-break: break-all; }
+  .cell-info .addr { font-family: ui-monospace, monospace; color: var(--warn); font-size: 0.85rem; }
+  .quilt-path { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.7rem; font-family: ui-monospace, monospace; font-size: 0.8rem; line-height: 1.6; margin-bottom: 0.7rem; }
+  .quilt-path code { color: var(--accent); }
+  .quilt-path .namespace { color: var(--ok); }
+  .quilt-path .position { color: var(--warn); }
+  .quilt-path .kind { color: var(--purple); }
+
+  .legend { font-size: 0.75rem; color: var(--muted); margin: 0.5rem 0; }
+  .legend span { display: inline-block; margin-right: 0.7rem; }
+  .legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.2rem; vertical-align: middle; }
+  .legend .diamond { display: inline-block; width: 8px; height: 8px; transform: rotate(45deg); margin-right: 0.2rem; vertical-align: middle; }
+
+  .controls { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+  .controls button { flex: 1; min-width: 80px; }
+  .query-input { width: 100%; background: #0d1117; color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; font-family: inherit; font-size: 0.9rem; }
+
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🔯 Penrose Quilt</h1>
+    <div class="subtitle">the aperiodic floor — where position encodes gravity</div>
+  </div>
+  <div class="toolbar">
+    <button class="primary" id="genBtn">Generate sheet</button>
+    <button id="projectBtn">📌 Project query</button>
+    <button id="wanderBtn">🌊 Wander</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="canvas-area">
+    <div class="floor" id="floor">
+      <div class="floor-info">
+        <div><strong>Penrose P3 floor</strong> · 5D → 2D · golden-angle projection</div>
+        <div>tile count: <span id="infoTiles">0</span> · thick/thin ratio: <span id="infoRatio">—</span></div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><span class="diamond" style="background: var(--thick)"></span>thick rhomb (72°)</span>
+      <span><span class="diamond" style="background: var(--thin)"></span>thin rhomb (36°)</span>
+      <span><span class="swatch" style="background: var(--accent); border-radius: 50%;"></span>Quilt cell</span>
+      <span>weight = radius of the ring; gravity = arrow direction</span>
+    </div>
+  </div>
+
+  <div class="right-pane">
+    <h3 style="margin: 0 0 0.5rem; font-size: 0.95rem;">📍 Selected cell</h3>
+    <div class="cell-info" id="cellInfo">
+      <div class="subtitle">Click a cell on the floor to inspect.</div>
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🌳 The Quilt path</h3>
+    <div class="quilt-path">
+      <code class="namespace">penrose</code>.<code class="position">cell_+0.123_-0.456</code>.<code class="kind">name</code><br>
+      <span style="color: var(--muted); font-size: 0.75rem;">↑ namespace ↑ projected position (decimal) ↑ kind</span>
+    </div>
+
+    <p style="font-size: 0.8rem; color: var(--muted); margin: 0 0 0.5rem;">
+      Position is the <strong>Penrose coordinate</strong> after cut-and-project
+      from 5D. The decimal precision encodes the source embedding.
+      Each position is unique — the Penrose tiling is aperiodic.
+    </p>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🔮 Query (project your text)</h3>
+    <div class="controls">
+      <input type="text" class="query-input" id="queryInput" placeholder="Enter a description or concept..." />
+    </div>
+    <div class="controls">
+      <button class="primary" id="projectQueryBtn">📌 Project</button>
+      <button id="wanderFromBtn">🌊 Wander from here</button>
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">📊 Floor stats</h3>
+    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.7rem;">
+      <div class="stat"><span class="label">tiles</span><span class="val" id="statTiles">0</span></div>
+      <div class="stat"><span class="label">thick</span><span class="val" id="statThick">0</span></div>
+      <div class="stat"><span class="label">thin</span><span class="val" id="statThin">0</span></div>
+      <div class="stat"><span class="label">ratio thick:thin</span><span class="val" id="statRatio">—</span></div>
+      <div class="stat"><span class="label">φ target</span><span class="val">1.618</span></div>
+      <div class="stat"><span class="label">cells placed</span><span class="val" id="statCells">0</span></div>
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">💡 The thesis</h3>
+    <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.6;">
+      The Penrose floor is aperiodic — every position is unique. The golden ratio
+      (φ) governs the geometry. When you project a 5D embedding to 2D Penrose coordinates,
+      the position <em>encodes</em> the embedding. The address is the data.
+    </p>
+    <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.6;">
+      Neighboring cells on the floor are <em>gravitationally related</em> —
+      their vectors compose. Inferences about "what's nearby?" become
+      geometric queries: walk φ steps in the golden direction.
+    </p>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// Penrose projection (cut-and-project, 5D → 2D, golden-angle rotation)
+// ============================================================================
+const PHI = 1.618033988749895;
+const INV_PHI = 0.618033988749895;
+const GOLDEN_ANGLE = 2.399963229728653;
+const SQRT5 = 2.23606797749979;
+
+// Source 5D lattice (integer)
+function project5Dto2D(lattice5d) {
+  // Golden-angle rotation: each source axis k is rotated by k * 2π/5 in the target plane
+  const angleStep = (2 * Math.PI) / 5;
+  const proj_x = [];
+  const proj_y = [];
+  for (let k = 0; k < 5; k++) {
+    const angle = k * angleStep;
+    proj_x.push(Math.cos(angle));
+    proj_y.push(Math.sin(angle));
+  }
+  // Normalize
+  const norm = Math.sqrt(proj_x.reduce((s, x) => s + x*x, 0));
+  for (let k = 0; k < 5; k++) {
+    proj_x[k] /= norm;
+    proj_y[k] /= norm;
+  }
+  let x = 0, y = 0;
+  for (let k = 0; k < 5; k++) {
+    x += proj_x[k] * lattice5d[k];
+    y += proj_y[k] * lattice5d[k];
+  }
+  // Perpendicular projection: also golden-angle, different phase
+  // (acceptance window — see penrose-memory cut_and_project.rs)
+  const perp_x = [];
+  const perp_y = [];
+  const perp_z = [];
+  for (let k = 0; k < 5; k++) {
+    perp_x.push(Math.cos(k * angleStep + GOLDEN_ANGLE));
+    perp_y.push(Math.sin(k * angleStep + GOLDEN_ANGLE));
+    perp_z.push(Math.cos(k * angleStep + 2 * GOLDEN_ANGLE));
+  }
+  let px = 0, py = 0, pz = 0;
+  for (let k = 0; k < 5; k++) {
+    px += perp_x[k] * lattice5d[k];
+    py += perp_y[k] * lattice5d[k];
+    pz += perp_z[k] * lattice5d[k];
+  }
+  // Acceptance window: rhombic dodecahedron projected, |p| < some threshold
+  // For simplicity, accept if max(|px|,|py|,|pz|) < 1
+  const maxPerp = Math.max(Math.abs(px), Math.abs(py), Math.abs(pz));
+  if (maxPerp > 1.0) {
+    return null; // rejected
+  }
+  return { x, y, perp: { px, py, pz } };
+}
+
+// Hash a 5D integer to a tile type (thick/thin) using the Fibonacci word
+function tileType(lattice5d) {
+  // Compute the sum of source coords mod 2 (Zeckendorf-like)
+  const sum = lattice5d.reduce((s, x) => s + Math.abs(x), 0);
+  // The Fibonacci word: F(n) determines 0/1, the tile type
+  // For simplicity: even sum = thick, odd = thin
+  // (Real Penrose uses matching rules; this is the simplified projection)
+  return sum % 2 === 0 ? 'thick' : 'thin';
+}
+
+// Penrose rhomb geometry
+// Thick rhomb: interior angles 72° and 108°
+// Thin rhomb: interior angles 36° and 144°
+function renderRhomb(centerX, centerY, size, type) {
+  // size = side length
+  // For thick: half-angles 36°, 54°; for thin: 18°, 72°
+  let half1, half2;
+  if (type === 'thick') {
+    half1 = 36 * Math.PI / 180;
+    half2 = 54 * Math.PI / 180;
+  } else {
+    half1 = 18 * Math.PI / 180;
+    half2 = 72 * Math.PI / 180;
+  }
+  // We don't know the rotation here; the caller can rotate
+  // For simplicity, draw aligned along x-axis
+  // Vectors from center to two adjacent vertices
+  const v1x = size * Math.cos(half1);
+  const v1y = size * Math.sin(half1);
+  const v2x = size * Math.cos(half2);
+  const v2y = -size * Math.sin(half2);
+  // Wait, for a rhomb the two vectors from center to vertices have the same magnitude
+  // but different angles. The 4 vertices are: center+v1, center+v2, center-v1, center-v2
+  // For a rhomb with angles α and β at center, the half-angles from one diagonal are α/2 and β/2
+  // The two vectors from center are at angles θ ± α/2 and θ ± β/2... actually for a rhomb with
+  // interior angles α, β, α, β at the 4 vertices, the half-angles from center are (α+β)/4 each
+  // Hmm. Let me just use the standard Penrose rhomb parameters.
+
+  // Thick rhomb: vertices relative to center at (0,0), with diagonals 2*cos(36°) and 2*sin(36°)*... actually
+  // Simpler: I'll use the Penrose rhomb shape with sides = 1 and the appropriate angles
+  // Vertices: (±sin(36°), ±cos(36°)) rotated by tile orientation
+  // For thick: half-angles 36° + 36° = 72° interior (so the rhomb "opens" wider)
+  // For thin: half-angles 18° + 18° = 36° interior (the rhomb is more acute)
+  // The diagonal lengths: long diagonal = 2*cos(36°) ≈ 1.618, short diagonal = 2*sin(36°) ≈ 1.176 (for unit side)
+  // Hmm, actually all Penrose rhombs have unit side length. The diagonals are:
+  //   Thick: long = 2*cos(18°), short = 2*sin(18°)
+  //   Thin:  long = 2*cos(36°), short = 2*sin(36°)
+  // I'll just make a rotated rhomb.
+  const d = size;
+  // For thick: 4 vertices at angles 36°, 144°, 216°, 324° from center (relative to short diagonal)
+  // For thin: 4 vertices at angles 18°, 162°, 198°, 342°
+  let verts;
+  if (type === 'thick') {
+    const a1 = 36 * Math.PI / 180;
+    const a2 = 144 * Math.PI / 180;
+    const a3 = 216 * Math.PI / 180;
+    const a4 = 324 * Math.PI / 180;
+    verts = [
+      [d * Math.cos(a1), d * Math.sin(a1)],
+      [d * Math.cos(a2), d * Math.sin(a2)],
+      [d * Math.cos(a3), d * Math.sin(a3)],
+      [d * Math.cos(a4), d * Math.sin(a4)],
+    ];
+  } else {
+    const a1 = 18 * Math.PI / 180;
+    const a2 = 162 * Math.PI / 180;
+    const a3 = 198 * Math.PI / 180;
+    const a4 = 342 * Math.PI / 180;
+    verts = [
+      [d * Math.cos(a1), d * Math.sin(a1)],
+      [d * Math.cos(a2), d * Math.sin(a2)],
+      [d * Math.cos(a3), d * Math.sin(a3)],
+      [d * Math.cos(a4), d * Math.sin(a4)],
+    ];
+  }
+  // Center the rhomb at (cx, cy)
+  const points = verts.map(v => `${centerX + v[0]},${centerY + v[1]}`).join(' ');
+  return `<polygon points="${points}" fill="var(--${type})" fill-opacity="0.7" stroke="var(--${type})" stroke-width="0.5" data-source="${lattice5d.join(',')}" />`;
+}
+
+// ============================================================================
+// State
+// ============================================================================
+const state = {
+  tiles: [],         // { source: [5 ints], projected: {x, y}, type: 'thick'|'thin' }
+  cells: [],         // { id, name, embedding (5D), weight, gravity, position: {x,y} }
+  selected: null,
+  query: null,
+};
+
+// Generate the Penrose floor (cut-and-project)
+function generateFloor(maxSize = 6) {
+  state.tiles = [];
+  for (let a = -maxSize; a <= maxSize; a++) {
+    for (let b = -maxSize; b <= maxSize; b++) {
+      for (let c = -maxSize; c <= maxSize; c++) {
+        for (let d = -maxSize; d <= maxSize; d++) {
+          for (let e = -maxSize; e <= maxSize; e++) {
+            const lattice5d = [a, b, c, d, e];
+            const proj = project5Dto2D(lattice5d);
+            if (proj === null) continue;
+            // Only keep if within the visible window
+            if (Math.abs(proj.x) > 1.0 || Math.abs(proj.y) > 1.0) continue;
+            const type = tileType(lattice5d);
+            state.tiles.push({
+              source: lattice5d,
+              projected: proj,
+              type,
+            });
+          }
+        }
+      }
+    }
+  }
+  return state.tiles;
+}
+
+// Render the floor as SVG
+function renderFloor() {
+  const floor = document.getElementById('floor');
+  // Clear existing tiles (but keep floor-info)
+  floor.querySelectorAll('.tile, svg, .cell-dot').forEach(el => el.remove());
+
+  // SVG container
+  const W = floor.clientWidth;
+  const H = floor.clientHeight;
+  const scale = Math.min(W, H) * 0.45;
+  const cx = W / 2;
+  const cy = H / 2;
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+  svg.style.position = 'absolute';
+  svg.style.top = '0';
+  svg.style.left = '0';
+  svg.style.pointerEvents = 'none';
+  floor.appendChild(svg);
+
+  // Render tiles
+  for (const t of state.tiles) {
+    const px = cx + t.projected.x * scale;
+    const py = cy - t.projected.y * scale; // flip Y
+    // Compute orientation from the perp vector (gives a unique angle per tile)
+    const angle = Math.atan2(t.projected.perp.py, t.projected.perp.px);
+    const size = 18; // side length
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('transform', `translate(${px}, ${py}) rotate(${-angle * 180 / Math.PI})`);
+    g.dataset.source = t.source.join(',');
+    g.innerHTML = renderRhomb(0, 0, size, t.type);
+    g.style.pointerEvents = 'auto';
+    g.style.cursor = 'pointer';
+    g.onclick = () => selectTile(t);
+    svg.appendChild(g);
+  }
+
+  // Update info
+  const thick = state.tiles.filter(t => t.type === 'thick').length;
+  const thin = state.tiles.filter(t => t.type === 'thin').length;
+  document.getElementById('infoTiles').textContent = state.tiles.length;
+  document.getElementById('infoRatio').textContent =
+    thin > 0 ? (thick / thin).toFixed(3) + ' (target 1.618)' : '—';
+  document.getElementById('statTiles').textContent = state.tiles.length;
+  document.getElementById('statThick').textContent = thick;
+  document.getElementById('statThin').textContent = thin;
+  document.getElementById('statRatio').textContent = thin > 0 ? (thick / thin).toFixed(3) : '—';
+}
+
+// Generate a Quilt sheet on the floor
+function generateSheet() {
+  // Pick 12 "cells" to place on the floor (semantic concepts)
+  const concepts = [
+    { name: 'compass', embedding: [1, 0, 0, 0, 0], weight: 0.8, gravity: 'NE' },
+    { name: 'engine', embedding: [0, 0, 0, 0, 1], weight: 0.9, gravity: 'SE' },
+    { name: 'crew', embedding: [0, 1, 0, 0, 0], weight: 0.6, gravity: 'N' },
+    { name: 'logbook', embedding: [0, 0, 1, 0, 0], weight: 0.4, gravity: 'center' },
+    { name: 'galley', embedding: [0, 0, 0, 1, 0], weight: 0.5, gravity: 'W' },
+    { name: 'bridge', embedding: [1, 1, 0, 0, 0], weight: 0.7, gravity: 'NE' },
+    { name: 'wheelhouse', embedding: [0, 0, 1, 1, 0], weight: 1.0, gravity: 'center' },
+    { name: 'cargo', embedding: [-1, 0, 0, 0, 0], weight: 0.5, gravity: 'W' },
+    { name: 'sea', embedding: [0, 0, 0, 0, -1], weight: 0.3, gravity: 'SW' },
+    { name: 'sky', embedding: [0, -1, 0, 0, 0], weight: 0.2, gravity: 'NW' },
+    { name: 'wind', embedding: [1, 0, 1, 0, 0], weight: 0.4, gravity: 'NE' },
+    { name: 'memory', embedding: [0, 1, 0, 1, 0], weight: 0.7, gravity: 'N' },
+  ];
+  state.cells = concepts.map((c, i) => {
+    // Project the embedding to Penrose coordinates
+    const proj = project5Dto2D(c.embedding);
+    return {
+      id: 'cell-' + i,
+      name: c.name,
+      embedding: c.embedding,
+      weight: c.weight,
+      gravity: c.gravity,
+      position: proj || { x: 0, y: 0 },
+    };
+  });
+  renderCells();
+  document.getElementById('statCells').textContent = state.cells.length;
+  document.getElementById('status').textContent = `✓ ${state.cells.length} cells placed on the floor`;
+}
+
+function renderCells() {
+  const floor = document.getElementById('floor');
+  const W = floor.clientWidth;
+  const H = floor.clientHeight;
+  const scale = Math.min(W, H) * 0.45;
+  const cx = W / 2;
+  const cy = H / 2;
+
+  // Remove existing dots
+  floor.querySelectorAll('.cell-dot').forEach(el => el.remove());
+
+  for (const cell of state.cells) {
+    const dot = document.createElement('div');
+    dot.className = 'cell-dot';
+    const px = cx + cell.position.x * scale;
+    const py = cy - cell.position.y * scale;
+    dot.style.left = px + 'px';
+    dot.style.top = py + 'px';
+    // Color by world/theme
+    const colors = {
+      'compass': '#58a6ff', 'engine': '#f85149', 'crew': '#3fb950',
+      'logbook': '#a371f7', 'galley': '#f0883e', 'bridge': '#58a6ff',
+      'wheelhouse': '#f0f6fc', 'cargo': '#d29922', 'sea': '#39c5cf',
+      'sky': '#79c0ff', 'wind': '#7ee787', 'memory': '#a371f7',
+    };
+    const color = colors[cell.name] || '#58a6ff';
+    dot.style.background = color;
+    dot.style.color = color;
+    dot.title = `${cell.name} (weight ${cell.weight})`;
+    dot.onclick = () => selectCell(cell);
+    // Weight ring
+    const ring = document.createElement('div');
+    ring.className = 'weight-ring';
+    const ringSize = 8 + cell.weight * 16;
+    ring.style.width = ringSize + 'px';
+    ring.style.height = ringSize + 'px';
+    dot.appendChild(ring);
+    // Label
+    const label = document.createElement('div');
+    label.className = 'tile-label';
+    label.textContent = cell.name;
+    label.style.left = (px + 8) + 'px';
+    label.style.top = (py - 14) + 'px';
+    floor.appendChild(dot);
+    floor.appendChild(label);
+  }
+}
+
+function selectCell(cell) {
+  state.selected = cell;
+  const px = cell.position.x.toFixed(3);
+  const py = cell.position.y.toFixed(3);
+  const sx = cell.position.perp ? cell.position.perp.px.toFixed(3) : '0';
+  const sy = cell.position.perp ? cell.position.perp.py.toFixed(3) : '0';
+  const sz = cell.position.perp ? cell.position.perp.pz.toFixed(3) : '0';
+  const ax = px >= 0 ? '+' + px : px;
+  const ay = py >= 0 ? '+' + py : py;
+  const info = document.getElementById('cellInfo');
+  info.innerHTML = `
+    <div class="path">penrose.cell_${ax}_${ay}</div>
+    <div class="addr">name = ${cell.name}</div>
+    <div class="addr">weight = ${cell.weight.toFixed(2)}</div>
+    <div class="addr">gravity = ${cell.gravity}</div>
+    <div class="addr">5D embedding = [${cell.embedding.join(', ')}]</div>
+    <div class="addr">perpendicular = (${sx}, ${sy}, ${sz})</div>
+    <div class="addr">distance from origin = ${Math.sqrt(cell.position.x ** 2 + cell.position.y ** 2).toFixed(3)}</div>
+  `;
+}
+
+function selectTile(tile) {
+  // Find nearest cell on the floor
+  let nearest = null;
+  let minDist = Infinity;
+  for (const cell of state.cells) {
+    const dx = cell.position.x - tile.projected.x;
+    const dy = cell.position.y - tile.projected.y;
+    const d = Math.sqrt(dx*dx + dy*dy);
+    if (d < minDist) { minDist = d; nearest = cell; }
+  }
+  if (nearest && minDist < 0.3) {
+    selectCell(nearest);
+  }
+}
+
+// Project a text query to Penrose coordinates
+function projectQuery() {
+  const q = document.getElementById('queryInput').value.trim();
+  if (!q) return;
+  // Hash the text to a 5D embedding (simple character-sum hash)
+  const emb = [0, 0, 0, 0, 0];
+  for (let i = 0; i < q.length; i++) {
+    const c = q.charCodeAt(i);
+    emb[i % 5] += (c % 7) - 3;
+  }
+  // Scale to ±1
+  const max = Math.max(...emb.map(Math.abs), 1);
+  for (let i = 0; i < 5; i++) emb[i] = emb[i] / max;
+
+  const proj = project5Dto2D(emb.map(x => Math.round(x * 2)));
+  if (!proj) {
+    document.getElementById('cellInfo').innerHTML =
+      '<div class="subtitle">Query rejected by Penrose window — try different words.</div>';
+    return;
+  }
+  state.query = { name: q, embedding: emb, position: proj };
+  // Render as a new cell
+  const floor = document.getElementById('floor');
+  const W = floor.clientWidth;
+  const H = floor.clientHeight;
+  const scale = Math.min(W, H) * 0.45;
+  const cx = W / 2;
+  const cy = H / 2;
+  // Remove old query dot
+  floor.querySelectorAll('.query-dot').forEach(el => el.remove());
+  const dot = document.createElement('div');
+  dot.className = 'cell-dot query-dot';
+  const px = cx + proj.x * scale;
+  const py = cy - proj.y * scale;
+  dot.style.left = px + 'px';
+  dot.style.top = py + 'px';
+  dot.style.background = '#39c5cf';
+  dot.style.color = '#39c5cf';
+  dot.title = `Query: ${q}`;
+  // Pulsing ring
+  const ring = document.createElement('div');
+  ring.className = 'weight-ring';
+  ring.style.width = '32px';
+  ring.style.height = '32px';
+  ring.style.animation = 'pulse 2s infinite';
+  dot.appendChild(ring);
+  // Label
+  const label = document.createElement('div');
+  label.className = 'tile-label';
+  label.textContent = `📌 ${q}`;
+  label.style.left = (px + 12) + 'px';
+  label.style.top = (py - 14) + 'px';
+  label.style.color = '#39c5cf';
+  floor.appendChild(dot);
+  floor.appendChild(label);
+
+  // Find nearest existing cell
+  let nearest = null;
+  let minDist = Infinity;
+  for (const cell of state.cells) {
+    const dx = cell.position.x - proj.x;
+    const dy = cell.position.y - proj.y;
+    const d = Math.sqrt(dx*dx + dy*dy);
+    if (d < minDist) { minDist = d; nearest = cell; }
+  }
+  if (nearest) {
+    const info = document.getElementById('cellInfo');
+    info.innerHTML = `
+      <div class="path">📌 query: ${q}</div>
+      <div class="addr">projected to (${proj.x.toFixed(3)}, ${proj.y.toFixed(3)})</div>
+      <div class="addr">nearest cell: <strong>${nearest.name}</strong></div>
+      <div class="addr">distance: ${minDist.toFixed(3)}</div>
+      <div class="addr">gravity pulls toward: ${nearest.gravity}</div>
+    `;
+  }
+}
+
+// Wander: a random walk on the Penrose floor (golden-angle steps)
+function wander() {
+  if (state.cells.length === 0) generateSheet();
+  // Start from random cell
+  let pos = state.cells[Math.floor(Math.random() * state.cells.length)].position;
+  const N = 8;
+  const floor = document.getElementById('floor');
+  const W = floor.clientWidth;
+  const H = floor.clientHeight;
+  const scale = Math.min(W, H) * 0.45;
+  const cx = W / 2;
+  const cy = H / 2;
+  // Remove old wander trail
+  floor.querySelectorAll('.wander-step').forEach(el => el.remove());
+
+  for (let i = 0; i < N; i++) {
+    // Step by golden angle, varying magnitude
+    const angle = (i + 1) * GOLDEN_ANGLE;
+    const mag = 0.08 * Math.pow(INV_PHI, i * 0.3);
+    pos = { x: pos.x + Math.cos(angle) * mag, y: pos.y + Math.sin(angle) * mag };
+    const dot = document.createElement('div');
+    dot.className = 'cell-dot wander-step';
+    const px = cx + pos.x * scale;
+    const py = cy - pos.y * scale;
+    dot.style.left = px + 'px';
+    dot.style.top = py + 'px';
+    dot.style.background = '#a371f7';
+    dot.style.color = '#a371f7';
+    dot.style.opacity = 1 - (i * 0.1);
+    dot.style.width = (8 - i * 0.5) + 'px';
+    dot.style.height = (8 - i * 0.5) + 'px';
+    floor.appendChild(dot);
+  }
+}
+
+// Pulse animation
+const style = document.createElement('style');
+style.textContent = `@keyframes pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.4; }
+  50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.8; }
+}`;
+document.head.appendChild(style);
+
+// ============================================================================
+// Wire up
+// ============================================================================
+document.getElementById('genBtn').onclick = () => {
+  generateFloor(5);
+  renderFloor();
+  generateSheet();
+};
+document.getElementById('projectBtn').onclick = projectQuery;
+document.getElementById('projectQueryBtn').onclick = projectQuery;
+document.getElementById('wanderBtn').onclick = wander;
+document.getElementById('wanderFromBtn').onclick = wander;
+
+// Auto-generate on load
+generateFloor(5);
+renderFloor();
+</script>
+</body>
+</html>

@@ -122,9 +122,9 @@
 
   <div class="stats">
     <div class="stat"><div class="num">300+</div><div class="label">repos scouted</div></div>
-    <div class="stat"><div class="num">37</div><div class="label">Quilt ecosystem</div></div>
+    <div class="stat"><div class="num">40+</div><div class="label">Quilt ecosystem</div></div>
     <div class="stat"><div class="num">12</div><div class="label">polyformalism langs</div></div>
-    <div class="stat"><div class="num">4</div><div class="label">bridges live</div></div>
+    <div class="stat"><div class="num">7</div><div class="label">bridges live</div></div>
   </div>
 
   <h2>Live bridges</h2>
@@ -199,6 +199,39 @@ const BRIDGES = [
     github: "SuperInstance/hermes-home",
     api: "hermes_home_to_quilt.py",
     duration: null,  // static
+    dt: null,
+  },
+  {
+    id: "spatial",
+    name: "spatial-registry",
+    desc: "The terrain family's unified spatial registry. 4 worlds, 33 rooms, 6 cross-world portals. The room is a cell.",
+    views: ["TOP", "FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/spatial-registry",
+    github: "SuperInstance/spatial-registry",
+    api: "spatial_registry_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "grand-pattern",
+    name: "Grand Pattern (12 ports)",
+    desc: "Fibonacci dual-direction architecture in 12 languages: Fortran, C, C++, Rust, Go, Chapel, Mojo, CUDA, PTX, OpenCL, Claude, Kimi. The pattern IS the cell model.",
+    views: ["FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/grand-pattern-rs",
+    github: "SuperInstance/grand-pattern-*",
+    api: "grand_pattern_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "spline-spectral",
+    name: "spline-spectral",
+    desc: "B-spline basis functions are eigenvectors of the path graph Laplacian. The Cox-de Boor recurrence is Fibonacci for function spaces. The function space is a graph.",
+    views: ["TOP", "FRONT"],
+    source: "https://github.com/SuperInstance/spline-spectral",
+    github: "SuperInstance/spline-spectral",
+    api: "spline_spectral_to_quilt.py",
+    duration: null,
     dt: null,
   },
 ];
