@@ -1,0 +1,782 @@
+{
+  "schema_version": "1.0",
+  "sheet_type": "substrate-modules",
+  "title": "Quilt Substrate Modules",
+  "description": "Maps the substrate modules of the Quilt ecosystem to a Quilt sheet. Substrate modules are the layers that don't change when you change the cell: Address (Penrose), Scale (Fibonacci), Room (Terrain), Protocol (CRDT), Form (Grand Pattern), and State (8 primitives).",
+  "created_at": "2026-08-21T02:17:27.991217+00:00",
+  "updated_at": "2026-08-21T02:17:27.991217+00:00",
+  "metadata": {
+    "ecosystem": "Quilt",
+    "module_count": 6,
+    "total_entries": 73,
+    "edge_count": 30,
+    "substrate_stack": [
+      "address",
+      "scale",
+      "room",
+      "protocol",
+      "form",
+      "state"
+    ]
+  },
+  "rooms": [
+    {
+      "id": "address",
+      "name": "Address",
+      "type": "substrate",
+      "family": "Penrose",
+      "description": "Address resolution layer — 12 repos",
+      "entries": [
+        {
+          "id": "address:penrose-address-core",
+          "name": "penrose-address-core",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-geo",
+          "name": "penrose-address-geo",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-ipfs",
+          "name": "penrose-address-ipfs",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-dns",
+          "name": "penrose-address-dns",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-email",
+          "name": "penrose-address-email",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-phone",
+          "name": "penrose-address-phone",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-wallet",
+          "name": "penrose-address-wallet",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-social",
+          "name": "penrose-address-social",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-ens",
+          "name": "penrose-address-ens",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-ln",
+          "name": "penrose-address-ln",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-nostr",
+          "name": "penrose-address-nostr",
+          "type": "repo",
+          "substrate": "address"
+        },
+        {
+          "id": "address:penrose-address-multi",
+          "name": "penrose-address-multi",
+          "type": "repo",
+          "substrate": "address"
+        }
+      ],
+      "metadata": {
+        "entry_count": 12,
+        "family": "Penrose"
+      }
+    },
+    {
+      "id": "scale",
+      "name": "Scale",
+      "type": "substrate",
+      "family": "Fibonacci",
+      "description": "Scale layer — 12+ repos (Fibonacci sequence)",
+      "entries": [
+        {
+          "id": "scale:fibonacci-scale-1",
+          "name": "fibonacci-scale-1",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-2",
+          "name": "fibonacci-scale-2",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-3",
+          "name": "fibonacci-scale-3",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-5",
+          "name": "fibonacci-scale-5",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-8",
+          "name": "fibonacci-scale-8",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-13",
+          "name": "fibonacci-scale-13",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-21",
+          "name": "fibonacci-scale-21",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-34",
+          "name": "fibonacci-scale-34",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-55",
+          "name": "fibonacci-scale-55",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-89",
+          "name": "fibonacci-scale-89",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-144",
+          "name": "fibonacci-scale-144",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-233",
+          "name": "fibonacci-scale-233",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-377",
+          "name": "fibonacci-scale-377",
+          "type": "repo",
+          "substrate": "scale"
+        },
+        {
+          "id": "scale:fibonacci-scale-610",
+          "name": "fibonacci-scale-610",
+          "type": "repo",
+          "substrate": "scale"
+        }
+      ],
+      "metadata": {
+        "entry_count": 14,
+        "family": "Fibonacci"
+      }
+    },
+    {
+      "id": "room",
+      "name": "Room",
+      "type": "substrate",
+      "family": "Terrain",
+      "description": "Room layer — 9+ repos (terrain family)",
+      "entries": [
+        {
+          "id": "room:terrain-room-plains",
+          "name": "terrain-room-plains",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-forest",
+          "name": "terrain-room-forest",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-desert",
+          "name": "terrain-room-desert",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-mountain",
+          "name": "terrain-room-mountain",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-ocean",
+          "name": "terrain-room-ocean",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-cave",
+          "name": "terrain-room-cave",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-city",
+          "name": "terrain-room-city",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-garden",
+          "name": "terrain-room-garden",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-library",
+          "name": "terrain-room-library",
+          "type": "repo",
+          "substrate": "room"
+        },
+        {
+          "id": "room:terrain-room-studio",
+          "name": "terrain-room-studio",
+          "type": "repo",
+          "substrate": "room"
+        }
+      ],
+      "metadata": {
+        "entry_count": 10,
+        "family": "Terrain"
+      }
+    },
+    {
+      "id": "protocol",
+      "name": "Protocol",
+      "type": "substrate",
+      "family": "CRDT",
+      "description": "Protocol layer — 17 repos (CRDT family)",
+      "entries": [
+        {
+          "id": "protocol:crdt-protocol-automerge",
+          "name": "crdt-protocol-automerge",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-yjs",
+          "name": "crdt-protocol-yjs",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-loro",
+          "name": "crdt-protocol-loro",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-ripple",
+          "name": "crdt-protocol-ripple",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-diamond",
+          "name": "crdt-protocol-diamond",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-json-crdt",
+          "name": "crdt-protocol-json-crdt",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-fractional-index",
+          "name": "crdt-protocol-fractional-index",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-lamport",
+          "name": "crdt-protocol-lamport",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-vector-clock",
+          "name": "crdt-protocol-vector-clock",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-gcounter",
+          "name": "crdt-protocol-gcounter",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-pncounter",
+          "name": "crdt-protocol-pncounter",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-gset",
+          "name": "crdt-protocol-gset",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-orset",
+          "name": "crdt-protocol-orset",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-lwwreg",
+          "name": "crdt-protocol-lwwreg",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-mvreg",
+          "name": "crdt-protocol-mvreg",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-rga",
+          "name": "crdt-protocol-rga",
+          "type": "repo",
+          "substrate": "protocol"
+        },
+        {
+          "id": "protocol:crdt-protocol-fugue",
+          "name": "crdt-protocol-fugue",
+          "type": "repo",
+          "substrate": "protocol"
+        }
+      ],
+      "metadata": {
+        "entry_count": 17,
+        "family": "CRDT"
+      }
+    },
+    {
+      "id": "form",
+      "name": "Form",
+      "type": "substrate",
+      "family": "Grand Pattern",
+      "description": "Form layer — 12 polyformalism ports",
+      "entries": [
+        {
+          "id": "form:grand-pattern-port-01",
+          "name": "grand-pattern-port-01",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-02",
+          "name": "grand-pattern-port-02",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-03",
+          "name": "grand-pattern-port-03",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-04",
+          "name": "grand-pattern-port-04",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-05",
+          "name": "grand-pattern-port-05",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-06",
+          "name": "grand-pattern-port-06",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-07",
+          "name": "grand-pattern-port-07",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-08",
+          "name": "grand-pattern-port-08",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-09",
+          "name": "grand-pattern-port-09",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-10",
+          "name": "grand-pattern-port-10",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-11",
+          "name": "grand-pattern-port-11",
+          "type": "repo",
+          "substrate": "form"
+        },
+        {
+          "id": "form:grand-pattern-port-12",
+          "name": "grand-pattern-port-12",
+          "type": "repo",
+          "substrate": "form"
+        }
+      ],
+      "metadata": {
+        "entry_count": 12,
+        "family": "Grand Pattern"
+      }
+    },
+    {
+      "id": "state",
+      "name": "State",
+      "type": "substrate",
+      "family": "Primitives",
+      "description": "State layer — 8 primitives",
+      "entries": [
+        {
+          "id": "state:Z_in",
+          "name": "Z_in",
+          "type": "primitive",
+          "substrate": "state"
+        },
+        {
+          "id": "state:Z_out",
+          "name": "Z_out",
+          "type": "primitive",
+          "substrate": "state"
+        },
+        {
+          "id": "state:JEPA",
+          "name": "JEPA",
+          "type": "primitive",
+          "substrate": "state"
+        },
+        {
+          "id": "state:Vibe",
+          "name": "Vibe",
+          "type": "primitive",
+          "substrate": "state"
+        },
+        {
+          "id": "state:GC",
+          "name": "GC",
+          "type": "primitive",
+          "substrate": "state"
+        },
+        {
+          "id": "state:Murmur",
+          "name": "Murmur",
+          "type": "primitive",
+          "substrate": "state"
+        },
+        {
+          "id": "state:Graph",
+          "name": "Graph",
+          "type": "primitive",
+          "substrate": "state"
+        },
+        {
+          "id": "state:DoubleEntry",
+          "name": "DoubleEntry",
+          "type": "primitive",
+          "substrate": "state"
+        }
+      ],
+      "metadata": {
+        "entry_count": 8,
+        "family": "Primitives"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:address:scale",
+      "source": "address",
+      "target": "scale",
+      "label": "address→scale",
+      "description": "Cross-substrate edge: address to scale",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:scale:address",
+      "source": "scale",
+      "target": "address",
+      "label": "scale→address",
+      "description": "Cross-substrate edge: scale to address",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:address:room",
+      "source": "address",
+      "target": "room",
+      "label": "address→room",
+      "description": "Cross-substrate edge: address to room",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:room:address",
+      "source": "room",
+      "target": "address",
+      "label": "room→address",
+      "description": "Cross-substrate edge: room to address",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:address:protocol",
+      "source": "address",
+      "target": "protocol",
+      "label": "address→protocol",
+      "description": "Cross-substrate edge: address to protocol",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:protocol:address",
+      "source": "protocol",
+      "target": "address",
+      "label": "protocol→address",
+      "description": "Cross-substrate edge: protocol to address",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:address:form",
+      "source": "address",
+      "target": "form",
+      "label": "address→form",
+      "description": "Cross-substrate edge: address to form",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:form:address",
+      "source": "form",
+      "target": "address",
+      "label": "form→address",
+      "description": "Cross-substrate edge: form to address",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:address:state",
+      "source": "address",
+      "target": "state",
+      "label": "address→state",
+      "description": "Cross-substrate edge: address to state",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:state:address",
+      "source": "state",
+      "target": "address",
+      "label": "state→address",
+      "description": "Cross-substrate edge: state to address",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:scale:room",
+      "source": "scale",
+      "target": "room",
+      "label": "scale→room",
+      "description": "Cross-substrate edge: scale to room",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:room:scale",
+      "source": "room",
+      "target": "scale",
+      "label": "room→scale",
+      "description": "Cross-substrate edge: room to scale",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:scale:protocol",
+      "source": "scale",
+      "target": "protocol",
+      "label": "scale→protocol",
+      "description": "Cross-substrate edge: scale to protocol",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:protocol:scale",
+      "source": "protocol",
+      "target": "scale",
+      "label": "protocol→scale",
+      "description": "Cross-substrate edge: protocol to scale",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:scale:form",
+      "source": "scale",
+      "target": "form",
+      "label": "scale→form",
+      "description": "Cross-substrate edge: scale to form",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:form:scale",
+      "source": "form",
+      "target": "scale",
+      "label": "form→scale",
+      "description": "Cross-substrate edge: form to scale",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:scale:state",
+      "source": "scale",
+      "target": "state",
+      "label": "scale→state",
+      "description": "Cross-substrate edge: scale to state",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:state:scale",
+      "source": "state",
+      "target": "scale",
+      "label": "state→scale",
+      "description": "Cross-substrate edge: state to scale",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:room:protocol",
+      "source": "room",
+      "target": "protocol",
+      "label": "room→protocol",
+      "description": "Cross-substrate edge: room to protocol",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:protocol:room",
+      "source": "protocol",
+      "target": "room",
+      "label": "protocol→room",
+      "description": "Cross-substrate edge: protocol to room",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:room:form",
+      "source": "room",
+      "target": "form",
+      "label": "room→form",
+      "description": "Cross-substrate edge: room to form",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:form:room",
+      "source": "form",
+      "target": "room",
+      "label": "form→room",
+      "description": "Cross-substrate edge: form to room",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:room:state",
+      "source": "room",
+      "target": "state",
+      "label": "room→state",
+      "description": "Cross-substrate edge: room to state",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:state:room",
+      "source": "state",
+      "target": "room",
+      "label": "state→room",
+      "description": "Cross-substrate edge: state to room",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:protocol:form",
+      "source": "protocol",
+      "target": "form",
+      "label": "protocol→form",
+      "description": "Cross-substrate edge: protocol to form",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:form:protocol",
+      "source": "form",
+      "target": "protocol",
+      "label": "form→protocol",
+      "description": "Cross-substrate edge: form to protocol",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:protocol:state",
+      "source": "protocol",
+      "target": "state",
+      "label": "protocol→state",
+      "description": "Cross-substrate edge: protocol to state",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:state:protocol",
+      "source": "state",
+      "target": "protocol",
+      "label": "state→protocol",
+      "description": "Cross-substrate edge: state to protocol",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:form:state",
+      "source": "form",
+      "target": "state",
+      "label": "form→state",
+      "description": "Cross-substrate edge: form to state",
+      "type": "cross-substrate"
+    },
+    {
+      "id": "edge:state:form",
+      "source": "state",
+      "target": "form",
+      "label": "state→form",
+      "description": "Cross-substrate edge: state to form",
+      "type": "cross-substrate"
+    }
+  ]
+}
