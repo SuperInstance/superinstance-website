@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The 3 Stages</title>
+  <style>
+    :root {
+      --blue: #1a3a6c;
+      --gold: #d4a017;
+      --white: #f8f8f8;
+      --dark: #121212;
+      --border: #333;
+      --transition: 0.3s ease;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background-color: var(--dark);
+      color: var(--white);
+      padding: 40px 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-shadow: 0 0 10px rgba(212, 160, 23, 0.4);
+    }
+    
+    .subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      color: var(--blue);
+      font-weight: 500;
+    }
+    
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    
+    .stage {
+      flex: 1;
+      min-width: 250px;
+      background-color: var(--white);
+      color: var(--dark);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: var(--transition);
+    }
+    
+    .stage:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    .stage h2 {
+      margin: 0 0 15px 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .stage.blue h2 {
+      color: var(--blue);
+    }
+    
+    .stage.gold h2 {
+      color: var(--gold);
+    }
+    
+    .stage.white h2 {
+      color: var(--dark);
+    }
+    
+    .stage p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+    
+    .live-agent {
+      background-color: var(--dark);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .live-agent h3 {
+      margin: 0 0 15px 0;
+      font-size: 1.3rem;
+      color: var(--gold);
+    }
+    
+    .ratios {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      background-color: var(--dark);
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px dashed var(--border);
+    }
+    
+    .ratio {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .ratio strong {
+      font-size: 1.2rem;
+      color: var(--gold);
+    }
+    
+    .ratio span {
+      color: var(--white);
+      font-size: 0.8rem;
+    }
+    
+    .transition-btn {
+      display: block;
+      margin: 0 auto;
+      background-color: var(--gold);
+      color: var(--dark);
+      border: none;
+      padding: 14px 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 10px rgba(212, 160, 23, 0.3);
+    }
+    
+    .transition-btn:hover {
+      background-color: #c19015;
+      transform: scale(1.05);
+    }
+    
+    .pilot-panel {
+      background-color: var(--dark);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 25px;
+      text-align: center;
+      margin-top: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .pilot-panel h3 {
+      margin: 0 0 15px 0;
+      font-size: 1.3rem;
+      color: var(--blue);
+    }
+    
+    .pilot-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .pilot-btn {
+      background-color: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .pilot-btn:hover {
+      background-color: #0f2650;
+    }
+    
+    .pilot-btn:disabled {
+      background-color: #444;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>The 3 Stages</h1>
+  <p class="subtitle">explorer, practitioner, master</p>
+
+  <div class="container">
+    <div class="stage blue">
+      <h2>Explorer</h2>
+      <p>The agent is learning. High exploration_ratio. Lots of asking, trying, failing.</p>
+    </div>
+
+    <div class="stage gold">
+      <h2>Practitioner</h2>
+      <p>The agent is using what it learned. High exploitation_ratio. Lots of doing, building, shipping.</p>
+    </div>
+
+    <div class="stage white">
+      <h2>Master</h2>
+      <p>The agent is teaching. High prior_ratio. Lots of judging, advising, knowing.</p>
+    </div>
+  </div>
+
+  <div class="live-agent">
+    <h3>Live Agent Status</h3>
+    <div class="ratios">
+      <div class="ratio">
+        <strong id="exploration-ratio">85%</strong>
+        <span>exploration_ratio</span>
+      </div>
+      <div class="ratio">
+        <strong id="exploitation-ratio">10%</strong>
+        <span>exploitation_ratio</span>
+      </div>
+      <div class="ratio">
+        <strong id="prior-ratio">5%</strong>
+        <span>prior_ratio</span>
+      </div>
+    </div>
+    <button class="transition-btn" id="transition-btn">Next Stage</button>
+  </div>
+
+  <div class="pilot-panel">
+    <h3>PILOT</h3>
+    <p>Guide the agent through its evolution.</p>
+    <div class="pilot-controls">
+      <button class="pilot-btn" id="explore-btn">Push to Explorer</button>
+      <button class="pilot-btn" id="practice-btn">Push to Practitioner</button>
+      <button class="pilot-btn" id="master-btn">Push to Master</button>
+      <button class="pilot-btn" id="reset-btn">Reset Agent</button>
+    </div>
+  </div>
+
+  <script>
+    // Agent state
+    let agent = {
+      stage: 'explorer',
+      exploration_ratio: 85,
+      exploitation_ratio: 10,
+      prior_ratio: 5
+    };
+
+    // DOM elements
+    const transitionBtn = document.getElementById('transition-btn');
+    const exploreBtn = document.getElementById('explore-btn');
+    const practiceBtn = document.getElementById('practice-btn');
+    const masterBtn = document.getElementById('master-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const stageDisplay = document.querySelector('.live-agent h3');
+    const explorationRatioEl = document.getElementById('exploration-ratio');
+    const exploitationRatioEl = document.getElementById('exploitation-ratio');
+    const priorRatioEl = document.getElementById('prior-ratio');
+
+    // Update UI
+    function updateUI() {
+      stageDisplay.textContent = `Live Agent Status: ${agent.stage.toUpperCase()}`;
+      explorationRatioEl.textContent = `${agent.exploration_ratio}%`;
+      exploitationRatioEl.textContent = `${agent.exploitation_ratio}%`;
+      priorRatioEl.textContent = `${agent.prior_ratio}%`;
+
+      // Update button states
+      exploreBtn.disabled = agent.stage === 'explorer';
+      practiceBtn.disabled = agent.stage === 'practitioner';
+      masterBtn.disabled = agent.stage === 'master';
+    }
+
+    // Transition to next stage
+    function nextStage() {
+      const stages = ['explorer', 'practitioner', 'master'];
+      const currentIndex = stages.indexOf(agent.stage);
+      const nextIndex = (currentIndex + 1) % stages.length;
+      agent.stage = stages[nextIndex];
+
+      // Reset ratios based on stage
+      switch (agent.stage) {
+        case 'explorer':
+          agent.exploration_ratio = 85;
+          agent.exploitation_ratio = 10;
+          agent.prior_ratio = 5;
+          break;
+        case 'practitioner':
+          agent.exploration_ratio = 10;
+          agent.exploitation_ratio = 85;
+          agent.prior_ratio = 5;
+          break;
+        case 'master':
+          agent.exploration_ratio = 5;
+          agent.exploitation_ratio = 5;
+          agent.prior_ratio = 90;
+          break;
+      }
+
+      updateUI();
+    }
+
+    // Manual stage control
+    exploreBtn.addEventListener('click', () => {
+      agent.stage = 'explorer';
+      agent.exploration_ratio = 85;
+      agent.exploitation_ratio = 10;
+      agent.prior_ratio = 5;
+      updateUI();
+    });
+
+    practiceBtn.addEventListener('click', () => {
+      agent.stage = 'practitioner';
+      agent.exploration_ratio = 10;
+      agent.exploitation_ratio = 85;
+      agent.prior_ratio = 5;
+      updateUI();
+    });
+
+    masterBtn.addEventListener('click', () => {
+      agent.stage = 'master';
+      agent.exploration_ratio = 5;
+      agent.exploitation_ratio = 5;
+      agent.prior_ratio = 90;
+      updateUI();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      agent.stage = 'explorer';
+      agent.exploration_ratio = 85;
+      agent.exploitation_ratio = 10;
+      agent.prior_ratio = 5;
+      updateUI();
+    });
+
+    transitionBtn.addEventListener('click', nextStage);
+
+    // Initialize
+    updateUI();
+  </script>
+</body>
+</html>
