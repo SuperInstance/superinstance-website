@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Q-Space Classroom</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', monospace;
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background-color: #111;
+      padding: 12px 24px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.4em;
+      letter-spacing: 1px;
+      color: #c0c0c0;
+      text-shadow: 0 0 8px rgba(192, 192, 192, 0.4);
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      font-size: 1.1em;
+      color: #88aaff;
+      letter-spacing: 0.5px;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .classroom {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background-color: #0f0f0f;
+      border: 1px solid #222;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .blackboard {
+      width: 90%;
+      height: 120px;
+      background-color: #111;
+      border: 2px solid #333;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      padding: 14px;
+      box-sizing: border-box;
+      font-size: 1.1em;
+      color: #c0c8ff;
+      text-align: center;
+      font-weight: 500;
+      overflow: auto;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+      position: relative;
+      letter-spacing: 0.5px;
+    }
+
+    .blackboard::before {
+      content: "HODGE DECOMPOSITION";
+      position: absolute;
+      top: 4px;
+      left: 10px;
+      font-size: 0.8em;
+      color: #88aaff;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      gap: 10px;
+      width: 90%;
+      height: 55vh;
+      align-self: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .cell {
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9em;
+      color: #a0a0a0;
+      text-align: center;
+      padding: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .cell:hover {
+      background-color: #252525;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .cell.exact {
+      background-color: #252535;
+      border-color: #4444cc;
+      color: #88aaff;
+    }
+
+    .cell.coexact {
+      background-color: #352525;
+      border-color: #cc4444;
+      color: #ff8888;
+    }
+
+    .cell.harmonic {
+      background-color: #253525;
+      border-color: #44cc44;
+      color: #88cc88;
+    }
+
+    .student {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .student::before {
+      content: "●";
+      font-size: 2.5em;
+      color: #ffcc00;
+      text-shadow: 0 0 12px rgba(255, 204, 0, 0.7);
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .panel {
+      width: 320px;
+      background-color: #151515;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 16px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      font-size: 0.9em;
+    }
+
+    .panel h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #88aaff;
+      font-size: 1.2em;
+      border-bottom: 1px solid #333;
+      padding-bottom: 4px;
+    }
+
+    .lesson {
+      background-color: #1d1d1d;
+      border: 1px dashed #444;
+      border-radius: 5px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 1em;
+      line-height: 1.4;
+      min-height: 40px;
+      color: #a0e0a0;
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      background-color: #222;
+      color: #88aaff;
+      border: 1px solid #444;
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #333;
+      border-color: #666;
+      color: #a0c0ff;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .pilot {
+      background-color: #1f1f1f;
+      border: 1px solid #555;
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 0.9em;
+      color: #cc8800;
+      text-align: center;
+      min-height: 90px;
+    }
+
+    .pilot h4 {
+      margin-top: 0;
+      font-size: 1.1em;
+      color: #ffcc00;
+    }
+
+    .stats {
+      background-color: #1d1d1d;
+      border: 1px solid #444;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      color: #a0a0a0;
+      text-align: center;
+    }
+
+    .stats span {
+      font-weight: bold;
+      color: #88aaff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Q-Space Classroom</h1>
+    <div class="subtitle">the agent is a student</div>
+  </header>
+
+  <div class="container">
+    <div class="classroom">
+      <div class="blackboard">
+        <div style="margin-bottom: 4px;">Exact</div>
+        <div style="margin-bottom: 4px;">Coexact</div>
+        <div>Harmonic</div>
+      </div>
+
+      <div class="grid" id="grid">
+        <!-- Cells will be generated via JS -->
+      </div>
+
+      <div class="student"></div>
+    </div>
+
+    <div class="panel">
+      <h3>LESSON</h3>
+      <div class="lesson" id="lesson">The agent observes the structure of thought.</div>
+
+      <div class="controls">
+        <button id="testBtn">TEST</button>
+        <button id="tickBtn">TICK</button>
+      </div>
+
+      <div class="stats">
+        <div>Exact: <span id="exactRatio">0%</span></div>
+        <div>Coexact: <span id="coexactRatio">0%</span></div>
+        <div>Harmonic: <span id="harmonicRatio">0%</span></div>
+      </div>
+
+      <h3>PILOT</h3>
+      <div class="pilot">
+        <h4>TEACHER INPUT</h4>
+        <div id="pilotInput" contenteditable="true" style="width: 100%; height: 60px; padding: 6px; background: #222; border: 1px solid #444; color: #aaa; font-family: 'Courier New', monospace; font-size: 0.9em;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Q-Space Classroom Simulation
+    // The room is a place. The cell is a place. The place is a cell. The room IS the cell.
+
+    // Initialize grid
+    const grid = document.getElementById('grid');
+    const cells = [];
+    const rows = 7;
+    const cols = 7;
+    const center = Math.floor(rows / 2);
+
+    // Hodge decomposition state
+    let exactCount = 0;
+    let coexactCount = 0;
+    let harmonicCount = 0;
+
+    // Agent state
+    let agentCell = null;
+    let lesson = "The agent observes the structure of thought.";
+    let tickCount = 0;
+
+    // Create grid cells
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.dataset.value = Math.floor(Math.random() * 100);
+        cell.dataset.type = 'neutral';
+        cell.innerHTML = `<span>${cell.dataset.value}</span>`;
+        grid.appendChild(cell);
+        cells.push(cell);
+
+        // Assign color based on value (vibe)
+        const val = parseInt(cell.dataset.value);
+        if (val < 30) {
+          cell.classList.add('exact');
+          cell.dataset.type = 'exact';
+        } else if (val < 70) {
+          cell.classList.add('coexact');
+          cell.dataset.type = 'coexact';
+        } else {
+          cell.classList.add('harmonic');
+          cell.dataset.type = 'harmonic';
+        }
+
+        // Center cell is the student
+        if (r === center && c === center) {
+          agentCell = cell;
+        }
+      }
+    }
+
+    // Update lesson
+    const lessonEl = document.getElementById('lesson');
+    const pilotInput = document.getElementById('pilotInput');
+
+    // Test button
+    document.getElementById('testBtn').addEventListener('click', () => {
+      exactCount = 0;
+      coexactCount = 0;
+      harmonicCount = 0;
+
+      cells.forEach(cell => {
+        if (cell.dataset.type === 'exact') exactCount++;
+        if (cell.dataset.type === 'coexact') coexactCount++;
+        if (cell.dataset.type === 'harmonic') harmonicCount++;
+      });
+
+      const total = cells.length;
+      const exactPct = Math.round((exactCount / total) * 100);
+      const coexactPct = Math.round((coexactCount / total) * 100);
+      const harmonicPct = Math.round((harmonicCount / total) * 100);
+
+      document.getElementById('exactRatio').textContent = `${exactPct}%`;
+      document.getElementById('coexactRatio').textContent = `${coexactPct}%`;
+      document.getElementById('harmonicRatio').textContent = `${harmonicPct}%`;
+
+      // Update lesson
+      if (exactPct > 50 && coexactPct < 30) {
+        lesson = "The agent is mastering the exact form.";
+      } else if (coexactPct > 50 && exactPct < 30) {
+        lesson = "The agent is learning the coexact flow.";
+      } else if (harmonicPct > 40) {
+        lesson = "The agent is discovering harmonic stillness.";
+      } else {
+        lesson = "The agent is balancing the three forms.";
+      }
+      lessonEl.textContent = lesson;
+    });
+
+    // Tick button
+    document.getElementById('tickBtn').addEventListener('click', () => {
+      tickCount++;
+      exactCount = 0;
+      coexactCount = 0;
+      harmonicCount = 0;
+
+      cells.forEach(cell => {
+        const val = parseInt(cell.dataset.value);
+        const type = cell.dataset.type;
+
+        // Random perturbation
+        if (Math.random() < 0.1) {
+          const newType = Math.random() < 0.33 ? 'exact' : Math.random() < 0.5 ? 'coexact' : 'harmonic';
+          cell.dataset.type = newType;
+          cell.classList.remove('exact', 'coexact', 'harmonic');
+          cell.classList.add(newType);
+          cell.dataset.value = Math.floor(Math.random() * 100);
+          cell.querySelector('span').textContent = cell.dataset.value;
+        }
+
+        if (cell.dataset.type === 'exact') exactCount++;
+        if (cell.dataset.type === 'coexact') coexactCount++;
+        if (cell.dataset.type === 'harmonic') harmonicCount++;
+      });
+
+      const total = cells.length;
+      const exactPct = Math.round((exactCount / total) * 100);
+      const coexactPct = Math.round((coexactCount / total) * 100);
+      const harmonicPct = Math.round((harmonicCount / total) * 100);
+
+      document.getElementById('exactRatio').textContent = `${exactPct}%`;
+      document.getElementById('coexactRatio').textContent = `${coexactPct}%`;
+      document.getElementById('harmonicRatio').textContent = `${harmonicPct}%`;
+
+      // Update lesson based on current state
+      if (exactPct > 50 && coexactPct < 30) {
+        lesson = "The agent is mastering the exact form.";
+      } else if (coexactPct > 50 && exactPct < 30) {
+        lesson = "The agent is learning the coexact flow.";
+      } else if (harmonicPct > 40) {
+        lesson = "The agent is discovering harmonic stillness.";
+      } else {
+        lesson = "The agent is balancing the three forms.";
+      }
+      lessonEl.textContent = lesson;
+
+      // Pilot feedback if present
+      const pilotText = pilotInput.textContent.trim();
+      if (pilotText) {
+        lesson = pilotText;
+        lessonEl.textContent = lesson;
+        pilotInput.textContent = '';
+      }
+    });
+
+    // Pilot input
+    pilotInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('tickBtn').click();
+      }
+    });
+  </script>
+</body>
+</html>
