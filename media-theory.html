@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<!--
+  media-theory.html — The same cell graph, projected into 7 different media.
+
+  The thesis: each language, each terminal, each surface — is a medium.
+  Watercolor isn't worse than oil. MUD isn't worse than PLATO. C isn't
+  worse than TypeScript. They're different models of the upper-to-lower
+  translation. Different methodologies, different compiling techniques,
+  different aesthetics of what can be expressed.
+
+  The terrain family's whole point is exactly this: "One compiler holds
+  the truth; every renderer is a shadow that never feeds back."
+
+  This page shows the same data (a single Quilt cell: a room in the
+  SS Lucineer's wheelhouse) rendered to:
+    - MUD text
+    - Command prompt (POSIX)
+    - PowerShell (object pipeline)
+    - Telegram (chat with a bot)
+    - PLATO (room-based UI)
+    - 3D scene (Three.js stub)
+    - ESP32 LCD (16x2 monochrome)
+    - Spreadsheet (Quilt native)
+    - DAW timeline (Quilt native)
+    - DAW side view (Quilt native)
+
+  Same data. Different media. Different shadows.
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quilt Media Theory — the same cell in 10 media</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1.5rem 1rem 1rem; text-align: center;
+    background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { margin: 0 0 0.4rem; font-size: 1.6rem; }
+  .subtitle { color: var(--muted); margin: 0; font-size: 0.95rem; }
+  .tagline {
+    margin: 0.5rem 0 0; font-size: 0.85rem;
+    color: var(--accent); font-style: italic;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+  .intro {
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent); border-radius: 8px;
+    padding: 1.2rem; margin-bottom: 1.5rem;
+  }
+  .intro p { margin: 0.5rem 0; }
+
+  /* Source cell — at the top */
+  .source-cell {
+    background: #0d1117; border: 2px solid var(--accent);
+    border-radius: 8px; padding: 1.2rem; margin-bottom: 2rem;
+  }
+  .source-cell h2 { margin: 0 0 0.5rem; color: var(--accent); font-size: 1.1rem; }
+  .source-cell .path {
+    font-family: ui-monospace, monospace;
+    color: var(--warn); font-size: 0.95rem; word-break: break-all;
+  }
+  .source-cell .value { color: var(--fg); font-size: 0.95rem; margin: 0.4rem 0; }
+  .source-cell .meta { color: var(--muted); font-size: 0.8rem; }
+
+  /* The media cards */
+  .media-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+  @media (max-width: 800px) { .media-grid { grid-template-columns: 1fr; } }
+
+  .media-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  .media-card.full { grid-column: 1 / -1; }
+  .media-card .header {
+    background: #0d1117; padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .media-card .header .icon { font-size: 1.1rem; }
+  .media-card .header .name { font-weight: bold; flex: 1; }
+  .media-card .header .tag {
+    font-size: 0.7rem; color: var(--muted);
+    background: #161b22; padding: 0.1rem 0.4rem; border-radius: 3px;
+  }
+  .media-card .body {
+    padding: 1rem; font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem; line-height: 1.5;
+    color: var(--fg); white-space: pre-wrap;
+    overflow-x: auto; max-height: 360px;
+  }
+  /* Media-specific styling */
+  .media-card.mud .body { color: #c9d1d9; font-style: italic; }
+  .media-card.posix .body { color: #7ee787; background: #0a0a14; }
+  .media-card.powershell .body { color: #79c0ff; background: #0a0a14; }
+  .media-card.telegram .body { color: #d2a8ff; background: #182230; }
+  .media-card.plato .body { color: #ffa657; background: #1a1208; font-family: ui-monospace, "Courier New", monospace; }
+  .media-card.three .body {
+    color: #58a6ff; background: linear-gradient(180deg, #04111c 0%, #082030 100%);
+    min-height: 200px;
+  }
+  .media-card.esp32 .body {
+    color: #39d353; background: #0a0e0a;
+    font-family: ui-monospace, monospace;
+    text-shadow: 0 0 4px #39d353;
+  }
+  .media-card.spreadsheet .body { color: #f0f6fc; background: #ffffff10; }
+  .media-card.daw .body { color: #ff7b72; background: #0a0a14; }
+  .media-card.irc .body { color: #ffa657; background: #1a0e08; }
+
+  /* The 3D scene pseudo-3D using box-shadows */
+  .scene-3d {
+    perspective: 800px;
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, #04111c 0%, #082030 100%);
+  }
+  .room-3d {
+    width: 240px; height: 140px; position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(20deg) rotateY(-25deg);
+  }
+  .room-3d .floor {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
+    background: linear-gradient(180deg, #4a3a2a 0%, #2a1f15 100%);
+    transform: rotateX(90deg) translateZ(70px);
+    border: 1px solid #6a4a2a;
+  }
+  .room-3d .wall {
+    position: absolute; left: 0; right: 0; top: 0; height: 100%;
+    background: linear-gradient(180deg, #5a4a3a 0%, #3a2a1a 100%);
+    transform: translateZ(70px);
+  }
+  .room-3d .compass {
+    position: absolute; left: 30px; bottom: 20px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: radial-gradient(circle, #d4af37 0%, #8a6a17 100%);
+    border: 2px solid #6a4a07;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+  }
+  .room-3d .tube {
+    position: absolute; right: 30px; top: 20px;
+    width: 8px; height: 60px;
+    background: linear-gradient(90deg, #b87333 0%, #d4af37 50%, #b87333 100%);
+    border-radius: 4px;
+  }
+  .room-3d .label {
+    position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+    color: var(--accent); font-size: 0.7rem; white-space: nowrap;
+  }
+
+  /* ESP32 LCD — 16x2 characters but here we just simulate a screen */
+  .lcd-screen {
+    display: inline-block; background: #0a1a0a;
+    border: 3px solid #2a3a2a; border-radius: 4px;
+    padding: 6px; font-family: "Courier New", monospace;
+    font-size: 0.7rem; color: #39d353;
+    text-shadow: 0 0 4px #39d353;
+    min-width: 240px; box-shadow: inset 0 0 8px rgba(57, 211, 83, 0.2);
+  }
+  .lcd-row { white-space: pre; line-height: 1.4; }
+
+  /* Spreadsheet mini */
+  .mini-sheet { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .mini-sheet th, .mini-sheet td {
+    border: 1px solid var(--border); padding: 0.3rem 0.5rem;
+    text-align: left;
+  }
+  .mini-sheet th { background: #1a1a26; color: var(--muted); }
+  .mini-sheet td.path { font-family: ui-monospace, monospace; color: var(--accent); }
+
+  /* DAW timeline mini */
+  .daw-mini {
+    position: relative; height: 100px; background: #0a0a14;
+    border: 1px solid var(--border); border-radius: 4px;
+    margin: 0.5rem 0;
+  }
+  .daw-track-mini {
+    position: absolute; height: 18px; border-radius: 2px;
+    background: var(--accent); padding: 0 0.4rem;
+    color: white; font-size: 0.7rem; line-height: 18px;
+  }
+
+  /* Tabs for switching data */
+  .cell-tabs { display: flex; gap: 0.3rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .cell-tab {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .cell-tab.active { background: #1f2937; border-color: var(--accent); }
+  .cell-tab:hover { border-color: var(--accent); }
+
+  .principle {
+    background: var(--panel); border: 1px dashed var(--border);
+    border-radius: 8px; padding: 1.2rem; margin-top: 1.5rem;
+    color: var(--muted); font-size: 0.9rem;
+  }
+  .principle em { color: var(--fg); font-style: italic; }
+  .principle strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎨 Quilt Media Theory</h1>
+  <p class="subtitle">The same cell, projected into 10 different media.</p>
+  <p class="tagline">"Watercolor isn't worse than oil. Each medium is a model of the upper-to-lower translation."</p>
+</header>
+
+<div class="container">
+
+  <div class="intro">
+    <p>Each language, each terminal, each surface — is a <strong>medium</strong>. The cell graph is the medium-neutral content. The compiler, the interpreter, the renderer — is the shadow.</p>
+    <p>Below: the <em>same Quilt cell</em> rendered to 10 different media. Click a different cell tab to see how the same projection machinery renders different content. The <strong>terrain family's whole point</strong> is this: <em>"One compiler holds the truth; every renderer is a shadow that never feeds back."</em></p>
+  </div>
+
+  <div class="cell-tabs" id="cellTabs">
+    <div class="cell-tab active" data-cell="wheelhouse">🚢 wheelhouse</div>
+    <div class="cell-tab" data-cell="compass">🧭 compass</div>
+    <div class="cell-tab" data-cell="ensign">👤 ensign</div>
+    <div class="cell-tab" data-cell="bilge">💧 bilge-pump</div>
+    <div class="cell-tab" data-cell="cross-world">🌐 cross-world portal</div>
+  </div>
+
+  <div class="source-cell" id="sourceCell"></div>
+
+  <h2 style="color: var(--muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.7rem;">10 renderings of the same cell</h2>
+
+  <div class="media-grid" id="mediaGrid"></div>
+
+  <div class="principle">
+    <p><strong>The medium is the choice.</strong> The cell graph is the canonical form. The watch chooses which medium to project the same cell into, based on the moment, the audience, the bandwidth, the aesthetic, the constraint.</p>
+    <p>A fisherman with a 16x2 LCD gets the ESP32 rendering. A captain on the bridge gets the 3D scene. An ensign texting home gets the Telegram chat. A sysadmin scripting a fleet gets the PowerShell object pipeline. A schoolchild in 1980 gets the PLATO room. <em>Same cell, ten shadows, ten worlds, ten media.</em></p>
+    <p>The polyformalism back-pressure is real — but the right framing is not "language X is better for Y." It's "each medium is a different <strong>model of the upper-to-lower translation</strong>, and the artist's choice is the medium."</p>
+  </div>
+
+</div>
+
+<script>
+// ============================================================================
+// The cell graph (the medium-neutral content)
+// ============================================================================
+const CELLS = {
+  wheelhouse: {
+    path: "room.platos-shell.wheelhouse",
+    name: "Wheelhouse",
+    description: "A quiet room. The compass sits idle. A brass speaking tube hangs at the west wall, cold. The chart table is cluttered with depth soundings from the morning's run.",
+    coords: { x: 0, y: 0, z: 0 },
+    tags: ["command", "quiet"],
+    world: "platos-shell",
+    address: "room.platos-shell.cell_+0_+0",
+    temperature: 18.5,
+    pressure: 1013.2,
+    soundings: 47,
+    crossWorld: false,
+  },
+  compass: {
+    path: "instrument.platos-shell.compass",
+    name: "Magnetic Compass",
+    description: "Brass-cased magnetic compass, 6-inch card. Reads 132° true. The lubber line is slightly off true north — a known quirk of this vessel.",
+    coords: null,
+    tags: ["instrument", "navigation"],
+    world: "platos-shell",
+    address: "instrument.platos-shell.cell_+0_+0",
+    reading_deg: 132,
+    deviation: -2,
+    fluid: "alcohol",
+    diameter_in: 6,
+  },
+  ensign: {
+    path: "agent.platos-shell.ensign",
+    name: "Ensign (the youngest of the watch)",
+    description: "Standing the four-hour rotation. Has not yet learned that the silence on a ship is louder than the noise. Is now thinking about the speaking tube at the west wall and whether it has been used in his lifetime.",
+    coords: { x: 0, y: 0, z: 0 },
+    tags: ["agent", "human", "watch"],
+    world: "platos-shell",
+    address: "agent.platos-shell.cell_+0_+0",
+    shift_h: 4.5,
+    role: "watch",
+    state: "alert",
+  },
+  bilge: {
+    path: "instrument.platos-shell.bilge-pump",
+    name: "Bilge Pump",
+    description: "Iron-cast pump, 19th-century make. Currently idle. Sighs occasionally as the water in the well moves. Will run on the next hour.",
+    coords: { x: -1, y: -1, "z": 0 },
+    tags: ["instrument", "mechanical", "ancient"],
+    world: "platos-shell",
+    address: "instrument.platos-shell.cell_-1_-1",
+    state: "idle",
+    flow_gpm: 0,
+    runtime_h: 8421,
+  },
+  "cross-world": {
+    path: "portal.bar-rail->tap-bar",
+    name: "Cross-world portal: bar-rail → tap-bar",
+    description: "A warp link. Stand at the bar-rail in Plato's Shell and you are standing at the bar in The Tap. Two rooms in two worlds, one address.",
+    coords: null,
+    tags: ["portal", "warp", "cross-world"],
+    world: "platos-shell",
+    address: "portal.bar-rail->tap-bar",
+    from: "bar-rail",
+    to: "tap-bar",
+    type: "warp",
+    crossWorld: true,
+  },
+};
+
+// ============================================================================
+// The media renderers
+// ============================================================================
+function renderMUD(cell) {
+  return `> look
+
+${cell.name}.
+
+${cell.description}
+
+Exits: ${cell.coords ? 'aft-deck, forward-deck, bar-rail' : '(none — this is a portal)'}
+Lighting: ${cell.tags.includes('command') ? 'natural (port windows)' : 'lantern'}
+`;
+}
+
+function renderPosix(cell) {
+  return `$ cat /quilt/${cell.path.replace(/\./g, '/')}.json
+{
+  "path": "${cell.path}",
+  "name": "${cell.name}",
+  "world": "${cell.world}",
+  "address": "${cell.address}",
+  "coords": ${cell.coords ? JSON.stringify(cell.coords) : 'null'},
+  "tags": ${JSON.stringify(cell.tags)},
+  "description": "${cell.description}"
+}
+$ jq '.tags | length' < /quilt/${cell.path.replace(/\./g, '/')}.json
+${cell.tags.length}
+$ ls -la /quilt/${cell.path.replace(/\./g, '/')}/cells/
+total ${cell.tags.length * 4}
+drwxr-xr-x  2 quilt quilt 4096 Aug 21 00:18 .
+dr-xr-xr-x  4 quilt quilt 4096 Aug 21 00:18 ..
+${cell.tags.map((t, i) => `-rw-r--r--  1 quilt quilt  256 Aug 21 00:18 cell_${i}.quilt`).join('\n')}
+$ ▮`;
+}
+
+function renderPowerShell(cell) {
+  return `PS> Get-QuiltCell -Path "${cell.path}" | Format-List
+
+Path        : ${cell.path}
+Name        : ${cell.name}
+World       : ${cell.world}
+Address     : ${cell.address}
+Tags        : {${cell.tags.join(', ')}}
+Coordinates : ${cell.coords ? `X=${cell.coords.x}, Y=${cell.coords.y}, Z=${cell.coords.z}` : 'n/a'}
+
+PS> Get-QuiltCell -Path "${cell.path}" |
+      Where-Object { $_.Tags -contains 'command' } |
+      Select-Object Name, Address |
+      Format-Table -AutoSize
+
+Name       Address
+----       -------
+${cell.name.padEnd(10)} ${cell.address}
+
+PS> Invoke-QuiltWatch "${cell.path}" -Action Report | Out-String
+[Watch] ${cell.path}: rendered as PowerShell pipeline
+PS> ▮`;
+}
+
+function renderTelegram(cell) {
+  const ts = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  return `╭─ Lucineer Bot · ${ts} ─────────────────╮
+│  /cell ${cell.path.split('.').pop()}
+│
+│  🤖 ${cell.name}
+│  📍 ${cell.address}
+│  🏷  ${cell.tags.map(t => '#' + t).join(' ')}
+│
+│  ${cell.description.length > 200 ? cell.description.slice(0, 200) + '…' : cell.description}
+│
+│  ▎ Inline buttons:
+│     [ 📊 As Spreadsheet ]  [ ⏪ As DAW ]
+│     [ 💻 As POSIX ]        [ 🪟 As PowerShell ]
+│     [ 🌐 View in Browser ]
+│
+╰──────────────────────────────────────────╯
+
+  Type /cell <other-path> to render another cell.`;
+}
+
+function renderPlato(cell) {
+  return `PLATO SYSTEM · WHEELHOUSE-AT-NIGHT
+═══════════════════════════════════════
+
+  You are standing in the ${cell.name}.
+
+  > ${cell.description.split('.')[0]}.
+  >
+  > ${cell.description.split('. ').slice(1, 2).join('. ')}.
+
+  EXITS:
+    NORTH — forward-deck
+    SOUTH — aft-deck
+    EAST  — bar-rail
+    DOWN  — engine-room
+
+  > what tags?
+  ${cell.tags.map(t => '  ' + t.toUpperCase()).join('\n')}
+
+  > show address
+  address: ${cell.address}
+
+  > _`;
+}
+
+function renderThreeJS(cell) {
+  return `<div class="scene-3d">
+  <div class="room-3d">
+    <div class="floor"></div>
+    <div class="wall"></div>
+    <div class="compass" title="compass @ 132°"></div>
+    <div class="tube" title="speaking tube"></div>
+    <div class="label">${cell.name} — Three.js scene</div>
+  </div>
+</div>
+
+// three.js pseudocode:
+const scene = new THREE.Scene();
+const room = compile(cell);  // terrain compiler
+scene.add(room.floor, room.walls, room.ceiling);
+scene.add(room.objects.compass, room.objects.speaking_tube);
+camera.position.set(0, 1.6, 3);
+renderer.render(scene, camera);`;
+}
+
+function renderESP32(cell) {
+  return `<div class="lcd-screen">
+  <div class="lcd-row">${(cell.name + ':').padEnd(16).slice(0, 16)}</div>
+  <div class="lcd-row">${(cell.coords ? `x=${cell.coords.x} y=${cell.coords.y}` : cell.world || '').padEnd(16).slice(0, 16)}</div>
+</div>
+
+// ESP32 Arduino sketch (C, 16x2 LCD via I2C)
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+void setup() {
+  lcd.init(); lcd.backlight();
+  lcd.setCursor(0, 0); lcd.print("${(cell.name + ':').slice(0, 15)}");
+  lcd.setCursor(0, 1); lcd.print("${cell.coords ? `x=${cell.coords.x} y=${cell.coords.y}` : cell.world || ''}".slice(0, 16));
+}
+void loop() {
+  // poll quilt://${cell.path} over WiFi
+  // re-render LCD when state changes
+  delay(1000);
+}`;
+}
+
+function renderSpreadsheet(cell) {
+  return `<table class="mini-sheet">
+  <tr><th>path</th><th>kind</th><th>value</th></tr>
+  <tr><td class="path">${cell.path}.name</td><td>value</td><td>${cell.name}</td></tr>
+  <tr><td class="path">${cell.path}.description</td><td>value</td><td>${cell.description.length > 80 ? cell.description.slice(0, 80) + '…' : cell.description}</td></tr>
+  <tr><td class="path">${cell.path}.tags</td><td>value</td><td>${JSON.stringify(cell.tags)}</td></tr>
+  ${cell.coords ? `<tr><td class="path">${cell.path}.coords</td><td>value</td><td>${JSON.stringify(cell.coords)}</td></tr>` : ''}
+  <tr><td class="path">${cell.path}.address</td><td>value</td><td>${cell.address}</td></tr>
+  <tr><td class="path">${cell.path}.world</td><td>value</td><td>${cell.world}</td></tr>
+  <tr><td class="path">${cell.path}.temperature</td><td>value</td><td>${cell.temperature || '—'}</td></tr>
+</table>`;
+}
+
+function renderDAW(cell) {
+  // Generate a fake DAW track for this cell
+  const events = cell.description.split('. ').filter(s => s.length > 10).slice(0, 4);
+  let track = '';
+  events.forEach((e, i) => {
+    const left = i * 25;
+    const width = 22;
+    track += `<div class="daw-track-mini" style="left:${left}%; width:${width}%;">${e.slice(0, 25)}…</div>\n`;
+  });
+  return `<div class="daw-mini">
+  <div style="position:absolute; top:5px; left:5px; color:var(--muted); font-size:0.7rem;">${cell.name} (DAW track)</div>
+  ${track}
+  <div style="position:absolute; top:38px; left:5px; color:var(--muted); font-size:0.7rem;">compass reading (signal)</div>
+  <div class="daw-track-mini" style="left:0%; width:48%; background:var(--ok);">132° true</div>
+  <div class="daw-track-mini" style="left:48%; width:52%; background:var(--warn);">-2° deviation</div>
+  <div style="position:absolute; top:65px; left:5px; color:var(--muted); font-size:0.7rem;">tags (info)</div>
+  ${cell.tags.map((t, i) => `<div class="daw-track-mini" style="left:${i*33}%; width:30%; background:var(--purple);">${t}</div>`).join('')}
+</div>
+
+// DAW orchestrator pseudocode:
+const track = {
+  name: "${cell.path}",
+  character: "${cell.world}",
+  events: [
+    { time: 0, text: "${events[0] || ''}" },
+    { time: 5, text: "${events[1] || ''}" },
+    { time: 10, text: "${events[2] || ''}" },
+    { time: 15, text: "${events[3] || ''}" },
+  ]
+};`;
+}
+
+function renderIRC(cell) {
+  return `* ensign has joined #lucineer
+* @lucineer-bot has set topic: SS Lucineer · cell: ${cell.path}
+
+[21:34:12] <@ensign> /cell ${cell.path.split('.').pop()}
+[21:34:13] <@lucineer-bot> ${cell.name} · ${cell.address}
+[21:34:13] <@lucineer-bot> ${cell.description.split('.')[0]}.
+[21:34:15] <@cook> the ${cell.tags.includes('command') ? 'command' : 'working'} room again
+[21:34:16] <@ensign> aye. tags: ${cell.tags.map(t => '#' + t).join(' ')}
+[21:34:18] <@lucineer-bot> rendering complete (IRC, 10 lines)
+[21:34:19] * @engineer is now online
+[21:34:20] <@engineer> status?
+[21:34:21] <@lucineer-bot> ${cell.name} — ${cell.tags.join(', ')}`;
+}
+
+const MEDIA = [
+  { id: 'mud', icon: '📜', name: 'MUD (text)', tag: 'plain text', render: renderMUD },
+  { id: 'posix', icon: '💻', name: 'Command prompt (POSIX)', tag: 'shell', render: renderPosix },
+  { id: 'powershell', icon: '🪟', name: 'PowerShell (object pipeline)', tag: 'object-oriented', render: renderPowerShell },
+  { id: 'telegram', icon: '💬', name: 'Telegram (chat with bot)', tag: 'chat', render: renderTelegram },
+  { id: 'irc', icon: '🗨', name: 'IRC', tag: 'plain text', render: renderIRC },
+  { id: 'plato', icon: '🏛', name: 'PLATO (room-based UI)', tag: 'educational', render: renderPlato },
+  { id: 'three', icon: '🖼', name: 'Three.js (3D scene)', tag: 'graphics', render: renderThreeJS, full: true },
+  { id: 'esp32', icon: '📺', name: 'ESP32 LCD (16x2)', tag: 'embedded', render: renderESP32 },
+  { id: 'spreadsheet', icon: '📊', name: 'Quilt spreadsheet (native)', tag: 'cells', render: renderSpreadsheet },
+  { id: 'daw', icon: '⏪', name: 'Quilt DAW (native timeline)', tag: 'time', render: renderDAW, full: true },
+];
+
+// ============================================================================
+// Render
+// ============================================================================
+function renderAll() {
+  const cellKey = document.querySelector('.cell-tab.active').dataset.cell;
+  const cell = CELLS[cellKey];
+
+  // Source cell
+  const source = document.getElementById('sourceCell');
+  source.innerHTML = `
+    <h2>📌 The cell graph (the medium-neutral content)</h2>
+    <div class="path">${cell.path}</div>
+    <div class="value"><strong>${cell.name}</strong></div>
+    <div class="meta">${cell.description}</div>
+    <div class="meta" style="margin-top: 0.4rem;">
+      address: <code>${cell.address}</code> · world: <code>${cell.world}</code> · tags: ${cell.tags.map(t => `<code>${t}</code>`).join(' ')}
+    </div>
+  `;
+
+  // Media grid
+  const grid = document.getElementById('mediaGrid');
+  grid.innerHTML = '';
+  for (const m of MEDIA) {
+    const card = document.createElement('div');
+    card.className = `media-card ${m.id} ${m.full ? 'full' : ''}`;
+    const body = m.render(cell);
+    card.innerHTML = `
+      <div class="header">
+        <span class="icon">${m.icon}</span>
+        <span class="name">${m.name}</span>
+        <span class="tag">${m.tag}</span>
+      </div>
+      <div class="body">${body}</div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+document.querySelectorAll('.cell-tab').forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll('.cell-tab').forEach(t => t.classList.toggle('active', t === tab));
+    renderAll();
+  };
+});
+
+renderAll();
+</script>
+</body>
+</html>
