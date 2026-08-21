@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<!--
+  sonar-vision-quilt.html — The Quilt IDE for sonar-vision.
+
+  THE INSIGHT: The user's sonar-vision project is a pure-Python library
+  for ping simulation, signal processing, multi-object tracking, and
+  spatial mapping. Adding a chain of cameras at 5-fathom intervals,
+  connecting them to the sounder feed, training ML on the daisy chain,
+  and adding human STT supervision is a complex integration.
+
+  In Quilt, it's drag-and-drop:
+    - The cannonball becomes a vertical column of cells
+    - Each cell has a depth (5, 10, 15, 20, 25 fathoms)
+    - Each cell can hold a camera (drag in from the library)
+    - The sounder feed splits its echogram into depth segments
+    - Each cell gets its segment + its camera
+    - ML training is automatic: the daisy chain IS the supervised data
+    - STT input for human supervision (species names, swim direction)
+    - Event triggers fire when the cell sees something interesting
+    - Confidence progresses: trigger review → predicted answer → unusual-only
+
+  The IDE: a column with cells, a camera library, a sounder feed,
+  a live echogram, an ML panel, a STT input, a highlights reel.
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sonar-Vision Quilt IDE — drag cameras, train ML, get highlights</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+    --depth-0: #58a6ff; --depth-5: #39c5cf; --depth-10: #3fb950;
+    --depth-15: #a371f7; --depth-20: #f0883e; --depth-25: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .toolbar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-left: auto; }
+  button {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  button.active { background: #1f6feb; border-color: #1f6feb; color: white; }
+
+  .container {
+    display: grid;
+    grid-template-columns: 200px 1fr 320px;
+    height: calc(100vh - 70px);
+  }
+
+  /* Camera library (left) */
+  .library {
+    background: #0d1117; border-right: 1px solid var(--border);
+    padding: 1rem; overflow-y: auto;
+  }
+  .cam-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.6rem; margin-bottom: 0.5rem;
+    cursor: grab; user-select: none;
+    transition: all 0.1s;
+  }
+  .cam-card:hover { border-color: var(--accent); transform: translateX(2px); }
+  .cam-card.dragging { opacity: 0.5; }
+  .cam-card .cam-name { font-size: 0.85rem; color: var(--accent); font-weight: 500; }
+  .cam-card .cam-specs { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* Main canvas (center) */
+  .canvas-area {
+    position: relative; overflow: hidden;
+    background: linear-gradient(180deg, #001020 0%, #000814 50%, #001530 100%);
+  }
+
+  /* The cannonball — vertical column of cells */
+  .column-wrap {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 1rem;
+  }
+  .column-label {
+    text-align: center; color: var(--muted);
+    font-size: 0.8rem; margin-bottom: 0.5rem;
+  }
+  .column-label .cannonball-icon { font-size: 1.2rem; }
+  .depth-cell {
+    width: 280px; height: 70px;
+    background: var(--panel); border: 2px solid var(--border);
+    border-radius: 6px; padding: 0.5rem 0.7rem;
+    display: grid; grid-template-columns: 80px 1fr 60px;
+    align-items: center; gap: 0.5rem;
+    position: relative; transition: all 0.15s;
+  }
+  .depth-cell:hover { border-color: var(--accent); }
+  .depth-cell.dragover { border-color: var(--ok); background: rgba(63, 185, 80, 0.1); }
+  .depth-cell .depth-label {
+    font-family: ui-monospace, monospace; font-size: 0.95rem;
+    color: var(--accent); text-align: center;
+    border-right: 1px solid var(--border); padding-right: 0.5rem;
+  }
+  .depth-cell .cell-content {
+    font-size: 0.75rem; color: var(--muted);
+  }
+  .depth-cell .cell-content .empty-msg { color: var(--muted); }
+  .depth-cell .cell-content .cam-marker { color: var(--ok); }
+  .depth-cell .cell-content .ping-info { color: var(--warn); }
+  .depth-cell .cell-content .confidence { color: var(--purple); }
+  .depth-cell .depth-color {
+    width: 16px; height: 16px; border-radius: 50%;
+    justify-self: end; align-self: center;
+  }
+  .depth-cell.event {
+    animation: eventPulse 0.6s ease-out;
+    border-color: var(--err);
+  }
+  @keyframes eventPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(248, 81, 73, 0.6); }
+  }
+
+  /* The sounder feed (echogram) — at the right of the column */
+  .echogram {
+    position: absolute; top: 50%; right: 30px;
+    transform: translateY(-50%);
+    width: 180px; height: 380px;
+    background: #001020; border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem;
+  }
+  .echogram .echo-label {
+    text-align: center; font-size: 0.75rem; color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+  .echogram-canvas {
+    width: 100%; height: 340px;
+    background: radial-gradient(ellipse at center, #0a3a52 0%, #001020 100%);
+  }
+
+  /* Right pane: ML, STT, highlights */
+  .right-pane {
+    background: #0d1117; border-left: 1px solid var(--border);
+    padding: 1rem; overflow-y: auto;
+  }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.7rem; margin-bottom: 0.7rem;
+  }
+  .panel h3 { margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .stat {
+    display: flex; justify-content: space-between; padding: 0.2rem 0;
+    font-size: 0.8rem;
+  }
+  .stat .label { color: var(--muted); }
+  .stat .val { color: var(--fg); font-family: ui-monospace, monospace; }
+
+  .stt-input {
+    width: 100%; min-height: 60px;
+    background: #0d1117; color: var(--fg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem; font-family: inherit; font-size: 0.85rem;
+    resize: vertical;
+  }
+  .stt-mic {
+    background: var(--err); color: white; border: none;
+    width: 32px; height: 32px; border-radius: 50%;
+    cursor: pointer; font-size: 0.9rem;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .stt-mic.active { background: var(--warn); }
+
+  .highlight-card {
+    background: #0d1117; border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem; margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+  }
+  .highlight-card .h-time { color: var(--muted); font-size: 0.7rem; }
+  .highlight-card .h-content { color: var(--fg); margin: 0.2rem 0; }
+  .highlight-card .h-meta { color: var(--accent); font-size: 0.7rem; }
+  .highlight-card.auto-annotated .h-content { color: var(--ok); }
+
+  .conf-bar {
+    background: #0d1117; border-radius: 3px; height: 8px;
+    overflow: hidden; margin: 0.3rem 0;
+  }
+  .conf-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--err) 0%, var(--warn) 50%, var(--ok) 100%);
+    transition: width 0.3s;
+  }
+
+  .mode-pill {
+    display: inline-block; padding: 0.15rem 0.5rem; border-radius: 12px;
+    font-size: 0.7rem; font-weight: 600;
+    background: #21262d; color: var(--muted); margin-right: 0.3rem;
+  }
+  .mode-pill.tier-1 { background: rgba(248, 81, 73, 0.15); color: var(--err); }
+  .mode-pill.tier-2 { background: rgba(210, 153, 34, 0.15); color: var(--warn); }
+  .mode-pill.tier-3 { background: rgba(63, 185, 80, 0.15); color: var(--ok); }
+
+  /* The confidence progression */
+  .progression {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.7rem; margin-bottom: 0.7rem;
+  }
+  .progression h3 { margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .tier-row {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.3rem 0; font-size: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .tier-row:last-child { border-bottom: none; }
+  .tier-row.current { background: rgba(88, 166, 255, 0.1); }
+  .tier-row .tier-arrow { color: var(--muted); }
+  .tier-row.active .tier-arrow { color: var(--ok); }
+  .tier-row .tier-name { flex: 1; }
+  .tier-row .tier-count { color: var(--accent); font-family: ui-monospace, monospace; }
+
+  .controls-row { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+  .controls-row button { flex: 1; min-width: 0; font-size: 0.75rem; padding: 0.3rem; }
+
+  .dropped-cam {
+    display: inline-block; background: var(--ok); color: white;
+    font-size: 0.65rem; padding: 0.1rem 0.3rem; border-radius: 3px;
+    margin-right: 0.2rem; margin-top: 0.2rem;
+  }
+
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🎣 Sonar-Vision Quilt IDE</h1>
+    <div class="subtitle">drag a camera into a cell. watch it learn. get highlights.</div>
+  </div>
+  <div class="toolbar">
+    <button class="primary" id="addDepthBtn">+ add depth cell</button>
+    <button id="trainBtn">⚙ train tick</button>
+    <button id="autoBtn">▶ auto-detect</button>
+    <button id="resetBtn">⌂ reset</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="library" id="library">
+    <h3 style="margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">📷 Cameras</h3>
+    <p style="font-size: 0.7rem; color: var(--muted); margin: 0 0 0.7rem;">Drag onto a cell ↓</p>
+    <!-- Camera cards populated by JS -->
+  </div>
+
+  <div class="canvas-area" id="canvas">
+    <div class="column-wrap" id="column">
+      <div class="column-label">
+        <span class="cannonball-icon">⚓</span><br>
+        The cannonball · drag a camera into a depth cell
+      </div>
+      <!-- Depth cells populated by JS -->
+    </div>
+    <div class="echogram">
+      <div class="echo-label">📡 Sounder feed</div>
+      <canvas class="echogram-canvas" id="echogram"></canvas>
+    </div>
+  </div>
+
+  <div class="right-pane">
+    <div class="panel">
+      <h3>🤖 ML training</h3>
+      <div class="stat"><span class="label">examples</span><span class="val" id="mlExamples">0</span></div>
+      <div class="stat"><span class="label">daisy chain</span><span class="val" id="mlDaisy">0 cameras</span></div>
+      <div class="stat"><span class="label">confidence</span><span class="val" id="mlConf">—</span></div>
+      <div class="conf-bar"><div class="fill" id="mlConfBar" style="width: 0%"></div></div>
+      <div class="controls-row" style="margin-top: 0.5rem;">
+        <button id="generateBtn">synthesize</button>
+        <button id="superviseBtn">supervise</button>
+      </div>
+    </div>
+
+    <div class="progression">
+      <h3>📊 Confidence progression</h3>
+      <div class="tier-row" id="tier1">
+        <span class="tier-arrow">○</span>
+        <span class="tier-name"><span class="mode-pill tier-1">tier 1</span> trigger review on everything</span>
+        <span class="tier-count" id="tier1Count">0</span>
+      </div>
+      <div class="tier-row" id="tier2">
+        <span class="tier-arrow">○</span>
+        <span class="tier-name"><span class="mode-pill tier-2">tier 2</span> trigger review with predicted answer</span>
+        <span class="tier-count" id="tier2Count">0</span>
+      </div>
+      <div class="tier-row" id="tier3">
+        <span class="tier-arrow">○</span>
+        <span class="tier-name"><span class="mode-pill tier-3">tier 3</span> review only the unusual few</span>
+        <span class="tier-count" id="tier3Count">0</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>🎤 Human supervision (STT)</h3>
+      <textarea class="stt-input" id="sttInput" placeholder="say what's on the screen — species, swim direction, behavior. e.g. 'cod, 20 fathoms, swimming north, school of about 30'"></textarea>
+      <div style="display: flex; gap: 0.3rem; margin-top: 0.3rem;">
+        <button class="stt-mic" id="sttMic" title="Click to talk">🎤</button>
+        <button id="sttSubmit" class="primary" style="flex: 1;">submit supervision</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>🎬 Highlights reel</h3>
+      <div id="highlights">
+        <p style="font-size: 0.8rem; color: var(--muted); margin: 0;">No highlights yet. Add cameras and let the system run.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// State
+// ============================================================================
+const DEPTHS = [0, 5, 10, 15, 20, 25]; // fathoms
+const DEPTH_COLORS = ['#58a6ff', '#39c5cf', '#3fb950', '#a371f7', '#f0883e', '#f85149'];
+
+const state = {
+  cameras: [
+    { id: 'cam-1', name: 'GoPro 12 Black', specs: '5.3K · 240fps · low-light', assigned: null },
+    { id: 'cam-2', name: 'Sony A7S III', specs: '4K · 120fps · full-frame', assigned: null },
+    { id: 'cam-3', name: 'Insta360 X4', specs: '5.7K · 360° · waterproof', assigned: null },
+    { id: 'cam-4', name: 'Olympus TG-7', specs: '4K · macro · 15m depth', assigned: null },
+    { id: 'cam-5', name: 'Nikon Z9', specs: '8K · 120fps · flagship', assigned: null },
+    { id: 'cam-6', name: 'Garmin VIRB', specs: '4K · rugged · action', assigned: null },
+  ],
+  cells: DEPTHS.map((d, i) => ({
+    id: `cell-${i}`,
+    depth: d,
+    color: DEPTH_COLORS[i],
+    camera: null,
+    confidence: 0,
+    examples: 0,
+    lastEvent: null,
+    predictions: [],
+  })),
+  ml: {
+    examples: 0,
+    confidence: 0,
+    tier: 1, // 1 = trigger everything, 2 = trigger with prediction, 3 = trigger only unusual
+    supervises: [],
+  },
+  highlights: [],
+  echogram: {
+    targets: [], // {depth, distance, intensity, age}
+  },
+  autoRunning: false,
+  sttListening: false,
+};
+
+let cellIdCounter = state.cells.length;
+
+// ============================================================================
+// Render
+// ============================================================================
+function renderLibrary() {
+  const lib = document.getElementById('library');
+  // Remove existing cam cards
+  lib.querySelectorAll('.cam-card').forEach(el => el.remove());
+  for (const cam of state.cameras) {
+    if (cam.assigned !== null) continue;
+    const card = document.createElement('div');
+    card.className = 'cam-card';
+    card.draggable = true;
+    card.dataset.camId = cam.id;
+    card.innerHTML = `
+      <div class="cam-name">📷 ${cam.name}</div>
+      <div class="cam-specs">${cam.specs}</div>
+    `;
+    card.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/cam-id', cam.id);
+      card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+    lib.appendChild(card);
+  }
+}
+
+function renderColumn() {
+  const col = document.getElementById('column');
+  // Remove existing cells
+  col.querySelectorAll('.depth-cell').forEach(el => el.remove());
+  for (const cell of state.cells) {
+    const div = document.createElement('div');
+    div.className = 'depth-cell';
+    div.dataset.cellId = cell.id;
+    div.draggable = false;
+    // Drag/drop handlers
+    div.addEventListener('dragover', e => {
+      e.preventDefault();
+      div.classList.add('dragover');
+    });
+    div.addEventListener('dragleave', () => div.classList.remove('dragover'));
+    div.addEventListener('drop', e => {
+      e.preventDefault();
+      div.classList.remove('dragover');
+      const camId = e.dataTransfer.getData('text/cam-id');
+      if (camId) assignCamera(camId, cell.id);
+    });
+    // Content
+    const cam = cell.camera ? state.cameras.find(c => c.id === cell.camera) : null;
+    const confPct = cell.confidence > 0 ? `${(cell.confidence * 100).toFixed(0)}%` : '—';
+    const examples = cell.examples > 0 ? `${cell.examples} examples` : 'no examples';
+    div.innerHTML = `
+      <div class="depth-label" style="color: ${cell.color}">${cell.depth}fm</div>
+      <div class="cell-content">
+        ${cam ? `<div class="cam-marker">📷 ${cam.name}</div>` : '<div class="empty-msg">drop a camera here</div>'}
+        ${cell.examples > 0 ? `<div class="ping-info">📡 ${examples}</div>` : ''}
+        ${cell.confidence > 0 ? `<div class="confidence">🎯 conf ${confPct}</div>` : ''}
+        ${cell.predictions.length > 0 ? `<div style="color: var(--ok)">🔮 ${cell.predictions.slice(0, 2).join(', ')}</div>` : ''}
+      </div>
+      <div class="depth-color" style="background: ${cell.color}"></div>
+    `;
+    col.appendChild(div);
+  }
+}
+
+function renderEchogram() {
+  const canvas = document.getElementById('echogram');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+  const W = canvas.width, H = canvas.height;
+
+  // Draw the radial sweep
+  ctx.fillStyle = '#001020';
+  ctx.fillRect(0, 0, W, H);
+
+  // Center point (the sounder)
+  const cx = W / 2;
+  const cy = H * 0.95;
+  const maxR = H * 0.85;
+
+  // Background sweep
+  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
+  grad.addColorStop(0, 'rgba(63, 185, 80, 0.3)');
+  grad.addColorStop(0.5, 'rgba(57, 197, 207, 0.15)');
+  grad.addColorStop(1, 'rgba(248, 81, 73, 0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Depth rings
+  ctx.strokeStyle = 'rgba(88, 166, 255, 0.2)';
+  ctx.lineWidth = 1;
+  for (let d = 0; d < DEPTHS.length; d++) {
+    const r = (DEPTHS[d] / 25) * maxR;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  // Depth labels
+  ctx.fillStyle = 'rgba(125, 133, 144, 0.7)';
+  ctx.font = '9px monospace';
+  for (let d = 0; d < DEPTHS.length; d++) {
+    const r = (DEPTHS[d] / 25) * maxR;
+    ctx.fillText(`${DEPTHS[d]}fm`, cx + r + 3, cy - 3);
+  }
+
+  // Draw targets (the returns)
+  for (const t of state.echogram.targets) {
+    // Distance from sounder at this depth (some lateral spread)
+    const r = (t.depth / 25) * maxR;
+    const angle = t.bearing * Math.PI * 2;
+    const tx = cx + Math.cos(angle - Math.PI / 2) * r;
+    const ty = cy + Math.sin(angle - Math.PI / 2) * r;
+    // Color by intensity
+    const intensity = Math.min(1, t.intensity / 100);
+    const r_c = Math.round(63 + 192 * intensity);
+    const g = Math.round(185 * (1 - intensity));
+    const b = Math.round(80 * (1 - intensity));
+    ctx.fillStyle = `rgba(${r_c}, ${g}, ${b}, ${0.4 + intensity * 0.5})`;
+    ctx.beginPath();
+    ctx.arc(tx, ty, 4 + intensity * 8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function renderStats() {
+  const daisyCount = state.cells.filter(c => c.camera !== null).length;
+  document.getElementById('mlExamples').textContent = state.ml.examples;
+  document.getElementById('mlDaisy').textContent = `${daisyCount} camera${daisyCount !== 1 ? 's' : ''}`;
+  document.getElementById('mlConf').textContent = state.ml.confidence > 0 ? `${(state.ml.confidence * 100).toFixed(0)}%` : '—';
+  document.getElementById('mlConfBar').style.width = `${state.ml.confidence * 100}%`;
+
+  // Tier counts
+  document.getElementById('tier1Count').textContent = state.highlights.filter(h => h.tier === 1).length;
+  document.getElementById('tier2Count').textContent = state.highlights.filter(h => h.tier === 2).length;
+  document.getElementById('tier3Count').textContent = state.highlights.filter(h => h.tier === 3).length;
+
+  // Highlight active tier
+  for (const t of [1, 2, 3]) {
+    const row = document.getElementById(`tier${t}`);
+    row.classList.toggle('current', state.ml.tier === t);
+    row.classList.toggle('active', state.ml.tier >= t);
+    row.querySelector('.tier-arrow').textContent = state.ml.tier >= t ? '●' : '○';
+  }
+
+  // Highlights
+  const hlDiv = document.getElementById('highlights');
+  if (state.highlights.length === 0) {
+    hlDiv.innerHTML = '<p style="font-size: 0.8rem; color: var(--muted); margin: 0;">No highlights yet. Add cameras and let the system run.</p>';
+  } else {
+    hlDiv.innerHTML = '';
+    for (const h of state.highlights.slice(-10).reverse()) {
+      const card = document.createElement('div');
+      card.className = `highlight-card ${h.predicted ? 'auto-annotated' : ''}`;
+      const tierClass = `tier-${h.tier}`;
+      card.innerHTML = `
+        <div class="h-time">${new Date(h.time).toLocaleTimeString()} · ${h.depth}fm · <span class="mode-pill ${tierClass}">tier ${h.tier}</span></div>
+        <div class="h-content">${h.content}</div>
+        <div class="h-meta">${h.predicted ? `predicted: ${h.predicted}` : 'awaiting review'}</div>
+      `;
+      hlDiv.appendChild(card);
+    }
+  }
+}
+
+function renderAll() {
+  renderLibrary();
+  renderColumn();
+  renderEchogram();
+  renderStats();
+}
+
+// ============================================================================
+// Camera assignment
+// ============================================================================
+function assignCamera(camId, cellId) {
+  // Unassign from any current cell
+  for (const c of state.cells) {
+    if (c.camera === camId) c.camera = null;
+  }
+  // Assign to new cell
+  const cell = state.cells.find(c => c.id === cellId);
+  const cam = state.cameras.find(c => c.id === camId);
+  if (!cell || !cam) return;
+  cell.camera = camId;
+  cam.assigned = cellId;
+  renderAll();
+}
+
+// ============================================================================
+// Training tick — synthesize examples, update confidence
+// ============================================================================
+function trainTick() {
+  let newExamples = 0;
+  for (const cell of state.cells) {
+    if (!cell.camera) continue;
+    // Each camera cell generates training examples
+    const examples = 1 + Math.floor(Math.random() * 3);
+    cell.examples += examples;
+    newExamples += examples;
+    // Confidence grows with examples
+    cell.confidence = Math.min(0.99, 1 - Math.exp(-cell.examples / 8));
+    // Generate predictions for nearby depths
+    if (cell.confidence > 0.5) {
+      const species = ['cod', 'haddock', 'pollock', 'halibut', 'flounder', 'lumpfish', 'shark', 'mackerel'];
+      const numPreds = Math.floor(cell.confidence * 3);
+      const newPreds = [];
+      for (let i = 0; i < numPreds; i++) {
+        newPreds.push(species[Math.floor(Math.random() * species.length)]);
+      }
+      cell.predictions = newPreds;
+    }
+  }
+  state.ml.examples += newExamples;
+  // Overall confidence = average of cells with cameras
+  const cellsWithCam = state.cells.filter(c => c.camera);
+  if (cellsWithCam.length > 0) {
+    state.ml.confidence = cellsWithCam.reduce((s, c) => s + c.confidence, 0) / cellsWithCam.length;
+  }
+  // Update tier based on confidence
+  if (state.ml.confidence > 0.85) {
+    state.ml.tier = 3; // review only unusual
+  } else if (state.ml.confidence > 0.5) {
+    state.ml.tier = 2; // review with prediction
+  } else {
+    state.ml.tier = 1; // review everything
+  }
+  renderAll();
+}
+
+// ============================================================================
+// Auto-detect — sonar returns + camera + ML prediction
+// ============================================================================
+function autoDetect() {
+  // Generate new targets on the echogram
+  const numNew = 1 + Math.floor(Math.random() * 3);
+  for (let i = 0; i < numNew; i++) {
+    const target = {
+      depth: Math.floor(Math.random() * 25),
+      bearing: Math.random(),
+      intensity: 50 + Math.random() * 50,
+      age: 0,
+    };
+    state.echogram.targets.push(target);
+  }
+  // Age out old targets
+  for (const t of state.echogram.targets) t.age++;
+  state.echogram.targets = state.echogram.targets.filter(t => t.age < 30);
+
+  // For each cell with a camera, if there's a target near its depth, fire event
+  for (const cell of state.cells) {
+    if (!cell.camera) continue;
+    for (const t of state.echogram.targets) {
+      if (Math.abs(t.depth - cell.depth) < 3 && t.age < 5) {
+        // Fire event
+        fireEvent(cell, t);
+        break;
+      }
+    }
+  }
+  renderEchogram();
+}
+
+function fireEvent(cell, target) {
+  // The cell's prediction drives what the highlight says
+  const predicted = cell.predictions[Math.floor(Math.random() * cell.predictions.length)] || 'unknown';
+  const content = state.ml.tier === 1
+    ? `something on screen at ${cell.depth}fm — needs review`
+    : state.ml.tier === 2
+    ? `looks like ${predicted} at ${cell.depth}fm — predicted (review)`
+    : `unusual target at ${cell.depth}fm — predicted ${predicted} but low confidence`;
+  const highlight = {
+    time: Date.now(),
+    depth: cell.depth,
+    content,
+    predicted: state.ml.tier > 1 ? predicted : null,
+    tier: state.ml.tier,
+  };
+  state.highlights.push(highlight);
+  // Visual: pulse the cell
+  const cellEl = document.querySelector(`[data-cell-id="${cell.id}"]`);
+  if (cellEl) {
+    cellEl.classList.add('event');
+    setTimeout(() => cellEl.classList.remove('event'), 600);
+  }
+  renderStats();
+}
+
+// ============================================================================
+// STT input
+// ============================================================================
+document.getElementById('sttSubmit').onclick = () => {
+  const text = document.getElementById('sttInput').value.trim();
+  if (!text) return;
+  state.ml.supervises.push({ text, time: Date.now() });
+  // Parse simple supervision and add to confidence
+  state.ml.examples += 5; // human supervision is worth 5 examples
+  state.ml.confidence = Math.min(0.99, state.ml.confidence + 0.05);
+  document.getElementById('sttInput').value = '';
+  renderAll();
+};
+
+// STT mic (mock — uses Web Speech API if available)
+document.getElementById('sttMic').onclick = () => {
+  const btn = document.getElementById('sttMic');
+  if (state.sttListening) {
+    state.sttListening = false;
+    btn.classList.remove('active');
+    return;
+  }
+  state.sttListening = true;
+  btn.classList.add('active');
+  if ('webkitSpeechRecognition' in window) {
+    const rec = new webkitSpeechRecognition();
+    rec.continuous = false;
+    rec.interimResults = false;
+    rec.onresult = (e) => {
+      const text = e.results[0][0].transcript;
+      document.getElementById('sttInput').value = text;
+      state.sttListening = false;
+      btn.classList.remove('active');
+    };
+    rec.onerror = () => {
+      state.sttListening = false;
+      btn.classList.remove('active');
+      // Mock fallback: insert a sample
+      const samples = [
+        'cod, 20 fathoms, swimming north, school of about 30',
+        'haddock at 10fm, slow drift east',
+        'lumpfish pair at 5fm, holding position',
+      ];
+      document.getElementById('sttInput').value = samples[Math.floor(Math.random() * samples.length)];
+    };
+    rec.start();
+  } else {
+    // Fallback: mock
+    setTimeout(() => {
+      const samples = [
+        'cod, 20 fathoms, swimming north, school of about 30',
+        'haddock at 10fm, slow drift east',
+        'lumpfish pair at 5fm, holding position',
+      ];
+      document.getElementById('sttInput').value = samples[Math.floor(Math.random() * samples.length)];
+      state.sttListening = false;
+      btn.classList.remove('active');
+    }, 1500);
+  }
+};
+
+// ============================================================================
+// Wire up
+// ============================================================================
+document.getElementById('addDepthBtn').onclick = () => {
+  cellIdCounter++;
+  const newDepth = state.cells[state.cells.length - 1].depth + 5;
+  state.cells.push({
+    id: `cell-${cellIdCounter}`,
+    depth: newDepth,
+    color: '#888',
+    camera: null,
+    confidence: 0,
+    examples: 0,
+    lastEvent: null,
+    predictions: [],
+  });
+  renderAll();
+};
+
+document.getElementById('trainBtn').onclick = trainTick;
+document.getElementById('generateBtn').onclick = trainTick;
+document.getElementById('superviseBtn').onclick = () => {
+  state.ml.examples += 5;
+  state.ml.confidence = Math.min(0.99, state.ml.confidence + 0.05);
+  renderAll();
+};
+document.getElementById('autoBtn').onclick = () => {
+  state.autoRunning = !state.autoRunning;
+  document.getElementById('autoBtn').textContent = state.autoRunning ? '⏸ stop' : '▶ auto-detect';
+  document.getElementById('autoBtn').classList.toggle('active', state.autoRunning);
+  if (state.autoRunning) autoLoop();
+};
+document.getElementById('resetBtn').onclick = () => {
+  state.cameras.forEach(c => c.assigned = null);
+  state.cells.forEach(c => { c.camera = null; c.confidence = 0; c.examples = 0; c.predictions = []; });
+  state.ml = { examples: 0, confidence: 0, tier: 1, supervises: [] };
+  state.highlights = [];
+  state.echogram.targets = [];
+  state.autoRunning = false;
+  document.getElementById('autoBtn').textContent = '▶ auto-detect';
+  document.getElementById('autoBtn').classList.remove('active');
+  renderAll();
+};
+
+function autoLoop() {
+  if (!state.autoRunning) return;
+  trainTick();
+  autoDetect();
+  setTimeout(autoLoop, 1500);
+}
+
+renderAll();
+</script>
+</body>
+</html>
