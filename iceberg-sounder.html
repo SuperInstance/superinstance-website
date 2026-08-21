@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iceberg Sounder — Depth Measurement for Quilt Cells</title>
+<style>
+  :root {
+    --tip: #4a9eff;
+    --surface: #5fc4ff;
+    --middle: #ffd866;
+    --deep: #ff9e5a;
+    --abyss: #b46aff;
+    --bg: #0a0e1a;
+    --panel: #131829;
+    --text: #d8e2ff;
+    --dim: #6e7a99;
+    --accent: #66ffd9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: linear-gradient(180deg, #0a0e1a 0%, #050810 100%);
+    color: var(--text);
+    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.6rem; letter-spacing: 0.02em; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.1rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  .subtitle { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 1.5rem;
+  }
+  @media (max-width: 800px) { .container { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--panel);
+    border: 1px solid #1f2640;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  textarea {
+    width: 100%;
+    min-height: 200px;
+    background: #0a0e1a;
+    color: var(--text);
+    border: 1px solid #1f2640;
+    border-radius: 4px;
+    padding: 0.75rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    resize: vertical;
+  }
+  button {
+    background: var(--accent);
+    color: #0a0e1a;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  button:hover { background: #88ffd9; }
+  button.secondary { background: #1f2640; color: var(--text); }
+  button.secondary:hover { background: #2a3450; }
+  .iceberg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+  }
+  .stratum {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin: 2px 0;
+    border-left: 4px solid;
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .stratum:hover { background: rgba(255, 255, 255, 0.08); transform: translateX(4px); }
+  .stratum.tip { border-color: var(--tip); }
+  .stratum.surface { border-color: var(--surface); }
+  .stratum.middle { border-color: var(--middle); }
+  .stratum.deep { border-color: var(--deep); }
+  .stratum.abyss { border-color: var(--abyss); }
+  .stratum-name { font-weight: 600; }
+  .stratum-meta { font-size: 0.75rem; color: var(--dim); }
+  .stratum.active { background: rgba(102, 255, 217, 0.15); }
+  .waterline {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #66ffd9, transparent);
+    margin: 0.5rem 0;
+    box-shadow: 0 0 12px #66ffd9;
+  }
+  .depth-meter {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #0a0e1a;
+    border-radius: 4px;
+    border: 1px solid #1f2640;
+  }
+  .depth-bar {
+    height: 24px;
+    background: linear-gradient(90deg, #4a9eff, #5fc4ff, #ffd866, #ff9e5a, #b46aff);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .depth-fill {
+    height: 100%;
+    background: rgba(10, 14, 26, 0.7);
+    border-right: 2px solid var(--accent);
+    transition: width 0.5s ease-out;
+  }
+  .depth-label {
+    font-size: 0.85rem;
+    color: var(--dim);
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .depth-value { color: var(--accent); font-weight: 600; }
+  .breakdown {
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed #1f2640;
+  }
+  .breakdown-label { color: var(--dim); }
+  .breakdown-value { color: var(--accent); }
+  .preset {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    margin: 0.2rem;
+    background: #1f2640;
+    border: 1px solid #2a3450;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: var(--text);
+  }
+  .preset:hover { background: #2a3450; }
+  .stratum-detail {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #0a0e1a;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    min-height: 100px;
+  }
+  .stratum-detail h3 { margin: 0 0 0.5rem; color: var(--accent); font-size: 0.95rem; }
+  .stratum-detail ul { margin: 0.5rem 0; padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.6; }
+  .meta { display: flex; gap: 0.5rem; margin: 0.5rem 0; font-size: 0.75rem; }
+  .badge {
+    padding: 0.15rem 0.5rem;
+    border-radius: 8px;
+    background: #1f2640;
+    color: var(--dim);
+  }
+  .badge.live { background: #2d4a3a; color: #66ffd9; }
+  .ascii-art {
+    font-size: 0.7rem;
+    line-height: 1.1;
+    color: var(--accent);
+    text-align: center;
+    margin: 1rem 0;
+    white-space: pre;
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧊 Iceberg Sounder</h1>
+  <div class="subtitle">Depth measurement for Quilt cells — sound any cell to see what's below the waterline</div>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Cell Input</h2>
+      <textarea id="cellInput" placeholder="Paste a Quilt cell (.qzt) or describe one...">{
+  "id": "token-validator",
+  "kind": "cell",
+  "form": { "name": "Validator", "fields": { "key": "Bytes" } },
+  "openers": [
+    { "name": "validate", "args": ["Token"], "returns": "Bool" },
+    { "name": "rotate", "args": ["Bytes"], "returns": "Unit" },
+    { "name": "status", "args": [], "returns": "Report" }
+  ],
+  "substrate": { "address": "/auth/v3", "scale": 2, "room": "AuthRoom", "protocol": "RR" },
+  "primitives": ["Spawn", "Observe", "Mutate", "Send", "Receive", "Spawn", "Send", "Observe", "Mutate"],
+  "repos": ["quilt-core", "quilt-oxide", "quilt-flux"]
+}</textarea>
+      <div>
+        <button onclick="sound()">Sound Depth</button>
+        <button class="secondary" onclick="loadPreset('demo')">Demo Cell</button>
+        <button class="secondary" onclick="loadPreset('shallow')">Shallow</button>
+        <button class="secondary" onclick="loadPreset('deep')">Deep</button>
+        <button class="secondary" onclick="loadPreset('abyssal')">Abyssal</button>
+      </div>
+      <div class="row" style="margin-top: 0.5rem">
+        <span class="preset" onclick="loadPreset('spreadsheet')">📊 Spreadsheet</span>
+        <span class="preset" onclick="loadPreset('oxide')">⚡ Oxide GPU</span>
+        <span class="preset" onclick="loadPreset('plato')">🔲 PLATO Tile</span>
+        <span class="preset" onclick="loadPreset('flux')">🌊 Flux Lang</span>
+        <span class="preset" onclick="loadPreset('crdt')">🔄 CRDT</span>
+        <span class="preset" onclick="loadPreset('penrose')">🔷 Penrose</span>
+      </div>
+
+      <h2>The Iceberg</h2>
+      <div class="ascii-art" id="asciiArt">
+                  ▲
+                 ╱ ╲                ← TIP
+                ╱   ╲
+               ╱     ╲
+              ═══════════════════   ← waterline
+      </div>
+      <div class="iceberg" id="iceberg">
+        <div class="stratum tip" data-stratum="tip" onclick="selectStratum('tip')">
+          <div class="stratum-name">TIP — 41 Repos</div>
+          <div class="stratum-meta">Click to inspect what lives here</div>
+        </div>
+        <div class="waterline"></div>
+        <div class="stratum surface" data-stratum="surface" onclick="selectStratum('surface')">
+          <div class="stratum-name">SURFACE — 67 Pages</div>
+          <div class="stratum-meta">IDE, bridges, openers</div>
+        </div>
+        <div class="stratum middle" data-stratum="middle" onclick="selectStratum('middle')">
+          <div class="stratum-name">MIDDLE — 27 Papers, 83 Essays</div>
+          <div class="stratum-meta">6-layer substrate stack</div>
+        </div>
+        <div class="stratum deep" data-stratum="deep" onclick="selectStratum('deep')">
+          <div class="stratum-name">DEEP — 27 Bridges, 8 Primitives</div>
+          <div class="stratum-meta">Conservation law, JEPA surprise</div>
+        </div>
+        <div class="stratum abyss" data-stratum="abyss" onclick="selectStratum('abyss')">
+          <div class="stratum-name">ABYSS — Math + Proofs</div>
+          <div class="stratum-meta">4 impossibility results, 10 substrate families</div>
+        </div>
+      </div>
+
+      <div class="stratum-detail" id="stratumDetail">
+        <h3>Click a stratum to inspect</h3>
+        <p style="color: var(--dim); font-size: 0.85rem">Each layer of the iceberg contains a different kind of artifact. The depth sound measures how far your cell penetrates into each layer.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Depth Report</h2>
+      <div id="report">
+        <p style="color: var(--dim); font-size: 0.85rem">Paste a cell and click "Sound Depth" to measure.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>What is Sounding?</h2>
+  <p style="font-size: 0.85rem; line-height: 1.6; color: var(--dim)">
+    In maritime terms, <em>sounding</em> is the act of measuring water depth. A ship "sounds" by lowering a lead weight on a line until it hits bottom, then reading the depth off the marked line. This tool applies the same metaphor to Quilt cells: we measure how deep a cell goes through the layers of the iceberg.
+  </p>
+  <p style="font-size: 0.85rem; line-height: 1.6; color: var(--dim)">
+    A cell's depth is the sum of how it touches each stratum. A cell that only appears in one repo is shallow. A cell that has a full substrate stack, uses multiple primitives, and hits impossibility bounds is abyssal.
+  </p>
+  <p style="font-size: 0.85rem; line-height: 1.6; color: var(--dim)">
+    The depth score is computed as: <code style="color: var(--accent)">D = 0.1·tip + 0.15·surface + 0.25·middle + 0.3·deep + 0.2·abyss</code>. See <a href="paper-30.html" style="color: var(--accent)">Paper 30: Sounding the Iceberg</a> for the full methodology.
+  </p>
+</div>
+
+<script>
+const STRATUM_INFO = {
+  tip: {
+    name: 'TIP — The 41 Repositories',
+    desc: 'The visible ecosystem. The public face of the Quilt project.',
+    contents: [
+      '8 core cell libraries (quilt-core, quilt-cell, quilt-state, quilt-form)',
+      '10 substrate adapters (quilt-oxide, quilt-plato, quilt-flux, quilt-lau)',
+      '12 bridge implementations (bridge-rust, bridge-python, bridge-go, ...)',
+      '5 IDE and tooling repos (quilt-ide, quilt-lsp, quilt-fmt, quilt-cli)',
+      '2 documentation sites (quilt-docs, quilt-spec)',
+      '3 research artifacts (quilt-proofs, quilt-benchmarks, quilt-zoo)',
+      '1 examples repo (quilt-examples)'
+    ]
+  },
+  surface: {
+    name: 'SURFACE — The 67 Pages',
+    desc: 'What the user touches: the IDE, the bridges, the openers.',
+    contents: [
+      '18 pages: The Cell Manual (define, instantiate, compose)',
+      '14 pages: The Bridge Manual (connect to host languages)',
+      '21 pages: The Substrate Manual (target hardware and runtimes)',
+      '14 pages: The Proof Manual (verify cell properties)',
+      'The Quilt IDE: a real cell graph editor with 8 cell kinds and 8 primitives',
+      'Openers: the public API of cells (read, write, list, ...)'
+    ]
+  },
+  middle: {
+    name: 'MIDDLE — 27 Papers, 83 Essays',
+    desc: 'The narrative mass: the design rationale, the history, the speculation.',
+    contents: [
+      '6 papers on the formal model',
+      '5 papers on substrate design',
+      '4 papers on polyformalism',
+      '3 papers on conservation laws',
+      '4 papers on impossibility',
+      '3 benchmark papers',
+      '2 survey papers',
+      '22 essays on design rationale',
+      '18 essays on historical context',
+      '19 essays on implementation notes',
+      '12 essays on speculation',
+      '12 retrospective essays'
+    ]
+  },
+  deep: {
+    name: 'DEEP — 27 Bridges, 8 Primitives',
+    desc: 'The mathematical foundation. The eight primitives and the conservation law.',
+    contents: [
+      'Spawn (σ): create a cell from a form',
+      'Kill (κ): destroy a cell',
+      'Move (μ): relocate a cell',
+      'Resize (ρ): change cell granularity',
+      'Send (τ): send a message on a protocol',
+      'Receive (ω): receive a message',
+      'Observe (ο): read cell state',
+      'Mutate (ξ): write cell state',
+      'Conservation: γ + η = budget',
+      'JEPA Surprise: ||φ(s) - φ(ŝ)||²',
+      '27 polyformalism bridges: 12 languages, 1 cell'
+    ]
+  },
+  abyss: {
+    name: 'ABYSS — Math + Proofs',
+    desc: 'The four impossibility results and the ten substrate families.',
+    contents: [
+      'Impossibility I: Budget cannot be created',
+      'Impossibility II: Perfect observation is impossible',
+      'Impossibility III: Substrate-agnosticism requires all 6 layers',
+      'Impossibility IV: Composition has a tax (B(C₁⊗C₂) < B(C₁)+B(C₂))',
+      'Oxide: GPU substrate',
+      'PLATO: tile substrate',
+      'Flux: language substrate',
+      'LAU: math substrate',
+      'Spreadsheet: grid substrate',
+      'Grand Pattern: primitive substrate',
+      'CRDT: distributed substrate',
+      'Penrose: aperiodic address substrate',
+      'Fibonacci: scale substrate',
+      'Terrain: room substrate'
+    ]
+  }
+};
+
+const PRESETS = {
+  demo: {
+    id: 'token-validator', kind: 'cell',
+    form: { name: 'Validator', fields: { key: 'Bytes' } },
+    openers: [
+      { name: 'validate', args: ['Token'], returns: 'Bool' },
+      { name: 'rotate', args: ['Bytes'], returns: 'Unit' },
+      { name: 'status', args: [], returns: 'Report' }
+    ],
+    substrate: { address: '/auth/v3', scale: 2, room: 'AuthRoom', protocol: 'RR' },
+    primitives: ['Spawn', 'Observe', 'Mutate', 'Send', 'Receive', 'Spawn', 'Send', 'Observe', 'Mutate'],
+    repos: ['quilt-core', 'quilt-oxide', 'quilt-flux']
+  },
+  shallow: {
+    id: 'demo-number', kind: 'cell', form: { name: 'Number' },
+    openers: [{ name: 'get', args: [], returns: 'Number' }],
+    substrate: { address: '/demo', scale: 0 },
+    primitives: ['Observe'],
+    repos: ['quilt-examples']
+  },
+  deep: {
+    id: 'spreadsheet-tax-calc', kind: 'cell', form: { name: 'Tax' },
+    openers: [
+      { name: 'calculate', args: ['Number'], returns: 'Number' },
+      { name: 'set_rate', args: ['Number'], returns: 'Unit' },
+      { name: 'history', args: [], returns: 'List<Number>' }
+    ],
+    substrate: { address: 'B2', scale: 1, room: 'Sheet1', protocol: 'FormulaRef' },
+    primitives: ['Spawn', 'Observe', 'Mutate', 'Send', 'Receive', 'Spawn', 'Send', 'Receive', 'Observe', 'Mutate', 'Observe', 'Send', 'Receive', 'Mutate'],
+    repos: ['quilt-core', 'spreadsheet-engine', 'quilt-flux', 'quilt-bridges', 'quilt-ide']
+  },
+  abyssal: {
+    id: 'penrose-vertex', kind: 'cell', form: { name: 'Vertex' },
+    openers: [
+      { name: 'inflate', args: ['Int'], returns: 'Vertex' },
+      { name: 'observe', args: [], returns: 'State' },
+      { name: 'send', args: ['Vertex', 'Msg'], returns: 'Unit' },
+      { name: 'merge', args: ['Vertex'], returns: 'Vertex' }
+    ],
+    substrate: { address: 'penrose://L5/P3/S2/V1', scale: 5, room: 'TilingPatch', protocol: 'Adjacency' },
+    primitives: ['Spawn', 'Observe', 'Mutate', 'Send', 'Receive', 'Resize', 'Move', 'Kill', 'Spawn', 'Send', 'Receive', 'Observe', 'Mutate', 'Kill', 'Spawn', 'Send', 'Receive'],
+    repos: ['quilt-core', 'quilt-oxide', 'quilt-plato', 'quilt-flux', 'quilt-lau', 'penrose-memory', 'penrose-lattice', 'crdt', 'quilt-bridges', 'quilt-ide', 'quilt-proofs', 'quilt-benchmarks']
+  },
+  spreadsheet: {
+    id: 'tax-cell', kind: 'cell', form: { name: 'TaxCalc' },
+    openers: [{ name: 'calculate', args: ['Number'], returns: 'Number' }],
+    substrate: { address: 'B2', scale: 1, room: 'Sheet1' },
+    primitives: ['Observe', 'Mutate', 'Send', 'Receive', 'Observe'],
+    repos: ['quilt-core', 'spreadsheet-engine']
+  },
+  oxide: {
+    id: 'matmul', kind: 'cell', form: { name: 'Shader' },
+    openers: [{ name: 'multiply', args: ['Matrix', 'Matrix'], returns: 'Matrix' }],
+    substrate: { address: 'gpu://sm_0/block_0', scale: 5, room: 'SharedMem' },
+    primitives: ['Spawn', 'Send', 'Receive', 'Observe', 'Mutate', 'Spawn', 'Spawn', 'Send', 'Receive'],
+    repos: ['quilt-core', 'quilt-oxide', 'oxide-checkpoint', 'oxide-barrier', 'cudaclaw']
+  },
+  plato: {
+    id: 'convolution-tile', kind: 'cell', form: { name: 'ConvTile' },
+    openers: [{ name: 'compute', args: ['Word'], returns: 'Word' }],
+    substrate: { address: 'tile(3,4)', scale: 3, room: 'TileMem' },
+    primitives: ['Spawn', 'Send', 'Receive', 'Mutate', 'Observe'],
+    repos: ['quilt-core', 'quilt-plato', 'plato-tile-cache', 'plato-tile-cascade']
+  },
+  flux: {
+    id: 'counter-py', kind: 'cell', form: { name: 'Counter' },
+    openers: [{ name: 'increment', args: [], returns: 'Unit' }, { name: 'reset', args: [], returns: 'Unit' }],
+    substrate: { address: '/counter', scale: 0, room: 'main_scope' },
+    primitives: ['Spawn', 'Mutate', 'Observe', 'Mutate', 'Observe'],
+    repos: ['quilt-core', 'quilt-flux', 'flux']
+  },
+  crdt: {
+    id: 'shared-counter', kind: 'cell', form: { name: 'GCounter' },
+    openers: [{ name: 'increment', args: [], returns: 'Unit' }, { name: 'value', args: [], returns: 'Int' }],
+    substrate: { address: 'replica://node_3/counter', scale: 3, room: 'ReplicationGroup' },
+    primitives: ['Spawn', 'Mutate', 'Send', 'Receive', 'Observe', 'Mutate', 'Send', 'Receive', 'Observe'],
+    repos: ['quilt-core', 'oxide-crdt', 'quilt-bridges']
+  },
+  penrose: {
+    id: 'penrose-v1', kind: 'cell', form: { name: 'Vertex' },
+    openers: [{ name: 'inflate', args: ['Int'], returns: 'Vertex' }],
+    substrate: { address: 'penrose://L5/P3/S2/V1', scale: 5, room: 'TilingPatch' },
+    primitives: ['Spawn', 'Resize', 'Send', 'Receive', 'Observe', 'Mutate', 'Resize', 'Send', 'Receive', 'Observe'],
+    repos: ['quilt-core', 'penrose-memory', 'penrose-lattice', 'lau-penrose']
+  }
+};
+
+function loadPreset(name) {
+  document.getElementById('cellInput').value = JSON.stringify(PRESETS[name], null, 2);
+  sound();
+}
+
+function selectStratum(name) {
+  const info = STRATUM_INFO[name];
+  document.querySelectorAll('.stratum').forEach(s => s.classList.remove('active'));
+  document.querySelector(`[data-stratum="${name}"]`).classList.add('active');
+  document.getElementById('stratumDetail').innerHTML = `
+    <h3>${info.name}</h3>
+    <p style="color: var(--dim); font-size: 0.85rem; margin: 0.25rem 0 0.5rem">${info.desc}</p>
+    <ul>${info.contents.map(c => `<li>${c}</li>`).join('')}</ul>
+  `;
+}
+
+function sound() {
+  let cell;
+  try {
+    cell = JSON.parse(document.getElementById('cellInput').value);
+  } catch (e) {
+    document.getElementById('report').innerHTML = `<p style="color: #ff6e6e">JSON parse error: ${e.message}</p>`;
+    return;
+  }
+
+  // Compute the 5 depth components
+  const d1 = Math.min(1, (cell.repos?.length || 0) / 10);
+  const d2 = Math.min(1, (cell.openers?.length || 0) / 6);
+  const sub = cell.substrate || {};
+  const subKeys = ['address', 'scale', 'room', 'protocol', 'form', 'state'].filter(k => sub[k] !== undefined);
+  const d3 = subKeys.length / 6;
+  const d4 = Math.min(1, (cell.primitives?.length || 0) / 12);
+  // Abyss: hits impossibility bounds if many primitives and many repos
+  const d5 = Math.min(1, ((cell.primitives?.length || 0) / 12) * ((cell.repos?.length || 0) / 10));
+
+  const depth = 0.1 * d1 + 0.15 * d2 + 0.25 * d3 + 0.3 * d4 + 0.2 * d5;
+  let classification = 'Shallow';
+  let color = 'var(--tip)';
+  if (depth > 0.7) { classification = 'Abyssal'; color = 'var(--abyss)'; }
+  else if (depth > 0.5) { classification = 'Deep'; color = 'var(--deep)'; }
+  else if (depth > 0.25) { classification = 'Mid-range'; color = 'var(--middle)'; }
+
+  // Conservation check (approximate)
+  const primitives = cell.primitives || [];
+  const COSTS = { Spawn: 0.8, Kill: 0.2, Move: 0.6, Resize: 0.5, Send: 0.7, Receive: 0.3, Observe: 0.1, Mutate: 0.9 };
+  let gamma = 0, eta = 0;
+  primitives.forEach(p => {
+    const c = COSTS[p] ?? 0.5;
+    gamma += c;
+    eta += 1 - c;
+  });
+  const total = gamma + eta;
+
+  document.getElementById('report').innerHTML = `
+    <div class="meta">
+      <span class="badge live">DEPTH ${depth.toFixed(3)}</span>
+      <span class="badge" style="color: ${color}; background: #1f2640">${classification}</span>
+    </div>
+    <div class="depth-meter">
+      <div class="depth-bar">
+        <div class="depth-fill" style="width: ${(1 - depth) * 100}%"></div>
+      </div>
+      <div class="depth-label">
+        <span>Surface (0.0)</span>
+        <span class="depth-value">${depth.toFixed(3)}</span>
+        <span>Abyss (1.0)</span>
+      </div>
+    </div>
+    <div class="breakdown">
+      <div class="breakdown-row"><span class="breakdown-label">Tip (repos × 0.1)</span><span class="breakdown-value">${(0.1 * d1).toFixed(3)} (${(d1*100).toFixed(0)}%)</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Surface (openers × 0.15)</span><span class="breakdown-value">${(0.15 * d2).toFixed(3)} (${(d2*100).toFixed(0)}%)</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Middle (substrate × 0.25)</span><span class="breakdown-value">${(0.25 * d3).toFixed(3)} (${(d3*100).toFixed(0)}%)</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Deep (primitives × 0.3)</span><span class="breakdown-value">${(0.3 * d4).toFixed(3)} (${(d4*100).toFixed(0)}%)</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Abyss (bounds × 0.2)</span><span class="breakdown-value">${(0.2 * d5).toFixed(3)} (${(d5*100).toFixed(0)}%)</span></div>
+    </div>
+    <h2 style="margin-top: 1rem">Conservation</h2>
+    <div class="breakdown">
+      <div class="breakdown-row"><span class="breakdown-label">γ (generative)</span><span class="breakdown-value">${gamma.toFixed(2)}</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">η (entropic)</span><span class="breakdown-value">${eta.toFixed(2)}</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">γ + η = total</span><span class="breakdown-value">${total.toFixed(2)}</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">JEPA surprise</span><span class="breakdown-value">${(Math.abs(gamma - eta) / 10).toFixed(3)}</span></div>
+    </div>
+    <h2 style="margin-top: 1rem">Inventory</h2>
+    <div class="breakdown">
+      <div class="breakdown-row"><span class="breakdown-label">Repos touched</span><span class="breakdown-value">${cell.repos?.length || 0}</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Openers</span><span class="breakdown-value">${cell.openers?.length || 0}</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Substrate layers</span><span class="breakdown-value">${subKeys.length}/6</span></div>
+      <div class="breakdown-row"><span class="breakdown-label">Primitives in trace</span><span class="breakdown-value">${primitives.length}</span></div>
+    </div>
+  `;
+}
+
+// Auto-sound on load
+loadPreset('demo');
+</script>
+</body>
+</html>

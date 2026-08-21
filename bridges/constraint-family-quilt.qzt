@@ -1,0 +1,4192 @@
+{
+  "version": "1.0",
+  "kind": "quilt-zip-target",
+  "name": "constraint-family-to-quilt",
+  "description": "Bridge mapping 47 constraint-* repos to Quilt cells. The constraint family is the constraint algebra of the cell model.",
+  "cells": [
+    {
+      "id": "constraint_constraint_audio",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintAudio"
+      },
+      "description": "Rust audio DSP backend for the constraint-theory ecosystem",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-audio",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-audio",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_bench_suite",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintBenchSuite"
+      },
+      "description": "AVX-512 + CUDA benchmark suite for Eisenstein integer constraints",
+      "language": "c",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Move"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 1,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-bench-suite",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-bench-suite",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "c",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_crdt",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintCrdt"
+      },
+      "description": "CRDT-backed constraint states for distributed fleet consensus",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Merge",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 2,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-crdt",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-crdt",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_demo",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintDemo"
+      },
+      "description": "Fleet Constraint Awareness, in Your Browser \u2014 physics clock, ripple",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 3,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-demo",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-demo",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_demos",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintDemos"
+      },
+      "description": "Interactive HTML demos for Eisenstein integer constraint theory",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 4,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-demos",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-demos",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_dialect",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintDialect"
+      },
+      "description": "MLIR Constraint Dialect for the SuperInstance ecosystem",
+      "language": "cpp",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Move",
+        "Mutate",
+        "Move"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 5,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-dialect",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-dialect",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "cpp",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_dsl",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintDsl"
+      },
+      "description": "Declarative YAML-like DSL for constraint graphs \u2014 define music",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 6,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-dsl",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-dsl",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_dynamics",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintDynamics"
+      },
+      "description": "Physics of constraints \u2014 propagation, collision, emergence",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 7,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-dynamics",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-dynamics",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_dynamics_rs",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintDynamicsRs"
+      },
+      "description": "Constraint dynamics \u2014 how constraints shape agent behavior over time",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 8,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-dynamics-rs",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-dynamics-rs",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_flow",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintFlow"
+      },
+      "description": "Enterprise automation with exact guarantees - constraint-based",
+      "language": "typescript",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 9,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-flow",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-flow",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "typescript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_flow_protocol",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintFlowProtocol"
+      },
+      "description": "Share understanding between AI agents at the FLUX bytecode level",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 10,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-flow-protocol",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-flow-protocol",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_gpu_kernels",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintGpuKernels"
+      },
+      "description": "Production CUDA kernels for constraint theory \u2014 341B constr/sec",
+      "language": "cuda",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Move"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 11,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-gpu-kernels",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-gpu-kernels",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "cuda",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_hamiltonian",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintHamiltonian"
+      },
+      "description": "Hamiltonian constraint systems \u2014 symplectic integration with cells",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 12,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-hamiltonian",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-hamiltonian",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_inference",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintInference"
+      },
+      "description": "Constraint Inference Engine \u2014 reverse-engineers constraints from data",
+      "language": "typescript",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 13,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-inference",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-inference",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "typescript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_instrument",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintInstrument"
+      },
+      "description": "The Constraint Instrument \u2014 7 modes, 17 terrains, infinite music",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Dispatch",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 14,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-instrument",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-instrument",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_llvm",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintLlvm"
+      },
+      "description": "LLVM backend for constraint compilation",
+      "language": "cpp",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Move",
+        "Mutate",
+        "Move"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 15,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-llvm",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-llvm",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "cpp",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_math",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintMath"
+      },
+      "description": "Math foundations: Eisenstein integers, hexagonal lattices",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 16,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-math",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-math",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_mlir",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintMlir"
+      },
+      "description": "MLIR integration for constraint compilation",
+      "language": "cpp",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Move",
+        "Mutate",
+        "Move"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 17,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-mlir",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-mlir",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "cpp",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_music",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintMusic"
+      },
+      "description": "Music generated by constraint propagation",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 18,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-music",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-music",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_noether",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintNoether"
+      },
+      "description": "Noether's theorem for constraints \u2014 symmetries preserve quantities",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 19,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-noether",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-noether",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_orchestra",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintOrchestra"
+      },
+      "description": "Constraint orchestra \u2014 many constraint cells in coordination",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Dispatch",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 20,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-orchestra",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-orchestra",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_pedagogy",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintPedagogy"
+      },
+      "description": "Teaching constraints to students",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 21,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-pedagogy",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-pedagogy",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_physics",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintPhysics"
+      },
+      "description": "Physics: Hamilton's principle, Lagrangian mechanics",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 22,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-physics",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-physics",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_propagator",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintPropagator"
+      },
+      "description": "Propagates constraints through the cell graph",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 23,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-propagator",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-propagator",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_quilt",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintQuilt"
+      },
+      "description": "Constraint layer for Quilt cells \u2014 direct port",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 24,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-quilt",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-quilt",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_relativity",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintRelativity"
+      },
+      "description": "Constraints in relativistic contexts \u2014 4-constraints",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 25,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-relativity",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-relativity",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_research",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintResearch"
+      },
+      "description": "Research artifacts: papers, datasets, theorems",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 26,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-research",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-research",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_rs",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintRs"
+      },
+      "description": "Core constraint library in Rust",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 27,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-rs",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-rs",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_runtime",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintRuntime"
+      },
+      "description": "Runtime that enforces constraints at cell boundaries",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Dispatch",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 28,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-runtime",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-runtime",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_satisfaction",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintSatisfaction"
+      },
+      "description": "CSP solver for cell constraint networks",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Mutate",
+        "Spawn",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 29,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-satisfaction",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-satisfaction",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_sat",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintSat"
+      },
+      "description": "Boolean SAT solver for constraint checking",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Mutate",
+        "Spawn",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 30,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-sat",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-sat",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_simulator",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintSimulator"
+      },
+      "description": "Simulator: run cells, propagate constraints, observe",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 31,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-simulator",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-simulator",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_solver",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintSolver"
+      },
+      "description": "Generic constraint solver over Eisenstein integers",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Mutate",
+        "Spawn",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 32,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-solver",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-solver",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_spectral",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintSpectral"
+      },
+      "description": "Spectral constraints \u2014 eigenvalues bound the cell",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 33,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-spectral",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-spectral",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_sql",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintSql"
+      },
+      "description": "SQL queries that respect constraints",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 34,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-sql",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-sql",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_std",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintStd"
+      },
+      "description": "Constraint standard library \u2014 common forms",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 35,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-std",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-std",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_symbolic",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintSymbolic"
+      },
+      "description": "Symbolic constraint manipulation",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 36,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-symbolic",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-symbolic",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_sympy",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintSympy"
+      },
+      "description": "SymPy backend for constraints",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 37,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-sympy",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-sympy",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_thermo",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintThermo"
+      },
+      "description": "Thermodynamic constraints \u2014 entropy bounds",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 38,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-thermo",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-thermo",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_toolkit",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintToolkit"
+      },
+      "description": "Toolkit: linters, formatters, checkers for constraints",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 39,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-toolkit",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-toolkit",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_trace",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintTrace"
+      },
+      "description": "Trace verifier: check constraints along a cell trace",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 40,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-trace",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-trace",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_tutorial",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintTutorial"
+      },
+      "description": "Tutorial: write your first constraint",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 41,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-tutorial",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-tutorial",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_types",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintTypes"
+      },
+      "description": "Type system for constraints",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 42,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-types",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-types",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_typescript",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintTypescript"
+      },
+      "description": "TypeScript types for constraints",
+      "language": "typescript",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 43,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-typescript",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-typescript",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "typescript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_validator",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintValidator"
+      },
+      "description": "Validator: cells must satisfy constraints",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 44,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-validator",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-validator",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_verifier",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintVerifier"
+      },
+      "description": "Verifier: prove a cell satisfies its constraints",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 45,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-verifier",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-verifier",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_visualizer",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintVisualizer"
+      },
+      "description": "3D visualizer of constraint propagation",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 46,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-visualizer",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-visualizer",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_constraint_wasm",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintWasm"
+      },
+      "description": "WASM implementation \u2014 runs in browser",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Move",
+        "Mutate",
+        "Move"
+      ],
+      "z_in": {
+        "input": "constraint spec"
+      },
+      "z_out": {
+        "output": "satisfied?"
+      },
+      "jepa": {
+        "predict": "constraint holds",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 47,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "constraining"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "satisfy",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "propagate",
+          "args": [
+            "State"
+          ],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/constraint/constraint-wasm",
+        "scale": 0,
+        "room": "ConstraintRoom",
+        "protocol": "Constraint",
+        "form": "constraint-wasm",
+        "state": "ready"
+      },
+      "tags": [
+        "constraint",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "constraint_family_meta",
+      "kind": "cell",
+      "form": {
+        "name": "ConstraintFamilyMeta"
+      },
+      "description": "The constraint family is the constraint algebra of Quilt. 47 repos, each a facet of the Eisenstein integer lattice, Hamiltonian dynamics, FLUX bytecode constraints. Together they prove the cell can be expressed as a constraint network.",
+      "primitives": [
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "family": "constraint",
+        "size": 47,
+        "core": "Eisenstein integers"
+      },
+      "z_out": {
+        "proof": "cell = constraint network"
+      },
+      "jepa": {
+        "predict": "constraint = form",
+        "verified": true
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "complete"
+      },
+      "murmur": {},
+      "graph": {
+        "children": [
+          "constraint_constraint_audio",
+          "constraint_constraint_bench_suite",
+          "constraint_constraint_crdt",
+          "constraint_constraint_demo",
+          "constraint_constraint_demos",
+          "constraint_constraint_dialect",
+          "constraint_constraint_dsl",
+          "constraint_constraint_dynamics",
+          "constraint_constraint_dynamics_rs",
+          "constraint_constraint_flow",
+          "constraint_constraint_flow_protocol",
+          "constraint_constraint_gpu_kernels",
+          "constraint_constraint_hamiltonian",
+          "constraint_constraint_inference",
+          "constraint_constraint_instrument",
+          "constraint_constraint_llvm",
+          "constraint_constraint_math",
+          "constraint_constraint_mlir",
+          "constraint_constraint_music",
+          "constraint_constraint_noether",
+          "constraint_constraint_orchestra",
+          "constraint_constraint_pedagogy",
+          "constraint_constraint_physics",
+          "constraint_constraint_propagator",
+          "constraint_constraint_quilt",
+          "constraint_constraint_relativity",
+          "constraint_constraint_research",
+          "constraint_constraint_rs",
+          "constraint_constraint_runtime",
+          "constraint_constraint_satisfaction",
+          "constraint_constraint_sat",
+          "constraint_constraint_simulator",
+          "constraint_constraint_solver",
+          "constraint_constraint_spectral",
+          "constraint_constraint_sql",
+          "constraint_constraint_std",
+          "constraint_constraint_symbolic",
+          "constraint_constraint_sympy",
+          "constraint_constraint_thermo",
+          "constraint_constraint_toolkit",
+          "constraint_constraint_trace",
+          "constraint_constraint_tutorial",
+          "constraint_constraint_types",
+          "constraint_constraint_typescript",
+          "constraint_constraint_validator",
+          "constraint_constraint_verifier",
+          "constraint_constraint_visualizer",
+          "constraint_constraint_wasm"
+        ]
+      },
+      "openers": [
+        {
+          "name": "list",
+          "args": [],
+          "returns": "List<Cell>"
+        },
+        {
+          "name": "satisfy_all",
+          "args": [
+            "Spec"
+          ],
+          "returns": "Bool"
+        }
+      ],
+      "tags": [
+        "meta",
+        "constraint-family"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "constraint_constraint_audio",
+      "to": "constraint_constraint_flow",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_audio",
+      "to": "constraint_constraint_flow_protocol",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_flow",
+      "to": "constraint_constraint_flow_protocol",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_flow",
+      "to": "constraint_constraint_inference",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_flow_protocol",
+      "to": "constraint_constraint_inference",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_flow_protocol",
+      "to": "constraint_constraint_music",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_inference",
+      "to": "constraint_constraint_music",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_inference",
+      "to": "constraint_constraint_quilt",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_music",
+      "to": "constraint_constraint_quilt",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_music",
+      "to": "constraint_constraint_research",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_quilt",
+      "to": "constraint_constraint_research",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_quilt",
+      "to": "constraint_constraint_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_research",
+      "to": "constraint_constraint_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_research",
+      "to": "constraint_constraint_simulator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_rs",
+      "to": "constraint_constraint_simulator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_rs",
+      "to": "constraint_constraint_sql",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_simulator",
+      "to": "constraint_constraint_sql",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_simulator",
+      "to": "constraint_constraint_std",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_sql",
+      "to": "constraint_constraint_std",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_sql",
+      "to": "constraint_constraint_thermo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_std",
+      "to": "constraint_constraint_thermo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_std",
+      "to": "constraint_constraint_toolkit",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_thermo",
+      "to": "constraint_constraint_toolkit",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_thermo",
+      "to": "constraint_constraint_trace",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_toolkit",
+      "to": "constraint_constraint_trace",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_toolkit",
+      "to": "constraint_constraint_types",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_trace",
+      "to": "constraint_constraint_types",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_trace",
+      "to": "constraint_constraint_typescript",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_types",
+      "to": "constraint_constraint_typescript",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_types",
+      "to": "constraint_constraint_visualizer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_typescript",
+      "to": "constraint_constraint_visualizer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "constraint_constraint_bench_suite",
+      "to": "constraint_constraint_gpu_kernels",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Receive,Send,Spawn"
+    },
+    {
+      "from": "constraint_constraint_demo",
+      "to": "constraint_constraint_demos",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_demo",
+      "to": "constraint_constraint_dsl",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_demos",
+      "to": "constraint_constraint_dsl",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_demos",
+      "to": "constraint_constraint_pedagogy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_dsl",
+      "to": "constraint_constraint_pedagogy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_dsl",
+      "to": "constraint_constraint_satisfaction",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_pedagogy",
+      "to": "constraint_constraint_satisfaction",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_pedagogy",
+      "to": "constraint_constraint_sat",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_satisfaction",
+      "to": "constraint_constraint_sat",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_satisfaction",
+      "to": "constraint_constraint_solver",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_sat",
+      "to": "constraint_constraint_solver",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_sat",
+      "to": "constraint_constraint_tutorial",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_solver",
+      "to": "constraint_constraint_tutorial",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_dialect",
+      "to": "constraint_constraint_llvm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Mutate,Resize,Spawn"
+    },
+    {
+      "from": "constraint_constraint_dialect",
+      "to": "constraint_constraint_mlir",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Mutate,Resize,Spawn"
+    },
+    {
+      "from": "constraint_constraint_llvm",
+      "to": "constraint_constraint_mlir",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Mutate,Resize,Spawn"
+    },
+    {
+      "from": "constraint_constraint_llvm",
+      "to": "constraint_constraint_wasm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Mutate,Resize,Spawn"
+    },
+    {
+      "from": "constraint_constraint_mlir",
+      "to": "constraint_constraint_wasm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Mutate,Resize,Spawn"
+    },
+    {
+      "from": "constraint_constraint_dynamics",
+      "to": "constraint_constraint_dynamics_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "constraint_constraint_dynamics",
+      "to": "constraint_constraint_propagator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "constraint_constraint_dynamics_rs",
+      "to": "constraint_constraint_propagator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "constraint_constraint_hamiltonian",
+      "to": "constraint_constraint_math",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_hamiltonian",
+      "to": "constraint_constraint_noether",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_math",
+      "to": "constraint_constraint_noether",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_math",
+      "to": "constraint_constraint_physics",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_noether",
+      "to": "constraint_constraint_physics",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_noether",
+      "to": "constraint_constraint_relativity",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_physics",
+      "to": "constraint_constraint_relativity",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_physics",
+      "to": "constraint_constraint_spectral",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_relativity",
+      "to": "constraint_constraint_spectral",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_relativity",
+      "to": "constraint_constraint_symbolic",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_spectral",
+      "to": "constraint_constraint_symbolic",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_spectral",
+      "to": "constraint_constraint_sympy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_symbolic",
+      "to": "constraint_constraint_sympy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "constraint_constraint_instrument",
+      "to": "constraint_constraint_orchestra",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Dispatch,Receive,Send,Spawn"
+    },
+    {
+      "from": "constraint_constraint_instrument",
+      "to": "constraint_constraint_runtime",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Dispatch,Receive,Send,Spawn"
+    },
+    {
+      "from": "constraint_constraint_orchestra",
+      "to": "constraint_constraint_runtime",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Dispatch,Receive,Send,Spawn"
+    },
+    {
+      "from": "constraint_constraint_validator",
+      "to": "constraint_constraint_verifier",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    }
+  ],
+  "external_refs": [
+    {
+      "kind": "github-org",
+      "name": "SuperInstance",
+      "filter": "constraint-*"
+    }
+  ],
+  "stats": {
+    "total_cells": 49,
+    "total_edges": 70,
+    "languages": [
+      "c",
+      "cpp",
+      "cuda",
+      "html",
+      "python",
+      "rust",
+      "typescript"
+    ]
+  },
+  "tags": [
+    "constraint",
+    "algebra",
+    "bridge"
+  ]
+}

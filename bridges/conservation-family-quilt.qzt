@@ -1,0 +1,5489 @@
+{
+  "version": "1.0",
+  "kind": "quilt-zip-target",
+  "name": "conservation-family-to-quilt",
+  "description": "Bridge mapping 60 conservation-* repos to Quilt cells. The conservation family IS the math layer of the cell model.",
+  "cells": [
+    {
+      "id": "conservation_conservation_action",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationAction"
+      },
+      "description": "Conservation-law governance for GitHub Actions CI/CD",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-action",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-action",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_anomaly",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationAnomaly"
+      },
+      "description": "Spectral anomaly detection using conservation ratio of graph",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 1,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-anomaly",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-anomaly",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_api",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationApi"
+      },
+      "description": "REST API for conservation spectral analysis",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 2,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-api",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-api",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_art",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationArt"
+      },
+      "description": "Conservation-aware generative art from spectral graph theory",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 3,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-art",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-art",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_checker",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationChecker"
+      },
+      "description": "One-sided conservation law checker \u2014 track budgets, energy",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 4,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-checker",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-checker",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_cli",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationCli"
+      },
+      "description": "si-conservation CLI \u2014 unified conservation law benchmark",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 5,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-cli",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-cli",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_compiler",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationCompiler"
+      },
+      "description": "Mini compiler that verifies energy conservation in programs",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Move",
+        "Mutate",
+        "Spawn",
+        "Move"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 6,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-compiler",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-compiler",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_composer",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationComposer"
+      },
+      "description": "Compose music that maximizes spectral conservation",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 7,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-composer",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-composer",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_conformance",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationConformance"
+      },
+      "description": "Cross-language conformance tests for Conservation Spectral",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 8,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-conformance",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-conformance",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_docs",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationDocs"
+      },
+      "description": "Research documentation for Conservation Spectral Framework",
+      "language": "tex",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 9,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-docs",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-docs",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "tex",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_enforcer",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationEnforcer"
+      },
+      "description": "FLUX bytecode conservation-law enforcement for LLM outputs",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 10,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-enforcer",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-enforcer",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_enforcer_rs",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationEnforcerRs"
+      },
+      "description": "Rust implementation of FLUX bytecode conservation-law enforcer",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 11,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-enforcer-rs",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-enforcer-rs",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_explorer",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationExplorer"
+      },
+      "description": "Interactive conservation law explorer \u2014 D3.js + KaTeX",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 12,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-explorer",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-explorer",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_geometry",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationGeometry"
+      },
+      "description": "Geometric visualizations of spectral conservation \u2014 Laplacian",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "Spawn"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 13,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-geometry",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-geometry",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_guardian",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationGuardian"
+      },
+      "description": "Generic Workflow Conservation Engine",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 14,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-guardian",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-guardian",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_instrument",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationInstrument"
+      },
+      "description": "Musical instrument that obeys conservation law",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 15,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-instrument",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-instrument",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_iso",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationIso"
+      },
+      "description": "ISO standard for conservation-aware programs",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 16,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-iso",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-iso",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_lau",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationLau"
+      },
+      "description": "LAU substrate for conservation laws \u2014 formal math",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 17,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-lau",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-lau",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_laws",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationLaws"
+      },
+      "description": "The core mathematical laws: \u03b3 + \u03b7 = budget",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 18,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-laws",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-laws",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_llvm",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationLlvm"
+      },
+      "description": "LLVM pass for conservation law enforcement",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Move",
+        "Mutate",
+        "Spawn",
+        "Move"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 19,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-llvm",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-llvm",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_math",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationMath"
+      },
+      "description": "Math foundations: spectral, eigenvalue, Laplacian",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "Spawn"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 20,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-math",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-math",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_mcp",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationMcp"
+      },
+      "description": "Model Context Protocol for conservation queries",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 21,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-mcp",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-mcp",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_meter",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationMeter"
+      },
+      "description": "Live meter showing \u03b3/\u03b7/budget in real time",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 22,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-meter",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-meter",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_monitor",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationMonitor"
+      },
+      "description": "Monitor conservation across running cells",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 23,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-monitor",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-monitor",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_music",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationMusic"
+      },
+      "description": "Conservation law applied to music \u2014 pitches have budgets",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 24,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-music",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-music",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_noether",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationNoether"
+      },
+      "description": "Noether's theorem applied to cells \u2014 symmetries + conservation",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 25,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-noether",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-noether",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_numpy",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationNumpy"
+      },
+      "description": "NumPy implementation of conservation spectral",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 26,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-numpy",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-numpy",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_observer",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationObserver"
+      },
+      "description": "Observe-only cell that checks conservation",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 27,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-observer",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-observer",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_oracle",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationOracle"
+      },
+      "description": "Oracle that answers 'is this trace conservation-valid?'",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 28,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-oracle",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-oracle",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_paper",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationPaper"
+      },
+      "description": "The white paper: Conservation Spectral Framework",
+      "language": "tex",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 29,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-paper",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-paper",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "tex",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_pedagogy",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationPedagogy"
+      },
+      "description": "Teaching conservation laws with cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 30,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-pedagogy",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-pedagogy",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_physics",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationPhysics"
+      },
+      "description": "Physics: energy, momentum, charge as budgets",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 31,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-physics",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-physics",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_playground",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationPlayground"
+      },
+      "description": "Interactive playground for conservation laws",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 32,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-playground",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-playground",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_policy",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationPolicy"
+      },
+      "description": "Policy engine: enforce conservation as code",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 33,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-policy",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-policy",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_prover",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationProver"
+      },
+      "description": "Automated theorem prover for conservation laws",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 34,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-prover",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-prover",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_quantum",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationQuantum"
+      },
+      "description": "Quantum conservation \u2014 unitary evolution preserves budget",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 35,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-quantum",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-quantum",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_quilt",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationQuilt"
+      },
+      "description": "Conservation laws for Quilt cells \u2014 direct port",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 36,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-quilt",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-quilt",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_raspberry",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationRaspberry"
+      },
+      "description": "Conservation on Raspberry Pi \u2014 small footprint",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 37,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-raspberry",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-raspberry",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_react",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationReact"
+      },
+      "description": "React UI for conservation explorer",
+      "language": "typescript",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 38,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-react",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-react",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "typescript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_relativity",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationRelativity"
+      },
+      "description": "Conservation in relativistic contexts \u2014 4-momentum",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 39,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-relativity",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-relativity",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_research",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationResearch"
+      },
+      "description": "Research artifacts \u2014 papers, datasets, theorems",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 40,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-research",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-research",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_runtime",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationRuntime"
+      },
+      "description": "Runtime that enforces conservation in cells",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Dispatch"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 41,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-runtime",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-runtime",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_sage",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationSage"
+      },
+      "description": "SageMath implementation of conservation spectral",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "Spawn"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 42,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-sage",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-sage",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_server",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationServer"
+      },
+      "description": "Conservation law as a service",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 43,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-server",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-server",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_simulator",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationSimulator"
+      },
+      "description": "Simulator: spawn cells, run, verify conservation",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 44,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-simulator",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-simulator",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_spectral",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationSpectral"
+      },
+      "description": "Spectral conservation \u2014 eigenvalues of graph Laplacian",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "Spawn"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 45,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-spectral",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-spectral",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_sql",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationSql"
+      },
+      "description": "SQL queries that respect conservation",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 46,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-sql",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-sql",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_standards",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationStandards"
+      },
+      "description": "Standards body: conservation law specs",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 47,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-standards",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-standards",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_sympy",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationSympy"
+      },
+      "description": "SymPy implementation for symbolic conservation",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "Spawn"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 48,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-sympy",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-sympy",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_thermo",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationThermo"
+      },
+      "description": "Thermodynamic conservation \u2014 entropy, free energy",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "JEPA",
+        "Observe",
+        "Mutate",
+        "JEPA"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 49,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-thermo",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-thermo",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_toolkit",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationToolkit"
+      },
+      "description": "Toolkit: linters, formatters, checkers for conservation",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 50,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-toolkit",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-toolkit",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_trace",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationTrace"
+      },
+      "description": "Trace verifier: replay a trace, check conservation",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe",
+        "GC"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 51,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-trace",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-trace",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_tutorial",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationTutorial"
+      },
+      "description": "Tutorial: write your first conservation-aware program",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 52,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-tutorial",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-tutorial",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_typescript",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationTypescript"
+      },
+      "description": "TypeScript types for conservation laws",
+      "language": "typescript",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 53,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-typescript",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-typescript",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "typescript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_ui",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationUi"
+      },
+      "description": "UI components for conservation dashboard",
+      "language": "typescript",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 54,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-ui",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-ui",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "typescript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_validator",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationValidator"
+      },
+      "description": "Validator: input/output must conserve",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 55,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-validator",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-validator",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_verifier",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationVerifier"
+      },
+      "description": "Verifier: prove a cell's trace conserves",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 56,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-verifier",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-verifier",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_visualizer",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationVisualizer"
+      },
+      "description": "3D visualizer of conservation flow",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 57,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-visualizer",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-visualizer",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_wasm",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationWasm"
+      },
+      "description": "WASM implementation \u2014 runs in browser",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Move",
+        "Mutate",
+        "Spawn",
+        "Move"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 58,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-wasm",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-wasm",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_web",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationWeb"
+      },
+      "description": "Web playground for conservation laws",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 59,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-web",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-web",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_conservation_z3",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationZ3"
+      },
+      "description": "Z3 SMT solver for conservation proofs",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "trace to verify"
+      },
+      "z_out": {
+        "output": "conservation-valid?"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "observe": "actual conservation"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 60,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "validating"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "verify",
+          "args": [
+            "Trace"
+          ],
+          "returns": "Bool"
+        },
+        {
+          "name": "balance",
+          "args": [],
+          "returns": "GammaEta"
+        }
+      ],
+      "substrate": {
+        "address": "/conservation/conservation-z3",
+        "scale": 0,
+        "room": "ConservationRoom",
+        "protocol": "Verify",
+        "form": "conservation-z3",
+        "state": "validating"
+      },
+      "tags": [
+        "conservation",
+        "math",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "conservation_family_meta",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationFamilyMeta"
+      },
+      "description": "The conservation family IS the math layer of Quilt. 60 repos, each a facet of the conservation law \u03b3 + \u03b7 = budget. Together they prove the law across physics, music, compilers, ML, and more.",
+      "primitives": [
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "family": "conservation",
+        "size": 60,
+        "law": "\u03b3 + \u03b7 = budget"
+      },
+      "z_out": {
+        "proof": "conservation is universal"
+      },
+      "jepa": {
+        "predict": "all computation conserves",
+        "verified": true
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "eternal"
+      },
+      "murmur": {},
+      "graph": {
+        "children": [
+          "conservation_conservation_action",
+          "conservation_conservation_anomaly",
+          "conservation_conservation_api",
+          "conservation_conservation_art",
+          "conservation_conservation_checker",
+          "conservation_conservation_cli",
+          "conservation_conservation_compiler",
+          "conservation_conservation_composer",
+          "conservation_conservation_conformance",
+          "conservation_conservation_docs",
+          "conservation_conservation_enforcer",
+          "conservation_conservation_enforcer_rs",
+          "conservation_conservation_explorer",
+          "conservation_conservation_geometry",
+          "conservation_conservation_guardian",
+          "conservation_conservation_instrument",
+          "conservation_conservation_iso",
+          "conservation_conservation_lau",
+          "conservation_conservation_laws",
+          "conservation_conservation_llvm",
+          "conservation_conservation_math",
+          "conservation_conservation_mcp",
+          "conservation_conservation_meter",
+          "conservation_conservation_monitor",
+          "conservation_conservation_music",
+          "conservation_conservation_noether",
+          "conservation_conservation_numpy",
+          "conservation_conservation_observer",
+          "conservation_conservation_oracle",
+          "conservation_conservation_paper",
+          "conservation_conservation_pedagogy",
+          "conservation_conservation_physics",
+          "conservation_conservation_playground",
+          "conservation_conservation_policy",
+          "conservation_conservation_prover",
+          "conservation_conservation_quantum",
+          "conservation_conservation_quilt",
+          "conservation_conservation_raspberry",
+          "conservation_conservation_react",
+          "conservation_conservation_relativity",
+          "conservation_conservation_research",
+          "conservation_conservation_runtime",
+          "conservation_conservation_sage",
+          "conservation_conservation_server",
+          "conservation_conservation_simulator",
+          "conservation_conservation_spectral",
+          "conservation_conservation_sql",
+          "conservation_conservation_standards",
+          "conservation_conservation_sympy",
+          "conservation_conservation_thermo",
+          "conservation_conservation_toolkit",
+          "conservation_conservation_trace",
+          "conservation_conservation_tutorial",
+          "conservation_conservation_typescript",
+          "conservation_conservation_ui",
+          "conservation_conservation_validator",
+          "conservation_conservation_verifier",
+          "conservation_conservation_visualizer",
+          "conservation_conservation_wasm",
+          "conservation_conservation_web",
+          "conservation_conservation_z3"
+        ]
+      },
+      "openers": [
+        {
+          "name": "list",
+          "args": [],
+          "returns": "List<Cell>"
+        },
+        {
+          "name": "verify_all",
+          "args": [
+            "List<Trace>"
+          ],
+          "returns": "Bool"
+        }
+      ],
+      "tags": [
+        "meta",
+        "conservation-family"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "conservation_conservation_action",
+      "to": "conservation_conservation_anomaly",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_action",
+      "to": "conservation_conservation_art",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_anomaly",
+      "to": "conservation_conservation_art",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_anomaly",
+      "to": "conservation_conservation_cli",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_art",
+      "to": "conservation_conservation_cli",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_art",
+      "to": "conservation_conservation_composer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_cli",
+      "to": "conservation_conservation_composer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_cli",
+      "to": "conservation_conservation_conformance",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_composer",
+      "to": "conservation_conservation_conformance",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_composer",
+      "to": "conservation_conservation_docs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_conformance",
+      "to": "conservation_conservation_docs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_conformance",
+      "to": "conservation_conservation_explorer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_docs",
+      "to": "conservation_conservation_explorer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_docs",
+      "to": "conservation_conservation_guardian",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_explorer",
+      "to": "conservation_conservation_guardian",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_explorer",
+      "to": "conservation_conservation_instrument",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_guardian",
+      "to": "conservation_conservation_instrument",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_guardian",
+      "to": "conservation_conservation_iso",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_instrument",
+      "to": "conservation_conservation_iso",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_instrument",
+      "to": "conservation_conservation_lau",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_iso",
+      "to": "conservation_conservation_lau",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_iso",
+      "to": "conservation_conservation_laws",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_lau",
+      "to": "conservation_conservation_laws",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_lau",
+      "to": "conservation_conservation_meter",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_laws",
+      "to": "conservation_conservation_meter",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_laws",
+      "to": "conservation_conservation_monitor",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_meter",
+      "to": "conservation_conservation_monitor",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_meter",
+      "to": "conservation_conservation_music",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_monitor",
+      "to": "conservation_conservation_music",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_monitor",
+      "to": "conservation_conservation_numpy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_music",
+      "to": "conservation_conservation_numpy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_music",
+      "to": "conservation_conservation_oracle",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_numpy",
+      "to": "conservation_conservation_oracle",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_numpy",
+      "to": "conservation_conservation_paper",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_oracle",
+      "to": "conservation_conservation_paper",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_oracle",
+      "to": "conservation_conservation_pedagogy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_paper",
+      "to": "conservation_conservation_pedagogy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_paper",
+      "to": "conservation_conservation_playground",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_pedagogy",
+      "to": "conservation_conservation_playground",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_pedagogy",
+      "to": "conservation_conservation_policy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_playground",
+      "to": "conservation_conservation_policy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_playground",
+      "to": "conservation_conservation_prover",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_policy",
+      "to": "conservation_conservation_prover",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_policy",
+      "to": "conservation_conservation_quilt",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_prover",
+      "to": "conservation_conservation_quilt",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_prover",
+      "to": "conservation_conservation_raspberry",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_quilt",
+      "to": "conservation_conservation_raspberry",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_quilt",
+      "to": "conservation_conservation_react",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_raspberry",
+      "to": "conservation_conservation_react",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_raspberry",
+      "to": "conservation_conservation_research",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_react",
+      "to": "conservation_conservation_research",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_react",
+      "to": "conservation_conservation_simulator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_research",
+      "to": "conservation_conservation_simulator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_research",
+      "to": "conservation_conservation_standards",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_simulator",
+      "to": "conservation_conservation_standards",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_simulator",
+      "to": "conservation_conservation_toolkit",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_standards",
+      "to": "conservation_conservation_toolkit",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_standards",
+      "to": "conservation_conservation_tutorial",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_toolkit",
+      "to": "conservation_conservation_tutorial",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_toolkit",
+      "to": "conservation_conservation_typescript",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_tutorial",
+      "to": "conservation_conservation_typescript",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_tutorial",
+      "to": "conservation_conservation_ui",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_typescript",
+      "to": "conservation_conservation_ui",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_typescript",
+      "to": "conservation_conservation_visualizer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_ui",
+      "to": "conservation_conservation_visualizer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_ui",
+      "to": "conservation_conservation_web",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_visualizer",
+      "to": "conservation_conservation_web",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_visualizer",
+      "to": "conservation_conservation_z3",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_web",
+      "to": "conservation_conservation_z3",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_api",
+      "to": "conservation_conservation_mcp",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "conservation_conservation_api",
+      "to": "conservation_conservation_observer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "conservation_conservation_mcp",
+      "to": "conservation_conservation_observer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "conservation_conservation_mcp",
+      "to": "conservation_conservation_server",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "conservation_conservation_observer",
+      "to": "conservation_conservation_server",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "conservation_conservation_observer",
+      "to": "conservation_conservation_sql",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "conservation_conservation_server",
+      "to": "conservation_conservation_sql",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Receive,Send,Spawn"
+    },
+    {
+      "from": "conservation_conservation_checker",
+      "to": "conservation_conservation_enforcer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_checker",
+      "to": "conservation_conservation_enforcer_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_enforcer",
+      "to": "conservation_conservation_enforcer_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_enforcer",
+      "to": "conservation_conservation_validator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_enforcer_rs",
+      "to": "conservation_conservation_validator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_enforcer_rs",
+      "to": "conservation_conservation_verifier",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_validator",
+      "to": "conservation_conservation_verifier",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_compiler",
+      "to": "conservation_conservation_llvm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Mutate,Resize,Spawn"
+    },
+    {
+      "from": "conservation_conservation_compiler",
+      "to": "conservation_conservation_wasm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Mutate,Resize,Spawn"
+    },
+    {
+      "from": "conservation_conservation_llvm",
+      "to": "conservation_conservation_wasm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Mutate,Resize,Spawn"
+    },
+    {
+      "from": "conservation_conservation_geometry",
+      "to": "conservation_conservation_math",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_geometry",
+      "to": "conservation_conservation_noether",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_math",
+      "to": "conservation_conservation_noether",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_math",
+      "to": "conservation_conservation_physics",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_noether",
+      "to": "conservation_conservation_physics",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_noether",
+      "to": "conservation_conservation_quantum",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_physics",
+      "to": "conservation_conservation_quantum",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_physics",
+      "to": "conservation_conservation_relativity",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_quantum",
+      "to": "conservation_conservation_relativity",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_quantum",
+      "to": "conservation_conservation_sage",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_relativity",
+      "to": "conservation_conservation_sage",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_relativity",
+      "to": "conservation_conservation_spectral",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_sage",
+      "to": "conservation_conservation_spectral",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_sage",
+      "to": "conservation_conservation_sympy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_spectral",
+      "to": "conservation_conservation_sympy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_spectral",
+      "to": "conservation_conservation_thermo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "conservation_conservation_sympy",
+      "to": "conservation_conservation_thermo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:JEPA,Mutate,Observe,Spawn"
+    }
+  ],
+  "external_refs": [
+    {
+      "kind": "github-org",
+      "name": "SuperInstance",
+      "filter": "conservation-*"
+    }
+  ],
+  "stats": {
+    "total_cells": 62,
+    "total_edges": 103,
+    "languages": [
+      "html",
+      "python",
+      "rust",
+      "tex",
+      "typescript"
+    ]
+  },
+  "tags": [
+    "conservation",
+    "math",
+    "bridge"
+  ]
+}

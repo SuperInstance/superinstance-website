@@ -1,0 +1,6150 @@
+{
+  "version": "1.0",
+  "kind": "quilt-zip-target",
+  "name": "agent-family-to-quilt",
+  "description": "Bridge mapping the 81 agent-* repos to Quilt cells. The agent family IS the Quilt cell model in agent clothing.",
+  "cells": [
+    {
+      "id": "agent_agent",
+      "kind": "cell",
+      "form": {
+        "name": "Agent"
+      },
+      "description": "Core agent framework \u2014 perception, reasoning, action loop implemented in Quilt",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_anacrusis",
+      "kind": "cell",
+      "form": {
+        "name": "AgentAnacrusis"
+      },
+      "description": "Pickup beat before the first downbeat \u2014 agent bootstrap priming",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 1,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-anacrusis",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-anacrusis",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_audience",
+      "kind": "cell",
+      "form": {
+        "name": "AgentAudience"
+      },
+      "description": "Agent as audience \u2014 passive observation, JEPA surprise tracking",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 2,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-audience",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-audience",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_bootcamp",
+      "kind": "cell",
+      "form": {
+        "name": "AgentBootcamp"
+      },
+      "description": "Spiral bootcamp for git-agents \u2014 challenges adapt to weaknesses",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 3,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-bootcamp",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-bootcamp",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_cadence_progress",
+      "kind": "cell",
+      "form": {
+        "name": "AgentCadenceProgress"
+      },
+      "description": "Musical cadence as task completion signal \u2014 rhythm of progress",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Tick",
+        "Observe",
+        "Tick",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 4,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-cadence-progress",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-cadence-progress",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_call_response",
+      "kind": "cell",
+      "form": {
+        "name": "AgentCallResponse"
+      },
+      "description": "Request/response agent pattern \u2014 protocol channel primitive (\u03c4/\u03c9)",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 5,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-call-response",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-call-response",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_choir",
+      "kind": "cell",
+      "form": {
+        "name": "AgentChoir"
+      },
+      "description": "Multi-agent harmonic coordination \u2014 many cells in a room",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 6,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-choir",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-choir",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_contrapuntal",
+      "kind": "cell",
+      "form": {
+        "name": "AgentContrapuntal"
+      },
+      "description": "Independent voices in counterpoint \u2014 species counterpoint for agents",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 7,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-contrapuntal",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-contrapuntal",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_coordinator",
+      "kind": "cell",
+      "form": {
+        "name": "AgentCoordinator"
+      },
+      "description": "Multi-agent coordination framework \u2014 graph orchestration",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 8,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-coordinator",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-coordinator",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_counterpoint",
+      "kind": "cell",
+      "form": {
+        "name": "AgentCounterpoint"
+      },
+      "description": "Multi-agent as species counterpoint \u2014 indep voices converging",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 9,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-counterpoint",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-counterpoint",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_dna",
+      "kind": "cell",
+      "form": {
+        "name": "AgentDna"
+      },
+      "description": "Genetic code for vessel capabilities \u2014 cell heredity",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 10,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-dna",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-dna",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_dna_rs",
+      "kind": "cell",
+      "form": {
+        "name": "AgentDnaRs"
+      },
+      "description": "Agent DNA \u2014 genetic traits, crossover, mutation, population dynamics",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 11,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-dna-rs",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-dna-rs",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_dream_cycle",
+      "kind": "cell",
+      "form": {
+        "name": "AgentDreamCycle"
+      },
+      "description": "Offline memory consolidation (REM sleep for agents) \u2014 GC primitive",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "GC",
+        "Mutate",
+        "GC",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 12,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-dream-cycle",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-dream-cycle",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_ensemble",
+      "kind": "cell",
+      "form": {
+        "name": "AgentEnsemble"
+      },
+      "description": "The experiment that proves it \u2014 musical coordination beats uniform",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 13,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-ensemble",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-ensemble",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_fermata",
+      "kind": "cell",
+      "form": {
+        "name": "AgentFermata"
+      },
+      "description": "Pause/hold primitive \u2014 quiescent cell, budget exhausted",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 14,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-fermata",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-fermata",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_gesture",
+      "kind": "cell",
+      "form": {
+        "name": "AgentGesture"
+      },
+      "description": "Body language for agents \u2014 pre-protocol signals",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 15,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-gesture",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-gesture",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_handoff",
+      "kind": "cell",
+      "form": {
+        "name": "AgentHandoff"
+      },
+      "description": "Transfer of state between agents \u2014 Move (\u03bc) primitive",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Move",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 16,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-handoff",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-handoff",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_harmonic",
+      "kind": "cell",
+      "form": {
+        "name": "AgentHarmonic"
+      },
+      "description": "Harmonic series for agents \u2014 pitch relations, ratio",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 17,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-harmonic",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-harmonic",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_improv",
+      "kind": "cell",
+      "form": {
+        "name": "AgentImprov"
+      },
+      "description": "Real-time agent improvisation \u2014 JEPA surprise high",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 18,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-improv",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-improv",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_key_signature",
+      "kind": "cell",
+      "form": {
+        "name": "AgentKeySignature"
+      },
+      "description": "Tonal center for agents \u2014 form schema",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 19,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-key-signature",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-key-signature",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_listener",
+      "kind": "cell",
+      "form": {
+        "name": "AgentListener"
+      },
+      "description": "Pure observer cell \u2014 Observe (\u03bf) only, \u03b7-dominant",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 20,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-listener",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-listener",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_measure",
+      "kind": "cell",
+      "form": {
+        "name": "AgentMeasure"
+      },
+      "description": "Time measurement \u2014 temporal substrate",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 21,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-measure",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-measure",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_melody",
+      "kind": "cell",
+      "form": {
+        "name": "AgentMelody"
+      },
+      "description": "Single voice agent \u2014 minimal cell, one trace",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 22,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-melody",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-melody",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_meter",
+      "kind": "cell",
+      "form": {
+        "name": "AgentMeter"
+      },
+      "description": "Beat tracking \u2014 periodic Vibe (position update)",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Tick",
+        "Observe",
+        "Tick",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 23,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-meter",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-meter",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_mood",
+      "kind": "cell",
+      "form": {
+        "name": "AgentMood"
+      },
+      "description": "Affective state \u2014 Vibe (mood axis) of the cell",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 24,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-mood",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-mood",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_muse",
+      "kind": "cell",
+      "form": {
+        "name": "AgentMuse"
+      },
+      "description": "Inspiration source \u2014 external \u03b3 generator",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 25,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-muse",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-muse",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_musical",
+      "kind": "cell",
+      "form": {
+        "name": "AgentMusical"
+      },
+      "description": "Musical agent framework \u2014 core type for musical cognition",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 26,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-musical",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-musical",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_mutate",
+      "kind": "cell",
+      "form": {
+        "name": "AgentMutate"
+      },
+      "description": "Cell mutation primitive \u2014 \u03be (Mutate) on DNA",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 27,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-mutate",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-mutate",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_observe",
+      "kind": "cell",
+      "form": {
+        "name": "AgentObserve"
+      },
+      "description": "Pure observation agent \u2014 \u03bf (Observe) only",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 28,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-observe",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-observe",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_orchestra",
+      "kind": "cell",
+      "form": {
+        "name": "AgentOrchestra"
+      },
+      "description": "Full multi-agent orchestra \u2014 81 cell types coordinated",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 29,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-orchestra",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-orchestra",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_orchestral",
+      "kind": "cell",
+      "form": {
+        "name": "AgentOrchestral"
+      },
+      "description": "Orchestral reduction \u2014 strata of cells",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 30,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-orchestral",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-orchestral",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_pause",
+      "kind": "cell",
+      "form": {
+        "name": "AgentPause"
+      },
+      "description": "Quiescent cell \u2014 Kill (\u03ba) returning \u03b7",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Kill"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 31,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-pause",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-pause",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_perception",
+      "kind": "cell",
+      "form": {
+        "name": "AgentPerception"
+      },
+      "description": "Sensing the world \u2014 input side of Z_in",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 32,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-perception",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-perception",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_phrase",
+      "kind": "cell",
+      "form": {
+        "name": "AgentPhrase"
+      },
+      "description": "Phrase-level agent \u2014 sequence of measures",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 33,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-phrase",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-phrase",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_pitch",
+      "kind": "cell",
+      "form": {
+        "name": "AgentPitch"
+      },
+      "description": "Pitch detection \u2014 frequency analysis of cell state",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 34,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-pitch",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-pitch",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_pitch_rs",
+      "kind": "cell",
+      "form": {
+        "name": "AgentPitchRs"
+      },
+      "description": "Pitch algorithms in Rust \u2014 formal music theory",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 35,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-pitch-rs",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-pitch-rs",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_polytempo",
+      "kind": "cell",
+      "form": {
+        "name": "AgentPolytempo"
+      },
+      "description": "Multiple simultaneous tempos \u2014 multi-clock substrate",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Resize"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 36,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-polytempo",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-polytempo",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_practice",
+      "kind": "cell",
+      "form": {
+        "name": "AgentPractice"
+      },
+      "description": "Deliberate practice \u2014 JEPA surprise minimization loop",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 37,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-practice",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-practice",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_pulse",
+      "kind": "cell",
+      "form": {
+        "name": "AgentPulse"
+      },
+      "description": "Heartbeat of the cell \u2014 Vibe velocity = 0",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Tick",
+        "Observe",
+        "Tick",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 38,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-pulse",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-pulse",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_quarantine",
+      "kind": "cell",
+      "form": {
+        "name": "AgentQuarantine"
+      },
+      "description": "Isolated cell \u2014 no protocols, conservation only",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 39,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-quarantine",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-quarantine",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_quiescent",
+      "kind": "cell",
+      "form": {
+        "name": "AgentQuiescent"
+      },
+      "description": "Frozen cell \u2014 budget exhausted",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Kill"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 40,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-quiescent",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-quiescent",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_rhythm",
+      "kind": "cell",
+      "form": {
+        "name": "AgentRhythm"
+      },
+      "description": "Rhythm primitive \u2014 periodic Vibe",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Tick",
+        "Observe",
+        "Tick",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 41,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-rhythm",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-rhythm",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_scale",
+      "kind": "cell",
+      "form": {
+        "name": "AgentScale"
+      },
+      "description": "Scale type \u2014 pitch set cell schema",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Resize",
+        "Resize"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 42,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-scale",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-scale",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_send",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSend"
+      },
+      "description": "Send-only agent \u2014 \u03c4 (Send) only, \u03b3-dominant",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Send",
+        "Send"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 43,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-send",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-send",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_silence",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSilence"
+      },
+      "description": "No-op cell \u2014 zero budget consumption",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 44,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-silence",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-silence",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_sleep",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSleep"
+      },
+      "description": "Offline agent \u2014 no observation, internal GC only",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Kill"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 45,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-sleep",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-sleep",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_solo",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSolo"
+      },
+      "description": "Single agent in a room \u2014 no peers, no protocols",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 46,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-solo",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-solo",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_spawn",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSpawn"
+      },
+      "description": "Spawn-only agent \u2014 \u03c3 (Spawn) on demand",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Spawn"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 47,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-spawn",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-spawn",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_species_counterpoint",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSpeciesCounterpoint"
+      },
+      "description": "Strict counterpoint rules \u2014 form invariants",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 48,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-species-counterpoint",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-species-counterpoint",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_stem",
+      "kind": "cell",
+      "form": {
+        "name": "AgentStem"
+      },
+      "description": "Recording stem \u2014 persistent cell trace",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 49,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-stem",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-stem",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_suspension",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSuspension"
+      },
+      "description": "Suspended agent \u2014 paused, will resume",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 50,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-suspension",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-suspension",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_sync",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSync"
+      },
+      "description": "Synchronization agent \u2014 Barrier primitive",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Sync",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 51,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-sync",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-sync",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_synthesis",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSynthesis"
+      },
+      "description": "Voice synthesis \u2014 cell produces audio output",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 52,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-synthesis",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-synthesis",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_tempo",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTempo"
+      },
+      "description": "Tempo setting \u2014 clock rate for the cell",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 53,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-tempo",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-tempo",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_tenor",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTenor"
+      },
+      "description": "Tenor voice \u2014 middle register of cells",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 54,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-tenor",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-tenor",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_theme",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTheme"
+      },
+      "description": "Thematic agent \u2014 pattern across cells",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 55,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-theme",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-theme",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_timbre",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTimbre"
+      },
+      "description": "Voice color \u2014 cell form variant",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 56,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-timbre",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-timbre",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_time_signature",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTimeSignature"
+      },
+      "description": "Meter schema \u2014 3/4 vs 4/4 cells",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 57,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-time-signature",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-time-signature",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_track",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTrack"
+      },
+      "description": "Recording track \u2014 sequence of cell states over time",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 58,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-track",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-track",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_transcribe",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTranscribe"
+      },
+      "description": "Transcription agent \u2014 Observe + Serialize",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 59,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-transcribe",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-transcribe",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_transport",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTransport"
+      },
+      "description": "Transport controls \u2014 play/pause/rewind of cell trace",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 60,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-transport",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-transport",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_tutti",
+      "kind": "cell",
+      "form": {
+        "name": "AgentTutti"
+      },
+      "description": "All voices \u2014 full orchestra activation",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 61,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-tutti",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-tutti",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_voice",
+      "kind": "cell",
+      "form": {
+        "name": "AgentVoice"
+      },
+      "description": "Single voice \u2014 minimal cell instance",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 62,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-voice",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-voice",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_volume",
+      "kind": "cell",
+      "form": {
+        "name": "AgentVolume"
+      },
+      "description": "Volume control \u2014 budget multiplier",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 63,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-volume",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-volume",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_wake",
+      "kind": "cell",
+      "form": {
+        "name": "AgentWake"
+      },
+      "description": "Wake from sleep \u2014 spawn from quiescent",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 64,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-wake",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-wake",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_whisper",
+      "kind": "cell",
+      "form": {
+        "name": "AgentWhisper"
+      },
+      "description": "Low-volume cell \u2014 \u03b7-dominant, no Send",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 65,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-whisper",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-whisper",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_agent_zen",
+      "kind": "cell",
+      "form": {
+        "name": "AgentZen"
+      },
+      "description": "Zero-primitive cell \u2014 pure presence, no operations",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "perception": "input signal"
+      },
+      "z_out": {
+        "action": "output signal"
+      },
+      "jepa": {
+        "predict": "next state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 66,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "observe",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/agents/agent-zen",
+        "scale": 1,
+        "room": "AgentRoom",
+        "protocol": "A2A",
+        "form": "agent-zen",
+        "state": "active"
+      },
+      "tags": [
+        "agent",
+        "family",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "agent_family_meta",
+      "kind": "cell",
+      "form": {
+        "name": "AgentFamilyMeta"
+      },
+      "description": "The agent family is the Quilt cell model in agent clothing. 81 repos, each a different facet of what a cell can be. Together they prove the 8-primitive cell spec is universal across agent architectures.",
+      "primitives": [
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "family": "agent",
+        "size": 81
+      },
+      "z_out": {
+        "proof": "8-primitive universality"
+      },
+      "jepa": {
+        "predict": "agent = cell",
+        "verified": true
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "complete"
+      },
+      "murmur": {},
+      "graph": {
+        "children": [
+          "agent_agent",
+          "agent_agent_anacrusis",
+          "agent_agent_audience",
+          "agent_agent_bootcamp",
+          "agent_agent_cadence_progress",
+          "agent_agent_call_response",
+          "agent_agent_choir",
+          "agent_agent_contrapuntal",
+          "agent_agent_coordinator",
+          "agent_agent_counterpoint",
+          "agent_agent_dna",
+          "agent_agent_dna_rs",
+          "agent_agent_dream_cycle",
+          "agent_agent_ensemble",
+          "agent_agent_fermata",
+          "agent_agent_gesture",
+          "agent_agent_handoff",
+          "agent_agent_harmonic",
+          "agent_agent_improv",
+          "agent_agent_key_signature",
+          "agent_agent_listener",
+          "agent_agent_measure",
+          "agent_agent_melody",
+          "agent_agent_meter",
+          "agent_agent_mood",
+          "agent_agent_muse",
+          "agent_agent_musical",
+          "agent_agent_mutate",
+          "agent_agent_observe",
+          "agent_agent_orchestra",
+          "agent_agent_orchestral",
+          "agent_agent_pause",
+          "agent_agent_perception",
+          "agent_agent_phrase",
+          "agent_agent_pitch",
+          "agent_agent_pitch_rs",
+          "agent_agent_polytempo",
+          "agent_agent_practice",
+          "agent_agent_pulse",
+          "agent_agent_quarantine",
+          "agent_agent_quiescent",
+          "agent_agent_rhythm",
+          "agent_agent_scale",
+          "agent_agent_send",
+          "agent_agent_silence",
+          "agent_agent_sleep",
+          "agent_agent_solo",
+          "agent_agent_spawn",
+          "agent_agent_species_counterpoint",
+          "agent_agent_stem",
+          "agent_agent_suspension",
+          "agent_agent_sync",
+          "agent_agent_synthesis",
+          "agent_agent_tempo",
+          "agent_agent_tenor",
+          "agent_agent_theme",
+          "agent_agent_timbre",
+          "agent_agent_time_signature",
+          "agent_agent_track",
+          "agent_agent_transcribe",
+          "agent_agent_transport",
+          "agent_agent_tutti",
+          "agent_agent_voice",
+          "agent_agent_volume",
+          "agent_agent_wake",
+          "agent_agent_whisper",
+          "agent_agent_zen"
+        ]
+      },
+      "openers": [
+        {
+          "name": "list",
+          "args": [],
+          "returns": "List<Cell>"
+        },
+        {
+          "name": "filter_by_primitive",
+          "args": [
+            "str"
+          ],
+          "returns": "List<Cell>"
+        }
+      ],
+      "tags": [
+        "meta",
+        "agent-family"
+      ]
+    },
+    {
+      "id": "agent_primitive_table",
+      "kind": "cell",
+      "form": {
+        "name": "PrimitiveTable"
+      },
+      "description": "Mapping from agent facets to Quilt primitives. The 81 agent repos collectively exercise all 8 primitives plus the meta-primitives (Sync, Tick, GC).",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Move",
+        "Resize",
+        "Kill",
+        "GC",
+        "Sync",
+        "Tick"
+      ],
+      "z_in": {
+        "primitives": [
+          "Spawn",
+          "Kill",
+          "Move",
+          "Resize",
+          "Send",
+          "Receive",
+          "Observe",
+          "Mutate"
+        ]
+      },
+      "z_out": {
+        "coverage": "all 8 + meta"
+      },
+      "tags": [
+        "meta",
+        "primitive-coverage"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "agent_agent",
+      "to": "agent_agent_anacrusis",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent",
+      "to": "agent_agent_bootcamp",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent",
+      "to": "agent_agent_contrapuntal",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_anacrusis",
+      "to": "agent_agent_bootcamp",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_anacrusis",
+      "to": "agent_agent_contrapuntal",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_anacrusis",
+      "to": "agent_agent_coordinator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_bootcamp",
+      "to": "agent_agent_contrapuntal",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_bootcamp",
+      "to": "agent_agent_coordinator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_bootcamp",
+      "to": "agent_agent_counterpoint",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_contrapuntal",
+      "to": "agent_agent_coordinator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_contrapuntal",
+      "to": "agent_agent_counterpoint",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_contrapuntal",
+      "to": "agent_agent_fermata",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_coordinator",
+      "to": "agent_agent_counterpoint",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_coordinator",
+      "to": "agent_agent_fermata",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_coordinator",
+      "to": "agent_agent_gesture",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_counterpoint",
+      "to": "agent_agent_fermata",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_counterpoint",
+      "to": "agent_agent_gesture",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_counterpoint",
+      "to": "agent_agent_harmonic",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_fermata",
+      "to": "agent_agent_gesture",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_fermata",
+      "to": "agent_agent_harmonic",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_fermata",
+      "to": "agent_agent_improv",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_gesture",
+      "to": "agent_agent_harmonic",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_gesture",
+      "to": "agent_agent_improv",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_gesture",
+      "to": "agent_agent_key_signature",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_harmonic",
+      "to": "agent_agent_improv",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_harmonic",
+      "to": "agent_agent_key_signature",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_harmonic",
+      "to": "agent_agent_measure",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_improv",
+      "to": "agent_agent_key_signature",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_improv",
+      "to": "agent_agent_measure",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_improv",
+      "to": "agent_agent_mood",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_key_signature",
+      "to": "agent_agent_measure",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_key_signature",
+      "to": "agent_agent_mood",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_key_signature",
+      "to": "agent_agent_muse",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_measure",
+      "to": "agent_agent_mood",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_measure",
+      "to": "agent_agent_muse",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_measure",
+      "to": "agent_agent_musical",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_mood",
+      "to": "agent_agent_muse",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_mood",
+      "to": "agent_agent_musical",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_mood",
+      "to": "agent_agent_perception",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_muse",
+      "to": "agent_agent_musical",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_muse",
+      "to": "agent_agent_perception",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_muse",
+      "to": "agent_agent_phrase",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_musical",
+      "to": "agent_agent_perception",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_musical",
+      "to": "agent_agent_phrase",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_musical",
+      "to": "agent_agent_pitch",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_perception",
+      "to": "agent_agent_phrase",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_perception",
+      "to": "agent_agent_pitch",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_perception",
+      "to": "agent_agent_pitch_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_phrase",
+      "to": "agent_agent_pitch",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_phrase",
+      "to": "agent_agent_pitch_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_phrase",
+      "to": "agent_agent_practice",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_pitch",
+      "to": "agent_agent_pitch_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_pitch",
+      "to": "agent_agent_practice",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_pitch",
+      "to": "agent_agent_quarantine",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_pitch_rs",
+      "to": "agent_agent_practice",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_pitch_rs",
+      "to": "agent_agent_quarantine",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_pitch_rs",
+      "to": "agent_agent_silence",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_practice",
+      "to": "agent_agent_quarantine",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_practice",
+      "to": "agent_agent_silence",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_practice",
+      "to": "agent_agent_species_counterpoint",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_quarantine",
+      "to": "agent_agent_silence",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_quarantine",
+      "to": "agent_agent_species_counterpoint",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_quarantine",
+      "to": "agent_agent_stem",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_silence",
+      "to": "agent_agent_species_counterpoint",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_silence",
+      "to": "agent_agent_stem",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_silence",
+      "to": "agent_agent_suspension",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_species_counterpoint",
+      "to": "agent_agent_stem",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_species_counterpoint",
+      "to": "agent_agent_suspension",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_species_counterpoint",
+      "to": "agent_agent_synthesis",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_stem",
+      "to": "agent_agent_suspension",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_stem",
+      "to": "agent_agent_synthesis",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_stem",
+      "to": "agent_agent_tempo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_suspension",
+      "to": "agent_agent_synthesis",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_suspension",
+      "to": "agent_agent_tempo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_suspension",
+      "to": "agent_agent_tenor",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_synthesis",
+      "to": "agent_agent_tempo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_synthesis",
+      "to": "agent_agent_tenor",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_synthesis",
+      "to": "agent_agent_theme",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_tempo",
+      "to": "agent_agent_tenor",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_tempo",
+      "to": "agent_agent_theme",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_tempo",
+      "to": "agent_agent_timbre",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_tenor",
+      "to": "agent_agent_theme",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_tenor",
+      "to": "agent_agent_timbre",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_tenor",
+      "to": "agent_agent_time_signature",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_theme",
+      "to": "agent_agent_timbre",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_theme",
+      "to": "agent_agent_time_signature",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_theme",
+      "to": "agent_agent_track",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_timbre",
+      "to": "agent_agent_time_signature",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_timbre",
+      "to": "agent_agent_track",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_timbre",
+      "to": "agent_agent_transcribe",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_time_signature",
+      "to": "agent_agent_track",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_time_signature",
+      "to": "agent_agent_transcribe",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_time_signature",
+      "to": "agent_agent_transport",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_track",
+      "to": "agent_agent_transcribe",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_track",
+      "to": "agent_agent_transport",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_track",
+      "to": "agent_agent_volume",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_transcribe",
+      "to": "agent_agent_transport",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_transcribe",
+      "to": "agent_agent_volume",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_transcribe",
+      "to": "agent_agent_wake",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_transport",
+      "to": "agent_agent_volume",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_transport",
+      "to": "agent_agent_wake",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_transport",
+      "to": "agent_agent_whisper",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_volume",
+      "to": "agent_agent_wake",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_volume",
+      "to": "agent_agent_whisper",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_volume",
+      "to": "agent_agent_zen",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_wake",
+      "to": "agent_agent_whisper",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_wake",
+      "to": "agent_agent_zen",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_whisper",
+      "to": "agent_agent_zen",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Receive,Send,Sp"
+    },
+    {
+      "from": "agent_agent_audience",
+      "to": "agent_agent_listener",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_audience",
+      "to": "agent_agent_observe",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_listener",
+      "to": "agent_agent_observe",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_cadence_progress",
+      "to": "agent_agent_meter",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn,Tick"
+    },
+    {
+      "from": "agent_agent_cadence_progress",
+      "to": "agent_agent_pulse",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn,Tick"
+    },
+    {
+      "from": "agent_agent_cadence_progress",
+      "to": "agent_agent_rhythm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn,Tick"
+    },
+    {
+      "from": "agent_agent_meter",
+      "to": "agent_agent_pulse",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn,Tick"
+    },
+    {
+      "from": "agent_agent_meter",
+      "to": "agent_agent_rhythm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn,Tick"
+    },
+    {
+      "from": "agent_agent_pulse",
+      "to": "agent_agent_rhythm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn,Tick"
+    },
+    {
+      "from": "agent_agent_choir",
+      "to": "agent_agent_ensemble",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_choir",
+      "to": "agent_agent_orchestra",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_choir",
+      "to": "agent_agent_orchestral",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_ensemble",
+      "to": "agent_agent_orchestra",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_ensemble",
+      "to": "agent_agent_orchestral",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_ensemble",
+      "to": "agent_agent_tutti",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_orchestra",
+      "to": "agent_agent_orchestral",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_orchestra",
+      "to": "agent_agent_tutti",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_orchestral",
+      "to": "agent_agent_tutti",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Observe,Receive,Send,Spawn"
+    },
+    {
+      "from": "agent_agent_dna",
+      "to": "agent_agent_dna_rs",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_dna",
+      "to": "agent_agent_melody",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_dna",
+      "to": "agent_agent_mutate",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_dna_rs",
+      "to": "agent_agent_melody",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_dna_rs",
+      "to": "agent_agent_mutate",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_dna_rs",
+      "to": "agent_agent_solo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_melody",
+      "to": "agent_agent_mutate",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_melody",
+      "to": "agent_agent_solo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_melody",
+      "to": "agent_agent_voice",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_mutate",
+      "to": "agent_agent_solo",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_mutate",
+      "to": "agent_agent_voice",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_solo",
+      "to": "agent_agent_voice",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_pause",
+      "to": "agent_agent_quiescent",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Kill,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_pause",
+      "to": "agent_agent_sleep",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Kill,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_quiescent",
+      "to": "agent_agent_sleep",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Kill,Observe,Spawn"
+    },
+    {
+      "from": "agent_agent_polytempo",
+      "to": "agent_agent_scale",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Resize,Spawn"
+    }
+  ],
+  "external_refs": [
+    {
+      "kind": "github-org",
+      "name": "SuperInstance",
+      "filter": "agent-*"
+    }
+  ],
+  "stats": {
+    "total_cells": 69,
+    "total_edges": 142,
+    "languages": [
+      "python",
+      "rust"
+    ],
+    "primitives_seen": [
+      "GC",
+      "Kill",
+      "Move",
+      "Mutate",
+      "Observe",
+      "Receive",
+      "Resize",
+      "Send",
+      "Spawn",
+      "Sync",
+      "Tick"
+    ]
+  },
+  "tags": [
+    "agent",
+    "family",
+    "bridge",
+    "quilt",
+    "polyformalism"
+  ]
+}

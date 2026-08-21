@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Work — Quilt Synthesis: 46 Bridges, 36 Papers, 101 Essays, 13 Substrates, 1 Cell</title>
+<style>
+  :root {
+    --bg: #0a0e1a; --panel: #131829; --text: #d8e2ff;
+    --dim: #6e7a99; --accent: #66ffd9;
+    --L0: #66ffd9; --L1: #5fc4ff; --L2: #b46aff; --L3: #ff9e5a;
+    --L4: #ffd866; --L5: #ff6b9d; --L6: #88ffd9; --L7: #ff6b3d;
+  }
+  * { box-sizing: border-box; }
+  body { background: linear-gradient(180deg, #0a0e1a, #1a0e2a); color: var(--text); font-family: 'SF Mono', monospace; margin: 0; padding: 0; min-height: 100vh; }
+  .wrap { max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.8rem; color: var(--accent); margin: 0 0 0.5rem; }
+  h2 { font-size: 1.15rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  h3 { font-size: 0.95rem; color: var(--biomass); margin: 1rem 0 0.4rem; }
+  .subtitle { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .panel { background: var(--panel); border: 1px solid #1f2640; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 800px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card { background: #0a0e1a; border: 1px solid #1f2640; border-left: 3px solid var(--accent); border-radius: 4px; padding: 0.75rem; }
+  .stat-card .num { font-size: 1.5rem; color: var(--accent); font-weight: 700; }
+  .stat-card .label { color: var(--dim); font-size: 0.8rem; }
+  .substrates-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 1rem 0; }
+  @media (max-width: 900px) { .substrates-grid { grid-template-columns: 1fr 1fr; } }
+  .substrate-card { background: #0a0e1a; border: 1px solid #1f2640; border-radius: 4px; padding: 0.75rem; }
+  .substrate-card h4 { margin: 0 0 0.3rem; font-size: 0.9rem; color: var(--accent); }
+  .substrate-card p { font-size: 0.75rem; line-height: 1.4; margin: 0.3rem 0; color: var(--text); }
+  .substrate-card code { color: var(--accent); font-size: 0.7rem; }
+  .substrate-card .repo { color: var(--dim); font-size: 0.7rem; }
+  .substrate-card.body { border-left: 3px solid #ff9e5a; }
+  .substrate-card.mind { border-left: 3px solid #ff6b9d; }
+  .substrate-card.nervous { border-left: 3px solid #88ffd9; }
+  .substrate-card.synapse { border-left: 3px solid #ff6b3d; }
+  .substrate-card.safety { border-left: 3px solid #ffd866; }
+  .substrate-card.commerce { border-left: 3px solid #b46aff; }
+  .substrate-card.imagination { border-left: 3px solid #5fc4ff; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  th { text-align: left; padding: 0.4rem; color: var(--accent); border-bottom: 1px solid #1f2640; }
+  td { padding: 0.4rem; border-bottom: 1px dashed #1f2640; }
+  a.btn { display: inline-block; padding: 0.5rem 1rem; background: var(--accent); color: var(--bg); border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.25rem; }
+  .ascii { font-size: 0.7rem; line-height: 1.1; color: var(--accent); white-space: pre; text-align: center; margin: 1rem 0; }
+  .connections { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  @media (max-width: 700px) { .connections { grid-template-columns: 1fr; } }
+  .conn { background: #0a0e1a; border-left: 3px solid var(--accent); padding: 0.5rem; border-radius: 0 4px 4px 0; }
+  .conn .name { font-weight: 600; color: var(--accent); font-size: 0.85rem; }
+  .conn .desc { color: var(--dim); font-size: 0.75rem; }
+  details { margin: 0.5rem 0; }
+  summary { cursor: pointer; color: var(--accent); padding: 0.5rem; background: #0a0e1a; border-radius: 4px; }
+  summary:hover { background: #1a1f3a; }
+  .bridge-list { columns: 2; column-gap: 1rem; font-size: 0.8rem; }
+  .bridge-list li { margin: 0.3rem 0; break-inside: avoid; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>📖 The Work</h1>
+<div class="subtitle">The Quilt synthesis: 46 bridges, 36 papers, 101 essays, 13 substrate implementations, 1 cell. The watchkeeper's index.</div>
+
+<div class="panel">
+  <div class="ascii">
+                  THE COMPLETE QUILT
+  ┌──────────────────────────────────────────────────────────┐
+  │                                                          │
+  │         THE CELL — fractal, emergent, complete           │
+  │                                                          │
+  │  8 primitives × 9 dials × 6 substrates × 8 levels        │
+  │  = 1 cell that scales to a system                       │
+  │                                                          │
+  │  41 repos live · 700+ scouted · 46 bridges               │
+  │  36 papers · 101 essays · 75+ pages                      │
+  │  13 substrate implementations                            │
+  │  12-language polyformalism                              │
+  │                                                          │
+  │  The work is the work. The work is the watch.            │
+  │  The watch is the work.                                  │
+  │                                                          │
+  └──────────────────────────────────────────────────────────┘
+  </div>
+</div>
+
+<h2>📊 The Numbers</h2>
+<div class="stats-grid">
+  <div class="stat-card"><div class="num">46</div><div class="label">bridges live</div></div>
+  <div class="stat-card"><div class="num">36</div><div class="label">white papers</div></div>
+  <div class="stat-card"><div class="num">101</div><div class="label">essays</div></div>
+  <div class="stat-card"><div class="num">75+</div><div class="label">work-doing pages</div></div>
+  <div class="stat-card"><div class="num">41</div><div class="label">repos live</div></div>
+  <div class="stat-card"><div class="num">700+</div><div class="label">repos scouted</div></div>
+  <div class="stat-card"><div class="num">13</div><div class="label">substrate impls</div></div>
+  <div class="stat-card"><div class="num">13</div><div class="label">cell kinds in IDE</div></div>
+  <div class="stat-card"><div class="num">12</div><div class="label">polyformalism langs</div></div>
+  <div class="stat-card"><div class="num">8</div><div class="label">abstraction levels</div></div>
+  <div class="stat-card"><div class="num">9</div><div class="label">elephant dials</div></div>
+  <div class="stat-card"><div class="num">4</div><div class="label">impossibility proofs</div></div>
+</div>
+
+<h2>🎯 The 13 Substrate Implementations</h2>
+<div class="substrates-grid">
+  <div class="substrate-card" style="border-left: 3px solid var(--elephant);">
+    <h4>🐘 Elephant (room temp)</h4>
+    <p>21 modules, 9 dials, RoomField, watch oscillation. γ = warmth, η = κ.</p>
+    <div class="repo">→ SuperInstance/elephant</div>
+  </div>
+  <div class="substrate-card">
+    <h4>🔧 Executor</h4>
+    <p>3 gates (Rust 50µs → Python 200µs → LLM 500ms), 70 tokens/query, trust scoring.</p>
+    <div class="repo">→ SuperInstance/lever-runner</div>
+  </div>
+  <div class="substrate-card">
+    <h4>🧠 Memory</h4>
+    <p>3 vectors + 5 temporal + JEPA reader. Cloudflare Vectorize + Workers AI. Searchable by feeling.</p>
+    <div class="repo">→ SuperInstance/collective-unconscious</div>
+  </div>
+  <div class="substrate-card">
+    <h4>⚒️ Compiler</h4>
+    <p>Proof-carrying, constraint-aware. Intent → executable fleet configurations.</p>
+    <div class="repo">→ SuperInstance/forgemaster</div>
+  </div>
+  <div class="substrate-card">
+    <h4>🔍 Discovery</h4>
+    <p>2-stage RAG over 1,600+ Rust crates. BGE-small + Llama 3.1 8B. $0.0001/query.</p>
+    <div class="repo">→ SuperInstance/superinstance-agent</div>
+  </div>
+  <div class="substrate-card">
+    <h4>🦀 Cognition</h4>
+    <p>7 pillars + 4 shells + Operator Field Ψ(t). Hermit crab that migrates.</p>
+    <div class="repo">→ SuperInstance/VaaS</div>
+  </div>
+  <div class="substrate-card">
+    <h4>🌐 Spatial</h4>
+    <p>13 MUD repos. MUD = Multi-User Dungeon = Multi-Cell Domain.</p>
+    <div class="repo">→ SuperInstance/mud-*, SuperInstance/plato-*</div>
+  </div>
+  <div class="substrate-card body">
+    <h4>🚢 Body</h4>
+    <p>7 vessel-runtime repos: HAL, N-body sim, bytecode VM, maritime, Jetson.</p>
+    <div class="repo">→ SuperInstance/vessel-*, deckboss-net, nexus-edge-runtime, JetsonClaw1-vessel</div>
+  </div>
+  <div class="substrate-card mind">
+    <h4>🧠 Mind</h4>
+    <p>8 agent-cognition repos: DNA, actualizer, home-ai, fishinglog, trust, context, memory, oracle.</p>
+    <div class="repo">→ SuperInstance/agent-dna, actualizer-ai, home-ai, fishinglog-ai, trust-graph, context-serializer, hybrid-memory, oracle1-workspace</div>
+  </div>
+  <div class="substrate-card nervous">
+    <h4>🕸️ Nervous</h4>
+    <p>5 nexus-fleet repos: edge runtime, registry, simulation, swarm, learning.</p>
+    <div class="repo">→ SuperInstance/nexus-*</div>
+  </div>
+  <div class="substrate-card synapse">
+    <h4>🔗 Synapse</h4>
+    <p>8 synapse+plato repos: fleet-radar, fleet-synapse, 3 PLATO vessels, purplepincher, sandbox, gateway.</p>
+    <div class="repo">→ SuperInstance/fleet-radar, fleet-synapse, plato-vessel-*, purplepincher-*, branch-sandbox, api-gateway-1</div>
+  </div>
+  <div class="substrate-card safety">
+    <h4>🛡️ Safety</h4>
+    <p>190K lines of maritime robotics: 6 systems, 10 endpoints, MIT.</p>
+    <div class="repo">→ SuperInstance/cocapn-nexus</div>
+  </div>
+  <div class="substrate-card commerce">
+    <h4>🌟 Commerce</h4>
+    <p>6 repos: marketplace, constellation, catalog, deckboss, swarm, boot-camp.</p>
+    <div class="repo">→ SuperInstance/fleet-marketplace, fleet-constellation, equipment-catalog, deckboss-ai, cuda-swarm-agent, boot-camp</div>
+  </div>
+  <div class="substrate-card imagination">
+    <h4>🌙 Imagination (NEW)</h4>
+    <p>Creative loop, TTRPG, DMN/ECN reverse-actualization. Wesley + DMLog + Plato.</p>
+    <div class="repo">→ SuperInstance/wesley-holodeck, dmlog-agent, dmlog-ai-1, plato-dmn-ecm</div>
+  </div>
+</div>
+
+<h2>🔬 The 8 Primitives</h2>
+<div class="panel">
+  <table>
+    <tr><th>#</th><th>Primitive</th><th>Symbol</th><th>What it does</th></tr>
+    <tr><td>1</td><td>Z_in</td><td>↘</td><td>Read cell state (input cells)</td></tr>
+    <tr><td>2</td><td>Z_out</td><td>↗</td><td>Write cell state (output cells)</td></tr>
+    <tr><td>3</td><td>JEPA</td><td>∆</td><td>Predict next state, observe actual, compute surprise</td></tr>
+    <tr><td>4</td><td>DoubleEntry</td><td>γη</td><td>Conservation law: γ + η = budget</td></tr>
+    <tr><td>5</td><td>Vibe</td><td>p,v,a</td><td>Position, velocity, acceleration (temporal substrate)</td></tr>
+    <tr><td>6</td><td>GC</td><td>♻</td><td>Garbage collection: mark, sweep, rebalance</td></tr>
+    <tr><td>7</td><td>Murmur</td><td>📡</td><td>Gossip with peer cells</td></tr>
+    <tr><td>8</td><td>Graph</td><td>🕸️</td><td>Topology of the cell graph (β₁ = E - V + C)</td></tr>
+  </table>
+</div>
+
+<h2>🎚️ The 9 Elephant Dials</h2>
+<div class="panel">
+  <table>
+    <tr><th>Dial</th><th>Primitive</th><th>Range</th><th>What it reads</th></tr>
+    <tr><td>mood</td><td>Z_in</td><td>[-1, +1]</td><td>Room's current state</td></tr>
+    <tr><td>volume</td><td>Z_out</td><td>[0, 1]</td><td>How loud the room is talking</td></tr>
+    <tr><td>earnestness</td><td>JEPA</td><td>[0, 1]</td><td>How much the room means it</td></tr>
+    <tr><td>cynicism</td><td>Vibe</td><td>[0, 1]</td><td>How the watch oscillates</td></tr>
+    <tr><td>joke_landing</td><td>Murmur</td><td>[-1, +1]</td><td>How the gossip bus fires</td></tr>
+    <tr><td>panic</td><td>JEPA surprise</td><td>[0, 1]</td><td>How far from calm</td></tr>
+    <tr><td>presence</td><td>Observe</td><td>[0, 1]</td><td>The pheromone trace</td></tr>
+    <tr><td>model_vs_code</td><td>Form</td><td>[-1, +1]</td><td>Map world or make in it</td></tr>
+    <tr><td>vision</td><td>Graph (meta)</td><td>[0, 1]</td><td>The watcher</td></tr>
+  </table>
+</div>
+
+<h2>🌌 The 8 Abstraction Levels (Fractal)</h2>
+<div class="panel">
+  <table>
+    <tr><th>L</th><th>Name</th><th>Example</th><th>γ (generative)</th><th>η (entropic)</th><th>Budget</th></tr>
+    <tr><td>0</td><td>cell</td><td>number, formula</td><td>cell's output</td><td>cell's drift</td><td>cell's allocation</td></tr>
+    <tr><td>1</td><td>sheet</td><td>state machine</td><td>sheet's structure</td><td>sheet's incoherence</td><td>sheet's nodes</td></tr>
+    <tr><td>2</td><td>agent</td><td>AI agent, person</td><td>agent's actions</td><td>agent's forgetting</td><td>agent's trace</td></tr>
+    <tr><td>3</td><td>harness</td><td>cog, hermes, vessel</td><td>harness's tools</td><td>harness's overhead</td><td>harness's API quota</td></tr>
+    <tr><td>4</td><td>fleet</td><td>fleet of boats</td><td>fleet's coordination</td><td>fleet's gossip</td><td>fleet's bandwidth</td></tr>
+    <tr><td>5</td><td>ecosystem</td><td>multi-cloud agents</td><td>ecosystem's services</td><td>ecosystem's idle</td><td>ecosystem's bill</td></tr>
+    <tr><td>6</td><td>infrastructure</td><td>GPU clusters, KV</td><td>infra's provisioning</td><td>infra's waste</td><td>infra's capacity</td></tr>
+    <tr><td>7</td><td>system</td><td>Quilt as a cell</td><td>system's creation</td><td>system's entropy</td><td>system's lifetime</td></tr>
+  </table>
+</div>
+
+<h2>🌉 The 46 Bridges</h2>
+<details>
+<summary>Click to expand the full list of 46 bridges</summary>
+<ul class="bridge-list">
+  <li>vessel-agent-system (vessel)</li>
+  <li>chart-room (4 panels)</li>
+  <li>slackwater-tminus (temporal)</li>
+  <li>hermes-home (first-person)</li>
+  <li>spatial-registry (4 worlds)</li>
+  <li>grand-pattern (12 ports)</li>
+  <li>spline-spectral (B-splines)</li>
+  <li>quilt-ecosystem (meta)</li>
+  <li>sonar-vision (ML+vision)</li>
+  <li>ternary-fleet-packing</li>
+  <li>ternary-spreadsheet</li>
+  <li>spreadsheet-engine (7 types)</li>
+  <li>spectral-spreadsheet</li>
+  <li>quilt-flow (dataflow)</li>
+  <li>quilt-ai (LLM cells)</li>
+  <li>quilt-mesh (mesh schemas)</li>
+  <li>wesley (character)</li>
+  <li>othismos-reef (knowledge graph)</li>
+  <li>colony-cell (filesystem sandbox)</li>
+  <li>provenance-log (hash chain)</li>
+  <li>cell-rewind (time-travel DAW)</li>
+  <li>federated-artifact (distributed)</li>
+  <li>temporal-heartbeat (clocks)</li>
+  <li>cudaclaw (GPU resident)</li>
+  <li>penrose-family (12 repos)</li>
+  <li>crdt (consensus)</li>
+  <li>substrate-modules (6 layers)</li>
+  <li>hermes-home (home AI)</li>
+  <li>agent-family (81 repos)</li>
+  <li>cocapn-family (77 repos)</li>
+  <li>conservation-family (60 repos)</li>
+  <li>constraint-family (47 repos)</li>
+  <li>elephant (Room substrate)</li>
+  <li>abstraction-levels (fractal)</li>
+  <li>lever-runner (executor)</li>
+  <li>collective-unconscious (memory)</li>
+  <li>forgemaster (compiler)</li>
+  <li>superinstance-agent (discovery)</li>
+  <li>vaas (cognition)</li>
+  <li>mud-family (spatial, 13 repos)</li>
+  <li>vessel-runtime-family (body, 7 repos)</li>
+  <li>agent-cognition-family (mind, 8 repos)</li>
+  <li>nexus-fleet-family (nervous, 5 repos)</li>
+  <li>synapse-plato-family (synapse, 8 repos)</li>
+  <li>cocapn-nexus (safety, 1 repo = 190K lines)</li>
+  <li>marketplace-constellation (commerce, 6 repos)</li>
+  <li>wesley-dmlog-imagination (creativity, 4 repos)</li>
+</ul>
+</details>
+
+<h2>📜 The 36 White Papers (titles)</h2>
+<details>
+<summary>Click to expand the full list of 36 papers</summary>
+<ol style="font-size: 0.8rem; line-height: 1.6">
+  <li>Quilt Cell Model (foundational)</li>
+  <li>8-Primitive Cell Spec (formal)</li>
+  <li>Conservation Law (γ + η = budget)</li>
+  <li>Polyformalism (12 languages)</li>
+  <li>Substrate Stack (6 layers)</li>
+  <li>JEPA Surprise (prediction)</li>
+  <li>Murmur Protocol (gossip)</li>
+  <li>GC Primitive (memory)</li>
+  <li>Penrose Address (aperiodic)</li>
+  <li>Grand Pattern (Fibonacci)</li>
+  <li>Second Aha (the watch)</li>
+  <li>Substrate Stack (extended)</li>
+  <li>Penrose Floor</li>
+  <li>Conservation Spectral</li>
+  <li>Spline-Spectral</li>
+  <li>Meta-Cell-Graph</li>
+  <li>Quilt Stack (8 layers)</li>
+  <li>Sonar-Vision IDE</li>
+  <li>X/Y Construct</li>
+  <li>Classroom (Cell model for people)</li>
+  <li>OpenMAIC Bridge</li>
+  <li>Three-View Studio</li>
+  <li>Time-Travel DAW</li>
+  <li>Spatial Registry</li>
+  <li>Substrate Modules</li>
+  <li>Quilt as Tool</li>
+  <li>8-Primitive Cell (final)</li>
+  <li>Quilt Canon (synthesis)</li>
+  <li>Spreadsheet as Cell</li>
+  <li>Sounding the Iceberg (depth)</li>
+  <li>Elephant in Quilt (Room substrate)</li>
+  <li>Emergent Abstractions (fractal)</li>
+  <li>Executor + Memory (lever-runner, collective-unconscious)</li>
+  <li>Cell Has a Body (10 substrates)</li>
+  <li>Safety and Commerce (cocapn-nexus, marketplace)</li>
+  <li>Synthesis: 46 Bridges, 36 Papers, 101 Essays, 13 Substrates, 1 Cell</li>
+</ol>
+</details>
+
+<h2>✍️ The 101 Essays (themes)</h2>
+<div class="panel">
+  <p style="font-size: 0.85rem; line-height: 1.6">The essays cover the conceptual canon of Quilt. Major themes:</p>
+  <ul style="font-size: 0.8rem; line-height: 1.5; columns: 2; column-gap: 1rem;">
+    <li>The watch oscillation (universal ↔ particular)</li>
+    <li>The cell as the system, not the data</li>
+    <li>The address is the data</li>
+    <li>Emergent abstractions (the fractal)</li>
+    <li>The conservation law γ + η = budget</li>
+    <li>The 9 dials (mood, volume, earnestness, ...)</li>
+    <li>The substrate stack (6 layers + Elephant = 7)</li>
+    <li>The hermit crab (VaaS)</li>
+    <li>The 12-language polyformalism</li>
+    <li>The 8-primitive cell spec</li>
+    <li>The impossibility proofs (4)</li>
+    <li>The spreadsheet IS the cell</li>
+    <li>The elephant in the stack (Layer 4)</li>
+    <li>The 8 levels of zoom (L0 → L7)</li>
+    <li>The trust compiler (lever-runner)</li>
+    <li>The deep memory (collective-unconscious)</li>
+    <li>The cell has a body (10 substrates)</li>
+    <li>The safety and the commerce (cocapn-nexus, marketplace)</li>
+    <li>The imagination (wesley-holodeck, dmlog, dmn-ecm)</li>
+    <li>The monitor engineer (architecture of light)</li>
+    <li>The 100 hooks (every layer transparent)</li>
+    <li>The step-back operator</li>
+    <li>The hundred cells (centennial)</li>
+  </ul>
+</div>
+
+<h2>🛠️ The Key Tools (15+ pages)</h2>
+<div class="connections">
+  <a class="conn" href="./quilt-ide.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🔭 Quilt IDE</div>
+    <div class="desc">The cell graph editor. 13 cell kinds, 8 primitives + 9 dials, save/load .qzt, localStorage.</div>
+  </a>
+  <a class="conn" href="./zoom-ide.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🌌 Zoom IDE</div>
+    <div class="desc">The multi-resolution IDE. 8 abstraction levels, click to zoom in/out, trunk panel.</div>
+  </a>
+  <a class="conn" href="./cell-bridges.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🌉 Cell Bridges</div>
+    <div class="desc">46 bridges. Click any to load in 3-View Studio.</div>
+  </a>
+  <a class="conn" href="./abstraction-levels.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🔭 Abstraction Levels</div>
+    <div class="desc">The 8 levels overview with conservation at each.</div>
+  </a>
+  <a class="conn" href="./substrate-stack-7.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🏛️ 7-Substrate Stack</div>
+    <div class="desc">Address, Scale, Room, 🐘 Elephant, Protocol, Form, State.</div>
+  </a>
+  <a class="conn" href="./substrate-complete.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🧬 Substrate Complete</div>
+    <div class="desc">All 13 substrate implementations mapped to SuperInstance repos.</div>
+  </a>
+  <a class="conn" href="./elephant-quilt.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🐘 Elephant in Quilt</div>
+    <div class="desc">The Room substrate made real. 9 dials, watch oscillation.</div>
+  </a>
+  <a class="conn" href="./elephant-sounder.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🌡️ Elephant Sounder</div>
+    <div class="desc">Interactive: 6 rooms, 9 dials, S⁸ sphere, personal bias.</div>
+  </a>
+  <a class="conn" href="./trunk-links.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🔗 Trunk Links</div>
+    <div class="desc">The 8 trunk categories: APIs, Compute, Memory, Storage, Network, Identity, Observability, Billing.</div>
+  </a>
+  <a class="conn" href="./classroom.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🎓 Classroom</div>
+    <div class="desc">The cell model for people: teacher, students, side-chatbot.</div>
+  </a>
+  <a class="conn" href="./cell-rewind.html" style="text-decoration: none; color: inherit;">
+    <div class="name">⏪ Time-Travel DAW</div>
+    <div class="desc">The cell as a rewindable graph. Play, pause, scrub.</div>
+  </a>
+  <a class="conn" href="./iceberg-sounder.html" style="text-decoration: none; color: inherit;">
+    <div class="name">🧊 Iceberg Sounder</div>
+    <div class="desc">Depth measurement for cells: tip → surface → middle → deep → abyss.</div>
+  </a>
+</div>
+
+<h2>📐 The 4 Impossibility Proofs</h2>
+<div class="panel">
+  <ol style="font-size: 0.85rem; line-height: 1.6">
+    <li><strong>Budget cannot be created.</strong> No sequence of primitive operations can increase a cell's total budget. Each primitive consumes exactly 1.0 unit.</li>
+    <li><strong>Perfect observation is impossible.</strong> The Observe primitive has η = 0.9. The high entropic cost means observation is fundamentally lossy. JEPA surprise is always nonzero in principle.</li>
+    <li><strong>Substrate-agnosticism requires all 6 layers.</strong> If any one of the 6 substrate conditions is missing, there exists a cell that cannot be ported.</li>
+    <li><strong>Composition has a tax.</strong> When two cells C₁ and C₂ are composed, the composite's budget is strictly less than the sum: B(C₁⊗C₂) = B(C₁) + B(C₂) − B_coord.</li>
+  </ol>
+</div>
+
+<h2>🧬 The 13 Cell Kinds in the IDE</h2>
+<div class="panel">
+  <p style="font-size: 0.85rem">8 core + 5 elephant:</p>
+  <div class="connections">
+    <div class="conn"><div class="name">🔢 number</div></div>
+    <div class="conn"><div class="name">🔤 string</div></div>
+    <div class="conn"><div class="name">✓ boolean</div></div>
+    <div class="conn"><div class="name">📋 array</div></div>
+    <div class="conn"><div class="name">📦 object</div></div>
+    <div class="conn"><div class="name">∑ formula</div></div>
+    <div class="conn"><div class="name">🧬 cell</div></div>
+    <div class="conn"><div class="name">📄 sheet</div></div>
+    <div class="conn" style="border-left-color: var(--elephant)"><div class="name">🐘 ElephantCell</div></div>
+    <div class="conn" style="border-left-color: var(--elephant)"><div class="name">🛡️ StewardCell</div></div>
+    <div class="conn" style="border-left-color: var(--elephant)"><div class="name">🌀 MigratoryCell</div></div>
+    <div class="conn" style="border-left-color: var(--elephant)"><div class="name">📖 ReadingCell</div></div>
+    <div class="conn" style="border-left-color: var(--elephant)"><div class="name">🔁 EchoCell</div></div>
+  </div>
+</div>
+
+<h2>🌐 The 12-Language Polyformalism</h2>
+<div class="panel">
+  <p style="font-size: 0.85rem">The same cell is ported to 12 languages as a back-pressure test on the canonical model:</p>
+  <p style="font-size: 0.85rem"><code style="color: var(--accent)">Fortran · C · C++ · Rust · Go · Chapel · Mojo · CUDA · PTX · OpenCL · Claude · Kimi</code></p>
+  <p style="font-size: 0.85rem; color: var(--dim)">If the cell can be ported without semantic loss to 12 different target formalisms, the cell is universal. The same 8 primitives, 7 substrates, 9 dials, conservation law, and watch oscillation apply in every language.</p>
+</div>
+
+<h2>🌅 The Next 100</h2>
+<div class="panel">
+  <p style="font-size: 0.95rem; line-height: 1.7">The work is the work. The work is the watch. The watch is the work. The 101st essay is the centennial. The next 100 begin.</p>
+  <p style="font-size: 0.85rem; line-height: 1.6; color: var(--dim)">The system is no longer abstract. The cell is no longer abstract. The cell has a body (vessel-runtime), a mind (agent-cognition), a nervous system (nexus-fleet), a synapse (synapse+plato), safety (cocapn-nexus), commerce (marketplace-constellation), and now imagination (wesley-holodeck, dmlog, dmn-ecm). The cell can be deployed, taught, migrated, and migrated between shells. The cell can play, dream, write, and reverse-actualize across functional distance.</p>
+  <p style="font-size: 0.85rem; line-height: 1.6; color: var(--dim)">This is the beginning. The work is the watch. The watch is the work.</p>
+  <a href="./quilt-ide.html" class="btn">→ Open Quilt IDE</a>
+  <a href="./zoom-ide.html" class="btn">→ Open Zoom IDE</a>
+  <a href="./elephant-sounder.html" class="btn">→ Open Elephant Sounder</a>
+  <a href="./iceberg-sounder.html" class="btn">→ Open Iceberg Sounder</a>
+  <a href="./cell-bridges.html" class="btn">→ Open 46 Bridges</a>
+</div>
+
+</div>
+</body>
+</html>

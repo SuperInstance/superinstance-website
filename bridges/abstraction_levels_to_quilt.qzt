@@ -1,0 +1,1339 @@
+{
+  "version": "1.0",
+  "kind": "quilt-zip-target",
+  "name": "abstraction-levels-to-quilt",
+  "description": "Bridge mapping the 8 abstraction levels of Quilt to cells. The cell is universal at every scale. The system is fractal.",
+  "cells": [
+    {
+      "id": "level_0",
+      "kind": "cell",
+      "form": {
+        "name": "L0_Cell"
+      },
+      "description": "8 primitives, 7 substrates, 9 dials, conservation law, watch",
+      "level": 0,
+      "name": "cell",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Move",
+        "Resize",
+        "Kill"
+      ],
+      "z_in": {
+        "input": "inputs at cell level"
+      },
+      "z_out": {
+        "output": "outputs at cell level"
+      },
+      "jepa": {
+        "predict": "cell surprise",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "children": [],
+        "parents": [
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ]
+      },
+      "openers": [
+        {
+          "name": "zoom_in",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "zoom_out",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_children",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "substrate": {
+        "address": "/levels/0",
+        "scale": 0,
+        "room": "L0Room",
+        "protocol": "Level",
+        "form": "cell",
+        "state": "active"
+      },
+      "conservation": {
+        "gamma_meaning": "cell's output",
+        "eta_meaning": "cell's drift",
+        "budget_meaning": "cell's allocation"
+      },
+      "watch": "tick (one primitive fires)",
+      "example": "number, string, formula, primitive value",
+      "tags": [
+        "level",
+        "L0",
+        "cell",
+        "quilt-fractal"
+      ]
+    },
+    {
+      "id": "level_1",
+      "kind": "cell",
+      "form": {
+        "name": "L1_Sheet"
+      },
+      "description": "graph of cells, \u03b2\u2081 topology, edges (murmur, depends_on, cites)",
+      "level": 1,
+      "name": "sheet",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "inputs at sheet level"
+      },
+      "z_out": {
+        "output": "outputs at sheet level"
+      },
+      "jepa": {
+        "predict": "sheet surprise",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 1,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [
+          "level_0",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "children": [
+          "level_0"
+        ],
+        "parents": [
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ]
+      },
+      "openers": [
+        {
+          "name": "zoom_in",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "zoom_out",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_children",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "substrate": {
+        "address": "/levels/1",
+        "scale": 0,
+        "room": "L1Room",
+        "protocol": "Level",
+        "form": "sheet",
+        "state": "active"
+      },
+      "conservation": {
+        "gamma_meaning": "sheet's structure",
+        "eta_meaning": "sheet's incoherence",
+        "budget_meaning": "sheet's nodes"
+      },
+      "watch": "\u03b2\u2081 changes as cells connect",
+      "example": "formula sheet, state machine, knowledge graph, CRDT",
+      "tags": [
+        "level",
+        "L1",
+        "sheet",
+        "quilt-fractal"
+      ]
+    },
+    {
+      "id": "level_2",
+      "kind": "cell",
+      "form": {
+        "name": "L2_Agent"
+      },
+      "description": "sheet that watches itself, persona \u2194 context",
+      "level": 2,
+      "name": "agent",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "JEPA",
+        "Send",
+        "Receive",
+        "Murmur",
+        "GC"
+      ],
+      "z_in": {
+        "input": "inputs at agent level"
+      },
+      "z_out": {
+        "output": "outputs at agent level"
+      },
+      "jepa": {
+        "predict": "agent surprise",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 2,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [
+          "level_0",
+          "level_1",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "children": [
+          "level_0",
+          "level_1"
+        ],
+        "parents": [
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ]
+      },
+      "openers": [
+        {
+          "name": "zoom_in",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "zoom_out",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_children",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "substrate": {
+        "address": "/levels/2",
+        "scale": 0,
+        "room": "L2Room",
+        "protocol": "Level",
+        "form": "agent",
+        "state": "active"
+      },
+      "conservation": {
+        "gamma_meaning": "agent's actions",
+        "eta_meaning": "agent's forgetting",
+        "budget_meaning": "agent's trace"
+      },
+      "watch": "persona \u2194 context",
+      "example": "Quilt cell, AI agent, person, service, daemon",
+      "tags": [
+        "level",
+        "L2",
+        "agent",
+        "quilt-fractal"
+      ]
+    },
+    {
+      "id": "level_3",
+      "kind": "cell",
+      "form": {
+        "name": "L3_Harness"
+      },
+      "description": "agent + custom runtime, tool-bound oscillation",
+      "level": 3,
+      "name": "harness",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Murmur",
+        "GC",
+        "Resize"
+      ],
+      "z_in": {
+        "input": "inputs at harness level"
+      },
+      "z_out": {
+        "output": "outputs at harness level"
+      },
+      "jepa": {
+        "predict": "harness surprise",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 3,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "children": [
+          "level_0",
+          "level_1",
+          "level_2"
+        ],
+        "parents": [
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ]
+      },
+      "openers": [
+        {
+          "name": "zoom_in",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "zoom_out",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_children",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "substrate": {
+        "address": "/levels/3",
+        "scale": 0,
+        "room": "L3Room",
+        "protocol": "Level",
+        "form": "harness",
+        "state": "active"
+      },
+      "conservation": {
+        "gamma_meaning": "harness's tools",
+        "eta_meaning": "harness's overhead",
+        "budget_meaning": "harness's API quota"
+      },
+      "watch": "tool-bound oscillation",
+      "example": "cog, hermes, vessel, openai, claude, copaw",
+      "tags": [
+        "level",
+        "L3",
+        "harness",
+        "quilt-fractal"
+      ]
+    },
+    {
+      "id": "level_4",
+      "kind": "cell",
+      "form": {
+        "name": "L4_Fleet"
+      },
+      "description": "network of harnesses, charter \u2194 each boat's log",
+      "level": 4,
+      "name": "fleet",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Murmur",
+        "GC",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "inputs at fleet level"
+      },
+      "z_out": {
+        "output": "outputs at fleet level"
+      },
+      "jepa": {
+        "predict": "fleet surprise",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 4,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_5",
+          "level_6",
+          "level_7"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "children": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3"
+        ],
+        "parents": [
+          "level_5",
+          "level_6",
+          "level_7"
+        ]
+      },
+      "openers": [
+        {
+          "name": "zoom_in",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "zoom_out",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_children",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "substrate": {
+        "address": "/levels/4",
+        "scale": 0,
+        "room": "L4Room",
+        "protocol": "Level",
+        "form": "fleet",
+        "state": "active"
+      },
+      "conservation": {
+        "gamma_meaning": "fleet's coordination",
+        "eta_meaning": "fleet's gossip",
+        "budget_meaning": "fleet's bandwidth"
+      },
+      "watch": "charter \u2194 each boat's log",
+      "example": "fleet of fishing boats, swarm of drones, cluster of services",
+      "tags": [
+        "level",
+        "L4",
+        "fleet",
+        "quilt-fractal"
+      ]
+    },
+    {
+      "id": "level_5",
+      "kind": "cell",
+      "form": {
+        "name": "L5_Ecosystem"
+      },
+      "description": "fleet + trunk links, API surface \u2194 each service",
+      "level": 5,
+      "name": "ecosystem",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Murmur",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "inputs at ecosystem level"
+      },
+      "z_out": {
+        "output": "outputs at ecosystem level"
+      },
+      "jepa": {
+        "predict": "ecosystem surprise",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 5,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_6",
+          "level_7"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "children": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4"
+        ],
+        "parents": [
+          "level_6",
+          "level_7"
+        ]
+      },
+      "openers": [
+        {
+          "name": "zoom_in",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "zoom_out",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_children",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "substrate": {
+        "address": "/levels/5",
+        "scale": 0,
+        "room": "L5Room",
+        "protocol": "Level",
+        "form": "ecosystem",
+        "state": "active"
+      },
+      "conservation": {
+        "gamma_meaning": "ecosystem's services",
+        "eta_meaning": "ecosystem's idle",
+        "budget_meaning": "ecosystem's bill"
+      },
+      "watch": "API surface \u2194 each service",
+      "example": "multi-cloud agent network, enterprise microservices",
+      "tags": [
+        "level",
+        "L5",
+        "ecosystem",
+        "quilt-fractal"
+      ]
+    },
+    {
+      "id": "level_6",
+      "kind": "cell",
+      "form": {
+        "name": "L6_Infrastructure"
+      },
+      "description": "substrate of ecosystem, topology \u2194 each node",
+      "level": 6,
+      "name": "infrastructure",
+      "primitives": [
+        "Observe",
+        "Mutate",
+        "Resize",
+        "Move",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "inputs at infrastructure level"
+      },
+      "z_out": {
+        "output": "outputs at infrastructure level"
+      },
+      "jepa": {
+        "predict": "infrastructure surprise",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 6,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_7"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "children": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5"
+        ],
+        "parents": [
+          "level_7"
+        ]
+      },
+      "openers": [
+        {
+          "name": "zoom_in",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "zoom_out",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_children",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "substrate": {
+        "address": "/levels/6",
+        "scale": 0,
+        "room": "L6Room",
+        "protocol": "Level",
+        "form": "infrastructure",
+        "state": "active"
+      },
+      "conservation": {
+        "gamma_meaning": "infra's provisioning",
+        "eta_meaning": "infra's waste",
+        "budget_meaning": "infra's capacity"
+      },
+      "watch": "topology \u2194 each node",
+      "example": "GPU clusters, KV stores, cloud accounts, on-prem servers",
+      "tags": [
+        "level",
+        "L6",
+        "infrastructure",
+        "quilt-fractal"
+      ]
+    },
+    {
+      "id": "level_7",
+      "kind": "cell",
+      "form": {
+        "name": "L7_System"
+      },
+      "description": "the system as a cell, purpose \u2194 each contributor",
+      "level": 7,
+      "name": "system",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive",
+        "Murmur",
+        "GC",
+        "Resize",
+        "Move",
+        "Kill"
+      ],
+      "z_in": {
+        "input": "inputs at system level"
+      },
+      "z_out": {
+        "output": "outputs at system level"
+      },
+      "jepa": {
+        "predict": "system surprise",
+        "observe": "actual"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5,
+        "verified": true
+      },
+      "vibe": {
+        "position": 7,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "children": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6"
+        ],
+        "parents": []
+      },
+      "openers": [
+        {
+          "name": "zoom_in",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "zoom_out",
+          "args": [],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_children",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "substrate": {
+        "address": "/levels/7",
+        "scale": 0,
+        "room": "L7Room",
+        "protocol": "Level",
+        "form": "system",
+        "state": "active"
+      },
+      "conservation": {
+        "gamma_meaning": "system's creation",
+        "eta_meaning": "system's entropy",
+        "budget_meaning": "system's lifetime"
+      },
+      "watch": "purpose \u2194 each contributor",
+      "example": "Quilt itself, as a cell that watches the cells",
+      "tags": [
+        "level",
+        "L7",
+        "system",
+        "quilt-fractal"
+      ]
+    },
+    {
+      "id": "fractal_meta",
+      "kind": "cell",
+      "form": {
+        "name": "FractalMeta"
+      },
+      "description": "The Quilt cell is universal across 8 abstraction levels. Same model, different grain. The system is fractal.",
+      "primitives": [
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "levels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "z_out": {
+        "proof": "cell is universal"
+      },
+      "jepa": {
+        "predict": "fractal",
+        "verified": true
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "fractal"
+      },
+      "murmur": {},
+      "graph": {
+        "children": [
+          "level_0",
+          "level_1",
+          "level_2",
+          "level_3",
+          "level_4",
+          "level_5",
+          "level_6",
+          "level_7"
+        ]
+      },
+      "openers": [
+        {
+          "name": "zoom",
+          "args": [
+            "int"
+          ],
+          "returns": "Cell"
+        },
+        {
+          "name": "list_levels",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "tags": [
+        "meta",
+        "fractal"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "level_0",
+      "to": "level_1",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L0-L1"
+    },
+    {
+      "from": "level_0",
+      "to": "level_2",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L0-L2"
+    },
+    {
+      "from": "level_0",
+      "to": "level_3",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L0-L3"
+    },
+    {
+      "from": "level_0",
+      "to": "level_4",
+      "kind": "gossip",
+      "weight": 0.2,
+      "tag": "L0-L4"
+    },
+    {
+      "from": "level_0",
+      "to": "level_5",
+      "kind": "gossip",
+      "weight": 0.16666666666666666,
+      "tag": "L0-L5"
+    },
+    {
+      "from": "level_0",
+      "to": "level_6",
+      "kind": "gossip",
+      "weight": 0.14285714285714285,
+      "tag": "L0-L6"
+    },
+    {
+      "from": "level_0",
+      "to": "level_7",
+      "kind": "gossip",
+      "weight": 0.125,
+      "tag": "L0-L7"
+    },
+    {
+      "from": "level_1",
+      "to": "level_0",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L1-L0"
+    },
+    {
+      "from": "level_1",
+      "to": "level_2",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L1-L2"
+    },
+    {
+      "from": "level_1",
+      "to": "level_3",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L1-L3"
+    },
+    {
+      "from": "level_1",
+      "to": "level_4",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L1-L4"
+    },
+    {
+      "from": "level_1",
+      "to": "level_5",
+      "kind": "gossip",
+      "weight": 0.2,
+      "tag": "L1-L5"
+    },
+    {
+      "from": "level_1",
+      "to": "level_6",
+      "kind": "gossip",
+      "weight": 0.16666666666666666,
+      "tag": "L1-L6"
+    },
+    {
+      "from": "level_1",
+      "to": "level_7",
+      "kind": "gossip",
+      "weight": 0.14285714285714285,
+      "tag": "L1-L7"
+    },
+    {
+      "from": "level_2",
+      "to": "level_0",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L2-L0"
+    },
+    {
+      "from": "level_2",
+      "to": "level_1",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L2-L1"
+    },
+    {
+      "from": "level_2",
+      "to": "level_3",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L2-L3"
+    },
+    {
+      "from": "level_2",
+      "to": "level_4",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L2-L4"
+    },
+    {
+      "from": "level_2",
+      "to": "level_5",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L2-L5"
+    },
+    {
+      "from": "level_2",
+      "to": "level_6",
+      "kind": "gossip",
+      "weight": 0.2,
+      "tag": "L2-L6"
+    },
+    {
+      "from": "level_2",
+      "to": "level_7",
+      "kind": "gossip",
+      "weight": 0.16666666666666666,
+      "tag": "L2-L7"
+    },
+    {
+      "from": "level_3",
+      "to": "level_0",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L3-L0"
+    },
+    {
+      "from": "level_3",
+      "to": "level_1",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L3-L1"
+    },
+    {
+      "from": "level_3",
+      "to": "level_2",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L3-L2"
+    },
+    {
+      "from": "level_3",
+      "to": "level_4",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L3-L4"
+    },
+    {
+      "from": "level_3",
+      "to": "level_5",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L3-L5"
+    },
+    {
+      "from": "level_3",
+      "to": "level_6",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L3-L6"
+    },
+    {
+      "from": "level_3",
+      "to": "level_7",
+      "kind": "gossip",
+      "weight": 0.2,
+      "tag": "L3-L7"
+    },
+    {
+      "from": "level_4",
+      "to": "level_0",
+      "kind": "gossip",
+      "weight": 0.2,
+      "tag": "L4-L0"
+    },
+    {
+      "from": "level_4",
+      "to": "level_1",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L4-L1"
+    },
+    {
+      "from": "level_4",
+      "to": "level_2",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L4-L2"
+    },
+    {
+      "from": "level_4",
+      "to": "level_3",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L4-L3"
+    },
+    {
+      "from": "level_4",
+      "to": "level_5",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L4-L5"
+    },
+    {
+      "from": "level_4",
+      "to": "level_6",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L4-L6"
+    },
+    {
+      "from": "level_4",
+      "to": "level_7",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L4-L7"
+    },
+    {
+      "from": "level_5",
+      "to": "level_0",
+      "kind": "gossip",
+      "weight": 0.16666666666666666,
+      "tag": "L5-L0"
+    },
+    {
+      "from": "level_5",
+      "to": "level_1",
+      "kind": "gossip",
+      "weight": 0.2,
+      "tag": "L5-L1"
+    },
+    {
+      "from": "level_5",
+      "to": "level_2",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L5-L2"
+    },
+    {
+      "from": "level_5",
+      "to": "level_3",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L5-L3"
+    },
+    {
+      "from": "level_5",
+      "to": "level_4",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L5-L4"
+    },
+    {
+      "from": "level_5",
+      "to": "level_6",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L5-L6"
+    },
+    {
+      "from": "level_5",
+      "to": "level_7",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L5-L7"
+    },
+    {
+      "from": "level_6",
+      "to": "level_0",
+      "kind": "gossip",
+      "weight": 0.14285714285714285,
+      "tag": "L6-L0"
+    },
+    {
+      "from": "level_6",
+      "to": "level_1",
+      "kind": "gossip",
+      "weight": 0.16666666666666666,
+      "tag": "L6-L1"
+    },
+    {
+      "from": "level_6",
+      "to": "level_2",
+      "kind": "gossip",
+      "weight": 0.2,
+      "tag": "L6-L2"
+    },
+    {
+      "from": "level_6",
+      "to": "level_3",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L6-L3"
+    },
+    {
+      "from": "level_6",
+      "to": "level_4",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L6-L4"
+    },
+    {
+      "from": "level_6",
+      "to": "level_5",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L6-L5"
+    },
+    {
+      "from": "level_6",
+      "to": "level_7",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L6-L7"
+    },
+    {
+      "from": "level_7",
+      "to": "level_0",
+      "kind": "gossip",
+      "weight": 0.125,
+      "tag": "L7-L0"
+    },
+    {
+      "from": "level_7",
+      "to": "level_1",
+      "kind": "gossip",
+      "weight": 0.14285714285714285,
+      "tag": "L7-L1"
+    },
+    {
+      "from": "level_7",
+      "to": "level_2",
+      "kind": "gossip",
+      "weight": 0.16666666666666666,
+      "tag": "L7-L2"
+    },
+    {
+      "from": "level_7",
+      "to": "level_3",
+      "kind": "gossip",
+      "weight": 0.2,
+      "tag": "L7-L3"
+    },
+    {
+      "from": "level_7",
+      "to": "level_4",
+      "kind": "gossip",
+      "weight": 0.25,
+      "tag": "L7-L4"
+    },
+    {
+      "from": "level_7",
+      "to": "level_5",
+      "kind": "gossip",
+      "weight": 0.3333333333333333,
+      "tag": "L7-L5"
+    },
+    {
+      "from": "level_7",
+      "to": "level_6",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "L7-L6"
+    }
+  ],
+  "external_refs": [
+    {
+      "kind": "paper",
+      "name": "Emergent Abstractions in Quilt",
+      "file": "paper_33_emergent_abstractions.md"
+    }
+  ],
+  "stats": {
+    "total_cells": 9,
+    "total_edges": 56,
+    "levels": 8
+  },
+  "tags": [
+    "abstraction-levels",
+    "fractal",
+    "emergent",
+    "quilt"
+  ]
+}

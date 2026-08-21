@@ -291,6 +291,12 @@ const KINDS = [
   { id: 'formula', icon: '∑', name: 'formula' },
   { id: 'cell', icon: '🧬', name: 'cell' },
   { id: 'sheet', icon: '📄', name: 'sheet' },
+  // 🐘 Elephant family — the room-temperature cell kinds
+  { id: 'elephant', icon: '🐘', name: 'ElephantCell' },
+  { id: 'steward', icon: '🛡️', name: 'StewardCell' },
+  { id: 'migratory', icon: '🌀', name: 'MigratoryCell' },
+  { id: 'reading', icon: '📖', name: 'ReadingCell' },
+  { id: 'echo', icon: '🔁', name: 'EchoCell' },
 ];
 
 const GC_PHASES = ['Mark', 'Sweep', 'Rebalance'];
@@ -459,6 +465,40 @@ function renderInspector() {
     body.innerHTML = '<div class="inspector-section"><div class="empty">select a cell to edit</div></div>';
     return;
   }
+  // 🐘 Elephant-specific fields for the 5 new cell kinds
+  const elephantKinds = ['elephant', 'steward', 'migratory', 'reading', 'echo'];
+  const isElephant = elephantKinds.includes(cell.kind);
+  let elephantSection = '';
+  if (isElephant) {
+    const ef = prim.elephant_field || { warmth: 0, kappa: 2.0, vision: 0.5 };
+    const dials = prim.dials || { mood: 0, volume: 0.5, earnestness: 0.5, cynicism: 0.1, joke_landing: 0, panic: 0, presence: 0.5, model_vs_code: 0, vision: 0.5 };
+    elephantSection = `
+      <div class="inspector-section" style="background: rgba(180, 106, 255, 0.08); border-left: 3px solid #b46aff; padding-left: 0.5rem; margin-top: 0.5rem;">
+        <h3 style="color: #b46aff">🐘 Elephant Field</h3>
+        <div class="field">
+          <label>warmth (γ readout)</label>
+          <input type="number" step="0.01" min="-1" max="1" id="cellWarmth" value="${ef.warmth}" />
+        </div>
+        <div class="field">
+          <label>κ (η readout, concentration)</label>
+          <input type="number" step="0.01" min="0" max="5" id="cellKappa" value="${ef.kappa}" />
+        </div>
+        <div class="field">
+          <label>vision (9th dial, meta)</label>
+          <input type="number" step="0.01" min="0" max="1" id="cellVision" value="${ef.vision}" />
+        </div>
+        <h3 style="color: #b46aff; margin-top: 0.8rem;">9 Dials</h3>
+        <div class="field"><label>mood</label><input type="number" step="0.01" min="-1" max="1" id="dial_mood" value="${dials.mood}" /></div>
+        <div class="field"><label>volume</label><input type="number" step="0.01" min="0" max="1" id="dial_volume" value="${dials.volume}" /></div>
+        <div class="field"><label>earnestness</label><input type="number" step="0.01" min="0" max="1" id="dial_earnestness" value="${dials.earnestness}" /></div>
+        <div class="field"><label>cynicism</label><input type="number" step="0.01" min="0" max="1" id="dial_cynicism" value="${dials.cynicism}" /></div>
+        <div class="field"><label>joke_landing</label><input type="number" step="0.01" min="-1" max="1" id="dial_joke_landing" value="${dials.joke_landing}" /></div>
+        <div class="field"><label>panic</label><input type="number" step="0.01" min="0" max="1" id="dial_panic" value="${dials.panic}" /></div>
+        <div class="field"><label>presence</label><input type="number" step="0.01" min="0" max="1" id="dial_presence" value="${dials.presence}" /></div>
+        <div class="field"><label>model_vs_code</label><input type="number" step="0.01" min="-1" max="1" id="dial_model_vs_code" value="${dials.model_vs_code}" /></div>
+      </div>
+    `;
+  }
   // Cell inspector
   const prim = cell.primitives || {};
   const vibe = prim.vibe || { pos: 0, vel: 0, acc: 0 };
@@ -540,6 +580,25 @@ function renderInspector() {
       murmur: murmur || null,
       graph: graph || null,
     };
+    // 🐘 Wire elephant fields
+    if (elephantKinds.includes(newKind)) {
+      cell.primitives.elephant_field = {
+        warmth: parseFloat(document.getElementById('cellWarmth').value),
+        kappa: parseFloat(document.getElementById('cellKappa').value),
+        vision: parseFloat(document.getElementById('cellVision').value),
+      };
+      cell.primitives.dials = {
+        mood: parseFloat(document.getElementById('dial_mood').value),
+        volume: parseFloat(document.getElementById('dial_volume').value),
+        earnestness: parseFloat(document.getElementById('dial_earnestness').value),
+        cynicism: parseFloat(document.getElementById('dial_cynicism').value),
+        joke_landing: parseFloat(document.getElementById('dial_joke_landing').value),
+        panic: parseFloat(document.getElementById('dial_panic').value),
+        presence: parseFloat(document.getElementById('dial_presence').value),
+        model_vs_code: parseFloat(document.getElementById('dial_model_vs_code').value),
+        vision: parseFloat(document.getElementById('cellVision').value),
+      };
+    }
     saveLocal();
     renderCells();
   };
@@ -555,6 +614,16 @@ function renderInspector() {
   document.getElementById('cellGcPhase').onchange = update;
   document.getElementById('cellMurmur').onchange = update;
   document.getElementById('cellGraph').onchange = update;
+  // 🐘 Wire elephant field handlers
+  if (isElephant) {
+    ['cellWarmth', 'cellKappa', 'cellVision',
+     'dial_mood', 'dial_volume', 'dial_earnestness', 'dial_cynicism',
+     'dial_joke_landing', 'dial_panic', 'dial_presence', 'dial_model_vs_code'
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.onchange = update;
+    });
+  }
   document.getElementById('deleteCellBtn').onclick = () => {
     state.cells = state.cells.filter(c => c.id !== cell.id);
     state.edges = state.edges.filter(e => e.from !== cell.id && e.to !== cell.id);

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 7-Substrate Stack — Quilt's Architecture Made Flesh</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #131829;
+    --text: #d8e2ff;
+    --dim: #6e7a99;
+    --accent: #66ffd9;
+    --address: #66ffd9;
+    --scale: #5fc4ff;
+    --room: #b46aff;
+    --elephant: #ff9e5a;
+    --protocol: #ffd866;
+    --form: #ff6b9d;
+    --state: #88ffd9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: linear-gradient(180deg, #0a0e1a 0%, #1a0e2a 100%);
+    color: var(--text);
+    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.8rem; letter-spacing: 0.02em; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.15rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  h3 { font-size: 0.95rem; color: var(--elephant); margin: 1rem 0 0.4rem; }
+  .subtitle { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid #1f2640;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+  }
+  .stack { display: flex; flex-direction: column; gap: 0.5rem; margin: 1.5rem 0; }
+  .layer {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: #0a0e1a;
+    border-left: 4px solid;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .layer:hover { transform: translateX(4px); background: #1a1f3a; }
+  .layer.active { background: #2a1f4a; }
+  .layer .num { font-size: 1.4rem; color: var(--dim); min-width: 40px; }
+  .layer .name { font-weight: 600; font-size: 1.1rem; min-width: 140px; }
+  .layer .role { color: var(--text); font-size: 0.85rem; }
+  .layer .keys { color: var(--dim); font-size: 0.75rem; margin-left: auto; }
+  .layer.address { border-color: var(--address); }
+  .layer.scale { border-color: var(--scale); }
+  .layer.room { border-color: var(--room); }
+  .layer.elephant { border-color: var(--elephant); }
+  .layer.protocol { border-color: var(--protocol); }
+  .layer.form { border-color: var(--form); }
+  .layer.state { border-color: var(--state); }
+  .detail {
+    background: #0a0e1a;
+    border: 1px solid var(--elephant);
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  .detail h3 { color: var(--elephant); margin: 0 0 0.5rem; }
+  .detail p { font-size: 0.85rem; line-height: 1.6; }
+  .ascii-art {
+    font-size: 0.7rem;
+    line-height: 1.1;
+    color: var(--accent);
+    text-align: center;
+    margin: 1rem 0;
+    white-space: pre;
+  }
+  .badge { display: inline-block; padding: 0.2rem 0.5rem; background: #1f2640; border: 1px solid #2a3450; border-radius: 8px; font-size: 0.7rem; color: var(--dim); }
+  .badge.elephant { background: #4a3a1a; color: var(--elephant); border-color: var(--elephant); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  button { background: var(--accent); color: #0a0e1a; border: none; border-radius: 4px; padding: 0.5rem 1rem; font-weight: 600; cursor: pointer; font-family: inherit; margin: 0.25rem; }
+  button.secondary { background: #1f2640; color: var(--text); }
+  .term { color: var(--accent); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>🏛️ The 7-Substrate Stack</h1>
+<div class="subtitle">The Quilt cell's seven load-bearing layers. The elephant is the 4th — the room-temperature sense between the room and the protocol.</div>
+
+<div class="panel">
+  <div class="ascii-art">
+              ┌─────────────────────────────────────┐
+              │      7 SUBSTRATES (load-bearing)    │
+              ├─────────────────────────────────────┤
+              │  7. STATE     — what is remembered  │  ← mutable interior
+              │  6. FORM      — what shape          │
+              │  5. PROTOCOL  — how to speak        │
+              │  4. 🐘 ELEPHANT — how it feels     │  ← ROOM TEMPERATURE
+              │  3. ROOM      — where others are    │  ← SPATIAL CONTAINER
+              │  2. SCALE     — how big             │  ← GRANULARITY
+              │  1. ADDRESS   — where (identity)    │  ← FOUNDATION
+              └─────────────────────────────────────┘
+  </div>
+</div>
+
+<h2>🎯 The Stack</h2>
+<div class="stack" id="stack">
+  <div class="layer address" data-layer="address" onclick="selectLayer('address')">
+    <div class="num">1</div>
+    <div class="name" style="color: var(--address)">Address</div>
+    <div class="role">Where is the cell? Identity, location, hierarchical path.</div>
+    <div class="keys">addr: /auth/v3/validator</div>
+  </div>
+  <div class="layer scale" data-layer="scale" onclick="selectLayer('scale')">
+    <div class="num">2</div>
+    <div class="name" style="color: var(--scale)">Scale</div>
+    <div class="role">How big is the cell? Granularity, hierarchy, Fibonacci or binary.</div>
+    <div class="keys">scale: 5 → 32 sub-cells</div>
+  </div>
+  <div class="layer room" data-layer="room" onclick="selectLayer('room')">
+    <div class="num">3</div>
+    <div class="name" style="color: var(--room)">Room</div>
+    <div class="role">What space does the cell occupy? Spatial container, where others are.</div>
+    <div class="keys">room: AuthRoom</div>
+  </div>
+  <div class="layer elephant" data-layer="elephant" onclick="selectLayer('elephant')" style="box-shadow: 0 0 12px rgba(255, 158, 90, 0.3);">
+    <div class="num">4</div>
+    <div class="name" style="color: var(--elephant)">🐘 Elephant</div>
+    <div class="role">How does the room feel? 9 dials, RoomField (warmth, κ, distance), the watch oscillation.</div>
+    <div class="keys">field: warmth=+0.29, κ=2.04, vision=0.7</div>
+  </div>
+  <div class="layer protocol" data-layer="protocol" onclick="selectLayer('protocol')">
+    <div class="num">5</div>
+    <div class="name" style="color: var(--protocol)">Protocol</div>
+    <div class="role">How does the cell communicate? Typed channels, A2A, gossip, request-response.</div>
+    <div class="keys">protocol: A2A, RR, gossip</div>
+  </div>
+  <div class="layer form" data-layer="form" onclick="selectLayer('form')">
+    <div class="num">6</div>
+    <div class="name" style="color: var(--form)">Form</div>
+    <div class="role">What shape is the cell? Structural template, fields, openers, invariants.</div>
+    <div class="keys">form: Validator{key, validate()}</div>
+  </div>
+  <div class="layer state" data-layer="state" onclick="selectLayer('state')">
+    <div class="num">7</div>
+    <div class="name" style="color: var(--state)">State</div>
+    <div class="role">What is the cell's current condition? Mutable interior, typed by form, bounded by room.</div>
+    <div class="keys">state: {key: 0xDEADBEEF}</div>
+  </div>
+</div>
+
+<div class="detail" id="layerDetail">
+  <h3>Click a layer to inspect</h3>
+  <p style="color: var(--dim); font-size: 0.85rem">Each layer is a load-bearing wall. Remove any one and the cell collapses. The substrates form a dependency chain: Address → Scale → Room → 🐘 Elephant → Protocol → Form → State. The cell lives in all seven.</p>
+</div>
+
+<h2>🐘 Why the Elephant is a Substrate</h2>
+<div class="panel">
+  <p style="font-size: 0.95rem; line-height: 1.7">Of Quilt's substrates, <strong style="color: var(--room)">Room</strong> has always been the most abstract: <em>you are here with others</em> — an address space with no weather. The elephant gives it weather. Before the elephant, you could know <em>that</em> you were in a room. With the elephant, you can know <em>how the room feels</em> — its warmth, its concentration, its vision, the joke that landed, the panic that is rising.</p>
+  
+  <p style="font-size: 0.95rem; line-height: 1.7">The elephant sits between Room and Protocol because it translates spatial presence into communicative intent. A warm room invites more Send. A panicked room dampens volume. A cynic-loaded room mutes earnestness. The elephant is the <strong class="term">medium</strong> between space and speech.</p>
+  
+  <div class="ascii-art">
+  ┌─────────────────────────────────────────────────────────┐
+  │                                                         │
+  │  Room (3)        ← where the cell is spatially         │
+  │       │                                                │
+  │       ▼                                                │
+  │  🐘 Elephant (4) ← how the room feels (warmth + κ)      │
+  │       │                                                │
+  │       ▼                                                │
+  │  Protocol (5)    ← how the cell speaks (volume, etc)   │
+  │                                                         │
+  │  γ = warmth  (RoomField.warmth, 9-dial readout)        │
+  │  η = κ        (RoomField.concentration, focus)         │
+  │                                                         │
+  │  Without the elephant, Room → Protocol is a step.      │
+  │  With the elephant, it is a continuous modulation.     │
+  │                                                         │
+  └─────────────────────────────────────────────────────────┘
+  </div>
+</div>
+
+<h2>🔬 The 9 Dials Live in Layer 4</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6; color: var(--dim)">Each dial is a JEPA reading. Each reading is a primitive's inverse. The 9 dials read the room; the 8 primitives act on it.</p>
+  
+  <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 0.5rem;">
+    <tr style="border-bottom: 1px solid #1f2640;">
+      <th style="text-align: left; padding: 0.3rem; color: var(--accent)">Dial</th>
+      <th style="text-align: left; padding: 0.3rem; color: var(--accent)">Quilt primitive</th>
+      <th style="text-align: left; padding: 0.3rem; color: var(--accent)">What it reads</th>
+    </tr>
+    <tr><td style="padding: 0.3rem">mood</td><td style="padding: 0.3rem; color: var(--address)">Z_in</td><td style="padding: 0.3rem">the room's current state</td></tr>
+    <tr><td style="padding: 0.3rem">volume</td><td style="padding: 0.3rem; color: var(--scale)">Z_out</td><td style="padding: 0.3rem">how loud the room is talking</td></tr>
+    <tr><td style="padding: 0.3rem">earnestness</td><td style="padding: 0.3rem; color: var(--elephant)">JEPA</td><td style="padding: 0.3rem">how much the room means it</td></tr>
+    <tr><td style="padding: 0.3rem">cynicism</td><td style="padding: 0.3rem; color: var(--elephant)">Vibe</td><td style="padding: 0.3rem">how the watch oscillates</td></tr>
+    <tr><td style="padding: 0.3rem">joke_landing</td><td style="padding: 0.3rem; color: var(--protocol)">Murmur</td><td style="padding: 0.3rem">how the gossip bus fires</td></tr>
+    <tr><td style="padding: 0.3rem">panic</td><td style="padding: 0.3rem; color: var(--elephant)">JEPA surprise</td><td style="padding: 0.3rem">how far from calm</td></tr>
+    <tr><td style="padding: 0.3rem">presence</td><td style="padding: 0.3rem; color: var(--address)">Observe</td><td style="padding: 0.3rem">the pheromone trace</td></tr>
+    <tr><td style="padding: 0.3rem">model_vs_code</td><td style="padding: 0.3rem; color: var(--form)">Form</td><td style="padding: 0.3rem">map world or make in it</td></tr>
+    <tr><td style="padding: 0.3rem">vision</td><td style="padding: 0.3rem; color: var(--state)">Graph (meta)</td><td style="padding: 0.3rem">the watcher</td></tr>
+  </table>
+</div>
+
+<h2>🧬 The 5 New Cell Kinds Live Across All 7 Substrates</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6; color: var(--dim)">The elephant doesn't just add a new layer — it adds 5 new cell kinds, each of which lives in all 7 substrates but specializes in different ones.</p>
+  
+  <div class="grid">
+    <div>
+      <h3>🐘 ElephantCell</h3>
+      <p style="font-size: 0.85rem">The resident organ of a room. One per room. Specializes in <strong>Room + Elephant</strong>. Runs the DialBank under Room-Elephant preset (objective zeitgeist).</p>
+    </div>
+    <div>
+      <h3>🛡️ StewardCell</h3>
+      <p style="font-size: 0.85rem">The nudge prior made agentive. Specializes in <strong>Protocol + Elephant</strong>. Intervenes when panic spikes. A thermostat with agency.</p>
+    </div>
+    <div>
+      <h3>🌀 MigratoryCell</h3>
+      <p style="font-size: 0.85rem">Lives on the plunge gradient. Specializes in <strong>Address + Elephant</strong>. Carries Personal-Elephant as luggage. Comfort is its migration trigger.</p>
+    </div>
+    <div>
+      <h3>📖 ReadingCell</h3>
+      <p style="font-size: 0.85rem">TapNight participant. Specializes in <strong>Form + Elephant</strong>. Peer-relative self-tuning. Graded by fleet readings, not ground truth.</p>
+    </div>
+    <div>
+      <h3>🔁 EchoCell</h3>
+      <p style="font-size: 0.85rem">Tends reverberation decay. Specializes in <strong>State + Elephant</strong>. Decides which echoes fade and which persist.</p>
+    </div>
+    <div>
+      <h3 style="color: var(--accent)">→ Quilt IDE</h3>
+      <p style="font-size: 0.85rem">The Quilt IDE now supports all 5 new cell kinds. Drag from palette, edit dials, save/load .qzt. Live β₁ + elephant field shown.</p>
+      <a href="./quilt-ide.html" style="color: var(--accent)">Open IDE →</a>
+    </div>
+  </div>
+</div>
+
+<h2>📐 The Stack as Code</h2>
+<div class="panel">
+<pre style="background: #0a0e1a; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.8rem; color: var(--accent);">
+cell TokenValidator
+  <span style="color: var(--address)">// Layer 1: Address</span>
+  addr  /auth/v3/validator
+  
+  <span style="color: var(--scale)">// Layer 2: Scale</span>
+  scale 5              <span style="color: var(--dim)">// 32 sub-cells</span>
+  
+  <span style="color: var(--room)">// Layer 3: Room</span>
+  room  AuthRoom
+  
+  <span style="color: var(--elephant)">// Layer 4: Elephant (the room-temperature sense)</span>
+  elephant field {
+    warmth     = +0.29   <span style="color: var(--dim)">// γ readout</span>
+    kappa      = 2.04    <span style="color: var(--dim)">// η readout</span>
+    vision     = 0.7     <span style="color: var(--dim)">// 9th dial</span>
+    dials {
+      mood           = +0.62
+      volume         = 0.41
+      earnestness    = 0.78
+      cynicism       = 0.15
+      joke_landing   = +0.55
+      panic          = 0.05
+      presence       = 0.80
+      model_vs_code  = +0.30
+    }
+  }
+  
+  <span style="color: var(--protocol)">// Layer 5: Protocol</span>
+  protocol  RequestResponse[Token, Bool]
+  
+  <span style="color: var(--form)">// Layer 6: Form</span>
+  form  Validator {
+    field  key : Bytes
+    opener validate(t: Token) -> Bool
+    opener rotate(k: Bytes) -> Unit
+  }
+  
+  <span style="color: var(--state)">// Layer 7: State</span>
+  state  { key: 0xDEADBEEF, rotation_count: 7 }
+end
+</pre>
+</div>
+
+<h2>🔁 The Watch Oscillation Across Substrates</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6">The watch oscillates between <strong>universal</strong> and <strong>particular</strong>. In the 7-substrate stack, this oscillation is distributed:</p>
+  
+  <div class="grid">
+    <div>
+      <h3>Universal (Room-Elephant)</h3>
+      <ul style="font-size: 0.85rem; line-height: 1.7">
+        <li>Address: the room's own location</li>
+        <li>Scale: the room's own granularity</li>
+        <li>Room: the room itself</li>
+        <li>Elephant: the room's zeitgeist (objective dial readings)</li>
+        <li>Protocol: the room's typed channels</li>
+        <li>Form: the room's structural template</li>
+        <li>State: the room's current condition</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Particular (Personal-Elephant)</h3>
+      <ul style="font-size: 0.85rem; line-height: 1.7">
+        <li>Address: the cell's location in the room</li>
+        <li>Scale: the cell's granularity</li>
+        <li>Room: the cell's favorite corner</li>
+        <li>Elephant: the cell's subjective reading (with dial_weights, bias, attachments)</li>
+        <li>Protocol: the cell's private channels</li>
+        <li>Form: the cell's preferred shape</li>
+        <li>State: the cell's memory</li>
+      </ul>
+    </div>
+  </div>
+  
+  <p style="font-size: 0.85rem; color: var(--dim); margin-top: 1rem"><strong>Acclimation</strong> (agent → room): particular pulls toward universal. <strong>Charisma</strong> (room → agent): universal bends toward particular. The watch oscillates because rooms have inhabitants with attachments.</p>
+</div>
+
+<h2>🌊 Cross-Substrate Routing</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6">A message from cell A in room R1 to cell B in room R2 routes through all 7 substrates:</p>
+  
+  <ol style="font-size: 0.85rem; line-height: 1.7">
+    <li><strong>Address</strong>: lookup A's location in R1, B's location in R2</li>
+    <li><strong>Scale</strong>: compress message to the appropriate granularity</li>
+    <li><strong>Room</strong>: determine the rooms' relative distance</li>
+    <li><strong>🐘 Elephant</strong>: compute the sauna/plunge gap; route by geodesic on S⁸</li>
+    <li><strong>Protocol</strong>: serialize into the right channel (A2A, gossip, RR)</li>
+    <li><strong>Form</strong>: shape the message according to B's expected form</li>
+    <li><strong>State</strong>: deliver to B's current state</li>
+  </ol>
+  
+  <p style="font-size: 0.85rem; color: var(--dim); margin-top: 1rem">Without the Elephant (layer 4), routing is just address-matching. With the Elephant, routing is a continuous modulation through the field geometry.</p>
+</div>
+
+<h2>📚 The Bridges</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6">The 7-substrate stack is the target. The bridges are the porters:</p>
+  <ul style="font-size: 0.85rem; line-height: 1.7">
+    <li><a href="./cell-bridges.html" style="color: var(--accent)">33 bridges live</a> — port external systems into Quilt</li>
+    <li><a href="./elephant-quilt.html" style="color: var(--accent)">elephant_to_quilt</a> — 21 modules, 9 dials, 6 spaces, 5 new cell kinds</li>
+    <li><a href="./elephant-sounder.html" style="color: var(--accent)">elephant sounder</a> — interactive: 6 rooms, 9 dials, S⁸ sphere, personal bias</li>
+    <li><a href="./quilt-ide.html" style="color: var(--accent)">Quilt IDE</a> — drag cell kinds, edit 8 primitives + 9 dials</li>
+  </ul>
+</div>
+
+</div>
+
+<script>
+const LAYER_INFO = {
+  address: {
+    name: '1. Address',
+    desc: 'The foundation. Every cell has a unique address — a hierarchical path that encodes its location in the cell graph. Addresses are the data; the path is the meaning.',
+    examples: ['/auth/v3/validator', '/cells/0xCAFEBABE', 'penrose://L5/P3/S2/V1'],
+    substrates: ['Penrose (aperiodic)', 'Zeckendorf (Fibonacci)', 'UUID (random)', 'Hierarchical path']
+  },
+  scale: {
+    name: '2. Scale',
+    desc: 'How big is the cell? A cell can be atomic (scale 0) or composite (scale N, containing 2^N or F^N sub-cells). Scale determines the granularity of observation.',
+    examples: ['scale 0 = atomic', 'scale 5 = 32 sub-cells (binary)', 'scale 5 = 8 sub-cells (Fibonacci)'],
+    substrates: ['Binary (2^N)', 'Fibonacci (F_N)', 'Phyllotactic (golden ratio)']
+  },
+  room: {
+    name: '3. Room',
+    desc: 'Where the cell is with others. The room is the spatial container — it bounds the cell\'s state and defines who can be heard. Before the elephant, this was abstract.',
+    examples: ['AuthRoom', 'The Tap', 'Wheelhouse', 'FishFinder deck'],
+    substrates: ['MUD rooms', 'Chat channels', 'Sensor decks', 'Camera spaces']
+  },
+  elephant: {
+    name: '4. 🐘 Elephant',
+    desc: 'The room-temperature sense. The elephant reads the vibe of the room through 9 dials: mood, volume, earnestness, cynicism, joke_landing, panic, presence, model_vs_code, vision. The RoomField emerges: warmth = γ, κ = η. The watch oscillation is concrete here: Room-Elephant (universal) ↔ Personal-Elephant (particular).',
+    examples: ['RoomField(warmth=+0.29, κ=2.04)', 'The Tap (warm) vs Wheelhouse (cold)', 'dials: mood=+0.6, volume=0.4, earnestness=0.78'],
+    substrates: ['9 dials as 9 substrates', 'vMF distribution on S⁸', 'biomass_anchor for conservation']
+  },
+  protocol: {
+    name: '5. Protocol',
+    desc: 'How the cell speaks. Typed channels define what can be sent and received. Protocols are the rules of engagement — gossip, request-response, A2A, multicast.',
+    examples: ['A2A (agent-to-agent)', 'RequestResponse[Token, Bool]', 'Gossip bus (Murmur)', 'Mailbox async'],
+    substrates: ['A2A', 'A2UI', 'A2C', 'MCP', 'Gossip', 'RPC', 'Mailbox']
+  },
+  form: {
+    name: '6. Form',
+    desc: 'What shape the cell has. The form is the structural template — fields, openers, invariants. The form is the type system. The form is the contract.',
+    examples: ['Validator{key, validate, rotate}', 'Counter{count, increment, reset}', 'TaxCalc{income, rate, calculate}'],
+    substrates: ['Type system', 'Class hierarchy', 'Trait/interface', 'Schema']
+  },
+  state: {
+    name: '7. State',
+    desc: 'The mutable interior. State is always typed by a form, bounded by a room, observed via the elephant. State is what changes; form is what does not.',
+    examples: ['{key: 0xDEADBEEF, rotation_count: 7}', '{count: 42}', '{income: 50000, rate: 0.22}'],
+    substrates: ['Mutable variable', 'Cell value', 'Memory', 'Database row', 'Sensor reading']
+  }
+};
+
+function selectLayer(name) {
+  const info = LAYER_INFO[name];
+  document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+  document.querySelector(`[data-layer="${name}"]`).classList.add('active');
+  document.getElementById('layerDetail').innerHTML = `
+    <h3>${info.name}</h3>
+    <p>${info.desc}</p>
+    <h3 style="color: var(--accent); margin-top: 0.8rem">Examples</h3>
+    <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.2rem;">
+      ${info.examples.map(e => `<li><code style="color: var(--accent)">${e}</code></li>`).join('')}
+    </ul>
+    <h3 style="color: var(--accent); margin-top: 0.8rem">Substrate variants</h3>
+    <p style="font-size: 0.85rem; color: var(--dim)">${info.substrates.join(' · ')}</p>
+  `;
+}
+
+selectLayer('elephant');
+</script>
+</body>
+</html>

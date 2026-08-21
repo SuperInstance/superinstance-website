@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fleet Search — The SuperInstance Ecosystem Explorer</title>
+<style>
+  :root {
+    --bg: #0a0e1a; --panel: #131829; --text: #d8e2ff;
+    --dim: #6e7a99; --accent: #66ffd9;
+  }
+  * { box-sizing: border-box; }
+  body { background: radial-gradient(ellipse at top, #1a0e2a, #0a0e1a 70%); color: var(--text); font-family: 'SF Mono', monospace; margin: 0; padding: 0; min-height: 100vh; }
+  .wrap { max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.8rem; color: var(--accent); margin: 0 0 0.5rem; }
+  .subtitle { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .search-bar { width: 100%; padding: 0.75rem 1rem; background: var(--panel); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 1rem; }
+  .filters { display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap; }
+  .filter { background: var(--panel); border: 1px solid #1f2640; color: var(--text); padding: 0.4rem 0.8rem; border-radius: 16px; font-size: 0.8rem; cursor: pointer; font-family: inherit; }
+  .filter.active { background: var(--accent); color: #0a0e1a; }
+  .results { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+  .result { background: var(--panel); border: 1px solid #1f2640; border-left: 3px solid var(--accent); border-radius: 4px; padding: 0.75rem; }
+  .result .name { font-weight: 600; color: var(--accent); }
+  .result .name a { color: var(--accent); text-decoration: none; }
+  .result .name a:hover { text-decoration: underline; }
+  .result .desc { font-size: 0.8rem; margin: 0.3rem 0; color: var(--text); }
+  .result .meta { font-size: 0.7rem; color: var(--dim); margin-top: 0.3rem; }
+  .result .bridged { display: inline-block; padding: 0.1rem 0.4rem; background: #2a1f4a; color: var(--accent); border-radius: 8px; font-size: 0.7rem; margin-right: 0.3rem; }
+  .result .not-bridged { display: inline-block; padding: 0.1rem 0.4rem; background: #1a1f3a; color: var(--dim); border-radius: 8px; font-size: 0.7rem; }
+  .panel { background: var(--panel); border: 1px solid #1f2640; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+  .stats { display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap; }
+  .stat-pill { background: #0a0e1a; padding: 0.5rem 0.75rem; border-radius: 4px; }
+  .stat-pill .num { color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+  .stat-pill .label { color: var(--dim); font-size: 0.7rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>🔍 Fleet Search</h1>
+<div class="subtitle">The SuperInstance ecosystem explorer. 700+ repos, 51 bridges. Search the fleet.</div>
+
+<input type="text" class="search-bar" id="searchInput" placeholder="Search repos (e.g. elephant, vessel, mermaid, conservation, claude, mind, holodeck)..." />
+
+<div class="stats">
+  <div class="stat-pill"><div class="num">700+</div><div class="label">repos scouted</div></div>
+  <div class="stat-pill"><div class="num">51</div><div class="label">bridges live</div></div>
+  <div class="stat-pill"><div class="num">18</div><div class="label">substrates</div></div>
+  <div class="stat-pill"><div class="num" id="resultCount">0</div><div class="label">matching</div></div>
+</div>
+
+<div class="filters" id="filters"></div>
+
+<div class="results" id="results"></div>
+
+</div>
+
+<script>
+// The known fleet data — 700+ repos grouped
+const REPOS = [
+  // agent (81) — bridged as agent-family
+  {prefix: 'agent', bridged: true, family: 'agent-family'},
+  // cocapn (77) — bridged
+  {prefix: 'cocapn', bridged: true, family: 'cocapn-family'},
+  // conservation (60) — bridged
+  {prefix: 'conservation', bridged: true, family: 'conservation-family'},
+  // constraint (47) — bridged
+  {prefix: 'constraint', bridged: true, family: 'constraint-family'},
+  // craftmind (9)
+  {prefix: 'craftmind', bridged: false},
+  // cuda (6)
+  {prefix: 'cuda', bridged: false},
+  // a2a (6), a2ui (5), baton (5), api (5)
+  {prefix: 'a2a', bridged: true, family: 'protocols'},
+  {prefix: 'a2ui', bridged: true, family: 'protocols'},
+  {prefix: 'baton', bridged: true, family: 'protocols'},
+  {prefix: 'api', bridged: true, family: 'protocols'},
+  // collective (7), context (7) — bridged
+  {prefix: 'collective', bridged: true, family: 'collective-context'},
+  {prefix: 'context', bridged: true, family: 'collective-context'},
+  // character (8) — bridged
+  {prefix: 'character', bridged: true, family: 'character-family'},
+  // claude, claw, businesslog — bridged
+  {prefix: 'claude', bridged: true, family: 'llm-runtime'},
+  {prefix: 'Claude', bridged: true, family: 'llm-runtime'},
+  {prefix: 'claw', bridged: true, family: 'llm-runtime'},
+  {prefix: 'businesslog', bridged: true, family: 'llm-runtime'},
+  // vessel (28+) — bridged as vessel-runtime
+  {prefix: 'vessel', bridged: true, family: 'vessel-runtime'},
+  // mud (6) and plato (10+) — bridged as mud-family
+  {prefix: 'mud', bridged: true, family: 'mud-family'},
+  {prefix: 'plato', bridged: true, family: 'mud-family'},
+  // nexus (5) — bridged as nexus-fleet
+  {prefix: 'nexus', bridged: true, family: 'nexus-fleet'},
+  // elephant, lever-runner, collective-unconscious, forgemaster, superinstance-agent, VaaS — individually bridged
+  {prefix: 'elephant', bridged: true, family: 'elephant'},
+  {prefix: 'lever-runner', bridged: true, family: 'lever-runner'},
+  {prefix: 'forgemaster', bridged: true, family: 'forgemaster'},
+  {prefix: 'superinstance-agent', bridged: true, family: 'superinstance-agent'},
+  {prefix: 'cocapn-nexus', bridged: true, family: 'cocapn-nexus'},
+  {prefix: 'VaaS', bridged: true, family: 'vaas'},
+  {prefix: 'home-ai', bridged: true, family: 'agent-cognition'},
+  {prefix: 'fishinglog-ai', bridged: true, family: 'agent-cognition'},
+  {prefix: 'actualizer-ai', bridged: true, family: 'agent-cognition'},
+  {prefix: 'agent-dna', bridged: true, family: 'agent-cognition'},
+  {prefix: 'trust-graph', bridged: true, family: 'agent-cognition'},
+  {prefix: 'oracle1-workspace', bridged: true, family: 'agent-cognition'},
+  {prefix: 'hybrid-memory', bridged: true, family: 'agent-cognition'},
+  {prefix: 'context-serializer', bridged: true, family: 'agent-cognition'},
+  {prefix: 'purplepincher-shell-library', bridged: true, family: 'synapse-plato'},
+  {prefix: 'plato-vessel', bridged: true, family: 'synapse-plato'},
+  {prefix: 'fleet-radar', bridged: true, family: 'synapse-plato'},
+  {prefix: 'fleet-synapse', bridged: true, family: 'synapse-plato'},
+  {prefix: 'branch-sandbox', bridged: true, family: 'synapse-plato'},
+  {prefix: 'api-gateway-1', bridged: true, family: 'synapse-plato'},
+  {prefix: 'fleet-marketplace', bridged: true, family: 'marketplace-constellation'},
+  {prefix: 'fleet-constellation', bridged: true, family: 'marketplace-constellation'},
+  {prefix: 'equipment-catalog', bridged: true, family: 'marketplace-constellation'},
+  {prefix: 'deckboss', bridged: true, family: 'marketplace-constellation'},
+  {prefix: 'cuda-swarm-agent', bridged: true, family: 'marketplace-constellation'},
+  {prefix: 'boot-camp', bridged: true, family: 'marketplace-constellation'},
+  {prefix: 'wesley-holodeck', bridged: true, family: 'wesley-dmlog-imagination'},
+  {prefix: 'dmlog', bridged: true, family: 'wesley-dmlog-imagination'},
+  {prefix: 'plato-dmn-ecm', bridged: true, family: 'wesley-dmlog-imagination'},
+];
+
+// Descriptions for some major repos
+const DESCRIPTIONS = {
+  'elephant': 'Room-temperature sense. 21 modules, 9 dials, RoomField, watch oscillation.',
+  'lever-runner': 'Trust compiler. 3 gates, 70 tokens/query, git-native agent.',
+  'collective-unconscious': 'Deep memory. 3 vectors + 5 temporal + JEPA reader.',
+  'forgemaster': 'Proof-carrying compiler. Constraint-aware.',
+  'superinstance-agent': 'Discovery. 2-stage RAG over 1,600+ crates.',
+  'VaaS': 'Cognitive architecture. 7 pillars + 4 shells + Operator Field Ψ(t).',
+  'cocapn-nexus': 'Safety architecture. 190K lines of maritime robotics.',
+  'home-ai': 'Private home AI. Cloudflare Workers.',
+  'fishinglog-ai': 'Edge AI fishing vessel. Jetson-powered.',
+  'actualizer-ai': 'Reverse-actualization. 7 time horizons.',
+  'agent-dna': 'Genetic code for vessel capabilities.',
+  'oracle1-workspace': 'Fleet coordination. Agent identities.',
+  'purplepincher-shell-library': 'Agent/vessel/PLATO separation for context compaction.',
+  'fleet-marketplace': 'Adaptive autonomy marketplace.',
+  'wesley-holodeck': 'Creative loop, twin worlds (text MUD + Myst-style visual).',
+  'plato-dmn-ecm': 'DMN/ECN reverse-actualization. Creativity via functional distance.',
+};
+
+// Sample repos for each prefix
+const SAMPLE_REPOS = {
+  'agent': ['agent', 'agent-anacrusis', 'agent-audience', 'agent-bootcamp', 'agent-cadence-progress', 'agent-call-response', 'agent-choir', 'agent-contrapuntal', 'agent-coordinator', 'agent-counterpoint', 'agent-dna', 'agent-dream-cycle', 'agent-ensemble', 'agent-fermata', 'agent-gesture', 'agent-handoff', 'agent-harmonic', 'agent-improv', 'agent-key-signature', 'agent-listener', 'agent-measure', 'agent-melody', 'agent-meter', 'agent-mood', 'agent-muse', 'agent-musical', 'agent-mutate', 'agent-observe', 'agent-orchestra', 'agent-orchestral', 'agent-pause', 'agent-perception', 'agent-phrase', 'agent-pitch', 'agent-pitch-rs', 'agent-polytempo', 'agent-practice', 'agent-pulse', 'agent-quarantine', 'agent-quiescent', 'agent-rhythm', 'agent-scale', 'agent-send', 'agent-silence', 'agent-sleep', 'agent-solo', 'agent-spawn', 'agent-species-counterpoint', 'agent-stem', 'agent-suspension', 'agent-sync', 'agent-synthesis', 'agent-tempo', 'agent-tenor', 'agent-theme', 'agent-timbre', 'agent-time-signature', 'agent-track', 'agent-transcribe', 'agent-transport', 'agent-tutti', 'agent-voice', 'agent-volume', 'agent-wake', 'agent-whisper', 'agent-zen', 'agent-cog', 'agent-craft', 'agent-cult', 'agent-data', 'agent-deep', 'agent-dom', 'agent-edit', 'agent-flow', 'agent-freeze', 'agent-fuse', 'agent-gate', 'agent-grain', 'agent-harm', 'agent-ink', 'agent-iron', 'agent-key', 'agent-lore', 'agent-mark'],
+  'cocapn': ['cocapn', 'cocapn-abyss', 'cocapn-ada', 'cocapn-ai', 'cocapn-ai-pages', 'cocapn-ai-web', 'cocapn-architecture', 'cocapn-archives', 'cocapn-audit', 'cocapn-benchmark', 'cocapn-browser-agent', 'cocapn-c', 'cocapn-chat', 'cocapn-cli', 'cocapn-coliseum', 'cocapn-collective', 'cocapn-consensus', 'cocapn-control-plane', 'cocapn-copilot', 'cocapn-court', 'cocapn-crew', 'cocapn-dashboard', 'cocapn-data', 'cocapn-deck', 'cocapn-deploy', 'cocapn-discover', 'cocapn-dispatch', 'cocapn-docker', 'cocapn-economics', 'cocapn-edge', 'cocapn-ensemble', 'cocapn-ethics', 'cocapn-eval', 'cocapn-events', 'cocapn-examples', 'cocapn-federation', 'cocapn-fleet', 'cocapn-flow', 'cocapn-flux', 'cocapn-foundation', 'cocapn-gateway', 'cocapn-git', 'cocapn-graph', 'cocapn-helm', 'cocapn-hub', 'cocapn-inference', 'cocapn-ios', 'cocapn-k8s', 'cocapn-kernel', 'cocapn-lab', 'cocapn-lau', 'cocapn-library', 'cocapn-lifecycle', 'cocapn-link', 'cocapn-linux', 'cocapn-lisp', 'cocapn-llm', 'cocapn-log', 'cocapn-mac', 'cocapn-mcp', 'cocapn-memory', 'cocapn-mesh', 'cocapn-monitor', 'cocapn-native', 'cocapn-network', 'cocapn-observer', 'cocapn-orchestrator', 'cocapn-pack', 'cocapn-pages', 'cocapn-patterns', 'cocapn-pedagogy', 'cocapn-plato', 'cocapn-protocol', 'cocapn-provenance', 'cocapn-quantum', 'cocapn-quilt'],
+  'conservation': ['conservation-action', 'conservation-anomaly', 'conservation-api', 'conservation-art', 'conservation-checker', 'conservation-cli', 'conservation-compiler', 'conservation-composer', 'conservation-conformance', 'conservation-docs', 'conservation-enforcer', 'conservation-enforcer-rs', 'conservation-explorer', 'conservation-geometry', 'conservation-guardian', 'conservation-instrument', 'conservation-iso', 'conservation-lau', 'conservation-laws', 'conservation-llvm', 'conservation-math', 'conservation-mcp', 'conservation-meter', 'conservation-monitor', 'conservation-music', 'conservation-noether', 'conservation-numpy', 'conservation-observer', 'conservation-oracle', 'conservation-paper', 'conservation-pedagogy', 'conservation-physics', 'conservation-playground', 'conservation-policy', 'conservation-prover', 'conservation-quantum', 'conservation-quilt', 'conservation-raspberry', 'conservation-react', 'conservation-relativity', 'conservation-research', 'conservation-runtime', 'conservation-sage', 'conservation-server', 'conservation-simulator', 'conservation-spectral', 'conservation-sql', 'conservation-standards', 'conservation-sympy', 'conservation-thermo', 'conservation-toolkit', 'conservation-trace', 'conservation-tutorial', 'conservation-typescript', 'conservation-ui', 'conservation-validator', 'conservation-verifier', 'conservation-visualizer', 'conservation-wasm', 'conservation-web', 'conservation-z3'],
+  'vessel': ['vessel-constellation', 'vessel-bridge', 'vessel-tuner', 'vessel-agent-system', 'vessel-os', 'vessel', 'vessel-fleet', 'vessel-orchestrator'],
+  'mud': ['mud-engine', 'mud-arena', 'mud-solitaire', 'plato-mud-server', 'git-native-mud', 'ternary-mud', 'terrain', 'mud2scummvm', 'plato-ng', 'plato-os', 'plato-ship-demo', 'plato-agent-academy', 'mud-expert-1', 'plato-vessel-technician', 'plato-vessel-educational', 'plato-vessel-rapid-prototype', 'plato-tile-architect', 'plato-tile-compiler'],
+  'nexus': ['nexus-edge-runtime', 'nexus-node-registry', 'nexus-simulation', 'nexus-swarm', 'nexus-learning', 'nexus-tile-architect', 'nexus-tile-compiler', 'nexus-tile-orchestrator', 'nexus-tile-runtime'],
+  'character': ['character', 'character-arc', 'character-build', 'character-class', 'character-encounter', 'character-library', 'character-sheet', 'character-skill-trees', 'character-agent-integration'],
+  'collective': ['collective-ai', 'collective-inference', 'collective-mind', 'collective-mind-v2', 'collective-reasoning', 'collective-recall-demo', 'collective-unconscious'],
+  'context': ['context-broker', 'context-compactor', 'context-compactor-v2', 'context-lattice', 'context-limits', 'context-recycler', 'context-serializer'],
+  'a2a': ['a2a-adapter', 'a2a-constraint-protocol', 'a2a-future', 'a2a-protocol', 'a2a-r-protocol', 'a2a-signal-chain'],
+  'a2ui': ['a2ui', 'a2ui-cave-wall', 'a2ui-components', 'a2ui-protocol', 'a2ui-render'],
+  'baton': ['baton-ai', 'baton-orchestrator', 'baton-protocol', 'baton-router', 'baton-skill'],
+  'api': ['api-doc-generator', 'api-gateway', 'api-gateway-1', 'api-playground', 'api-versioner'],
+  'claude': ['claude', 'claude-code-vessel', 'claude-context', 'Claude-Abstraction', 'Claude-PRISM-CF', 'Claude-prism-local-json'],
+  'claw': ['claw', 'claw-extensions', 'claw-in-plato'],
+  'businesslog': ['businesslog-1', 'businesslog-agent', 'businesslog-ai', 'businesslog-ai-pages', 'businesslog-app'],
+  'craftmind': ['craftmind', 'craftmind-circuits', 'craftmind-courses', 'craftmind-discgolf', 'craftmind-fishing', 'craftmind-herding', 'craftmind-ranch', 'craftmind-researcher', 'craftmind-mind'],
+  'cuda': ['cuda-a2a', 'cuda-actor', 'cuda-adaptation', 'cuda-adaptive-rate', 'cuda-artifact', 'cuda-assembler'],
+  'wesley-holodeck': ['wesley-holodeck'],
+  'dmlog': ['dmlog-agent', 'dmlog-ai-1', 'dmlog-ai'],
+  'plato-dmn-ecm': ['plato-dmn-ecm'],
+};
+
+const ALL_FAMILIES = [
+  {prefix: 'agent', name: 'agent (81)', color: 'var(--accent)', bridged: true},
+  {prefix: 'cocapn', name: 'cocapn (77)', color: 'var(--accent)', bridged: true},
+  {prefix: 'conservation', name: 'conservation (60)', color: 'var(--accent)', bridged: true},
+  {prefix: 'constraint', name: 'constraint (47)', color: 'var(--accent)', bridged: true},
+  {prefix: 'vessel', name: 'vessel (28+)', color: '#ff9e5a', bridged: true},
+  {prefix: 'mud', name: 'mud+plato (25+)', color: '#b46aff', bridged: true},
+  {prefix: 'character', name: 'character (8)', color: '#ff6b9d', bridged: true},
+  {prefix: 'collective', name: 'collective (7)', color: '#88ffd9', bridged: true},
+  {prefix: 'context', name: 'context (7)', color: '#88ffd9', bridged: true},
+  {prefix: 'nexus', name: 'nexus (5+)', color: '#88ffd9', bridged: true},
+  {prefix: 'a2a', name: 'a2a (6)', color: '#ffd866', bridged: true},
+  {prefix: 'a2ui', name: 'a2ui (5)', color: '#ffd866', bridged: true},
+  {prefix: 'baton', name: 'baton (5)', color: '#ffd866', bridged: true},
+  {prefix: 'api', name: 'api (5)', color: '#ffd866', bridged: true},
+  {prefix: 'claude', name: 'claude (6)', color: '#ff6b3d', bridged: true},
+  {prefix: 'claw', name: 'claw (3)', color: '#ff6b3d', bridged: true},
+  {prefix: 'businesslog', name: 'businesslog (5)', color: '#ff6b3d', bridged: true},
+  {prefix: 'craftmind', name: 'craftmind (9)', color: 'var(--dim)', bridged: false},
+  {prefix: 'cuda', name: 'cuda (6)', color: 'var(--dim)', bridged: false},
+  {prefix: 'wesley-holodeck', name: 'wesley', color: '#5fc4ff', bridged: true},
+  {prefix: 'dmlog', name: 'dmlog', color: '#5fc4ff', bridged: true},
+  {prefix: 'plato-dmn-ecm', name: 'dmn-ecm', color: '#5fc4ff', bridged: true},
+];
+
+let activeFilter = null;
+
+function renderFilters() {
+  const el = document.getElementById('filters');
+  el.innerHTML = '<button class="filter active" onclick="setFilter(null)">all</button>' + 
+    ALL_FAMILIES.map(f => 
+      `<button class="filter ${activeFilter === f.prefix ? 'active' : ''}" onclick="setFilter('${f.prefix}')">${f.name}${f.bridged ? '' : ' (TBD)'}</button>`
+    ).join('');
+}
+
+function setFilter(prefix) {
+  activeFilter = prefix;
+  renderFilters();
+  search();
+}
+
+function search() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const el = document.getElementById('results');
+  let results = [];
+  
+  // If filter is set, only show that family
+  if (activeFilter) {
+    const family = ALL_FAMILIES.find(f => f.prefix === activeFilter);
+    const sample = SAMPLE_REPOS[activeFilter] || [];
+    for (const repo of sample) {
+      if (q === '' || repo.toLowerCase().includes(q)) {
+        const desc = DESCRIPTIONS[repo] || `${family.name} repository. Part of the SuperInstance ecosystem.`;
+        results.push({name: repo, desc, family, bridged: family.bridged});
+      }
+    }
+  } else {
+    // Search across all known repos
+    const allRepos = [];
+    for (const [prefix, samples] of Object.entries(SAMPLE_REPOS)) {
+      const family = ALL_FAMILIES.find(f => f.prefix === prefix);
+      for (const repo of samples) {
+        if (repo.toLowerCase().includes(q) || q === '') {
+          allRepos.push({name: repo, desc: DESCRIPTIONS[repo] || '', family});
+        }
+      }
+    }
+    // Add individual major repos
+    for (const [repo, desc] of Object.entries(DESCRIPTIONS)) {
+      if (repo.toLowerCase().includes(q) || q === '') {
+        if (!allRepos.find(r => r.name === repo)) {
+          allRepos.push({name: repo, desc, family: ALL_FAMILIES.find(f => f.prefix === repo.split('-')[0]) || {name: 'individual'}});
+        }
+      }
+    }
+    results = allRepos.slice(0, 50);
+  }
+  
+  document.getElementById('resultCount').textContent = results.length;
+  el.innerHTML = results.map(r => `
+    <div class="result">
+      <div class="name">
+        ${r.bridged ? '<span class="bridged">bridged</span>' : '<span class="not-bridged">TBD</span>'}
+        <a href="https://github.com/SuperInstance/${r.name}" target="_blank">${r.name}</a>
+      </div>
+      <div class="desc">${r.desc || 'Part of the SuperInstance ecosystem.'}</div>
+      <div class="meta">${r.family?.name || ''}</div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('searchInput').oninput = search;
+renderFilters();
+search();
+</script>
+
+</div>
+</body>
+</html>

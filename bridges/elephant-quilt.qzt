@@ -1,0 +1,3573 @@
+{
+  "version": "1.0",
+  "kind": "quilt-zip-target",
+  "name": "elephant-to-quilt",
+  "description": "Bridge mapping the SuperInstance/elephant repo to Quilt. The elephant IS the Room substrate made real. 21 modules, 9 dials, 6 spaces, 5 new cell kinds. The conservation law gets a thermometer.",
+  "cells": [
+    {
+      "id": "elephant__init_",
+      "kind": "cell",
+      "form": {
+        "name": "Init"
+      },
+      "description": "Package entry \u2014 re-exports Message, Room, RoomField, acclimation_curve, charisma_pull",
+      "module": "__init__",
+      "substrate_layer": "io",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/__init__",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "__init__",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "io",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_room",
+      "kind": "cell",
+      "form": {
+        "name": "Room"
+      },
+      "description": "Room / Message \u2014 rooms as message streams with gravity, reverberation, ripple, density",
+      "module": "room",
+      "substrate_layer": "room",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/room",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "room",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "room",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dial",
+      "kind": "cell",
+      "form": {
+        "name": "Dial"
+      },
+      "description": "Dial (abstract JEPA sense) + DialBank (the perceiving ensemble, one scalar per dimension)",
+      "module": "dial",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dial",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_field",
+      "kind": "cell",
+      "form": {
+        "name": "Field"
+      },
+      "description": "RoomField \u2014 temperature vector: warmth, \u03ba, distance, sauna_plunge_gap",
+      "module": "field",
+      "substrate_layer": "room",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/field",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "field",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "room",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials__init_",
+      "kind": "cell",
+      "form": {
+        "name": "Init"
+      },
+      "description": "DEFAULT_DIALS \u2014 the eight-dial bank that ships out of the box",
+      "module": "dials/__init__",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/__init__",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/__init__",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_mood",
+      "kind": "cell",
+      "form": {
+        "name": "Mood"
+      },
+      "description": "MoodDial \u2014 warm/cold valence, [-1 cold, +1 warm]",
+      "module": "dials/mood",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/mood",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/mood",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_volume",
+      "kind": "cell",
+      "form": {
+        "name": "Volume"
+      },
+      "description": "VolumeDial \u2014 how loud the room is talking, [0 quiet, 1 shouting]",
+      "module": "dials/volume",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/volume",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/volume",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_earnestness",
+      "kind": "cell",
+      "form": {
+        "name": "Earnestness"
+      },
+      "description": "EarnestnessDial \u2014 how much the room means it, [0 ironic, 1 sincere]",
+      "module": "dials/earnestness",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/earnestness",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/earnestness",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_cynicism",
+      "kind": "cell",
+      "form": {
+        "name": "Cynicism"
+      },
+      "description": "CynicismDial \u2014 how much the room is rolling its eyes, [0 earnest, 1 sneering]",
+      "module": "dials/cynicism",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/cynicism",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/cynicism",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_joke_landing",
+      "kind": "cell",
+      "form": {
+        "name": "JokeLanding"
+      },
+      "description": "JokeLandingDial \u2014 collective laugh or boo, [-1 booed, +1 roared]",
+      "module": "dials/joke_landing",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/joke_landing",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/joke_landing",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_panic",
+      "kind": "cell",
+      "form": {
+        "name": "Panic"
+      },
+      "description": "PanicDial \u2014 stampede sense (fire in the room), [0 calm, 1 trampling]",
+      "module": "dials/panic",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/panic",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/panic",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_presence",
+      "kind": "cell",
+      "form": {
+        "name": "Presence"
+      },
+      "description": "PresenceDial \u2014 pheromone trace of who's been here, [0 empty, 1 thrumming]",
+      "module": "dials/presence",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/presence",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/presence",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_model_vs_code",
+      "kind": "cell",
+      "form": {
+        "name": "ModelVsCode"
+      },
+      "description": "ModelVsCodeDial \u2014 who's generating the room's signal, [-1 code, +1 model]",
+      "module": "dials/model_vs_code",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/model_vs_code",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/model_vs_code",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_dials_vision",
+      "kind": "cell",
+      "form": {
+        "name": "Vision"
+      },
+      "description": "VisionDial \u2014 room's visual energy from camera frames (plato 16-dim room state)",
+      "module": "dials/vision",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dials/vision",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "dials/vision",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_sensors",
+      "kind": "cell",
+      "form": {
+        "name": "Sensors"
+      },
+      "description": "SignalRoom / SensorFrame + sea-leg dials: RadarCoherence, SounderBiomass, FishingDay",
+      "module": "sensors",
+      "substrate_layer": "room",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/sensors",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "sensors",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "room",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_nudge",
+      "kind": "cell",
+      "form": {
+        "name": "Nudge"
+      },
+      "description": "nudge_prior() / apply_nudge() \u2014 dial numbers become an attention prior",
+      "module": "nudge",
+      "substrate_layer": "protocol",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/nudge",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "nudge",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "protocol",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_fleetmath",
+      "kind": "cell",
+      "form": {
+        "name": "Fleetmath"
+      },
+      "description": "Numeric spine: three_reading_kinematics, fleet_concentration (vMF \u03ba), biomass_anchor",
+      "module": "fleetmath",
+      "substrate_layer": "scale",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/fleetmath",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "fleetmath",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "scale",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_harness",
+      "kind": "cell",
+      "form": {
+        "name": "Harness"
+      },
+      "description": "BoatHarness \u2014 one boat, one place to plug every sense in; rolling rooms, merged field",
+      "module": "harness",
+      "substrate_layer": "form",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/harness",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "harness",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "form",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_tapnight",
+      "kind": "cell",
+      "form": {
+        "name": "Tapnight"
+      },
+      "description": "TapNightSession / Participant \u2014 after-work reading room with peer-relative self-tuning",
+      "module": "tapnight",
+      "substrate_layer": "form",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/tapnight",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "tapnight",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "form",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_presets",
+      "kind": "cell",
+      "form": {
+        "name": "Presets"
+      },
+      "description": "RoomElephant / PersonalElephant / PRESETS \u2014 zeitgeist vs personal feel",
+      "module": "presets",
+      "substrate_layer": "state",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/presets",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "presets",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "state",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_mud",
+      "kind": "cell",
+      "form": {
+        "name": "Mud"
+      },
+      "description": "tint_description() \u2014 the room's description mutated by its field",
+      "module": "mud",
+      "substrate_layer": "room",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/mud",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "mud",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "room",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_space",
+      "kind": "cell",
+      "form": {
+        "name": "Space"
+      },
+      "description": "Space protocol + MudSpace / ChatSpace / SensorSpace + AdapterRegistry",
+      "module": "space",
+      "substrate_layer": "address",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/space",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "space",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "address",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "elephant_jepa",
+      "kind": "cell",
+      "form": {
+        "name": "Jepa"
+      },
+      "description": "Optional learned backbone hook (EMA + stop-gradient + VICReg)",
+      "module": "jepa",
+      "substrate_layer": "form",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "module input"
+      },
+      "z_out": {
+        "output": "module output"
+      },
+      "jepa": {
+        "predict": "module behavior",
+        "observe": "actual behavior"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "import_module",
+          "args": [],
+          "returns": "Module"
+        },
+        {
+          "name": "call",
+          "args": [
+            "Any"
+          ],
+          "returns": "Any"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/jepa",
+        "scale": 0,
+        "room": "ElephantRoom",
+        "protocol": "Python",
+        "form": "jepa",
+        "state": "active"
+      },
+      "tags": [
+        "elephant",
+        "module",
+        "form",
+        "quilt-bridge"
+      ]
+    },
+    {
+      "id": "dial_mood",
+      "kind": "cell",
+      "form": {
+        "name": "MoodDial"
+      },
+      "description": "Z_in \u2014 read the room's current state. Mood is what you sense first.",
+      "dial_name": "mood",
+      "quilt_primitive": "Sense",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "mood reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/mood",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "mood_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "mood",
+        "sense"
+      ]
+    },
+    {
+      "id": "dial_volume",
+      "kind": "cell",
+      "form": {
+        "name": "VolumeDial"
+      },
+      "description": "Z_out \u2014 emit signal into room. Volume is the strength of your radiate.",
+      "dial_name": "volume",
+      "quilt_primitive": "Radiate",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "volume reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 1,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/volume",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "volume_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "volume",
+        "radiate"
+      ]
+    },
+    {
+      "id": "dial_earnestness",
+      "kind": "cell",
+      "form": {
+        "name": "EarnestnessDial"
+      },
+      "description": "JEPA \u2014 adapt cell temperature to room. Earnestness is how you accommodate.",
+      "dial_name": "earnestness",
+      "quilt_primitive": "Acclimate",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "earnestness reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 2,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/earnestness",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "earnestness_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "earnestness",
+        "acclimate"
+      ]
+    },
+    {
+      "id": "dial_cynicism",
+      "kind": "cell",
+      "form": {
+        "name": "CynicismDial"
+      },
+      "description": "Vibe \u2014 switch universal \u2194 particular. Cynicism is the watch's pull to particularity.",
+      "dial_name": "cynicism",
+      "quilt_primitive": "Oscillate",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "cynicism reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 3,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/cynicism",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "cynicism_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "cynicism",
+        "oscillate"
+      ]
+    },
+    {
+      "id": "dial_joke_landing",
+      "kind": "cell",
+      "form": {
+        "name": "JokeLandingDial"
+      },
+      "description": "Murmur \u2014 form connection across cells. Joke landing is the gossip bus firing.",
+      "dial_name": "joke_landing",
+      "quilt_primitive": "Bond",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "joke_landing reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 4,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/joke_landing",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "joke_landing_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "joke_landing",
+        "bond"
+      ]
+    },
+    {
+      "id": "dial_panic",
+      "kind": "cell",
+      "form": {
+        "name": "PanicDial"
+      },
+      "description": "JEPA surprise \u2014 measure distance between rooms. Panic is the surprise spike.",
+      "dial_name": "panic",
+      "quilt_primitive": "Gap",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "panic reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 5,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/panic",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "panic_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "panic",
+        "gap"
+      ]
+    },
+    {
+      "id": "dial_presence",
+      "kind": "cell",
+      "form": {
+        "name": "PresenceDial"
+      },
+      "description": "Observe \u2014 measure one axis via JEPA. Presence is the dial reading.",
+      "dial_name": "presence",
+      "quilt_primitive": "Dial",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "presence reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 6,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/presence",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "presence_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "presence",
+        "dial"
+      ]
+    },
+    {
+      "id": "dial_model_vs_code",
+      "kind": "cell",
+      "form": {
+        "name": "ModelVsCodeDial"
+      },
+      "description": "Form \u2014 what shape is the cell. Model vs code is whether the form maps or makes.",
+      "dial_name": "model_vs_code",
+      "quilt_primitive": "Form",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "model_vs_code reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 7,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/model_vs_code",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "model_vs_code_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "model_vs_code",
+        "form"
+      ]
+    },
+    {
+      "id": "dial_vision",
+      "kind": "cell",
+      "form": {
+        "name": "VisionDial"
+      },
+      "description": "Graph \u2014 the meta-primitive. Vision watches the other 8 dials.",
+      "dial_name": "vision",
+      "quilt_primitive": "Watch",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "input": "room messages / sensor frames"
+      },
+      "z_out": {
+        "output": "vision reading",
+        "range": "see description"
+      },
+      "jepa": {
+        "predict": "dial value",
+        "observe": "actual value"
+      },
+      "double_entry": {
+        "gamma": 0.3,
+        "eta": 0.7
+      },
+      "vibe": {
+        "position": 8,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "sensing"
+      },
+      "murmur": {
+        "gossip_to": [
+          "DialBank"
+        ],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "read",
+          "args": [
+            "Room"
+          ],
+          "returns": "float"
+        },
+        {
+          "name": "train",
+          "args": [
+            "List<Room>"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/dial/vision",
+        "scale": 0,
+        "room": "DialBank",
+        "protocol": "JEPA",
+        "form": "vision_dial",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "dial",
+        "vision",
+        "watch"
+      ]
+    },
+    {
+      "id": "space_mudspace",
+      "kind": "cell",
+      "form": {
+        "name": "MudSpace"
+      },
+      "description": "MUD room (The Tap, other MUDs) \u2014 room events + NPC chatter \u2192 messages",
+      "space_kind": "MUD",
+      "primitives": [
+        "Spawn",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "MUD events"
+      },
+      "z_out": {
+        "output": "normalized Room/SignalRoom"
+      },
+      "jepa": {
+        "predict": "room structure",
+        "observe": "actual structure"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "adapting"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "ingest",
+          "args": [
+            "Any"
+          ],
+          "returns": "Room"
+        },
+        {
+          "name": "tint_target",
+          "args": [],
+          "returns": "Target"
+        },
+        {
+          "name": "send_back",
+          "args": [
+            "Field"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/space/MUD",
+        "scale": 1,
+        "room": "SpaceAdapter",
+        "protocol": "MUD",
+        "form": "MudSpace",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "space",
+        "opener",
+        "MUD"
+      ]
+    },
+    {
+      "id": "space_chatspace",
+      "kind": "cell",
+      "form": {
+        "name": "ChatSpace"
+      },
+      "description": "Chatroom / messenger / X thread \u2014 authors, reactions, reply trees",
+      "space_kind": "chat",
+      "primitives": [
+        "Spawn",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "chat events"
+      },
+      "z_out": {
+        "output": "normalized Room/SignalRoom"
+      },
+      "jepa": {
+        "predict": "room structure",
+        "observe": "actual structure"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "adapting"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "ingest",
+          "args": [
+            "Any"
+          ],
+          "returns": "Room"
+        },
+        {
+          "name": "tint_target",
+          "args": [],
+          "returns": "Target"
+        },
+        {
+          "name": "send_back",
+          "args": [
+            "Field"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/space/chat",
+        "scale": 1,
+        "room": "SpaceAdapter",
+        "protocol": "chat",
+        "form": "ChatSpace",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "space",
+        "opener",
+        "chat"
+      ]
+    },
+    {
+      "id": "space_sensorspace",
+      "kind": "cell",
+      "form": {
+        "name": "SensorSpace"
+      },
+      "description": "Sensor array (radar, sounder, nav) \u2014 SensorFrames \u2192 SignalRoom",
+      "space_kind": "sensor",
+      "primitives": [
+        "Spawn",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "sensor events"
+      },
+      "z_out": {
+        "output": "normalized Room/SignalRoom"
+      },
+      "jepa": {
+        "predict": "room structure",
+        "observe": "actual structure"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "adapting"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "ingest",
+          "args": [
+            "Any"
+          ],
+          "returns": "Room"
+        },
+        {
+          "name": "tint_target",
+          "args": [],
+          "returns": "Target"
+        },
+        {
+          "name": "send_back",
+          "args": [
+            "Field"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/space/sensor",
+        "scale": 1,
+        "room": "SpaceAdapter",
+        "protocol": "sensor",
+        "form": "SensorSpace",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "space",
+        "opener",
+        "sensor"
+      ]
+    },
+    {
+      "id": "space_agentspace",
+      "kind": "cell",
+      "form": {
+        "name": "AgentSpace"
+      },
+      "description": "Agent channel / human+bot / email / docs",
+      "space_kind": "agent",
+      "primitives": [
+        "Spawn",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "agent events"
+      },
+      "z_out": {
+        "output": "normalized Room/SignalRoom"
+      },
+      "jepa": {
+        "predict": "room structure",
+        "observe": "actual structure"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "adapting"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "ingest",
+          "args": [
+            "Any"
+          ],
+          "returns": "Room"
+        },
+        {
+          "name": "tint_target",
+          "args": [],
+          "returns": "Target"
+        },
+        {
+          "name": "send_back",
+          "args": [
+            "Field"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/space/agent",
+        "scale": 1,
+        "room": "SpaceAdapter",
+        "protocol": "agent",
+        "form": "AgentSpace",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "space",
+        "opener",
+        "agent"
+      ]
+    },
+    {
+      "id": "space_docspace",
+      "kind": "cell",
+      "form": {
+        "name": "DocSpace"
+      },
+      "description": "Documentation / wiki / static content",
+      "space_kind": "doc",
+      "primitives": [
+        "Spawn",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "doc events"
+      },
+      "z_out": {
+        "output": "normalized Room/SignalRoom"
+      },
+      "jepa": {
+        "predict": "room structure",
+        "observe": "actual structure"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "adapting"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "ingest",
+          "args": [
+            "Any"
+          ],
+          "returns": "Room"
+        },
+        {
+          "name": "tint_target",
+          "args": [],
+          "returns": "Target"
+        },
+        {
+          "name": "send_back",
+          "args": [
+            "Field"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/space/doc",
+        "scale": 1,
+        "room": "SpaceAdapter",
+        "protocol": "doc",
+        "form": "DocSpace",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "space",
+        "opener",
+        "doc"
+      ]
+    },
+    {
+      "id": "space_asyncspace",
+      "kind": "cell",
+      "form": {
+        "name": "AsyncSpace"
+      },
+      "description": "Async messaging (email, future letters)",
+      "space_kind": "async",
+      "primitives": [
+        "Spawn",
+        "Receive",
+        "Send",
+        "Receive",
+        "Send"
+      ],
+      "z_in": {
+        "input": "async events"
+      },
+      "z_out": {
+        "output": "normalized Room/SignalRoom"
+      },
+      "jepa": {
+        "predict": "room structure",
+        "observe": "actual structure"
+      },
+      "double_entry": {
+        "gamma": 0.6,
+        "eta": 0.4
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "adapting"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "ingest",
+          "args": [
+            "Any"
+          ],
+          "returns": "Room"
+        },
+        {
+          "name": "tint_target",
+          "args": [],
+          "returns": "Target"
+        },
+        {
+          "name": "send_back",
+          "args": [
+            "Field"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/elephant/space/async",
+        "scale": 1,
+        "room": "SpaceAdapter",
+        "protocol": "async",
+        "form": "AsyncSpace",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "space",
+        "opener",
+        "async"
+      ]
+    },
+    {
+      "id": "newkind_elephantcell",
+      "kind": "cell",
+      "form": {
+        "name": "ElephantCell"
+      },
+      "description": "The resident organ of a room. One per room. Runs the DialBank under Room-Elephant preset.",
+      "new_cell_kind": true,
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "room field"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "field will change",
+        "observe": "field changes"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "act",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/quilt/cellkind/elephantcell",
+        "scale": 1,
+        "room": "QuiltRoom",
+        "protocol": "Cell",
+        "form": "ElephantCell",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "new-cell-kind",
+        "quilt-extension"
+      ]
+    },
+    {
+      "id": "newkind_stewardcell",
+      "kind": "cell",
+      "form": {
+        "name": "StewardCell"
+      },
+      "description": "The nudge prior made agentive. Reads the field and intervenes when panic spikes.",
+      "new_cell_kind": true,
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "room field"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "field will change",
+        "observe": "field changes"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "act",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/quilt/cellkind/stewardcell",
+        "scale": 1,
+        "room": "QuiltRoom",
+        "protocol": "Cell",
+        "form": "StewardCell",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "new-cell-kind",
+        "quilt-extension"
+      ]
+    },
+    {
+      "id": "newkind_migratorycell",
+      "kind": "cell",
+      "form": {
+        "name": "MigratoryCell"
+      },
+      "description": "Lives on the plunge gradient. Carries Personal-Elephant as luggage.",
+      "new_cell_kind": true,
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "room field"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "field will change",
+        "observe": "field changes"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "act",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/quilt/cellkind/migratorycell",
+        "scale": 1,
+        "room": "QuiltRoom",
+        "protocol": "Cell",
+        "form": "MigratoryCell",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "new-cell-kind",
+        "quilt-extension"
+      ]
+    },
+    {
+      "id": "newkind_readingcell",
+      "kind": "cell",
+      "form": {
+        "name": "ReadingCell"
+      },
+      "description": "TapNight participant. Peer-relative self-tuning against the cast.",
+      "new_cell_kind": true,
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "room field"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "field will change",
+        "observe": "field changes"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "act",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/quilt/cellkind/readingcell",
+        "scale": 1,
+        "room": "QuiltRoom",
+        "protocol": "Cell",
+        "form": "ReadingCell",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "new-cell-kind",
+        "quilt-extension"
+      ]
+    },
+    {
+      "id": "newkind_echocell",
+      "kind": "cell",
+      "form": {
+        "name": "EchoCell"
+      },
+      "description": "Tends reverberation decay. Decides which echoes fade and which persist.",
+      "new_cell_kind": true,
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "room field"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "field will change",
+        "observe": "field changes"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {},
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "act",
+          "args": [],
+          "returns": "State"
+        }
+      ],
+      "substrate": {
+        "address": "/quilt/cellkind/echocell",
+        "scale": 1,
+        "room": "QuiltRoom",
+        "protocol": "Cell",
+        "form": "EchoCell",
+        "state": "ready"
+      },
+      "tags": [
+        "elephant",
+        "new-cell-kind",
+        "quilt-extension"
+      ]
+    },
+    {
+      "id": "elephant_meta",
+      "kind": "cell",
+      "form": {
+        "name": "ElephantMeta"
+      },
+      "description": "The elephant IS the Room substrate made real. 21 modules, 9 dials, 6 spaces, 5 new cell kinds. The 9 dials map to 8 Quilt primitives + 1 meta-primitive (vision). The RoomField (warmth, \u03ba, distance) is the conservation law (\u03b3, \u03b7, JEPA surprise) made measurable.",
+      "primitives": [
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "repo": "SuperInstance/elephant",
+        "modules": 21,
+        "dials": 9,
+        "spaces": 6
+      },
+      "z_out": {
+        "proof": "Room substrate becomes real"
+      },
+      "jepa": {
+        "predict": "elephant = quilt room",
+        "verified": true
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "eternal"
+      },
+      "murmur": {},
+      "graph": {},
+      "openers": [
+        {
+          "name": "list_modules",
+          "args": [],
+          "returns": "List<Cell>"
+        },
+        {
+          "name": "list_dials",
+          "args": [],
+          "returns": "List<Cell>"
+        },
+        {
+          "name": "list_spaces",
+          "args": [],
+          "returns": "List<Cell>"
+        }
+      ],
+      "tags": [
+        "meta",
+        "elephant-bridge"
+      ]
+    },
+    {
+      "id": "conservation_gauge_cell",
+      "kind": "cell",
+      "form": {
+        "name": "ConservationGauge"
+      },
+      "description": "The elephant is the gauge of the conservation law. \u03b3 = warmth read out. \u03b7 = \u03ba read out. The RoomField's warmth \u00d7 \u03ba = biomass_anchor is the room's total energy, conserved across rooms.",
+      "primitives": [
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "law": "\u03b3 + \u03b7 = budget",
+        "instrument": "RoomField"
+      },
+      "z_out": {
+        "warmth": "\u03b3 readout",
+        "kappa": "\u03b7 readout",
+        "biomass": "\u03b3 \u00d7 \u03b7 = anchor"
+      },
+      "jepa": {
+        "predict": "conservation holds",
+        "verified": true
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "gauging"
+      },
+      "murmur": {},
+      "graph": {},
+      "tags": [
+        "meta",
+        "conservation",
+        "elephant"
+      ]
+    },
+    {
+      "id": "watch_oscillation_cell",
+      "kind": "cell",
+      "form": {
+        "name": "WatchOscillation"
+      },
+      "description": "Room-Elephant (universal, objective) \u2194 Personal-Elephant (particular, subjective). Acclimation pulls particular to universal. Charisma pushes universal toward particular. The watch oscillates because rooms have inhabitants with attachments.",
+      "primitives": [
+        "Observe",
+        "Mutate",
+        "Observe",
+        "Mutate",
+        "Observe",
+        "Mutate"
+      ],
+      "z_in": {
+        "universal": "RoomField (objective)",
+        "particular": "PersonalField (subjective)"
+      },
+      "z_out": {
+        "oscillation": "watch tick",
+        "rate": "acclimation vs charisma"
+      },
+      "tags": [
+        "meta",
+        "watch",
+        "oscillation",
+        "elephant"
+      ]
+    },
+    {
+      "id": "elephant_sphere_cell",
+      "kind": "cell",
+      "form": {
+        "name": "ElephantSphere"
+      },
+      "description": "The 9-dial readings (normalized) are a point on S\u2078. A room's field is a vMF distribution: \u03bc is direction, \u03ba is concentration. distance() is geodesic on the sphere. sauna_plunge_gap is log-surprise. Cross-room routing has geometry.",
+      "primitives": [
+        "Observe",
+        "Mutate",
+        "Observe",
+        "Mutate",
+        "Observe"
+      ],
+      "z_in": {
+        "dial_readings": 9,
+        "ambient": "S\u2078 sphere"
+      },
+      "z_out": {
+        "distance_metric": "geodesic on S\u2078",
+        "routing": "by distance"
+      },
+      "tags": [
+        "meta",
+        "geometry",
+        "elephant"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "elephant__init_",
+      "to": "layer_io",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_room",
+      "to": "layer_room",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dial",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_field",
+      "to": "layer_room",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials__init_",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_mood",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_volume",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_earnestness",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_cynicism",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_joke_landing",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_panic",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_presence",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_model_vs_code",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_dials_vision",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_sensors",
+      "to": "layer_room",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_nudge",
+      "to": "layer_protocol",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_fleetmath",
+      "to": "layer_scale",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_harness",
+      "to": "layer_form",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_tapnight",
+      "to": "layer_form",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_presets",
+      "to": "layer_state",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_mud",
+      "to": "layer_room",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_space",
+      "to": "layer_address",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "elephant_jepa",
+      "to": "layer_form",
+      "kind": "substrate-membership",
+      "weight": 1.0
+    },
+    {
+      "from": "dial_mood",
+      "to": "primitive_sense",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_volume",
+      "to": "primitive_radiate",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_earnestness",
+      "to": "primitive_acclimate",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_cynicism",
+      "to": "primitive_oscillate",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_joke_landing",
+      "to": "primitive_bond",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_panic",
+      "to": "primitive_gap",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_presence",
+      "to": "primitive_dial",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_model_vs_code",
+      "to": "primitive_form",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_vision",
+      "to": "primitive_watch",
+      "kind": "primitive-inverse",
+      "weight": 0.9
+    },
+    {
+      "from": "dial_mood",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    },
+    {
+      "from": "dial_volume",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    },
+    {
+      "from": "dial_earnestness",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    },
+    {
+      "from": "dial_cynicism",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    },
+    {
+      "from": "dial_joke_landing",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    },
+    {
+      "from": "dial_panic",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    },
+    {
+      "from": "dial_presence",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    },
+    {
+      "from": "dial_model_vs_code",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    },
+    {
+      "from": "dial_vision",
+      "to": "elephant_dial",
+      "kind": "dial-bank-membership",
+      "weight": 0.5
+    }
+  ],
+  "external_refs": [
+    {
+      "kind": "github-repo",
+      "name": "elephant",
+      "org": "SuperInstance"
+    },
+    {
+      "kind": "github-folder",
+      "name": "elephant/elephant",
+      "filter": "*.py"
+    }
+  ],
+  "stats": {
+    "total_cells": 47,
+    "total_edges": 41,
+    "modules": 23,
+    "dials": 9,
+    "spaces": 6,
+    "new_cell_kinds": 5,
+    "conservation_mapping": {
+      "\u03b3_warmth": "Coupling/Generative \u2014 how much the room pulls you in",
+      "\u03b7_kappa": "Entropy/Concentration \u2014 how focused or scattered the room is",
+      "biomass_anchor": "The room's total energy is conserved: \u03b3 \u00d7 \u03b7 = biomass_anchor",
+      "JEPA_surprise_sauna_plunge": "||\u03c6(s_room1) - \u03c6(s_room2)||\u00b2 \u2014 log-surprise between rooms"
+    }
+  },
+  "tags": [
+    "elephant",
+    "room-substrate",
+    "conservation",
+    "watch-oscillation",
+    "quilt-bridge"
+  ]
+}

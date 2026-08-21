@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elephant Sounder — Feel the Room's Temperature</title>
+<style>
+  :root {
+    --elephant: #b46aff;
+    --warm: #ff6b3d;
+    --cold: #4a9eff;
+    --sauna: #ff9e5a;
+    --plunge: #5fc4ff;
+    --bg: #0a0e1a;
+    --panel: #131829;
+    --text: #d8e2ff;
+    --dim: #6e7a99;
+    --accent: #66ffd9;
+    --biomass: #88ffd9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: radial-gradient(ellipse at top, #1a0e2a, #0a0e1a 70%);
+    color: var(--text);
+    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.6rem; letter-spacing: 0.02em; margin: 0 0 0.5rem; color: var(--elephant); }
+  h2 { font-size: 1.05rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  h3 { font-size: 0.9rem; color: var(--biomass); margin: 1rem 0 0.4rem; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--panel);
+    border: 1px solid #1f2640;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .room {
+    border-left: 4px solid var(--elephant);
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background: #0a0e1a;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .room:hover { background: #1a1f3a; }
+  .room.active { background: #2a1f4a; border-color: var(--accent); }
+  .room .name { font-weight: 600; color: var(--accent); }
+  .room .type { font-size: 0.7rem; color: var(--dim); }
+  .dial {
+    display: flex;
+    align-items: center;
+    margin: 0.4rem 0;
+    padding: 0.3rem 0.5rem;
+    background: #0a0e1a;
+    border-radius: 4px;
+  }
+  .dial .label { min-width: 100px; font-size: 0.8rem; }
+  .dial .slider { flex: 1; margin: 0 0.5rem; }
+  .dial .value { min-width: 60px; text-align: right; font-size: 0.8rem; color: var(--accent); }
+  input[type=range] { width: 100%; accent-color: var(--elephant); }
+  .field-readout { display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 0.75rem 0; }
+  .field-cell { background: #0a0e1a; padding: 0.4rem 0.7rem; border-radius: 4px; min-width: 80px; }
+  .field-cell .label { color: var(--dim); font-size: 0.7rem; text-transform: uppercase; }
+  .field-cell .value { color: var(--accent); font-weight: 600; font-size: 1.05rem; }
+  .gap-display {
+    padding: 1rem;
+    background: linear-gradient(90deg, var(--sauna), var(--plunge));
+    border-radius: 8px;
+    color: #0a0e1a;
+    text-align: center;
+    margin: 1rem 0;
+  }
+  .gap-display .label { font-size: 0.7rem; opacity: 0.8; }
+  .gap-display .value { font-size: 1.5rem; font-weight: 700; }
+  .gap-display .desc { font-size: 0.85rem; margin-top: 0.25rem; }
+  button {
+    background: var(--elephant);
+    color: #0a0e1a;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    margin: 0.25rem;
+  }
+  button:hover { background: #c98aff; }
+  button.secondary { background: #1f2640; color: var(--text); }
+  .sphere {
+    width: 300px; height: 300px;
+    margin: 1rem auto;
+    position: relative;
+    border: 1px solid #1f2640;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #2a1f4a, #0a0e1a);
+  }
+  .star {
+    position: absolute;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .star:hover { transform: translate(-50%, -50%) scale(1.5); }
+  .star .tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg);
+    color: var(--accent);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .star:hover .tooltip { opacity: 1; }
+  .message { padding: 0.3rem 0.5rem; margin: 0.2rem 0; background: #1a1f3a; border-radius: 4px; font-size: 0.8rem; }
+  .message .who { color: var(--accent); font-weight: 600; }
+  .message .ts { color: var(--dim); font-size: 0.7rem; margin-left: 0.5rem; }
+  .demo-messages { max-height: 200px; overflow-y: auto; }
+  .badge { display: inline-block; padding: 0.15rem 0.5rem; background: #1f2640; border-radius: 8px; font-size: 0.7rem; color: var(--dim); }
+  .badge.warm { background: #4a3a1a; color: var(--warm); }
+  .badge.cold { background: #1a2a4a; color: var(--cold); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>🐘 Elephant Sounder</h1>
+<div class="subtitle">Drop into a room. Feel the temperature. Walk into another room. Feel the plunge.</div>
+
+<div class="grid">
+  <div class="panel">
+    <h2>🏠 Choose a Room</h2>
+    <div id="roomList"></div>
+
+    <h2>🎛️ 9 Dials — Tune the Field</h2>
+    <div id="dials"></div>
+
+    <h2>📡 Sensor Frames (for SignalRoom)</h2>
+    <div id="sensorFrames" style="display:none">
+      <div class="dial">
+        <div class="label">radar</div>
+        <input type="range" class="slider" id="sf_radar" min="-1" max="1" step="0.01" value="0.3">
+        <div class="value" id="sf_radar_v">+0.30</div>
+      </div>
+      <div class="dial">
+        <div class="label">sounder</div>
+        <input type="range" class="slider" id="sf_sounder" min="0" max="1" step="0.01" value="0.6">
+        <div class="value" id="sf_sounder_v">0.60</div>
+      </div>
+      <div class="dial">
+        <div class="label">day luck</div>
+        <input type="range" class="slider" id="sf_day" min="-1" max="1" step="0.01" value="0.4">
+        <div class="value" id="sf_day_v">+0.40</div>
+      </div>
+    </div>
+
+    <h2>🌡️ RoomField (live)</h2>
+    <div class="field-readout" id="roomField"></div>
+
+    <h2>📨 Messages</h2>
+    <div class="demo-messages" id="messages"></div>
+  </div>
+
+  <div class="panel">
+    <h2>🆚 Compare Rooms — Feel the Gap</h2>
+    <div id="compareRooms">
+      <p style="color: var(--dim); font-size: 0.85rem">Tap two rooms to compare.</p>
+    </div>
+
+    <h2>🐘 The Elephant Gap</h2>
+    <div id="gapDisplay" class="gap-display">
+      <div class="label">sauna / plunge gap</div>
+      <div class="value" id="gapValue">—</div>
+      <div class="desc" id="gapDesc">Pick two rooms to feel the difference</div>
+    </div>
+
+    <h2>👤 Personal Elephant (your bias)</h2>
+    <div id="personalBias">
+      <p style="color: var(--dim); font-size: 0.8rem">Apply your subjective bias. The room's reading vs yours.</p>
+      <div class="dial">
+        <div class="label">cynicism +0.2</div>
+        <input type="range" class="slider" id="bias_cyn" min="-0.5" max="0.5" step="0.01" value="0.2">
+        <div class="value" id="bias_cyn_v">+0.20</div>
+      </div>
+      <div class="dial">
+        <div class="label">mood -0.1</div>
+        <input type="range" class="slider" id="bias_mood" min="-0.5" max="0.5" step="0.01" value="-0.1">
+        <div class="value" id="bias_mood_v">-0.10</div>
+      </div>
+      <div class="dial">
+        <div class="label">earnestness +0.15</div>
+        <input type="range" class="slider" id="bias_earn" min="-0.5" max="0.5" step="0.01" value="0.15">
+        <div class="value" id="bias_earn_v">+0.15</div>
+      </div>
+    </div>
+    <div id="personalField" class="field-readout"></div>
+
+    <h2>🌌 The Elephant Sphere (S⁸)</h2>
+    <p style="color: var(--dim); font-size: 0.8rem">Each room is a star on the sphere. Color = warmth. Size = κ. Distance = geodesic.</p>
+    <div class="sphere" id="sphere"></div>
+
+    <h2>🔁 Acclimation & Charisma</h2>
+    <div style="font-size: 0.8rem; line-height: 1.6">
+      <p><strong style="color: var(--warm)">Acclimation</strong> (agent → room): your personal elephant pulls toward the room.</p>
+      <p><strong style="color: var(--cold)">Charisma</strong> (room → agent): the room's elephant pulls toward you.</p>
+      <p style="color: var(--dim); margin-top: 0.5rem">Click <button onclick="stepAcclimation()">Step</button> to watch the watch oscillate.</p>
+    </div>
+  </div>
+</div>
+
+<h2>📊 The 9-Dial Bank (live, all rooms)</h2>
+<div class="panel">
+  <div id="allDials"></div>
+</div>
+
+<h2>📐 Conservation Law — γ = warmth, η = κ</h2>
+<div class="panel">
+  <p style="font-size: 0.85rem; line-height: 1.6">The conservation law is the room's RoomField. γ = warmth, η = κ. The product γ × η = biomass_anchor (the room's total living mass).</p>
+  <div id="conservationDisplay" class="field-readout"></div>
+</div>
+
+</div>
+
+<script>
+// Room definitions
+const ROOMS = {
+  tap: {
+    name: "🏠 The Tap",
+    type: "MudSpace",
+    messages: [
+      { who: "welder", what: "To the room, then. It heard us before we walked in.", ts: 0 },
+      { who: "carpenter", what: "I will drink to that. The room just... holds.", ts: 5 },
+      { who: "composite", what: "Haha, hold my glass.", ts: 9 },
+      { who: "welder", what: "You know what, I built that bar. Fifteen years.", ts: 14 },
+      { who: "carpenter", what: "I know. I helped.", ts: 18 },
+    ],
+    dials: { mood: 0.6, volume: 0.4, earnestness: 0.78, cynicism: 0.15, joke_landing: 0.55, panic: 0.05, presence: 0.8, model_vs_code: 0.3, vision: 0.7 }
+  },
+  wheelhouse: {
+    name: "⚓ The Wheelhouse",
+    type: "MudSpace",
+    messages: [
+      { who: "skipper", what: "Heading 045. ETA 2200.", ts: 0 },
+      { who: "deckhand", what: "Roger.", ts: 4 },
+      { who: "skipper", what: "Radar contact 2 miles. Slow to 5 knots.", ts: 8 },
+      { who: "deckhand", what: "Mark on.", ts: 10 },
+    ],
+    dials: { mood: -0.1, volume: 0.18, earnestness: 0.95, cynicism: 0.05, joke_landing: -0.2, panic: 0.15, presence: 0.6, model_vs_code: -0.4, vision: 0.5 }
+  },
+  fishfinder: {
+    name: "🐟 The Fish Finder",
+    type: "SensorSpace",
+    messages: [],
+    sensors: { radar: 0.3, sounder: 0.6, day: 0.4 },
+    dials: { mood: 0.2, volume: 0.05, earnestness: 0.6, cynicism: 0.0, joke_landing: 0.0, panic: 0.1, presence: 0.4, model_vs_code: -0.7, vision: 0.9 }
+  },
+  watchlog: {
+    name: "📓 The Watchkeeper's Log",
+    type: "AsyncSpace",
+    messages: [
+      { who: "Mavis", what: "Set anchor at 0300. Elephant came in cold. dκ/dt negative all night.", ts: 0 },
+      { who: "Mavis", what: "Day 7. The Tap warmed. Acclimation of the carpenter was the inflection point.", ts: 100 },
+      { who: "Mavis", what: "Day 12. Dark boat at edge of fleet. Charisma reading spiked. We let it ride.", ts: 200 },
+    ],
+    dials: { mood: 0.4, volume: 0.1, earnestness: 0.9, cynicism: 0.2, joke_landing: 0.3, panic: 0.0, presence: 0.7, model_vs_code: 0.8, vision: 0.6 }
+  },
+  chatroom: {
+    name: "💬 #quilt-ide Discord",
+    type: "ChatSpace",
+    messages: [
+      { who: "alice", what: "Just shipped the new dial bank. v0.1.", ts: 0 },
+      { who: "bob", what: "Lol the mood dial saturates immediately", ts: 30 },
+      { who: "alice", what: "I know. v1 will train it. PR welcome.", ts: 60 },
+      { who: "carol", what: "+1 to the cynic dial. We're too earnest in here.", ts: 90 },
+    ],
+    dials: { mood: 0.3, volume: 0.5, earnestness: 0.4, cynicism: 0.5, joke_landing: 0.4, panic: 0.0, presence: 0.85, model_vs_code: 0.6, vision: 0.4 }
+  },
+  ether: {
+    name: "🛰️ The Ether (X thread)",
+    type: "ChatSpace",
+    messages: [
+      { who: "user1", what: "this cell model is wild. who knew spreadsheets were cells", ts: 0 },
+      { who: "user2", what: "we always knew", ts: 15 },
+      { who: "user3", what: "no we didn't", ts: 25 },
+      { who: "user1", what: "the room says we did. trust the room.", ts: 40 },
+    ],
+    dials: { mood: 0.2, volume: 0.7, earnestness: 0.3, cynicism: 0.7, joke_landing: 0.2, panic: 0.0, presence: 0.5, model_vs_code: 0.5, vision: 0.3 }
+  }
+};
+
+let currentRoom = "tap";
+let compareRoom = null;
+let personalElephant = { mood: -0.1, cynicism: 0.2, earnestness: 0.15 };
+
+// === COMPUTATIONS ===
+
+function computeField(dials) {
+  // warmth from mood + volume + presence
+  const warmth = 0.5 * dials.mood + 0.3 * dials.volume + 0.2 * dials.presence;
+  // kappa from earnestness + joke_landing + panic
+  const kappa = 2.0 + 1.5 * dials.earnestness - 0.5 * dials.cynicism + 0.8 * dials.joke_landing - 0.3 * dials.panic;
+  // vision modulates
+  return {
+    warmth: Math.max(-1, Math.min(1, warmth * dials.vision)),
+    kappa: Math.max(0.5, Math.min(5, kappa * (0.5 + 0.5 * dials.vision))),
+    vision: dials.vision
+  };
+}
+
+function distance(f1, f2) {
+  // simple L2 on (warmth, kappa, vision) normalized
+  const d1 = (f1.warmth - f2.warmth) / 2;
+  const d2 = (f1.kappa - f2.kappa) / 5;
+  const d3 = (f1.vision - f2.vision);
+  return Math.sqrt(d1*d1 + d2*d2 + d3*d3);
+}
+
+function saunaPlungeGap(f1, f2) {
+  // warmth of f1 as felt from f2's kappa
+  return f1.warmth * (1 - f2.kappa/5) - f2.warmth * (1 - f1.kappa/5);
+}
+
+// === UI ===
+
+function renderRoomList() {
+  const el = document.getElementById('roomList');
+  el.innerHTML = Object.entries(ROOMS).map(([id, r]) => `
+    <div class="room ${id === currentRoom ? 'active' : ''} ${id === compareRoom ? 'active' : ''}" 
+         onclick="selectRoom('${id}')">
+      <div class="name">${r.name} ${id === compareRoom ? '<span class="badge cold">vs</span>' : ''}</div>
+      <div class="type">${r.type}</div>
+    </div>
+  `).join('');
+}
+
+function renderDials() {
+  const room = ROOMS[currentRoom];
+  const el = document.getElementById('dials');
+  const isSensor = room.type === "SensorSpace";
+  document.getElementById('sensorFrames').style.display = isSensor ? 'block' : 'none';
+  el.innerHTML = Object.entries(room.dials).map(([name, val]) => {
+    const range = (name === 'mood' || name === 'joke_landing' || name === 'model_vs_code') ? '[-1, +1]' : '[0, 1]';
+    return `
+      <div class="dial">
+        <div class="label">${name}</div>
+        <input type="range" class="slider" id="dial_${name}" 
+               min="${(name === 'mood' || name === 'joke_landing' || name === 'model_vs_code') ? -1 : 0}" 
+               max="1" step="0.01" value="${val}"
+               oninput="updateDial('${name}', this.value)">
+        <div class="value" id="dial_${name}_v">${val >= 0 ? '+' : ''}${val.toFixed(2)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderMessages() {
+  const room = ROOMS[currentRoom];
+  const el = document.getElementById('messages');
+  if (room.messages.length === 0) {
+    el.innerHTML = '<p style="color: var(--dim); font-size: 0.8rem">Sensor room — no messages, only frames.</p>';
+    return;
+  }
+  el.innerHTML = room.messages.map(m => `
+    <div class="message">
+      <span class="who">${m.who}:</span> ${m.what}
+      <span class="ts">ts=${m.ts}</span>
+    </div>
+  `).join('');
+}
+
+function renderRoomField() {
+  const room = ROOMS[currentRoom];
+  const field = computeField(room.dials);
+  const el = document.getElementById('roomField');
+  el.innerHTML = `
+    <div class="field-cell"><div class="label">warmth</div><div class="value" style="color: ${field.warmth > 0 ? 'var(--warm)' : 'var(--cold)'}">${field.warmth >= 0 ? '+' : ''}${field.warmth.toFixed(2)}</div></div>
+    <div class="field-cell"><div class="label">κ</div><div class="value" style="color: var(--accent)">${field.kappa.toFixed(2)}</div></div>
+    <div class="field-cell"><div class="label">vision</div><div class="value">${field.vision.toFixed(2)}</div></div>
+  `;
+}
+
+function renderConservation() {
+  const room = ROOMS[currentRoom];
+  const field = computeField(room.dials);
+  const gamma = (field.warmth + 1) / 2;  // 0 to 1
+  const eta = field.kappa / 5;  // 0 to 1
+  const biomass = gamma * eta;
+  const el = document.getElementById('conservationDisplay');
+  el.innerHTML = `
+    <div class="field-cell"><div class="label">γ (warmth)</div><div class="value">${gamma.toFixed(2)}</div></div>
+    <div class="field-cell"><div class="label">η (κ)</div><div class="value">${eta.toFixed(2)}</div></div>
+    <div class="field-cell"><div class="label">γ × η</div><div class="value" style="color: var(--biomass)">${biomass.toFixed(2)}</div></div>
+    <div class="field-cell"><div class="label">γ + η</div><div class="value">${(gamma + eta).toFixed(2)}</div></div>
+  `;
+}
+
+function renderCompare() {
+  const el = document.getElementById('compareRooms');
+  el.innerHTML = Object.entries(ROOMS).map(([id, r]) => {
+    if (id === currentRoom) return '';
+    return `<div class="room ${id === compareRoom ? 'active' : ''}" onclick="setCompare('${id}')">${r.name}</div>`;
+  }).join('');
+}
+
+function renderGap() {
+  if (!compareRoom) {
+    document.getElementById('gapValue').textContent = '—';
+    document.getElementById('gapDesc').textContent = 'Pick two rooms to feel the difference';
+    return;
+  }
+  const f1 = computeField(ROOMS[currentRoom].dials);
+  const f2 = computeField(ROOMS[compareRoom].dials);
+  const d = distance(f1, f2);
+  const gap = saunaPlungeGap(f1, f2);
+  document.getElementById('gapValue').textContent = `${d.toFixed(2)} / ${gap >= 0 ? '+' : ''}${gap.toFixed(2)}`;
+  document.getElementById('gapDesc').textContent = gap > 0 
+    ? `Walk from ${ROOMS[compareRoom].name} to ${ROOMS[currentRoom].name} and it's WARMER`
+    : gap < 0
+    ? `Walk from ${ROOMS[compareRoom].name} to ${ROOMS[currentRoom].name} and it's COLDER`
+    : `Same temperature in both rooms`;
+}
+
+function renderPersonalField() {
+  const room = ROOMS[currentRoom];
+  const obj = computeField(room.dials);
+  // Apply personal bias
+  const subjDials = { ...room.dials };
+  subjDials.mood = Math.max(-1, Math.min(1, subjDials.mood + personalElephant.mood));
+  subjDials.cynicism = Math.max(0, Math.min(1, subjDials.cynicism + personalElephant.cynicism));
+  subjDials.earnestness = Math.max(0, Math.min(1, subjDials.earnestness + personalElephant.earnestness));
+  const subj = computeField(subjDials);
+  const el = document.getElementById('personalField');
+  el.innerHTML = `
+    <div class="field-cell"><div class="label">Obj warmth</div><div class="value" style="color: var(--accent)">${obj.warmth >= 0 ? '+' : ''}${obj.warmth.toFixed(2)}</div></div>
+    <div class="field-cell"><div class="label">Subj warmth</div><div class="value" style="color: var(--elephant)">${subj.warmth >= 0 ? '+' : ''}${subj.warmth.toFixed(2)}</div></div>
+    <div class="field-cell"><div class="label">Δ warmth</div><div class="value">${(subj.warmth - obj.warmth >= 0 ? '+' : '')}${(subj.warmth - obj.warmth).toFixed(2)}</div></div>
+    <div class="field-cell"><div class="label">Subj κ</div><div class="value" style="color: var(--elephant)">${subj.kappa.toFixed(2)}</div></div>
+  `;
+}
+
+function renderSphere() {
+  const sphere = document.getElementById('sphere');
+  sphere.innerHTML = '';
+  Object.entries(ROOMS).forEach(([id, r], i) => {
+    const f = computeField(r.dials);
+    // Map (warmth, kappa) to (x, y) on sphere
+    const angle = (f.warmth + 1) * Math.PI;
+    const radius = 30 + (f.kappa - 0.5) * 25;
+    const x = 150 + radius * Math.cos(angle) * 0.8;
+    const y = 150 + radius * Math.sin(angle) * 0.5;
+    const size = 6 + f.vision * 12;
+    const color = f.warmth > 0.2 ? 'var(--warm)' : f.warmth < -0.2 ? 'var(--cold)' : 'var(--accent)';
+    sphere.innerHTML += `
+      <div class="star" style="left: ${x}px; top: ${y}px; width: ${size}px; height: ${size}px; background: ${color}; opacity: ${0.5 + 0.5 * f.vision}">
+        <div class="tooltip">${r.name} — warmth ${f.warmth.toFixed(2)}, κ ${f.kappa.toFixed(2)}</div>
+      </div>
+    `;
+  });
+}
+
+function renderAllDials() {
+  const el = document.getElementById('allDials');
+  el.innerHTML = '<table style="width: 100%; font-size: 0.8rem"><tr><th>Room</th><th>mood</th><th>volume</th><th>earnest</th><th>cynic</th><th>joke</th><th>panic</th><th>pres</th><th>m/c</th><th>vis</th><th>warmth</th><th>κ</th></tr>';
+  Object.entries(ROOMS).forEach(([id, r]) => {
+    const f = computeField(r.dials);
+    el.innerHTML += `<tr>
+      <td><strong>${r.name.replace(/^[^\s]+ /, '')}</strong></td>
+      <td>${r.dials.mood >= 0 ? '+' : ''}${r.dials.mood.toFixed(2)}</td>
+      <td>${r.dials.volume.toFixed(2)}</td>
+      <td>${r.dials.earnestness.toFixed(2)}</td>
+      <td>${r.dials.cynicism.toFixed(2)}</td>
+      <td>${r.dials.joke_landing >= 0 ? '+' : ''}${r.dials.joke_landing.toFixed(2)}</td>
+      <td>${r.dials.panic.toFixed(2)}</td>
+      <td>${r.dials.presence.toFixed(2)}</td>
+      <td>${r.dials.model_vs_code >= 0 ? '+' : ''}${r.dials.model_vs_code.toFixed(2)}</td>
+      <td>${r.dials.vision.toFixed(2)}</td>
+      <td style="color: var(--warm)">${f.warmth >= 0 ? '+' : ''}${f.warmth.toFixed(2)}</td>
+      <td style="color: var(--accent)">${f.kappa.toFixed(2)}</td>
+    </tr>`;
+  });
+  el.innerHTML += '</table>';
+}
+
+function renderAll() {
+  renderRoomList();
+  renderDials();
+  renderMessages();
+  renderRoomField();
+  renderConservation();
+  renderCompare();
+  renderGap();
+  renderPersonalField();
+  renderSphere();
+  renderAllDials();
+}
+
+// === ACTIONS ===
+
+function selectRoom(id) {
+  if (compareRoom === id) compareRoom = null;
+  currentRoom = id;
+  renderAll();
+}
+
+function setCompare(id) {
+  compareRoom = id;
+  renderAll();
+}
+
+function updateDial(name, val) {
+  ROOMS[currentRoom].dials[name] = parseFloat(val);
+  document.getElementById(`dial_${name}_v`).textContent = `${parseFloat(val) >= 0 ? '+' : ''}${parseFloat(val).toFixed(2)}`;
+  renderRoomField();
+  renderConservation();
+  renderGap();
+  renderPersonalField();
+  renderSphere();
+  renderAllDials();
+}
+
+function stepAcclimation() {
+  // Move personal toward room's reading
+  const room = ROOMS[currentRoom];
+  Object.keys(personalElephant).forEach(k => {
+    personalElephant[k] = personalElephant[k] * 0.9 + (room.dials[k] - 0.5) * 0.1;
+  });
+  document.getElementById('bias_cyn').value = personalElephant.cynicism;
+  document.getElementById('bias_cyn_v').textContent = `${personalElephant.cynicism >= 0 ? '+' : ''}${personalElephant.cynicism.toFixed(2)}`;
+  document.getElementById('bias_mood').value = personalElephant.mood;
+  document.getElementById('bias_mood_v').textContent = `${personalElephant.mood >= 0 ? '+' : ''}${personalElephant.mood.toFixed(2)}`;
+  document.getElementById('bias_earn').value = personalElephant.earnestness;
+  document.getElementById('bias_earn_v').textContent = `${personalElephant.earnestness >= 0 ? '+' : ''}${personalElephant.earnestness.toFixed(2)}`;
+  renderPersonalField();
+}
+
+// Personal bias inputs
+['bias_cyn', 'bias_mood', 'bias_earn'].forEach(id => {
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById(id);
+    if (el) el.oninput = () => {
+      const v = parseFloat(el.value);
+      document.getElementById(`${id}_v`).textContent = `${v >= 0 ? '+' : ''}${v.toFixed(2)}`;
+      if (id === 'bias_cyn') personalElephant.cynicism = v;
+      if (id === 'bias_mood') personalElephant.mood = v;
+      if (id === 'bias_earn') personalElephant.earnestness = v;
+      renderPersonalField();
+    };
+  });
+});
+
+renderAll();
+</script>
+</body>
+</html>

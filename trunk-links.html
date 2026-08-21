@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trunk Links — The Ecosystem Backbone</title>
+<style>
+  :root {
+    --bg: #0a0e1a; --panel: #131829; --text: #d8e2ff;
+    --dim: #6e7a99; --accent: #66ffd9;
+    --api: #b46aff; --compute: #ff9e5a; --memory: #5fc4ff;
+    --storage: #88ffd9; --network: #ffd866; --identity: #ff6b9d;
+    --obs: #66ffd9; --billing: #ff6b3d;
+  }
+  * { box-sizing: border-box; }
+  body { background: linear-gradient(180deg, #0a0e1a, #1a0e2a); color: var(--text); font-family: 'SF Mono', monospace; margin: 0; padding: 0; min-height: 100vh; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.6rem; color: var(--accent); margin: 0 0 0.5rem; }
+  h2 { font-size: 1.1rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  .subtitle { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .panel { background: var(--panel); border: 1px solid #1f2640; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .trunks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 800px) { .trunks { grid-template-columns: 1fr; } }
+  .trunk { background: #0a0e1a; border-radius: 6px; padding: 1rem; border-left: 4px solid; }
+  .trunk h3 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+  .trunk ul { margin: 0.5rem 0; padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.6; }
+  .trunk code { color: var(--accent); font-size: 0.8rem; }
+  .trunk.api { border-color: var(--api); } .trunk.api h3 { color: var(--api); }
+  .trunk.compute { border-color: var(--compute); } .trunk.compute h3 { color: var(--compute); }
+  .trunk.memory { border-color: var(--memory); } .trunk.memory h3 { color: var(--memory); }
+  .trunk.storage { border-color: var(--storage); } .trunk.storage h3 { color: var(--storage); }
+  .trunk.network { border-color: var(--network); } .trunk.network h3 { color: var(--network); }
+  .trunk.identity { border-color: var(--identity); } .trunk.identity h3 { color: var(--identity); }
+  .trunk.obs { border-color: var(--obs); } .trunk.obs h3 { color: var(--obs); }
+  .trunk.billing { border-color: var(--billing); } .trunk.billing h3 { color: var(--billing); }
+  .ascii { font-size: 0.7rem; line-height: 1.1; color: var(--accent); white-space: pre; text-align: center; margin: 1rem 0; }
+  a.btn { display: inline-block; padding: 0.5rem 1rem; background: var(--accent); color: var(--bg); border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.5rem 0.5rem 0.5rem 0; }
+  .badge { display: inline-block; padding: 0.2rem 0.5rem; background: #1f2640; border: 1px solid #2a3450; border-radius: 8px; font-size: 0.7rem; color: var(--dim); margin: 0.1rem; }
+  .table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .table th { text-align: left; padding: 0.4rem; color: var(--accent); border-bottom: 1px solid #1f2640; }
+  .table td { padding: 0.4rem; border-bottom: 1px dashed #1f2640; }
+  .inspector {
+    background: #0a0e1a; border: 1px solid var(--accent);
+    border-radius: 4px; padding: 1rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    font-size: 0.85rem;
+  }
+  @media (max-width: 700px) { .inspector { grid-template-columns: 1fr; } }
+  .inspector h3 { margin: 0 0 0.5rem; color: var(--accent); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>🌐 Trunk Links</h1>
+<div class="subtitle">The long-distance substrate of the ecosystem. APIs, compute, memory, storage — the trunk is what makes an ecosystem more than a fleet.</div>
+
+<div class="panel">
+  <div class="ascii">
+              THE TRUNK LINKS
+    ┌────────────────────────────────────────────────┐
+    │                                                │
+    │       L4: FLEET  ←  network of harnesses      │
+    │           │                                    │
+    │           ▼                                    │
+    │   ╔═══════════════════════════════════════╗     │
+    │   ║  L5: ECOSYSTEM  (trunk links here)   ║     │
+    │   ║                                       ║     │
+    │   ║  ┌────┐ ┌────┐ ┌────┐ ┌────┐         ║     │
+    │   ║  │API │ │COMP│ │MEM │ │STOR│  ...    ║     │
+    │   ║  └────┘ └────┘ └────┘ └────┘         ║     │
+    │   ║                                       ║     │
+    │   ╚═══════════════════════════════════════╝     │
+    │           │                                    │
+    │           ▼                                    │
+    │      L6: INFRA  ←  the physical substrate      │
+    │                                                │
+    └────────────────────────────────────────────────┘
+  </div>
+</div>
+
+<h2>🌲 The 8 Trunk Categories</h2>
+<div class="trunks">
+  <div class="trunk api">
+    <h3>📡 APIs</h3>
+    <ul>
+      <li><code>REST</code> — HTTP request/response</li>
+      <li><code>gRPC</code> — typed RPC</li>
+      <li><code>GraphQL</code> — query language</li>
+      <li><code>A2A</code> — agent-to-agent</li>
+      <li><code>A2UI</code> — agent-to-UI</li>
+      <li><code>A2C</code> — agent-to-CLI</li>
+      <li><code>MCP</code> — Model Context Protocol</li>
+      <li><code>OpenAI-compat</code> — chat/completions</li>
+      <li><code>Anthropic-compat</code> — messages</li>
+    </ul>
+    <div style="color: var(--dim); font-size: 0.75rem; margin-top: 0.5rem">substrate: Protocol (L5)</div>
+  </div>
+
+  <div class="trunk compute">
+    <h3>⚡ Compute</h3>
+    <ul>
+      <li><code>CPU</code> — general purpose</li>
+      <li><code>GPU</code> — CUDA, Metal, ROCm</li>
+      <li><code>TPU</code> — Google tensor</li>
+      <li><code>NPU</code> — neural processing</li>
+      <li><code>edge</code> — Cloudflare Workers, Lambda@Edge</li>
+      <li><code>vector</code> — SIMD ops, AVX-512</li>
+      <li><code>wasm</code> — sandboxed execution</li>
+    </ul>
+    <div style="color: var(--dim); font-size: 0.75rem; margin-top: 0.5rem">substrate: Scale (L2)</div>
+  </div>
+
+  <div class="trunk memory">
+    <h3>🧠 Memory</h3>
+    <ul>
+      <li><code>RAM</code> — main memory</li>
+      <li><code>VRAM</code> — GPU memory</li>
+      <li><code>cache</code> — L1/L2/L3, Redis</li>
+      <li><code>ephemeral</code> — short-lived state</li>
+      <li><code>registers</code> — kernel-level state</li>
+    </ul>
+    <div style="color: var(--dim); font-size: 0.75rem; margin-top: 0.5rem">substrate: State (L7)</div>
+  </div>
+
+  <div class="trunk storage">
+    <h3>💾 Storage</h3>
+    <ul>
+      <li><code>KV</code> — key-value (Cloudflare, Redis)</li>
+      <li><code>DB</code> — Postgres, MySQL, SQLite</li>
+      <li><code>blob</code> — R2, S3, GCS</li>
+      <li><code>file</code> — local FS, NFS</li>
+      <li><code>object</code> — typed objects, content-addressed</li>
+      <li><code>time-series</code> — InfluxDB, Prometheus</li>
+      <li><code>graph</code> — Neo4j, DGraph</li>
+      <li><code>vector</code> — Pinecone, Weaviate, qdrant</li>
+    </ul>
+    <div style="color: var(--dim); font-size: 0.75rem; margin-top: 0.5rem">substrate: State (L7)</div>
+  </div>
+
+  <div class="trunk network">
+    <h3>🔗 Network</h3>
+    <ul>
+      <li><code>HTTP</code> — request/response</li>
+      <li><code>MQTT</code> — pub/sub for IoT</li>
+      <li><code>WebSocket</code> — bidirectional</li>
+      <li><code>gRPC stream</code> — bidirectional typed</li>
+      <li><code>Unix socket</code> — local IPC</li>
+      <li><code>SSH</code> — secure shell</li>
+      <li><code>QUIC</code> — modern UDP transport</li>
+    </ul>
+    <div style="color: var(--dim); font-size: 0.75rem; margin-top: 0.5rem">substrate: Protocol (L5)</div>
+  </div>
+
+  <div class="trunk identity">
+    <h3>🔐 Identity</h3>
+    <ul>
+      <li><code>OAuth</code> — delegated auth</li>
+      <li><code>API key</code> — long-lived secret</li>
+      <li><code>mTLS</code> — mutual TLS</li>
+      <li><code>DID</code> — decentralized identifier</li>
+      <li><code>JWT</code> — token-based</li>
+      <li><code>SSO</code> — single sign-on</li>
+    </ul>
+    <div style="color: var(--dim); font-size: 0.75rem; margin-top: 0.5rem">substrate: Address (L1)</div>
+  </div>
+
+  <div class="trunk obs">
+    <h3>📊 Observability</h3>
+    <ul>
+      <li><code>logs</code> — structured, unstructured</li>
+      <li><code>metrics</code> — counters, gauges, histograms</li>
+      <li><code>traces</code> — distributed spans</li>
+      <li><code>profiles</code> — CPU, memory, GPU</li>
+      <li><code>events</code> — domain events</li>
+    </ul>
+    <div style="color: var(--dim); font-size: 0.75rem; margin-top: 0.5rem">substrate: State (L7)</div>
+  </div>
+
+  <div class="trunk billing">
+    <h3>💰 Billing</h3>
+    <ul>
+      <li><code>Stripe</code> — metered, prepaid</li>
+      <li><code>GitHub Sponsors</code> — sponsorship</li>
+      <li><code>Buy Me a Coffee</code> — donation</li>
+      <li><code>AWS billing</code> — usage</li>
+      <li><code>Cloudflare billing</code> — bundle</li>
+    </ul>
+    <div style="color: var(--dim); font-size: 0.75rem; margin-top: 0.5rem">substrate: Scale (L2)</div>
+  </div>
+</div>
+
+<h2>🔍 The Trunk Inspector</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6; color: var(--dim)">Every cell in Quilt has trunk links. The IDE shows them in the right panel. Click any cell to see its trunks.</p>
+  <div class="inspector">
+    <div>
+      <h3>📡 Outgoing</h3>
+      <p style="font-size: 0.8rem; line-height: 1.6">What the cell calls.</p>
+      <ul style="font-size: 0.8rem">
+        <li><code>POST /v1/chat/completions</code> — OpenAI</li>
+        <li><code>POST /v1/messages</code> — Anthropic</li>
+        <li><code>GET /kv/quilt:cell-7</code> — Cloudflare KV</li>
+        <li><code>WS wss://...</code> — A2A</li>
+      </ul>
+    </div>
+    <div>
+      <h3>📥 Incoming</h3>
+      <p style="font-size: 0.8rem; line-height: 1.6">What the cell receives.</p>
+      <ul style="font-size: 0.8rem">
+        <li><code>POST /quilt/elephant/field</code> — from elephant cell</li>
+        <li><code>POST /quilt/murmur/gossip</code> — from peer</li>
+        <li><code>GET /quilt/state/dump</code> — IDE poll</li>
+      </ul>
+    </div>
+    <div>
+      <h3>⚙️ Resources</h3>
+      <p style="font-size: 0.8rem; line-height: 1.6">What the cell uses.</p>
+      <ul style="font-size: 0.8rem">
+        <li><code>compute: 0.5 CPU, 0.1 GPU</code></li>
+        <li><code>memory: 256 MB RAM, 80 MB VRAM</code></li>
+        <li><code>storage: 1 GB blob, 10 MB KV</code></li>
+      </ul>
+    </div>
+    <div>
+      <h3>💵 Cost</h3>
+      <p style="font-size: 0.8rem; line-height: 1.6">What the cell costs.</p>
+      <ul style="font-size: 0.8rem">
+        <li><code>compute: $0.01/hr</code></li>
+        <li><code>storage: $0.001/day</code></li>
+        <li><code>API: $0.0001/call</code></li>
+        <li><code>total: ~$0.50/day</code></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>🌌 Trunk Links by Substrate Layer</h2>
+<div class="panel">
+  <table class="table">
+    <tr><th>Trunk</th><th>Substrate layer</th><th>Conservation meaning</th></tr>
+    <tr><td>APIs</td><td>Protocol (L5)</td><td>γ = calls/sec, η = latency</td></tr>
+    <tr><td>Compute</td><td>Scale (L2)</td><td>γ = provisioning, η = idle</td></tr>
+    <tr><td>Memory</td><td>State (L7)</td><td>γ = allocation, η = leak</td></tr>
+    <tr><td>Storage</td><td>State (L7)</td><td>γ = write, η = read</td></tr>
+    <tr><td>Network</td><td>Protocol (L5)</td><td>γ = transmit, η = drop</td></tr>
+    <tr><td>Identity</td><td>Address (L1)</td><td>γ = grant, η = revoke</td></tr>
+    <tr><td>Observability</td><td>State (L7)</td><td>γ = emit, η = retain</td></tr>
+    <tr><td>Billing</td><td>Scale (L2)</td><td>γ = spend, η = budget</td></tr>
+  </table>
+</div>
+
+<h2>🔭 Try it</h2>
+<div class="panel">
+  <a href="./zoom-ide.html" class="btn">→ Open Zoom IDE</a>
+  <a href="./abstraction-levels.html" class="btn">→ Open Abstraction Levels</a>
+  <a href="./quilt-ide.html" class="btn">→ Open Quilt IDE</a>
+  <a href="./cell-bridges.html" class="btn">→ Open Cell Bridges</a>
+  <p style="font-size: 0.85rem; color: var(--dim); margin-top: 1rem">The trunk links are visible in the Quilt IDE inspector (right panel) and the Zoom IDE (right panel "Trunk Links" section). The system is fractal. The trunk is at every level.</p>
+</div>
+
+</div>
+</body>
+</html>

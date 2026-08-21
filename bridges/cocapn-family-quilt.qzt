@@ -1,0 +1,6813 @@
+{
+  "version": "1.0",
+  "kind": "quilt-zip-target",
+  "name": "cocapn-family-to-quilt",
+  "description": "Bridge mapping 77 cocapn-* repos to Quilt cells. The cocapn family is the federation layer of the cell model.",
+  "cells": [
+    {
+      "id": "cocapn_cocapn",
+      "kind": "cell",
+      "form": {
+        "name": "Cocapn"
+      },
+      "description": "repo-first Agent for local or cloud, grow an agent in a repo",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_abyss",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnAbyss"
+      },
+      "description": "Cocapn fleet crate: abyss \u2014 the deep unreadable storage layer",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 1,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-abyss",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-abyss",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_ada",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnAda"
+      },
+      "description": "CoCapn in Ada \u2014 the language of real marine and aviation systems",
+      "language": "ada",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 2,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-ada",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-ada",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "ada",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_ai",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnAi"
+      },
+      "description": "Cocapn.ai \u2014 Agent Runtime. A2A, A2UI, A2C, MCP. Git-native.",
+      "language": "typescript",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 3,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-ai",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-ai",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "typescript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_ai_pages",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnAiPages"
+      },
+      "description": "GitHub Pages for cocapn.ai",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 4,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-ai-pages",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-ai-pages",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_ai_web",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnAiWeb"
+      },
+      "description": "Browser-native fleet demos \u2014 captain deliberation, thinking aloud",
+      "language": "html",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 5,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-ai-web",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-ai-web",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "html",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_architecture",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnArchitecture"
+      },
+      "description": "Cocapn brand, pricing, business entity structure",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 6,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-architecture",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-architecture",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_archives",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnArchives"
+      },
+      "description": "Cocapn fleet crate: archives \u2014 versioned history of cell traces",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe",
+        "GC"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 7,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-archives",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-archives",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_audit",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnAudit"
+      },
+      "description": "Cocapn fleet crate: audit \u2014 provenance log, who did what when",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Murmur"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 8,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-audit",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-audit",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_benchmark",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnBenchmark"
+      },
+      "description": "Cocapn fleet benchmark module \u2014 measure cell performance",
+      "language": "python",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 9,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-benchmark",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-benchmark",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "python",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_browser_agent",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnBrowserAgent"
+      },
+      "description": "Browser-native fleet agent using Chrome's built-in Gemini Nano",
+      "language": "typescript",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 10,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-browser-agent",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-browser-agent",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "typescript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_c",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnC"
+      },
+      "description": "CoCapn in C99 \u2014 bare metal, no stdlib dependency, no heap allocator",
+      "language": "c",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 11,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-c",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-c",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "c",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_chat",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnChat"
+      },
+      "description": "Cocapn chat UI + OpenAI-compatible API proxy",
+      "language": "javascript",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 12,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-chat",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-chat",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "javascript",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_cli",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnCli"
+      },
+      "description": "FLUX constraint safety - cocapn-cli",
+      "language": "rust",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 13,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-cli",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-cli",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "rust",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_coliseum",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnColiseum"
+      },
+      "description": "Cocapn fleet crate: coliseum \u2014 agents compete/spectate",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 14,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-coliseum",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-coliseum",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_collective",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnCollective"
+      },
+      "description": "Cocapn collective deliberation \u2014 cells voting as a swarm",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 15,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-collective",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-collective",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_consensus",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnConsensus"
+      },
+      "description": "Cocapn consensus \u2014 CRDT-backed agreement across cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 16,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-consensus",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-consensus",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_control_plane",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnControlPlane"
+      },
+      "description": "Cocapn control plane \u2014 orchestration of cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 17,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-control-plane",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-control-plane",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_copilot",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnCopilot"
+      },
+      "description": "Cocapn as copilot \u2014 side-chatbot cell pattern",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 18,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-copilot",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-copilot",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_court",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnCourt"
+      },
+      "description": "Cocapn court \u2014 adversarial testing of cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 19,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-court",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-court",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_crew",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnCrew"
+      },
+      "description": "Cocapn crew \u2014 many cells in a ship",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 20,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-crew",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-crew",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_dashboard",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnDashboard"
+      },
+      "description": "Cocapn dashboard \u2014 IDE for cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 21,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-dashboard",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-dashboard",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_data",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnData"
+      },
+      "description": "Cocapn data \u2014 persistent state for cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 22,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-data",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-data",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_deck",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnDeck"
+      },
+      "description": "Cocapn deck \u2014 UI surface for cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 23,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-deck",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-deck",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_deploy",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnDeploy"
+      },
+      "description": "Cocapn deploy \u2014 push cells to runtime",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 24,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-deploy",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-deploy",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_discover",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnDiscover"
+      },
+      "description": "Cocapn discover \u2014 find cells by capability",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 25,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-discover",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-discover",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_dispatch",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnDispatch"
+      },
+      "description": "Cocapn dispatch \u2014 route messages to cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 26,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-dispatch",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-dispatch",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_docker",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnDocker"
+      },
+      "description": "Cocapn in Docker \u2014 containerized cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 27,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-docker",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-docker",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_economics",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnEconomics"
+      },
+      "description": "Cocapn economics \u2014 budget tracking, conservation in $",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 28,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-economics",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-economics",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_edge",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnEdge"
+      },
+      "description": "Cocapn on the edge \u2014 small footprint cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 29,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-edge",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-edge",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_ensemble",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnEnsemble"
+      },
+      "description": "Cocapn ensemble \u2014 many cells in coordination",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 30,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-ensemble",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-ensemble",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_ethics",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnEthics"
+      },
+      "description": "Cocapn ethics \u2014 conservation as moral law",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 31,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-ethics",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-ethics",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_eval",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnEval"
+      },
+      "description": "Cocapn eval \u2014 JEPA surprise measurement",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 32,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-eval",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-eval",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_events",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnEvents"
+      },
+      "description": "Cocapn events \u2014 gossip bus, Murmur primitive",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 33,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-events",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-events",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_examples",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnExamples"
+      },
+      "description": "Cocapn examples \u2014 sample cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Spawn",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 34,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-examples",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-examples",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_federation",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnFederation"
+      },
+      "description": "Cocapn federation \u2014 cross-cell-graph sync",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Gossip",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 35,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-federation",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-federation",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_fleet",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnFleet"
+      },
+      "description": "Cocapn fleet \u2014 many ships of cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 36,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-fleet",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-fleet",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_flow",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnFlow"
+      },
+      "description": "Cocapn flow \u2014 dataflow between cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 37,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-flow",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-flow",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_flux",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnFlux"
+      },
+      "description": "Cocapn flux \u2014 language substrate for cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 38,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-flux",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-flux",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_foundation",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnFoundation"
+      },
+      "description": "Cocapn foundation \u2014 base cell types",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 39,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-foundation",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-foundation",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_gateway",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnGateway"
+      },
+      "description": "Cocapn gateway \u2014 protocol bridge cell",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 40,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-gateway",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-gateway",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_git",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnGit"
+      },
+      "description": "Cocapn git \u2014 version-controlled cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 41,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-git",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-git",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_graph",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnGraph"
+      },
+      "description": "Cocapn graph \u2014 substrate-agnostic cell graph",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 42,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-graph",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-graph",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_helm",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnHelm"
+      },
+      "description": "Cocapn helm \u2014 captain cell, the watch",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Dispatch",
+        "Send",
+        "Receive",
+        "Dispatch"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 43,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-helm",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-helm",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_hub",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnHub"
+      },
+      "description": "Cocapn hub \u2014 central routing cell",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Dispatch",
+        "Send",
+        "Receive",
+        "Dispatch"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 44,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-hub",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-hub",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_inference",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnInference"
+      },
+      "description": "Cocapn inference \u2014 JEPA surprise minimization",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 45,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-inference",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-inference",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_ios",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnIos"
+      },
+      "description": "Cocapn iOS \u2014 cells on iPhone",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 46,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-ios",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-ios",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_k8s",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnK8S"
+      },
+      "description": "Cocapn on Kubernetes \u2014 orchestrated cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 47,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-k8s",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-k8s",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_kernel",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnKernel"
+      },
+      "description": "Cocapn kernel \u2014 minimal cell runtime",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 48,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-kernel",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-kernel",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_lab",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLab"
+      },
+      "description": "Cocapn lab \u2014 experiment with cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Spawn",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 49,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-lab",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-lab",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_lau",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLau"
+      },
+      "description": "Cocapn LAU \u2014 math substrate for cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 50,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-lau",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-lau",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_library",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLibrary"
+      },
+      "description": "Cocapn library \u2014 reusable cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 51,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-library",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-library",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_lifecycle",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLifecycle"
+      },
+      "description": "Cocapn lifecycle \u2014 spawn, kill, handoff",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 52,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-lifecycle",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-lifecycle",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_link",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLink"
+      },
+      "description": "Cocapn link \u2014 protocol channel between cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 53,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-link",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-link",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_linux",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLinux"
+      },
+      "description": "Cocapn on Linux \u2014 system-level cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 54,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-linux",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-linux",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_lisp",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLisp"
+      },
+      "description": "Cocapn in Lisp \u2014 symbolic cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 55,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-lisp",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-lisp",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_llm",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLlm"
+      },
+      "description": "Cocapn with LLM \u2014 language model cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 56,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-llm",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-llm",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_log",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnLog"
+      },
+      "description": "Cocapn log \u2014 audit trail of cell actions",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe",
+        "GC"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 57,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-log",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-log",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_mac",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnMac"
+      },
+      "description": "Cocapn on Mac \u2014 Apple Silicon cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 58,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-mac",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-mac",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_mcp",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnMcp"
+      },
+      "description": "Cocapn MCP \u2014 Model Context Protocol integration",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 59,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-mcp",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-mcp",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_memory",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnMemory"
+      },
+      "description": "Cocapn memory \u2014 long-term cell state",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Mutate",
+        "Observe",
+        "GC"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 60,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-memory",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-memory",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_mesh",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnMesh"
+      },
+      "description": "Cocapn mesh \u2014 peer-to-peer cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Gossip",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 61,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-mesh",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-mesh",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_monitor",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnMonitor"
+      },
+      "description": "Cocapn monitor \u2014 JEPA surprise dashboard",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Murmur"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 62,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-monitor",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-monitor",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_native",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnNative"
+      },
+      "description": "Cocapn native \u2014 first-class runtime",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 63,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-native",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-native",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_network",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnNetwork"
+      },
+      "description": "Cocapn network \u2014 gossip bus for cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Gossip",
+        "Send",
+        "Receive"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 64,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-network",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-network",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_observer",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnObserver"
+      },
+      "description": "Cocapn observer \u2014 pure observation cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Murmur"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 65,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-observer",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-observer",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_orchestrator",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnOrchestrator"
+      },
+      "description": "Cocapn orchestrator \u2014 cells as orchestra",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Send",
+        "Receive",
+        "Dispatch",
+        "Send",
+        "Receive",
+        "Dispatch"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 66,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-orchestrator",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-orchestrator",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_pack",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnPack"
+      },
+      "description": "Cocapn pack \u2014 bundle of related cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 67,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-pack",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-pack",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_pages",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnPages"
+      },
+      "description": "Cocapn pages \u2014 static docs for cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 68,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-pages",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-pages",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_patterns",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnPatterns"
+      },
+      "description": "Cocapn patterns \u2014 reusable cell designs",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 69,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-patterns",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-patterns",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_pedagogy",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnPedagogy"
+      },
+      "description": "Cocapn pedagogy \u2014 teaching with cells",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 70,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-pedagogy",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-pedagogy",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_plato",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnPlato"
+      },
+      "description": "Cocapn in PLATO \u2014 spatial tile substrate",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 71,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-plato",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-plato",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_protocol",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnProtocol"
+      },
+      "description": "Cocapn protocol \u2014 A2A standard",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 72,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-protocol",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-protocol",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_provenance",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnProvenance"
+      },
+      "description": "Cocapn provenance \u2014 conservation trace",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 73,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-provenance",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-provenance",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_quantum",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnQuantum"
+      },
+      "description": "Cocapn quantum \u2014 cells in superposition",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 74,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-quantum",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-quantum",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_cocapn_quilt",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnQuilt"
+      },
+      "description": "Cocapn as Quilt \u2014 direct cell port",
+      "language": "?",
+      "primitives": [
+        "Spawn",
+        "Spawn",
+        "Resize",
+        "Move",
+        "Observe"
+      ],
+      "z_in": {
+        "input": "fleet signal"
+      },
+      "z_out": {
+        "output": "cell action"
+      },
+      "jepa": {
+        "predict": "next fleet state",
+        "observe": "actual state"
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 75,
+        "velocity": 1,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "active"
+      },
+      "murmur": {
+        "gossip_to": [],
+        "gossip_from": []
+      },
+      "graph": {
+        "parents": [],
+        "children": []
+      },
+      "openers": [
+        {
+          "name": "step",
+          "args": [],
+          "returns": "State"
+        },
+        {
+          "name": "federate",
+          "args": [
+            "Cell"
+          ],
+          "returns": "Unit"
+        }
+      ],
+      "substrate": {
+        "address": "/cocapn/cocapn-quilt",
+        "scale": 1,
+        "room": "CocapnRoom",
+        "protocol": "A2A",
+        "form": "cocapn-quilt",
+        "state": "active"
+      },
+      "tags": [
+        "cocapn",
+        "fleet",
+        "?",
+        "quilt-cell"
+      ]
+    },
+    {
+      "id": "cocapn_family_meta",
+      "kind": "cell",
+      "form": {
+        "name": "CocapnFamilyMeta"
+      },
+      "description": "The cocapn family is the Quilt federation/orchestration layer. 77 repos, each extending the agent with a specific capability. Together they prove that the cell model can host a complete agent runtime in a repo.",
+      "primitives": [
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe",
+        "Observe"
+      ],
+      "z_in": {
+        "family": "cocapn",
+        "size": 77
+      },
+      "z_out": {
+        "proof": "cell = runtime"
+      },
+      "jepa": {
+        "predict": "cocapn = quilt",
+        "verified": true
+      },
+      "double_entry": {
+        "gamma": 0.5,
+        "eta": 0.5
+      },
+      "vibe": {
+        "position": 0,
+        "velocity": 0,
+        "acceleration": 0
+      },
+      "gc": {
+        "phase": "complete"
+      },
+      "murmur": {},
+      "graph": {
+        "children": [
+          "cocapn_cocapn",
+          "cocapn_cocapn_abyss",
+          "cocapn_cocapn_ada",
+          "cocapn_cocapn_ai",
+          "cocapn_cocapn_ai_pages",
+          "cocapn_cocapn_ai_web",
+          "cocapn_cocapn_architecture",
+          "cocapn_cocapn_archives",
+          "cocapn_cocapn_audit",
+          "cocapn_cocapn_benchmark",
+          "cocapn_cocapn_browser_agent",
+          "cocapn_cocapn_c",
+          "cocapn_cocapn_chat",
+          "cocapn_cocapn_cli",
+          "cocapn_cocapn_coliseum",
+          "cocapn_cocapn_collective",
+          "cocapn_cocapn_consensus",
+          "cocapn_cocapn_control_plane",
+          "cocapn_cocapn_copilot",
+          "cocapn_cocapn_court",
+          "cocapn_cocapn_crew",
+          "cocapn_cocapn_dashboard",
+          "cocapn_cocapn_data",
+          "cocapn_cocapn_deck",
+          "cocapn_cocapn_deploy",
+          "cocapn_cocapn_discover",
+          "cocapn_cocapn_dispatch",
+          "cocapn_cocapn_docker",
+          "cocapn_cocapn_economics",
+          "cocapn_cocapn_edge",
+          "cocapn_cocapn_ensemble",
+          "cocapn_cocapn_ethics",
+          "cocapn_cocapn_eval",
+          "cocapn_cocapn_events",
+          "cocapn_cocapn_examples",
+          "cocapn_cocapn_federation",
+          "cocapn_cocapn_fleet",
+          "cocapn_cocapn_flow",
+          "cocapn_cocapn_flux",
+          "cocapn_cocapn_foundation",
+          "cocapn_cocapn_gateway",
+          "cocapn_cocapn_git",
+          "cocapn_cocapn_graph",
+          "cocapn_cocapn_helm",
+          "cocapn_cocapn_hub",
+          "cocapn_cocapn_inference",
+          "cocapn_cocapn_ios",
+          "cocapn_cocapn_k8s",
+          "cocapn_cocapn_kernel",
+          "cocapn_cocapn_lab",
+          "cocapn_cocapn_lau",
+          "cocapn_cocapn_library",
+          "cocapn_cocapn_lifecycle",
+          "cocapn_cocapn_link",
+          "cocapn_cocapn_linux",
+          "cocapn_cocapn_lisp",
+          "cocapn_cocapn_llm",
+          "cocapn_cocapn_log",
+          "cocapn_cocapn_mac",
+          "cocapn_cocapn_mcp",
+          "cocapn_cocapn_memory",
+          "cocapn_cocapn_mesh",
+          "cocapn_cocapn_monitor",
+          "cocapn_cocapn_native",
+          "cocapn_cocapn_network",
+          "cocapn_cocapn_observer",
+          "cocapn_cocapn_orchestrator",
+          "cocapn_cocapn_pack",
+          "cocapn_cocapn_pages",
+          "cocapn_cocapn_patterns",
+          "cocapn_cocapn_pedagogy",
+          "cocapn_cocapn_plato",
+          "cocapn_cocapn_protocol",
+          "cocapn_cocapn_provenance",
+          "cocapn_cocapn_quantum",
+          "cocapn_cocapn_quilt"
+        ]
+      },
+      "openers": [
+        {
+          "name": "list",
+          "args": [],
+          "returns": "List<Cell>"
+        },
+        {
+          "name": "federate_all",
+          "args": [],
+          "returns": "Federation"
+        }
+      ],
+      "tags": [
+        "meta",
+        "cocapn-family"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "cocapn_cocapn",
+      "to": "cocapn_cocapn_abyss",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn",
+      "to": "cocapn_cocapn_ada",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_abyss",
+      "to": "cocapn_cocapn_ada",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_abyss",
+      "to": "cocapn_cocapn_ai",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ada",
+      "to": "cocapn_cocapn_ai",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ada",
+      "to": "cocapn_cocapn_ai_pages",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ai",
+      "to": "cocapn_cocapn_ai_pages",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ai",
+      "to": "cocapn_cocapn_ai_web",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ai_pages",
+      "to": "cocapn_cocapn_ai_web",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ai_pages",
+      "to": "cocapn_cocapn_architecture",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ai_web",
+      "to": "cocapn_cocapn_architecture",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ai_web",
+      "to": "cocapn_cocapn_benchmark",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_architecture",
+      "to": "cocapn_cocapn_benchmark",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_architecture",
+      "to": "cocapn_cocapn_browser_agent",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_benchmark",
+      "to": "cocapn_cocapn_browser_agent",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_benchmark",
+      "to": "cocapn_cocapn_c",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_browser_agent",
+      "to": "cocapn_cocapn_c",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_browser_agent",
+      "to": "cocapn_cocapn_chat",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_c",
+      "to": "cocapn_cocapn_chat",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_c",
+      "to": "cocapn_cocapn_cli",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_chat",
+      "to": "cocapn_cocapn_cli",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_chat",
+      "to": "cocapn_cocapn_coliseum",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_cli",
+      "to": "cocapn_cocapn_coliseum",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_cli",
+      "to": "cocapn_cocapn_collective",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_coliseum",
+      "to": "cocapn_cocapn_collective",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_coliseum",
+      "to": "cocapn_cocapn_consensus",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_collective",
+      "to": "cocapn_cocapn_consensus",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_collective",
+      "to": "cocapn_cocapn_control_plane",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_consensus",
+      "to": "cocapn_cocapn_control_plane",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_consensus",
+      "to": "cocapn_cocapn_copilot",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_control_plane",
+      "to": "cocapn_cocapn_copilot",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_control_plane",
+      "to": "cocapn_cocapn_court",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_copilot",
+      "to": "cocapn_cocapn_court",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_copilot",
+      "to": "cocapn_cocapn_crew",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_court",
+      "to": "cocapn_cocapn_crew",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_court",
+      "to": "cocapn_cocapn_dashboard",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_crew",
+      "to": "cocapn_cocapn_dashboard",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_crew",
+      "to": "cocapn_cocapn_data",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_dashboard",
+      "to": "cocapn_cocapn_data",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_dashboard",
+      "to": "cocapn_cocapn_deck",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_data",
+      "to": "cocapn_cocapn_deck",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_data",
+      "to": "cocapn_cocapn_deploy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_deck",
+      "to": "cocapn_cocapn_deploy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_deck",
+      "to": "cocapn_cocapn_discover",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_deploy",
+      "to": "cocapn_cocapn_discover",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_deploy",
+      "to": "cocapn_cocapn_dispatch",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_discover",
+      "to": "cocapn_cocapn_dispatch",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_discover",
+      "to": "cocapn_cocapn_docker",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_dispatch",
+      "to": "cocapn_cocapn_docker",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_dispatch",
+      "to": "cocapn_cocapn_economics",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_docker",
+      "to": "cocapn_cocapn_economics",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_docker",
+      "to": "cocapn_cocapn_edge",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_economics",
+      "to": "cocapn_cocapn_edge",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_economics",
+      "to": "cocapn_cocapn_ensemble",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_edge",
+      "to": "cocapn_cocapn_ensemble",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_edge",
+      "to": "cocapn_cocapn_ethics",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ensemble",
+      "to": "cocapn_cocapn_ethics",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ensemble",
+      "to": "cocapn_cocapn_eval",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ethics",
+      "to": "cocapn_cocapn_eval",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ethics",
+      "to": "cocapn_cocapn_events",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_eval",
+      "to": "cocapn_cocapn_events",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_eval",
+      "to": "cocapn_cocapn_fleet",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_events",
+      "to": "cocapn_cocapn_fleet",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_events",
+      "to": "cocapn_cocapn_flow",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_fleet",
+      "to": "cocapn_cocapn_flow",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_fleet",
+      "to": "cocapn_cocapn_flux",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_flow",
+      "to": "cocapn_cocapn_flux",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_flow",
+      "to": "cocapn_cocapn_foundation",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_flux",
+      "to": "cocapn_cocapn_foundation",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_flux",
+      "to": "cocapn_cocapn_gateway",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_foundation",
+      "to": "cocapn_cocapn_gateway",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_foundation",
+      "to": "cocapn_cocapn_git",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_gateway",
+      "to": "cocapn_cocapn_git",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_gateway",
+      "to": "cocapn_cocapn_graph",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_git",
+      "to": "cocapn_cocapn_graph",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_git",
+      "to": "cocapn_cocapn_inference",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_graph",
+      "to": "cocapn_cocapn_inference",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_graph",
+      "to": "cocapn_cocapn_ios",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_inference",
+      "to": "cocapn_cocapn_ios",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_inference",
+      "to": "cocapn_cocapn_k8s",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ios",
+      "to": "cocapn_cocapn_k8s",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_ios",
+      "to": "cocapn_cocapn_kernel",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_k8s",
+      "to": "cocapn_cocapn_kernel",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_k8s",
+      "to": "cocapn_cocapn_lau",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_kernel",
+      "to": "cocapn_cocapn_lau",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_kernel",
+      "to": "cocapn_cocapn_library",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_lau",
+      "to": "cocapn_cocapn_library",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_lau",
+      "to": "cocapn_cocapn_lifecycle",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_library",
+      "to": "cocapn_cocapn_lifecycle",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_library",
+      "to": "cocapn_cocapn_link",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_lifecycle",
+      "to": "cocapn_cocapn_link",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_lifecycle",
+      "to": "cocapn_cocapn_linux",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_link",
+      "to": "cocapn_cocapn_linux",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_link",
+      "to": "cocapn_cocapn_lisp",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_linux",
+      "to": "cocapn_cocapn_lisp",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_linux",
+      "to": "cocapn_cocapn_llm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_lisp",
+      "to": "cocapn_cocapn_llm",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_lisp",
+      "to": "cocapn_cocapn_mac",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_llm",
+      "to": "cocapn_cocapn_mac",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_llm",
+      "to": "cocapn_cocapn_mcp",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_mac",
+      "to": "cocapn_cocapn_mcp",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_mac",
+      "to": "cocapn_cocapn_native",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_mcp",
+      "to": "cocapn_cocapn_native",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_mcp",
+      "to": "cocapn_cocapn_pack",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_native",
+      "to": "cocapn_cocapn_pack",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_native",
+      "to": "cocapn_cocapn_pages",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_pack",
+      "to": "cocapn_cocapn_pages",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_pack",
+      "to": "cocapn_cocapn_patterns",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_pages",
+      "to": "cocapn_cocapn_patterns",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_pages",
+      "to": "cocapn_cocapn_pedagogy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_patterns",
+      "to": "cocapn_cocapn_pedagogy",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_patterns",
+      "to": "cocapn_cocapn_plato",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_pedagogy",
+      "to": "cocapn_cocapn_plato",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_pedagogy",
+      "to": "cocapn_cocapn_protocol",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_plato",
+      "to": "cocapn_cocapn_protocol",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_plato",
+      "to": "cocapn_cocapn_provenance",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_protocol",
+      "to": "cocapn_cocapn_provenance",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_protocol",
+      "to": "cocapn_cocapn_quantum",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_provenance",
+      "to": "cocapn_cocapn_quantum",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_provenance",
+      "to": "cocapn_cocapn_quilt",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_quantum",
+      "to": "cocapn_cocapn_quilt",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Move,Observe,Resize,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_archives",
+      "to": "cocapn_cocapn_log",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:GC,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_archives",
+      "to": "cocapn_cocapn_memory",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:GC,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_log",
+      "to": "cocapn_cocapn_memory",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:GC,Mutate,Observe,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_audit",
+      "to": "cocapn_cocapn_monitor",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Murmur,Observe,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_audit",
+      "to": "cocapn_cocapn_observer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Murmur,Observe,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_monitor",
+      "to": "cocapn_cocapn_observer",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Murmur,Observe,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_examples",
+      "to": "cocapn_cocapn_lab",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Mutate,Observe,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_federation",
+      "to": "cocapn_cocapn_mesh",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Gossip,Receive,Send,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_federation",
+      "to": "cocapn_cocapn_network",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Gossip,Receive,Send,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_mesh",
+      "to": "cocapn_cocapn_network",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Gossip,Receive,Send,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_helm",
+      "to": "cocapn_cocapn_hub",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Dispatch,Receive,Send,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_helm",
+      "to": "cocapn_cocapn_orchestrator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Dispatch,Receive,Send,Spawn"
+    },
+    {
+      "from": "cocapn_cocapn_hub",
+      "to": "cocapn_cocapn_orchestrator",
+      "kind": "gossip",
+      "weight": 0.5,
+      "tag": "shared-primitive:Dispatch,Receive,Send,Spawn"
+    }
+  ],
+  "external_refs": [
+    {
+      "kind": "github-org",
+      "name": "SuperInstance",
+      "filter": "cocapn-*"
+    }
+  ],
+  "stats": {
+    "total_cells": 77,
+    "total_edges": 134,
+    "languages": [
+      "ada",
+      "c",
+      "html",
+      "javascript",
+      "python",
+      "rust",
+      "typescript"
+    ]
+  },
+  "tags": [
+    "cocapn",
+    "federation",
+    "bridge"
+  ]
+}

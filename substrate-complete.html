@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Cell Has a Body — Substrates Complete</title>
+<style>
+  :root {
+    --bg: #0a0e1a; --panel: #131829; --text: #d8e2ff;
+    --dim: #6e7a99; --accent: #66ffd9;
+    --elephant: #b46aff;
+    --executor: #ff9e5a;
+    --memory: #5fc4ff;
+    --compiler: #ffd866;
+    --discovery: #ff6b9d;
+    --cognition: #88ffd9;
+    --spatial: #ff6b3d;
+  }
+  * { box-sizing: border-box; }
+  body { background: radial-gradient(ellipse at center, #1a0e2a, #0a0e1a 70%); color: var(--text); font-family: 'SF Mono', monospace; margin: 0; padding: 0; min-height: 100vh; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.8rem; color: var(--accent); margin: 0 0 0.5rem; }
+  h2 { font-size: 1.1rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  .subtitle { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .panel { background: var(--panel); border: 1px solid #1f2640; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .substrates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 900px) { .substrates { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .substrates { grid-template-columns: 1fr; } }
+  .substrate { background: #0a0e1a; border-left: 4px solid; border-radius: 4px; padding: 1rem; }
+  .substrate h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+  .substrate p { font-size: 0.8rem; line-height: 1.5; margin: 0.3rem 0; color: var(--text); }
+  .substrate code { color: var(--accent); font-size: 0.75rem; }
+  .substrate .repo { color: var(--dim); font-size: 0.7rem; margin-top: 0.4rem; }
+  .substrate.elephant { border-color: var(--elephant); } .substrate.elephant h3 { color: var(--elephant); }
+  .substrate.executor { border-color: var(--executor); } .substrate.executor h3 { color: var(--executor); }
+  .substrate.memory { border-color: var(--memory); } .substrate.memory h3 { color: var(--memory); }
+  .substrate.compiler { border-color: var(--compiler); } .substrate.compiler h3 { color: var(--compiler); }
+  .substrate.discovery { border-color: var(--discovery); } .substrate.discovery h3 { color: var(--discovery); }
+  .substrate.cognition { border-color: var(--cognition); } .substrate.cognition h3 { color: var(--cognition); }
+  .substrate.spatial { border-color: var(--spatial); } .substrate.spatial h3 { color: var(--spatial); }
+  .ascii { font-size: 0.7rem; line-height: 1.1; color: var(--accent); white-space: pre; text-align: center; margin: 1rem 0; }
+  a.btn { display: inline-block; padding: 0.5rem 1rem; background: var(--accent); color: var(--bg); border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.25rem; }
+  .stat { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px dashed #1f2640; font-size: 0.85rem; }
+  .stat .v { color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>🧬 The Cell Has a Body</h1>
+<div class="subtitle">The 7 substrate layers are now backed by 7 real SuperInstance repos. The cell is not abstract — it has memory, executor, compiler, discovery, cognition, and space.</div>
+
+<div class="panel">
+  <div class="ascii">
+                THE COMPLETE SUBSTRATE
+  ┌───────────────────────────────────────────────────┐
+  │                                                   │
+  │  The CELL has 7 substrate layers + 10 body parts: │
+  │                                                   │
+  │  🐘 Elephant     (room)        ← elephant          │
+  │  🔧 Executor     (runtime)     ← lever-runner      │
+  │  🧠 Memory       (state)       ← collective-uncons │
+  │  ⚒️ Compiler     (intent)      ← forgemaster       │
+  │  🔍 Discovery    (knowing)     ← superinstance-agt │
+  │  🦀 Cognition    (mind)        ← VaaS              │
+  │  🌐 Spatial      (where)       ← MUD family        │
+  │  🚢 Body         (hardware)    ← vessel-runtime    │
+  │  🧠 Mind         (cognition)   ← agent-cognition   │
+  │  🕸️ Nervous      (discovery)   ← nexus-fleet       │
+  │  🔗 Synapse      (routing)     ← synapse+plato     │
+  │                                                   │
+  │  Plus the 3 core:                                 │
+  │  📄 Form         (shape)       ← Quilt IDE         │
+  │  📡 Protocol     (speech)      ← Quilt protocols   │
+  │  💾 State        (mutable)     ← Quilt state       │
+  │                                                   │
+  └───────────────────────────────────────────────────┘
+  </div>
+</div>
+
+<h2>🎯 The 10 Substrate Layers</h2>
+<div class="substrates">
+  <div class="substrate elephant">
+    <h3>🐘 Elephant (Layer 4)</h3>
+    <p>The room-temperature sense. 9 dials, RoomField, watch oscillation.</p>
+    <p><code>γ = warmth, η = κ</code></p>
+    <div class="repo">→ <a href="https://github.com/SuperInstance/elephant" style="color: var(--elephant)">SuperInstance/elephant</a> (21 modules, 9 dials, 6 spaces)</div>
+  </div>
+
+  <div class="substrate executor">
+    <h3>🔧 Executor</h3>
+    <p>The trust compiler. 3 gates, 70 tokens/query, git-native agent.</p>
+    <p><code>γ = work without LLM, η = LLM cost</code></p>
+    <div class="repo">→ <a href="https://github.com/SuperInstance/lever-runner" style="color: var(--executor)">SuperInstance/lever-runner</a> (160 tests, MIT, 67 built-ins)</div>
+  </div>
+
+  <div class="substrate memory">
+    <h3>🧠 Memory</h3>
+    <p>The deep memory. 3 vectors + 5 temporal + JEPA reader. Searchable by feeling.</p>
+    <p><code>γ = embedding, η = forgetting</code></p>
+    <div class="repo">→ <a href="https://github.com/SuperInstance/collective-unconscious" style="color: var(--memory)">SuperInstance/collective-unconscious</a> (Cloudflare Worker + Vectorize + Workers AI)</div>
+  </div>
+
+  <div class="substrate compiler">
+    <h3>⚒️ Compiler</h3>
+    <p>The proof-carrying compiler. Constraint-aware. Intent → executable.</p>
+    <p><code>γ = build, η = verify</code></p>
+    <div class="repo">→ <a href="https://github.com/SuperInstance/forgemaster" style="color: var(--compiler)">SuperInstance/forgemaster</a> (Python, integrates with cocapn, PLATO, agent-forge, captain)</div>
+  </div>
+
+  <div class="substrate discovery">
+    <h3>🔍 Discovery</h3>
+    <p>The discoverer. 2-stage RAG over 1,600+ Rust crates. BGE-small + Llama 3.1 8B.</p>
+    <p><code>γ = retrieve, η = generate</code></p>
+    <div class="repo">→ <a href="https://github.com/SuperInstance/superinstance-agent" style="color: var(--discovery)">SuperInstance/superinstance-agent</a> ($0.0001/query)</div>
+  </div>
+
+  <div class="substrate cognition">
+    <h3>🦀 Cognition</h3>
+    <p>The hermit crab. 7 pillars, 4 shells, Operator Field Ψ(t). Mind migrates between hardware.</p>
+    <p><code>γ = pillar, η = drift</code></p>
+    <div class="repo">→ <a href="https://github.com/SuperInstance/VaaS" style="color: var(--cognition)">SuperInstance/VaaS</a> (cognitive architecture, 4 guides)</div>
+  </div>
+
+  <div class="substrate spatial">
+    <h3>🌐 Spatial</h3>
+    <p>The room. 13 MUD repos. MUD = Multi-User Dungeon = Multi-Cell Domain.</p>
+    <p><code>γ = room, η = portal</code></p>
+    <div class="repo">→ <a href="https://github.com/orgs/SuperInstance/repositories?q=mud" style="color: var(--spatial)">SuperInstance/mud-*</a> (mud-engine, plato-mud-server, ternary-mud, ...)</div>
+  </div>
+
+  <div class="substrate" style="border-color: #ff9e5a;">
+    <h3>🚢 Body (vessel-runtime)</h3>
+    <p>The hardware. 7 repos: vessel-constellation, vessel-bridge, vessel-tuner, deckboss-net, nexus-edge-runtime, hardware-adapter, JetsonClaw1-vessel.</p>
+    <p><code>γ = actuate, η = sense</code></p>
+    <div class="repo">→ vessel-*, deckboss-net, nexus-edge-runtime, JetsonClaw1-vessel</div>
+  </div>
+
+  <div class="substrate" style="border-color: #ff6b9d;">
+    <h3>🧠 Mind (agent-cognition)</h3>
+    <p>The cognition. 8 repos: agent-dna, actualizer-ai, home-ai, fishinglog-ai, trust-graph, context-serializer, hybrid-memory, oracle1-workspace.</p>
+    <p><code>γ = think, η = remember</code></p>
+    <div class="repo">→ agent-dna, actualizer-ai, home-ai, oracle1-workspace, ...</div>
+  </div>
+
+  <div class="substrate" style="border-color: #88ffd9;">
+    <h3>🕸️ Nervous (nexus-fleet)</h3>
+    <p>The discovery + simulation. 5 repos: nexus-edge-runtime, nexus-node-registry, nexus-simulation, nexus-swarm, nexus-learning.</p>
+    <p><code>γ = route, η = learn</code></p>
+    <div class="repo">→ nexus-*</div>
+  </div>
+
+  <div class="substrate" style="border-color: #ff6b3d;">
+    <h3>🔗 Synapse (synapse+plato)</h3>
+    <p>The routing + learning. 8 repos: fleet-radar, fleet-synapse, 3 PLATO vessels, purplepincher-shell-library, branch-sandbox, api-gateway-1.</p>
+    <p><code>γ = signal, η = amplify</code></p>
+    <div class="repo">→ fleet-radar, fleet-synapse, plato-vessel-*, purplepincher-*, branch-sandbox, api-gateway-1</div>
+  </div>
+
+  <div class="substrate" style="border-color: var(--accent);">
+    <h3>📄 Form</h3>
+    <p>The shape. Type system. Schema. The structural template.</p>
+    <p><code>γ = construct, η = dissolve</code></p>
+    <div class="repo">→ Quilt IDE form fields (8 cell kinds + 5 elephant kinds)</div>
+  </div>
+
+  <div class="substrate" style="border-color: var(--accent);">
+    <h3>📡 Protocol</h3>
+    <p>The speech. A2A, A2UI, A2C, MCP, OpenAI-compat, gossip.</p>
+    <p><code>γ = send, η = receive</code></p>
+    <div class="repo">→ Quilt Protocol substrate</div>
+  </div>
+
+  <div class="substrate" style="border-color: var(--accent);">
+    <h3>💾 State</h3>
+    <p>The mutable interior. State is what changes; form is what does not.</p>
+    <p><code>γ = mutate, η = observe</code></p>
+    <div class="repo">→ Quilt State substrate + collective-unconscious memory</div>
+  </div>
+</div>
+
+<h2>📊 Substrate Inventory</h2>
+<div class="panel">
+  <div class="stat"><span>Substrate layers in Quilt</span><span class="v">7 (Address, Scale, Room, 🐘 Elephant, Protocol, Form, State)</span></div>
+  <div class="stat"><span>Abstraction levels</span><span class="v">8 (cell → system)</span></div>
+  <div class="stat"><span>Cell primitives</span><span class="v">8 (Z_in, Z_out, JEPA, DoubleEntry, Vibe, GC, Murmur, Graph)</span></div>
+  <div class="stat"><span>Elephant dials</span><span class="v">9 (mood, volume, earnestness, cynicism, joke_landing, panic, presence, model_vs_code, vision)</span></div>
+  <div class="stat"><span>Conservation law</span><span class="v">γ + η = budget (universal)</span></div>
+  <div class="stat"><span>Cell kinds in IDE</span><span class="v">13 (8 core + 5 elephant)</span></div>
+  <div class="stat"><span>Bridges live</span><span class="v">44</span></div>
+  <div class="stat"><span>SuperInstance repos mapped</span><span class="v">~250 (4 major families + VaaS + MUD + ...) </span></div>
+  <div class="stat"><span>Trunk categories</span><span class="v">8 (APIs, Compute, Memory, Storage, Network, Identity, Observability, Billing)</span></div>
+</div>
+
+<h2>🧬 The Cell at L3 (Harness) — Composition Example</h2>
+<div class="panel">
+<pre style="background: #0a0e1a; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.8rem; color: var(--accent);">
+cell ImageGenAgent
+  <span style="color: var(--accent)">// L1 Address</span>
+  addr  /agents/image-gen
+  
+  <span style="color: var(--accent)">// L2 Scale</span>
+  scale 5
+  
+  <span style="color: var(--elephant)">// L3 Room + L4 🐘 Elephant</span>
+  room  cog-harness
+  elephant field {
+    warmth = +0.4
+    kappa = 2.0
+    dials { presence = 0.7, model_vs_code = +0.6 }
+  }
+  
+  <span style="color: var(--executor)">// L3 EXECUTOR substrate (lever-runner)</span>
+  executor  lever-runner {
+    gates: [rust-fastloop, python-cache, llm]
+    trust: 0.95
+    surfaces: [cli, telegram, http]
+  }
+  
+  <span style="color: var(--memory)">// L3 MEMORY substrate (collective-unconscious)</span>
+  memory  collective-unconscious {
+    vectors: [semantic, vibe, identity]
+    temporal: [wall, phase, epoch, age, relationship]
+    jepa: [growth, stuckness, direction, velocity, acceleration, novelty]
+  }
+  
+  <span style="color: var(--compiler)">// L3 COMPILER substrate (forgemaster)</span>
+  compiler  forgemaster {
+    constraints: { max_memory_mb: 8192, latency_ms: 5000 }
+    proofs: [ptp-clock, heterogeneous-fleet]
+  }
+  
+  <span style="color: var(--discovery)">// L3 DISCOVERY substrate (superinstance-agent)</span>
+  discovery  superinstance-agent {
+    index: "fleet-crates"
+    embedding: "bge-small-384"
+    llm: "llama-3.1-8b"
+  }
+  
+  <span style="color: var(--cognition)">// L3 COGNITION substrate (VaaS)</span>
+  cognition  vaas {
+    shell: turbo  <span style="color: var(--dim)">// GPU wheelhouse PC</span>
+    pillars: [thermodynamics, memory, timing, grafting]
+    field: Ψ(t)
+  }
+  
+  <span style="color: var(--spatial)">// L3 SPATIAL substrate (MUD family)</span>
+  spatial  mud-engine {
+    rooms: 16
+    npcs: enabled
+    portal_to: "/spaces/prompt-room"
+  }
+  
+  <span style="color: var(--accent)">// L5 Protocol</span>
+  protocol  A2A
+  
+  <span style="color: var(--accent)">// L6 Form</span>
+  form  ImageGenAgent {
+    field prompt: str
+    field negative: str
+    field cfg: float = 7.5
+    field steps: int = 30
+    opener generate(prompt: str) -> Image
+    opener teach(name: str, command: str) -> Unit  <span style="color: var(--executor)">// via lever-runner</span>
+  }
+  
+  <span style="color: var(--accent)">// L7 State</span>
+  state  { prompt: "a cat in a spacesuit", history: [..., {ts, image, rating}] }
+end
+</pre>
+</div>
+
+<h2>🔭 The IDE is the Door</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6">The Quilt IDE is the door to all 10 substrate layers. Click a cell, see its elephant field, its memory, its executor, its compiler, its discovery, its cognition, its spatial anchor. Edit any layer. Save as .qzt. Load in another cell. The system is the cell. The cell has a body.</p>
+  <a href="./quilt-ide.html" class="btn">→ Open Quilt IDE</a>
+  <a href="./zoom-ide.html" class="btn">→ Open Zoom IDE</a>
+  <a href="./cell-bridges.html" class="btn">→ Open Cell Bridges (40)</a>
+  <a href="./abstraction-levels.html" class="btn">→ Open Abstraction Levels</a>
+  <a href="./substrate-stack-7.html" class="btn">→ Open 7-Substrate Stack</a>
+  <a href="./trunk-links.html" class="btn">→ Open Trunk Links</a>
+</div>
+
+</div>
+</body>
+</html>

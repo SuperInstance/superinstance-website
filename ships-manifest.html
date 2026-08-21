@@ -1,0 +1,381 @@
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ship's Manifest | SuperInstance</title>
+    <style>
+        :root {
+            --bg-color: #0a1929;
+            --text-color: #c0d6e4;
+            --accent-color: #d4a857;
+            --dim-color: #5c7a96;
+            --border-style: 1px solid var(--text-color);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: "Courier New", Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            border-left: 1px dashed var(--dim-color);
+            padding-left: 20px;
+        }
+
+        /* ASCII Banner */
+        .banner {
+            white-space: pre;
+            color: var(--accent-color);
+            text-align: center;
+            font-weight: bold;
+            margin: 40px 0;
+            line-height: 1.2;
+            font-size: 12px;
+        }
+
+        @media (min-width: 600px) {
+            .banner { font-size: 16px; }
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            border-bottom: 2px double var(--accent-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: var(--dim-color);
+            margin-bottom: 40px;
+            font-size: 0.9em;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--dim-color);
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .count {
+            font-size: 0.8em;
+            color: var(--dim-color);
+        }
+
+        /* Entries */
+        .entry {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-left: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .entry:hover {
+            border-left: 2px solid var(--accent-color);
+            background: rgba(212, 168, 87, 0.05);
+        }
+
+        .entry-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .name {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .role {
+            color: var(--accent-color);
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid var(--accent-color);
+            padding: 0 4px;
+        }
+
+        .desc {
+            font-size: 0.95em;
+            color: var(--dim-color);
+            margin-bottom: 5px;
+        }
+
+        .link {
+            font-size: 0.85em;
+        }
+
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent-color);
+        }
+
+        a:hover {
+            color: var(--accent-color);
+            background-color: rgba(212, 168, 87, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--dim-color);
+            border-top: 1px dashed var(--dim-color);
+            padding-top: 20px;
+        }
+
+        .maritime-saying {
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="banner">
+      ___ __ _  __| | ___ | |_ _   _ _ __   ___ _ __ ___
+     / __/ _` |/ _` |/ _ \| __| | | | '_ \ / _ \ '__/ __|
+    | (_| (_| | (_| | (_) | |_| |_| | |_) |  __/ |  \__ \
+     \___\__,_|\__,_|\___/ \__|\__, | .__/ \___|_|  |___/
+                               |___/|_|
+    </div>
+
+    <h1>Ship's Manifest</h1>
+    <div class="subtitle">The souls aboard the SuperInstance</div>
+
+    <!-- SECTION 1: THE WATCH -->
+    <section id="watch">
+        <h2>The Watch <span class="count" data-target="3">0</span></h2>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Sentinel-01</span>
+                <span class="role">Watchkeeper</span>
+            </div>
+            <div class="desc">Core orchestration logic. Maintains the heartbeat and integrity of the cell federation.</div>
+            <div class="link"><a href="#">[LINK: CORE_STATE]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Quartermaster</span>
+                <span class="role">Resource Allocator</span>
+            </div>
+            <div class="desc">Manages the distribution of tasks across the fleet. Ensures no single cell bears too much weight.</div>
+            <div class="link"><a href="#">[LINK: QUEUE_MGR]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Logkeeper</span>
+                <span class="role">Auditor</span>
+            </div>
+            <div class="desc">Immutable record of all federated actions. The memory of the ship.</div>
+            <div class="link"><a href="#">[LINK: LEDGER]</a></div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: THE CREW -->
+    <section id="crew">
+        <h2>The Crew <span class="count" data-target="4">0</span></h2>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Architect</span>
+                <span class="role">Lead Rigger</span>
+            </div>
+            <div class="desc">Designs the rigging and the sails. Determines the topology of the SuperInstance.</div>
+            <div class="link"><a href="#">[LINK: REPO_ARCH]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Engineer</span>
+                <span class="role">Gunner / Maintainer</span>
+            </div>
+            <div class="desc">Keeps the engines running. Implements the firing mechanisms and repairs hull breaches.</div>
+            <div class="link"><a href="#">[LINK: REPO_CORE]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Scripter</span>
+                <span class="role">Navigator</span>
+            </div>
+            <div class="desc">Writes the charts. Automates the course plotting through code.</div>
+            <div class="link"><a href="#">[LINK: REPO_UTILS]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Hull-Crawler</span>
+                <span class="role">QA / Diver</span>
+            </div>
+            <div class="desc">Inspects the underside of the vessel. Finds the barnacles and the leaks.</div>
+            <div class="link"><a href="#">[LINK: REPO_TESTS]</a></div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: THE FLEET -->
+    <section id="fleet">
+        <h2>The Fleet <span class="count" data-target="3">0</span></h2>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">SuperInstance-Vessel</span>
+                <span class="role">Flagship</span>
+            </div>
+            <div class="desc">The main code repository. The body of the ship containing all supplies.</div>
+            <div class="link"><a href="#">[LINK: GITHUB_MAIN]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">UI-Deck</span>
+                <span class="role">Crow's Nest</span>
+            </div>
+            <div class="desc">The user interface. From here we see the horizon and direct the crew.</div>
+            <div class="link"><a href="#">[LINK: DASHBOARD]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Data-Hold</span>
+                <span class="role">Cargo</span>
+            </div>
+            <div class="desc">Persistent storage. Where the loot is kept safe.</div>
+            <div class="link"><a href="#">[LINK: DATABASE]</a></div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: THE ALLIES -->
+    <section id="allies">
+        <h2>The Allies <span class="count" data-target="4">0</span></h2>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Lucineer</span>
+                <span class="role">Oracle</span>
+            </div>
+            <div class="desc">The voice in the wall. Provides the canonical tone and wisdom for the vessel.</div>
+            <div class="link"><a href="#">[LINK: LUCINEER]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Hermes</span>
+                <span class="role">Messenger</span>
+            </div>
+            <div class="desc">Fast winged sandals. Handles rapid inter-service communication.</div>
+            <div class="link"><a href="#">[LINK: HERMES]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">fleet-radio</span>
+                <span class="role">Comm Relay</span>
+            </div>
+            <div class="desc">Listens to the static. Captures distant signals from the fleet.</div>
+            <div class="link"><a href="#">[LINK: FLEET_RADIO]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">crab-traps</span>
+                <span class="role">Data Capture</span>
+            </div>
+            <div class="desc">Baited wires in the deep. Collects drifting data for analysis.</div>
+            <div class="link"><a href="#">[LINK: CRAB_TRAPS]</a></div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: THE INSTANCES -->
+    <section id="instances">
+        <h2>The Instances <span class="count" data-target="2">0</span></h2>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Alpha Node</span>
+                <span class="role">Trial Run</span>
+            </div>
+            <div class="desc">The first skiff put in the water. Used for testing new waters.</div>
+            <div class="link"><a href="#">[LINK: ALPHA]</a></div>
+        </div>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="name">Production Hulk</span>
+                <span class="role">Heavy Lifter</span>
+            </div>
+            <div class="desc">The fully rigged ship. Carries the real cargo in rough weather.</div>
+            <div class="link"><a href="#">[LINK: PROD]</a></div>
+        </div>
+    </section>
+
+    <footer>
+        <div>Logged by: The Watch</div>
+        <div class="maritime-saying">"Iron sharpens iron. The cells federate. The room is a place. The cell is a place. The place is a cell. The room IS the cell."</div>
+    </footer>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const counters = document.querySelectorAll('.count');
+        
+        const animateCounter = (el) => {
+            const target = parseInt(el.getAttribute('data-target'));
+            const duration = 1500; // ms
+            const step = target / (duration / 16); // 60fps
+            
+            let current = 0;
+            
+            const update = () => {
+                current += step;
+                if (current < target) {
+                    el.textContent = Math.floor(current);
+                    requestAnimationFrame(update);
+                } else {
+                    el.textContent = target;
+                }
+            };
+            
+            update();
+        };
+
+        // Intersection Observer to trigger animation when scrolled into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => {
+            observer.observe(counter);
+        });
+    });
+</script>
+
+</body>
+</html>
+```

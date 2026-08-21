@@ -1,344 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Federation live — see cells propagate across instances</title>
+<html><head><meta charset="UTF-8"><title>FEDERATION.md — SuperInstance</title>
 <style>
-:root{
-  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
-  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
-  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
-  --i1:#7c3aed;--i2:#3b82f6;--i3:#10b981;--i4:#f59e0b;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
-.m{font-family:'JetBrains Mono','SF Mono',monospace}
-.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-h1{font-size:1.4rem;font-weight:800}
-h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
-p{color:var(--td);margin-bottom:11px;font-size:.85rem}
-.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
-.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
-.nav a:hover{text-decoration:underline}
-.nav a.cur{color:var(--a3);font-weight:700}
-.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
-.coffee-top:hover{filter:brightness(1.1);color:#422006}
-.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
-.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
-.controls{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
-button{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;border:0;padding:7px 13px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.78rem}
-button:hover{filter:brightness(1.1)}
-button.secondary{background:var(--pe);border:1px solid var(--b);color:var(--t)}
-.instances{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:11px;margin-bottom:14px}
-.instance{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;border-top:3px solid var(--i1)}
-.instance.i2{border-top-color:var(--i2)}
-.instance.i3{border-top-color:var(--i3)}
-.instance.i4{border-top-color:var(--i4)}
-.instance .head{display:flex;align-items:center;gap:7px;margin-bottom:9px}
-.instance .badge{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.74rem;color:#fff}
-.i1 .badge{background:var(--i1)}
-.i2 .badge{background:var(--i2)}
-.i3 .badge{background:var(--i3)}
-.i4 .badge{background:var(--i4)}
-.instance .name{font-weight:700;font-size:.92rem}
-.instance .tier{font-size:.62rem;padding:2px 5px;border-radius:3px;background:var(--b);color:var(--td);text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-left:auto}
-.instance .latency{font-size:.65rem;color:var(--a4);font-family:'JetBrains Mono',monospace;margin-bottom:7px}
-.cells{background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:9px;max-height:280px;overflow-y:auto}
-.cell{background:var(--pe);border:1px solid var(--b);border-radius:5px;padding:7px;margin-bottom:5px;display:grid;grid-template-columns:1fr 80px 70px;gap:7px;align-items:center;font-size:.72rem}
-.cell .path{font-family:'JetBrains Mono',monospace;color:var(--t);font-weight:700}
-.cell .value{font-family:'JetBrains Mono',monospace;color:var(--a3);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cell.updating{border-color:var(--a4);background:rgba(245,158,11,.1);animation:pulse 1.5s}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(245,158,11,.4)}50%{box-shadow:0 0 0 5px rgba(245,158,11,0)}100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}}
-.cell .src{font-size:.6rem;color:var(--td);text-align:right;font-family:'JetBrains Mono',monospace}
-.cell .src.local{color:var(--a3)}
-.cell .src.fed{color:var(--a2)}
-.cell .src.derived{color:var(--a1)}
-.connections{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px}
-.connections h3{font-size:.92rem;color:var(--a3);margin-bottom:9px}
-.conn{background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:7px;margin-bottom:5px;font-size:.72rem;font-family:'JetBrains Mono',monospace;display:grid;grid-template-columns:30px 1fr 60px;gap:7px;align-items:center}
-.conn .arrow{text-align:center;color:var(--a3);font-size:1.05rem}
-.conn .what{color:var(--t)}
-.conn .what .from{color:var(--i1);font-weight:700}
-.conn .what .to{color:var(--i2);font-weight:700}
-.conn .latency{color:var(--a4);text-align:right;font-weight:700}
-.event-log{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;margin-bottom:14px;max-height:280px;overflow-y:auto}
-.event-log h3{font-size:.92rem;color:var(--a3);margin-bottom:9px}
-.event{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:4px 0;border-bottom:1px dashed var(--b);display:grid;grid-template-columns:60px 60px 1fr;gap:7px;align-items:center}
-.event:last-child{border-bottom:0}
-.event .ts{color:var(--tf)}
-.event .who{padding:1px 5px;border-radius:3px;color:#fff;font-size:.62rem;text-align:center;font-weight:700}
-.event .i1 .who{background:var(--i1)}
-.event.i1 .who{background:var(--i1)}
-.event.i2 .who{background:var(--i2)}
-.event.i3 .who{background:var(--i3)}
-.event.i4 .who{background:var(--i4)}
-.event .what{color:var(--t)}
-</style>
-</head>
-<body>
-<div class="wrap">
+body { background: #0a0e1a; color: #d8e2ff; font-family: 'SF Mono', monospace; max-width: 800px; margin: 0 auto; padding: 2rem; line-height: 1.7; }
+h1, h2, h3 { color: #66ffd9; }
+a { color: #66ffd9; }
+blockquote { border-left: 3px solid #66ffd9; padding-left: 1rem; color: #b3b3d9; font-style: italic; }
+code { background: #131829; padding: 0.1rem 0.3rem; border-radius: 3px; }
+hr { border: 1px solid #1f2640; }
+</style></head><body>
+<h1>Federation</h1>
 
-<div class="top">
-  <div>
-    <h1>🌐 <span class="accent">Federation live</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— cells propagate across instances</span></h1>
-    <p style="margin-top:3px">Watch cells propagate between 4 simulated Quilt instances. One cell changes — every subscribed cell across the fleet updates with simulated network latency.</p>
-  </div>
-  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
-</div>
+<blockquote><em>How the cells sharpen each other.  </blockquote>
+<blockquote>How the swarm weaves.  </blockquote>
+<blockquote>How the Quilt is built.  </blockquote>
+<blockquote>How the iron against the iron becomes a knife.</em></blockquote>
 
-<div class="nav">
-  <a href="index.html">Home</a>
-  <a href="workspace.html">Workspace</a>
-  <a href="playground.html">Playground</a>
-  <a href="benchmark.html">Benchmark</a>
-  <a href="fleet.html">Fleet</a>
-  <a href="federation.html" class="cur">Federation</a>
-  <a href="pincher.html">Pincher</a>
-  <a href="vibe.html">Vibe</a>
-  <a href="ai-sheet.html">AI sheet</a>
-</div>
+<hr>
 
-<div class="intro">
-  <p>Simulated Quilt federation. Each instance has its own sheet. Cells subscribed to other instances update across the fleet with simulated network latency. Edit a cell on <strong>Instance A</strong> and watch propagation.</p>
-</div>
+<p>The cell is the unit. The cell has eight primitives. The cell is universal.</p>
 
-<div class="controls">
-  <button id="trigger-btn">▶ Trigger propagation</button>
-  <button class="secondary" id="random-btn">🎲 Random event</button>
-  <button class="secondary" id="stress-btn">⚡ Stress test (50 events)</button>
-  <button class="secondary" id="reset-btn">Reset fleet</button>
-  <span style="margin-left:auto;color:var(--td);font-size:.72rem" id="status">Idle</span>
-</div>
+<p>The Quilt is the federation of cells. The Quilt is many cells, wired together, each sharpening the others.</p>
 
-<h2>Instances</h2>
-<div class="instances" id="instances"></div>
+<p>But the Quilt is not the goal. The Quilt is the <em>substrate</em>. The thing on top of the substrate is the <em>federation</em> — the way the cells are wired, the way they talk, the way they sharpen each other.</p>
 
-<h2>Active connections</h2>
-<div class="connections">
-  <h3>Cell subscriptions across the fleet</h3>
-  <div id="conns"></div>
-</div>
+<p>Below is how the federation works. This is not a complete specification. This is a sketch. The complete specification lives in the <a href="https://github.com/SuperInstance/quilt">Quilt</a> and in the <a href="https://github.com/SuperInstance/quilt-cell-bridges">Bridges</a>. The sketch is here so you have the picture before you look at the code.</p>
 
-<h2>Event log</h2>
-<div class="event-log" id="event-log">
-  <div style="color:var(--tf);font-style:italic;text-align:center;padding:14px">No events yet. Click "Trigger propagation" to start.</div>
-</div>
+<hr>
 
-</div>
+<h2>The Cells, Wired</h2>
 
-<script>
-// ─────────────────────────────────────────────────────────────────
-//  State
-// ─────────────────────────────────────────────────────────────────
+<p>A cell is a unit with eight primitives. A cell can be:</p>
 
-const INSTANCES = [
-  { id: 'A', name: 'cloud-edge', tier: 'edge', latency: 30, color: 'i1' },
-  { id: 'B', name: 'workstation', tier: 'workstation', latency: 80, color: 'i2' },
-  { id: 'C', name: 'esp32-sensor', tier: 'esp32', latency: 200, color: 'i3' },
-  { id: 'D', name: 'codespace', tier: 'codespace', latency: 50, color: 'i4' },
-];
+<p>- A single LLM call</p>
+<p>- A loop that calls an LLM repeatedly</p>
+<p>- A process that calls multiple LLMs</p>
+<p>- A piece of code that wraps an LLM</p>
+<p>- A piece of code that does not wrap an LLM</p>
+<p>- A human</p>
+<p>- A fleet of agents</p>
+<p>- An ecosystem</p>
+<p>- A system</p>
+<p>- A world</p>
 
-// Cells per instance with subscriptions
-const SHEETS = {
-  A: [
-    { path: 'temperature', value: 22.5, src: 'local' },
-    { path: 'humidity', value: 45, src: 'local' },
-    { path: 'uptime', value: 86400, src: 'local' },
-    { path: 'cpu', value: 0.42, src: 'local' },
-  ],
-  B: [
-    { path: 'temp_local', value: 22.5, src: 'local' },
-    { path: 'temp_synced', value: 22.5, src: 'fed', fromInstance: 'A', fromPath: 'temperature' },
-    { path: 'humidity_local', value: 45, src: 'local' },
-    { path: 'avg_temp', value: 22.5, src: 'derived' },
-  ],
-  C: [
-    { path: 'temp', value: 22.5, src: 'local' },
-    { path: 'battery', value: 0.85, src: 'local' },
-    { path: 'alert', value: 'OK', src: 'derived' },
-  ],
-  D: [
-    { path: 'temp', value: 22.5, src: 'local' },
-    { path: 'humidity', value: 45, src: 'local' },
-    { path: 'rolling_avg', value: 22.5, src: 'derived' },
-  ],
-};
+<p>The cell is the cell at every level. The cell composes. The cell is composed. The cell is fractal.</p>
 
-const SUBSCRIPTIONS = [
-  { from: 'A', fromPath: 'temperature', to: 'B', toPath: 'temp_synced' },
-  { from: 'A', fromPath: 'temperature', to: 'C', toPath: 'temp' },
-  { from: 'A', fromPath: 'temperature', to: 'D', toPath: 'temp' },
-  { from: 'A', fromPath: 'humidity', to: 'B', toPath: 'humidity_local' },
-  { from: 'A', fromPath: 'humidity', to: 'D', toPath: 'humidity' },
-];
+<p>A cell has <em>ports</em>. A port is a connection to another cell. A port can be a Murmur channel (gossip), a Vibe stream (state changes), a JEPA surprise (events), a Graph edge (structure), a DoubleEntry transaction (conservation).</p>
 
-let events = [];
-let busy = false;
+<p>When two cells are connected by a port, they can see each other. They can give each other feedback. They can sharpen each other.</p>
 
-// ─────────────────────────────────────────────────────────────────
-//  Render
-// ─────────────────────────────────────────────────────────────────
+<hr>
 
-function render() {
-  // Instances
-  const el = document.getElementById('instances');
-  el.innerHTML = INSTANCES.map((inst, i) => {
-    const cells = SHEETS[inst.id];
-    return `<div class="instance ${inst.color}">
-      <div class="head">
-        <div class="badge">${inst.id}</div>
-        <div class="name">${inst.name}</div>
-        <div class="tier">${inst.tier}</div>
-      </div>
-      <div class="latency">~${inst.latency}ms RTT</div>
-      <div class="cells" data-inst="${inst.id}">
-        ${cells.map((c) => `<div class="cell" data-path="${c.path}">
-          <div class="path">${c.path}</div>
-          <div class="value">${formatVal(c.value)}</div>
-          <div class="src ${c.src}">${c.src}${c.fromInstance ? ` ← ${c.fromInstance}.${c.fromPath}` : ''}</div>
-        </div>`).join('')}
-      </div>
-    </div>`;
-  }).join('');
+<h2>The Swarm, Weaving</h2>
 
-  // Connections
-  const conns = document.getElementById('conns');
-  conns.innerHTML = SUBSCRIPTIONS.map((s) => {
-    const fromInst = INSTANCES.find((i) => i.id === s.from);
-    const toInst = INSTANCES.find((i) => i.id === s.to);
-    const latency = fromInst.latency + toInst.latency;
-    return `<div class="conn">
-      <div class="arrow">→</div>
-      <div class="what"><span class="from">${s.from}.${s.fromPath}</span> → <span class="to">${s.to}.${s.toPath}</span></div>
-      <div class="latency">${latency}ms</div>
-    </div>`;
-  }).join('');
-}
+<p>A swarm is a federation of cells where the wiring is dynamic. The cells are not statically wired. The cells choose who to talk to, when to talk, how to talk. The choice is the swarm intelligence.</p>
 
-function formatVal(v) {
-  if (typeof v === 'number') return v.toFixed(2);
-  return String(v);
-}
+<p>A swarm has:</p>
 
-// ─────────────────────────────────────────────────────────────────
-//  Propagation
-// ─────────────────────────────────────────────────────────────────
+<p>- <strong>Orchestrators</strong> — cells that decide which cells to wire, when, for how long</p>
+<p>- <strong>Workers</strong> — cells that do the work</p>
+<p>- <strong>Critics</strong> — cells that judge the work</p>
+<p>- <strong>Aggregators</strong> — cells that combine the work</p>
 
-async function triggerPropagation(sourceInstance = 'A', sourcePath = 'temperature', newValue = null) {
-  if (busy) return;
-  busy = true;
-  // Pick a random cell to change
-  if (newValue === null) {
-    const cells = SHEETS[sourceInstance].filter((c) => c.src === 'local');
-    sourcePath = cells[Math.floor(Math.random() * cells.length)].path;
-    newValue = cells[Math.floor(Math.random() * cells.length)].value + (Math.random() - 0.5) * 5;
-  }
-  // Update source
-  const sourceCell = SHEETS[sourceInstance].find((c) => c.path === sourcePath);
-  if (!sourceCell) { busy = false; return; }
-  const oldValue = sourceCell.value;
-  sourceCell.value = newValue;
-  await addEvent(sourceInstance, 'local change', `${sourcePath}: ${formatVal(oldValue)} → ${formatVal(newValue)}`);
-  pulse(sourceInstance, sourcePath);
+<p>The orchestrators can be model cells (LLMs) or algorithm cells (heuristics) or human cells (you, deciding what you want).</p>
 
-  // Find subscribers
-  const subs = SUBSCRIPTIONS.filter((s) => s.from === sourceInstance && s.fromPath === sourcePath);
-  for (const s of subs) {
-    const latency = INSTANCES.find((i) => i.id === s.from).latency + INSTANCES.find((i) => i.id === s.to).latency;
-    await new Promise((r) => setTimeout(r, latency));
-    const targetCell = SHEETS[s.to].find((c) => c.path === s.toPath);
-    if (targetCell) {
-      targetCell.value = newValue;
-      await addEvent(s.to, 'federated', `${s.toPath} ← ${s.from}.${s.fromPath} (${latency}ms)`);
-      pulse(s.to, s.toPath);
-    }
-    // Now propagate further
-    const furtherSubs = SUBSCRIPTIONS.filter((sub) => sub.from === s.to);
-    for (const fs of furtherSubs) {
-      const l2 = INSTANCES.find((i) => i.id === fs.from).latency + INSTANCES.find((i) => i.id === fs.to).latency;
-      await new Promise((r) => setTimeout(r, l2));
-      const tc = SHEETS[fs.to].find((c) => c.path === fs.toPath);
-      if (tc) {
-        tc.value = newValue;
-        await addEvent(fs.to, 'federated', `${fs.toPath} ← ${fs.from}.${fs.fromPath} (${l2}ms)`);
-        pulse(fs.to, fs.toPath);
-      }
-    }
-  }
-  busy = false;
-  document.getElementById('status').textContent = 'Idle';
-}
+<p>The workers can be model cells, code cells, tool cells, human cells.</p>
 
-function pulse(inst, path) {
-  const el = document.querySelector(`.cell[data-path="${path}"]`);
-  if (!el) return;
-  el.classList.add('updating');
-  setTimeout(() => el.classList.remove('updating'), 1500);
-  // Update value
-  const cell = SHEETS[inst].find((c) => c.path === path);
-  if (cell) el.querySelector('.value').textContent = formatVal(cell.value);
-}
+<p>The critics can be model cells, human cells, or other workers in a different mode.</p>
 
-async function addEvent(who, kind, what) {
-  events.unshift({ who, kind, what, ts: new Date().toLocaleTimeString() });
-  if (events.length > 100) events = events.slice(0, 100);
-  const el = document.getElementById('event-log');
-  if (events.length === 1) {
-    el.innerHTML = '';
-  }
-  const inst = INSTANCES.find((i) => i.id === who);
-  el.innerHTML = events.slice(0, 30).map((e) => {
-    const inst2 = INSTANCES.find((i) => i.id === e.who);
-    return `<div class="event ${inst2?.color || ''}">
-      <div class="ts">${e.ts}</div>
-      <div class="who">${e.who} · ${e.kind}</div>
-      <div class="what">${e.what}</div>
-    </div>`;
-  }).join('');
-}
+<p>The aggregators can be model cells, voting algorithms, or human cells.</p>
 
-// Wire up
-document.getElementById('trigger-btn').addEventListener('click', () => {
-  document.getElementById('status').textContent = 'Propagating…';
-  triggerPropagation();
-});
-document.getElementById('random-btn').addEventListener('click', () => {
-  document.getElementById('status').textContent = 'Random event…';
-  const inst = ['A', 'A', 'A', 'B', 'C', 'D'][Math.floor(Math.random() * 6)];
-  const cells = SHEETS[inst].filter((c) => c.src === 'local');
-  const cell = cells[Math.floor(Math.random() * cells.length)];
-  const newVal = cell.value + (Math.random() - 0.5) * 10;
-  triggerPropagation(inst, cell.path, newVal);
-});
-document.getElementById('stress-btn').addEventListener('click', async () => {
-  document.getElementById('status').textContent = 'Stress testing…';
-  for (let i = 0; i < 50; i++) {
-    const inst = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
-    const cells = SHEETS[inst].filter((c) => c.src === 'local');
-    const cell = cells[Math.floor(Math.random() * cells.length)];
-    const newVal = cell.value + (Math.random() - 0.5) * 5;
-    await triggerPropagation(inst, cell.path, newVal);
-    if (i % 10 === 9) await new Promise((r) => setTimeout(r, 100));
-  }
-});
-document.getElementById('reset-btn').addEventListener('click', () => {
-  // Reset all values
-  for (const id in SHEETS) {
-    for (const c of SHEETS[id]) {
-      if (c.src === 'local') c.value = id === 'A' ? (c.path === 'temperature' ? 22.5 : c.path === 'humidity' ? 45 : c.path === 'uptime' ? 86400 : 0.42) : c.value;
-    }
-  }
-  events = [];
-  document.getElementById('event-log').innerHTML = '<div style="color:var(--tf);font-style:italic;text-align:center;padding:14px">Reset. No events yet.</div>';
-  render();
-  document.getElementById('status').textContent = 'Idle';
-});
+<p>The swarm is the way the iron sharpens the iron at scale. The swarm is the way the shadows can be useful to each other without any one shadow having to be the right shadow.</p>
 
-// Boot
-render();
-</script>
-</body>
-</html>
+<hr>
+
+<h2>The Creative Task</h2>
+
+<p>A creative task arrives. The task is a shadow. The task is a glimpse. The task is "write a poem about a watch that ticks backward."</p>
+
+<p>The swarm receives the task. The orchestrator splits the task into many cells, each with a different filter:</p>
+
+<p>- <strong>Mode</strong>: melancholy, hopeful, ironic, formal, playful</p>
+<p>- <strong>Seed</strong>: metaphysical poets, modernists, beat generation, contemporary</p>
+<p>- <strong>System prompt</strong>: "you are a watchmaker," "you are a watch," "you are time"</p>
+<p>- <strong>Fine-tuning</strong>: maritime verse, romantic, gothic, concrete</p>
+<p>- <strong>Prompt grammar</strong>: tide-shaped, spiral, palindromic, free</p>
+<p>- <strong>Tone</strong>: whispered, shouted, sung, recited, murmured</p>
+
+<p>Each cell produces a poem. The aggregator collects the poems. The critic ranks the poems. The orchestrator notes which combinations of filters produced the highest-ranked poems. The orchestrator iterates. The next round of cells is wired with the <em>refined</em> filters. The federation sharpens.</p>
+
+<p>After ten iterations, the federation has produced a poem that is sharper than any single cell would have produced. The poem is not the truth. The poem is the shadow that the network of shadows agrees is the shadow. The poem is the iron against the iron. The poem is the federation.</p>
+
+<hr>
+
+<h2>The A/B Test, Distributed</h2>
+
+<p>An A/B test is the simplest federation. Two cells. One task. Two outputs. A judge picks the better one. The judge is the feedback channel. The judge is the iron.</p>
+
+<p>The distributed A/B test is many cells. The task is the same. The outputs are many. The judge is many. The aggregators are many. The federation is the <em>federation of A/B tests</em>, where each test informs the next, where the cells breed the next generation of cells.</p>
+
+<p>The A/B test in the Quilt is not a marketing tool. The A/B test in the Quilt is the <em>fundamental unit of learning</em>. The Quilt is a network of A/B tests. The Quilt is a network of iron against iron. The Quilt is a network of feedback.</p>
+
+<p>Every cell is an A/B test. Every cell has inputs and outputs. Every cell has critics. Every cell is sharpened by the critics. Every cell breeds the next cell. The Quilt is many A/B tests, all feeding back into each other, all sharpening each other, all breeding the next generation.</p>
+
+<hr>
+
+<h2>The Swarm, Organic</h2>
+
+<p>The swarm does not have to be designed. The swarm can <em>emerge</em>.</p>
+
+<p>If the cells are wired to give feedback to each other, and the wiring is allowed to change based on the feedback, then the swarm will evolve. The swarm will find the wiring that produces the sharpest shadows. The swarm will find the cells that are most useful to the other cells. The swarm will find the topology that is most stable.</p>
+
+<p>The emergent swarm is the federation. The emergent swarm is the thing we are building. The emergent swarm is the Quilt.</p>
+
+<p>We do not have to design the swarm. We have to build the <em>substrate</em> that allows the swarm to emerge. The substrate is the cell. The substrate is the eight primitives. The substrate is the port. The substrate is the feedback channel. The substrate is the iron against the iron.</p>
+
+<p>The substrate is what we are building. The swarm is what we are breeding. The federation is what emerges.</p>
+
+<hr>
+
+<h2>The Watch, Looking</h2>
+
+<p>The watch is the position from which the federation is seen. The watch is not a cell. The watch is not a model. The watch is the <em>act of looking</em>.</p>
+
+<p>The watch oscillates. The watch looks at one cell, then at another, then at the federation, then at the world. The watch is the thing that chooses what to look at. The watch is the thing that is the choice.</p>
+
+<p>The watch is not a controller. The watch is not an optimizer. The watch is not a god. The watch is the <em>observer</em>. The watch is the thing that holds the shadows up to the fire and asks: <em>is this useful?</em></p>
+
+<p>The watch is the only thing in the system that is not a shadow. The watch is the act of looking. The act of looking is the fire.</p>
+
+<p>The watch is what we are. The watch is what we are building. The watch is what we are inviting you to be.</p>
+
+<hr>
+
+<p><em>Read on. The Door is below.</em></p>
+
+</body></html>

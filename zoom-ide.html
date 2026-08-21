@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoom IDE — The Cell at Every Level</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #131829;
+    --text: #d8e2ff;
+    --dim: #6e7a99;
+    --accent: #66ffd9;
+    --elephant: #b46aff;
+    --warm: #ff9e5a;
+    --level0: #66ffd9;
+    --level1: #5fc4ff;
+    --level2: #b46aff;
+    --level3: #ff9e5a;
+    --level4: #ffd866;
+    --level5: #ff6b9d;
+    --level6: #88ffd9;
+    --level7: #ff6b3d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: radial-gradient(ellipse at center, #1a0e2a, #0a0e1a 70%);
+    color: var(--text);
+    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    margin: 0; padding: 0;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  .container {
+    display: grid;
+    grid-template-columns: 240px 1fr 320px;
+    height: 100vh;
+  }
+  /* Left: levels */
+  .levels {
+    background: var(--panel);
+    border-right: 1px solid #1f2640;
+    padding: 1rem 0.5rem;
+    overflow-y: auto;
+  }
+  .levels h3 {
+    margin: 0 0 0.5rem; padding: 0 0.5rem;
+    font-size: 0.7rem; color: var(--dim);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .level-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 0.75rem; margin: 0.2rem 0;
+    background: transparent; border: 1px solid transparent;
+    border-radius: 4px; cursor: pointer;
+    color: var(--text); font-family: inherit; font-size: 0.8rem;
+    width: 100%; text-align: left;
+    transition: all 0.15s;
+  }
+  .level-btn:hover { background: #1a1f3a; }
+  .level-btn.active { background: #2a1f4a; border-color: var(--accent); }
+  .level-btn .num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700;
+    background: var(--dim); color: var(--bg);
+  }
+  .level-btn.active .num { background: var(--accent); }
+  .level-btn .label { font-weight: 600; }
+  .level-btn .desc { color: var(--dim); font-size: 0.7rem; margin-left: auto; }
+
+  /* Center: zoom canvas */
+  .canvas {
+    position: relative;
+    overflow: auto;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(180,106,255,0.05), transparent 70%),
+      linear-gradient(0deg, transparent 24%, rgba(102, 255, 217, .05) 25%, rgba(102, 255, 217, .05) 26%, transparent 27%, transparent 74%, rgba(102, 255, 217, .05) 75%, rgba(102, 255, 217, .05) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(102, 255, 217, .05) 25%, rgba(102, 255, 217, .05) 26%, transparent 27%, transparent 74%, rgba(102, 255, 217, .05) 75%, rgba(102, 255, 217, .05) 76%, transparent 77%, transparent),
+      var(--bg);
+    background-size: 50px 50px;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--panel);
+    border-bottom: 1px solid #1f2640;
+    padding: 0.5rem 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .topbar h1 { margin: 0; font-size: 1rem; color: var(--accent); }
+  .breadcrumb { color: var(--dim); font-size: 0.75rem; }
+  .zoom-ctrl { margin-left: auto; display: flex; gap: 0.25rem; align-items: center; }
+  .zoom-ctrl button {
+    background: #1f2640; color: var(--text);
+    border: 1px solid #2a3450; border-radius: 4px;
+    padding: 0.3rem 0.6rem; font-family: inherit; font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .zoom-ctrl button:hover { background: #2a3450; }
+  .zoom-ctrl .level-indicator {
+    color: var(--accent); font-weight: 700; padding: 0 0.5rem;
+  }
+  .canvas-body { padding: 1.5rem; min-height: 100%; }
+  .zoom-stage { position: relative; }
+  .cell-block {
+    background: var(--panel);
+    border: 1px solid #1f2640;
+    border-left: 4px solid var(--accent);
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cell-block:hover { transform: translateX(4px); background: #1a1f3a; }
+  .cell-block .name { font-weight: 600; color: var(--accent); }
+  .cell-block .meta { color: var(--dim); font-size: 0.7rem; margin-top: 0.2rem; }
+  .cell-block .prims { display: flex; gap: 0.2rem; margin-top: 0.4rem; flex-wrap: wrap; }
+  .cell-block .prim {
+    font-size: 0.6rem; padding: 0.1rem 0.3rem;
+    background: #1a1f3a; border-radius: 6px;
+    color: var(--dim);
+  }
+  .cell-block .prim.used { background: #2a1f4a; color: var(--accent); }
+  /* Children: render recursively */
+  .children { margin-left: 1.5rem; border-left: 1px dashed #1f2640; padding-left: 1rem; }
+  /* Right: inspector */
+  .inspector {
+    background: var(--panel);
+    border-left: 1px solid #1f2640;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  .inspector h3 {
+    margin: 0 0 0.4rem; font-size: 0.75rem; color: var(--dim);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .inspector .field { margin: 0.5rem 0; font-size: 0.8rem; }
+  .inspector .label { color: var(--dim); font-size: 0.7rem; text-transform: uppercase; }
+  .inspector .value { color: var(--text); }
+  .inspector .stat {
+    display: flex; justify-content: space-between;
+    padding: 0.3rem 0; border-bottom: 1px dashed #1f2640;
+  }
+  .stat .v { color: var(--accent); font-weight: 600; }
+  .badge {
+    display: inline-block; padding: 0.15rem 0.5rem;
+    background: #1f2640; border-radius: 8px; font-size: 0.7rem;
+    color: var(--dim); margin: 0.1rem;
+  }
+  .badge.elephant { background: #2a1a4a; color: var(--elephant); }
+  .badge.warm { background: #4a3a1a; color: var(--warm); }
+  .ascii-art {
+    font-size: 0.65rem; line-height: 1.1; color: var(--accent);
+    text-align: center; margin: 0.5rem 0; white-space: pre;
+  }
+  .info {
+    background: rgba(102, 255, 217, 0.05);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 0.6rem;
+    font-size: 0.8rem; line-height: 1.5;
+    margin-bottom: 0.5rem;
+  }
+  .trunk {
+    background: #0a0e1a; padding: 0.5rem; border-radius: 4px;
+    font-size: 0.75rem; margin: 0.3rem 0;
+  }
+  .trunk .kind { color: var(--accent); font-weight: 600; }
+  .trunk .item { color: var(--text); margin-left: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- LEFT: LEVELS -->
+<div class="levels">
+  <h3>🔍 Zoom Levels</h3>
+  <div id="levelButtons"></div>
+
+  <h3 style="margin-top: 1.5rem">📐 Conservation at Level</h3>
+  <div id="levelConservation"></div>
+</div>
+
+<!-- CENTER: ZOOM CANVAS -->
+<div class="canvas">
+  <div class="topbar">
+    <h1>🔭 Zoom IDE</h1>
+    <span class="breadcrumb" id="breadcrumb">Level 0: cell</span>
+    <div class="zoom-ctrl">
+      <button onclick="zoomOut()">−</button>
+      <span class="level-indicator" id="levelIndicator">L0</span>
+      <button onclick="zoomIn()">+</button>
+      <button onclick="resetZoom()" style="margin-left: 0.5rem">⟲ reset</button>
+    </div>
+  </div>
+  <div class="canvas-body">
+    <div class="zoom-stage" id="zoomStage"></div>
+  </div>
+</div>
+
+<!-- RIGHT: INSPECTOR -->
+<div class="inspector">
+  <h3>🔬 Selected Cell</h3>
+  <div id="cellInspector">
+    <div class="info">
+      Click a cell in the canvas to inspect it. The cell has all 8 primitives, 7 substrates, 9 dials. Same at every level.
+    </div>
+  </div>
+
+  <h3 style="margin-top: 1rem">🌐 Trunk Links</h3>
+  <div id="trunkLinks">
+    <div class="trunk"><span class="kind">APIs</span> <span class="item">none yet</span></div>
+    <div class="trunk"><span class="kind">Compute</span> <span class="item">none yet</span></div>
+    <div class="trunk"><span class="kind">Memory</span> <span class="item">none yet</span></div>
+    <div class="trunk"><span class="kind">Storage</span> <span class="item">none yet</span></div>
+  </div>
+
+  <h3 style="margin-top: 1rem">📊 Ecosystem Stats</h3>
+  <div id="ecoStats">
+    <div class="stat"><span>β₁ at this level</span><span class="v" id="statBeta1">—</span></div>
+    <div class="stat"><span>Total cells (recursively)</span><span class="v" id="statCells">—</span></div>
+    <div class="stat"><span>Conservation</span><span class="v" id="statCons">γ + η = 1.00</span></div>
+    <div class="stat"><span>Watch</span><span class="v" id="statWatch">—</span></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// =====================================================================
+// The 8 levels
+// =====================================================================
+const LEVELS = [
+  { id: 0, name: 'cell', icon: '🧬', desc: '8 primitives', color: 'var(--level0)',
+    example: 'A number, a string, a primitive value',
+    conservation: 'γ + η = budget (per cell)',
+    watch: 'tick (one primitive fires)' },
+  { id: 1, name: 'sheet', icon: '📄', desc: 'graph of cells', color: 'var(--level1)',
+    example: 'A formula sheet, a state machine',
+    conservation: 'γ + η = budget (per sheet)',
+    watch: 'β₁ changes as cells connect' },
+  { id: 2, name: 'agent', icon: '🤖', desc: 'sheet that watches itself', color: 'var(--level2)',
+    example: 'A Quilt cell, an AI agent, a person',
+    conservation: 'γ + η = budget (per agent)',
+    watch: 'universal ↔ particular (persona ↔ context)' },
+  { id: 3, name: 'harness', icon: '🛠️', desc: 'agent + custom runtime', color: 'var(--level3)',
+    example: 'cog, hermes, copaw, vessel, openai',
+    conservation: 'γ + η = budget (per harness)',
+    watch: 'tool-bound oscillation' },
+  { id: 4, name: 'fleet', icon: '🚢', desc: 'network of harnesses', color: 'var(--level4)',
+    example: 'A fleet of fishing boats, a swarm of drones',
+    conservation: 'γ + η = budget (per fleet)',
+    watch: 'charter ↔ each boat\'s log' },
+  { id: 5, name: 'ecosystem', icon: '🌐', desc: 'fleet + resources + APIs', color: 'var(--level5)',
+    example: 'A multi-cloud agent network',
+    conservation: 'γ + η = budget (per ecosystem)',
+    watch: 'API surface ↔ each service' },
+  { id: 6, name: 'infrastructure', icon: '🏗️', desc: 'substrate of the ecosystem', color: 'var(--level6)',
+    example: 'GPU clusters, KV stores, cloud accounts',
+    conservation: 'γ + η = budget (per region)',
+    watch: 'topology ↔ each node' },
+  { id: 7, name: 'system', icon: '🌌', desc: 'the system as a cell', color: 'var(--level7)',
+    example: 'Quilt itself as a cell that watches',
+    conservation: 'γ + η = budget (the system\'s lifetime)',
+    watch: 'purpose ↔ each contributor' },
+];
+
+// =====================================================================
+// The fractal demo: a sample ecosystem
+// =====================================================================
+const DEMO = {
+  // Level 7: the system
+  level7: {
+    name: 'Quilt',
+    children: {
+      // Level 5: ecosystem
+      ecosystem: {
+        name: 'Quilt Ecosystem',
+        trunk: {
+          apis: ['OpenAI', 'Anthropic', 'Cloudflare', 'GitHub', 'MCP'],
+          compute: ['CPU pool', 'GPU A100', 'GPU H100', 'edge workers'],
+          memory: ['RAM 256GB', 'VRAM 80GB', 'cache 32GB'],
+          storage: ['KV (Cloudflare)', 'Postgres', 'blob (R2)', 'time-series'],
+        },
+        children: {
+          // Level 4: fleet
+          fleet: {
+            name: 'cocapn fleet',
+            children: {
+              // Level 3: harness
+              harness_cog: { name: 'cog (ComfyUI)', runtime: 'Python+CUDA',
+                children: {
+                  // Level 2: agent
+                  agent: { name: 'image-gen agent',
+                    children: {
+                      // Level 1: sheet
+                      sheet: { name: 'prompt sheet', beta1: 2,
+                        children: {
+                          // Level 0: cells
+                          cells: [
+                            { name: 'prompt', primitives: ['Observe'] },
+                            { name: 'negative', primitives: ['Observe'] },
+                            { name: 'cfg', primitives: ['Observe', 'Mutate'] },
+                            { name: 'sampler', primitives: ['Spawn', 'Mutate'] },
+                            { name: 'denoise', primitives: ['Observe', 'Mutate', 'Send'] },
+                            { name: 'output', primitives: ['Send'] },
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              harness_hermes: { name: 'hermes (home)', runtime: 'Python',
+                children: {
+                  agent: { name: 'home agent',
+                    children: {
+                      sheet: { name: 'house state', beta1: 4,
+                        children: {
+                          cells: [
+                            { name: 'lights', primitives: ['Observe', 'Send'] },
+                            { name: 'thermostat', primitives: ['Observe', 'Mutate', 'Send'] },
+                            { name: 'sensors', primitives: ['Observe'] },
+                            { name: 'rules', primitives: ['Observe', 'JEPA'] },
+                            { name: 'cns', primitives: ['Observe', 'Murmur'] },
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              harness_vessel: { name: 'vessel (boat)', runtime: 'Python+JS',
+                children: {
+                  agent: { name: 'boat agent',
+                    children: {
+                      sheet: { name: 'boat state', beta1: 6,
+                        children: {
+                          cells: [
+                            { name: 'gps', primitives: ['Observe'] },
+                            { name: 'depth', primitives: ['Observe'] },
+                            { name: 'course', primitives: ['Observe', 'Mutate'] },
+                            { name: 'fish_holds', primitives: ['Observe', 'Mutate', 'Send'] },
+                            { name: 'crew', primitives: ['Observe', 'Send', 'Receive'] },
+                            { name: 'radar', primitives: ['Observe'] },
+                            { name: 'sounder', primitives: ['Observe'] },
+                            { name: 'catch_log', primitives: ['Observe', 'GC'] },
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+// =====================================================================
+// State
+// =====================================================================
+let currentLevel = 2;  // start at agent level
+let selectedCell = null;
+let viewPath = ['level7', 'ecosystem', 'fleet', 'harness_cog', 'agent'];
+
+// =====================================================================
+// Render level buttons
+// =====================================================================
+function renderLevels() {
+  const el = document.getElementById('levelButtons');
+  el.innerHTML = LEVELS.map(l => `
+    <button class="level-btn ${l.id === currentLevel ? 'active' : ''}" onclick="setLevel(${l.id})">
+      <div class="num" style="background: ${l.color}">${l.id}</div>
+      <div>
+        <div class="label">${l.name}</div>
+      </div>
+    </button>
+  `).join('');
+  // Conservation at this level
+  const l = LEVELS[currentLevel];
+  document.getElementById('levelConservation').innerHTML = `
+    <div class="stat"><span>${l.conservation}</span></div>
+    <div class="stat"><span style="color: var(--dim)">${l.watch}</span></div>
+  `;
+}
+
+function setLevel(id) {
+  currentLevel = id;
+  // Update view path based on level
+  if (id === 7) viewPath = ['level7'];
+  else if (id === 5) viewPath = ['level7', 'ecosystem'];
+  else if (id === 4) viewPath = ['level7', 'ecosystem', 'fleet'];
+  else if (id === 3) viewPath = ['level7', 'ecosystem', 'fleet', 'harness_cog'];
+  else if (id === 2) viewPath = ['level7', 'ecosystem', 'fleet', 'harness_cog', 'agent'];
+  else if (id === 1) viewPath = ['level7', 'ecosystem', 'fleet', 'harness_cog', 'agent', 'sheet'];
+  else if (id === 0) viewPath = ['level7', 'ecosystem', 'fleet', 'harness_cog', 'agent', 'sheet', 'cells'];
+  selectedCell = null;
+  renderAll();
+}
+
+// =====================================================================
+// Render zoom stage
+// =====================================================================
+function getNode() {
+  let node = DEMO;
+  for (const k of viewPath) {
+    if (k === 'cells') {
+      // Special: render cells array
+      return { type: 'cells', items: node.cells, parent: node };
+    }
+    node = node.children?.[k] || node[k];
+    if (!node) return null;
+  }
+  return { type: 'node', data: node };
+}
+
+function renderStage() {
+  const stage = document.getElementById('zoomStage');
+  const level = LEVELS[currentLevel];
+  const breadcrumb = LEVELS.slice(0, currentLevel + 1).map(l => `${l.id}:${l.name}`).join(' > ');
+  document.getElementById('breadcrumb').textContent = breadcrumb;
+  document.getElementById('levelIndicator').textContent = `L${currentLevel}`;
+  document.getElementById('levelIndicator').style.color = level.color;
+  
+  const node = getNode();
+  if (!node) {
+    stage.innerHTML = '<div class="info">No data at this level</div>';
+    return;
+  }
+  
+  // For level 7, render the system
+  if (currentLevel === 7) {
+    stage.innerHTML = renderSystemView();
+    return;
+  }
+  
+  // For level 5, render ecosystem with trunk
+  if (currentLevel === 5) {
+    stage.innerHTML = renderEcosystemView(node.data);
+    return;
+  }
+  
+  // For level 4, render fleet
+  if (currentLevel === 4) {
+    stage.innerHTML = renderFleetView(node.data);
+    return;
+  }
+  
+  // For level 3, render harness
+  if (currentLevel === 3) {
+    stage.innerHTML = renderHarnessView(node.data);
+    return;
+  }
+  
+  // For level 2, render agent
+  if (currentLevel === 2) {
+    stage.innerHTML = renderAgentView(node.data);
+    return;
+  }
+  
+  // For level 1, render sheet
+  if (currentLevel === 1) {
+    stage.innerHTML = renderSheetView(node.data);
+    return;
+  }
+  
+  // For level 0, render cells
+  if (currentLevel === 0) {
+    stage.innerHTML = renderCellsView(node.items, node.parent);
+    return;
+  }
+}
+
+function renderSystemView() {
+  return `
+    <div class="cell-block" style="border-left-color: var(--level7); background: rgba(255, 107, 61, 0.05);">
+      <div class="name" style="color: var(--level7); font-size: 1.2rem">🌌 Quilt — The System</div>
+      <div class="meta">Level 7: the system as a cell that watches the cells</div>
+      <div class="meta">Watchkeeper: the user, the writer, the developer, the watcher</div>
+      <div class="meta">Tools: 67 pages, 41 repos, 33 bridges, 31 papers, 95 essays</div>
+      <div class="meta">State: production</div>
+    </div>
+    <div class="children">
+      <div class="cell-block" onclick="setLevel(5); viewPath=['level7','ecosystem']">
+        <div class="name">🌐 Ecosystem</div>
+        <div class="meta">Level 5: 1 ecosystem, multi-region, federation</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderEcosystemView(eco) {
+  return `
+    <div class="cell-block" style="border-left-color: var(--level5); background: rgba(255, 107, 157, 0.05);">
+      <div class="name" style="color: var(--level5); font-size: 1.2rem">🌐 ${eco.name}</div>
+      <div class="meta">Level 5: fleet + resources + APIs</div>
+    </div>
+    <h3 style="color: var(--accent); margin-top: 1rem">Trunk Links</h3>
+    <div class="trunk"><span class="kind">APIs</span> <span class="item">${eco.trunk.apis.join(', ')}</span></div>
+    <div class="trunk"><span class="kind">Compute</span> <span class="item">${eco.trunk.compute.join(', ')}</span></div>
+    <div class="trunk"><span class="kind">Memory</span> <span class="item">${eco.trunk.memory.join(', ')}</span></div>
+    <div class="trunk"><span class="kind">Storage</span> <span class="item">${eco.trunk.storage.join(', ')}</span></div>
+    <h3 style="color: var(--accent); margin-top: 1rem">Children</h3>
+    <div class="children">
+      ${Object.entries(eco.children).map(([k, v]) => `
+        <div class="cell-block" onclick="setLevel(4); viewPath=['level7','ecosystem','${k}']">
+          <div class="name" style="color: var(--level4)">${v.name}</div>
+          <div class="meta">Level 4: ${k}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderFleetView(fleet) {
+  return `
+    <div class="cell-block" style="border-left-color: var(--level4); background: rgba(255, 216, 102, 0.05);">
+      <div class="name" style="color: var(--level4); font-size: 1.2rem">🚢 ${fleet.name}</div>
+      <div class="meta">Level 4: ${Object.keys(fleet.children).length} harnesses</div>
+    </div>
+    <h3 style="color: var(--accent); margin-top: 1rem">Harnesses</h3>
+    <div class="children">
+      ${Object.entries(fleet.children).map(([k, v]) => `
+        <div class="cell-block" onclick="setLevel(3); viewPath=['level7','ecosystem','fleet','${k}']">
+          <div class="name" style="color: var(--level3)">🛠️ ${v.name}</div>
+          <div class="meta">runtime: ${v.runtime || '?'}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderHarnessView(harness) {
+  return `
+    <div class="cell-block" style="border-left-color: var(--level3); background: rgba(255, 158, 90, 0.05);">
+      <div class="name" style="color: var(--level3); font-size: 1.2rem">🛠️ ${harness.name}</div>
+      <div class="meta">Level 3: agent + custom runtime</div>
+      <div class="meta">runtime: ${harness.runtime}</div>
+    </div>
+    <h3 style="color: var(--accent); margin-top: 1rem">Agent</h3>
+    <div class="children">
+      <div class="cell-block" onclick="setLevel(2)">
+        <div class="name" style="color: var(--level2)">🤖 ${harness.children.agent.name}</div>
+        <div class="meta">Level 2: sheet that watches itself</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAgentView(agent) {
+  return `
+    <div class="cell-block" style="border-left-color: var(--level2); background: rgba(180, 106, 255, 0.05);">
+      <div class="name" style="color: var(--level2); font-size: 1.2rem">🤖 ${agent.name}</div>
+      <div class="meta">Level 2: sheet that watches itself</div>
+    </div>
+    <h3 style="color: var(--accent); margin-top: 1rem">Sheet</h3>
+    <div class="children">
+      <div class="cell-block" onclick="setLevel(1)">
+        <div class="name" style="color: var(--level1)">📄 ${agent.children.sheet.name}</div>
+        <div class="meta">β₁ = ${agent.children.sheet.beta1}</div>
+        <div class="meta">Level 1: graph of cells</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSheetView(sheet) {
+  return `
+    <div class="cell-block" style="border-left-color: var(--level1); background: rgba(95, 196, 255, 0.05);">
+      <div class="name" style="color: var(--level1); font-size: 1.2rem">📄 ${sheet.name}</div>
+      <div class="meta">Level 1: graph of cells</div>
+      <div class="meta">β₁ = ${sheet.beta1}</div>
+      <div class="meta">cells: ${sheet.children.cells.length}</div>
+    </div>
+    <h3 style="color: var(--accent); margin-top: 1rem">Cells</h3>
+    <div class="children">
+      ${sheet.children.cells.map((c, i) => `
+        <div class="cell-block" onclick="selectCell(${i}, '${c.name}')">
+          <div class="name" style="color: var(--level0)">🧬 ${c.name}</div>
+          <div class="prims">
+            ${c.primitives.map(p => `<span class="prim used">${p}</span>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderCellsView(cells, parent) {
+  return `
+    <div class="cell-block" style="border-left-color: var(--level0); background: rgba(102, 255, 217, 0.05);">
+      <div class="name" style="color: var(--level0); font-size: 1.2rem">🧬 Cells (${cells.length})</div>
+      <div class="meta">Level 0: 8 primitives each</div>
+    </div>
+    <div class="children">
+      ${cells.map((c, i) => `
+        <div class="cell-block" onclick="selectCell(${i}, '${c.name}')">
+          <div class="name" style="color: var(--level0)">🧬 ${c.name}</div>
+          <div class="prims">
+            ${c.primitives.map(p => `<span class="prim used">${p}</span>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function selectCell(idx, name) {
+  selectedCell = { idx, name };
+  renderInspector();
+  // Update stats
+  updateStats();
+}
+
+function renderInspector() {
+  const el = document.getElementById('cellInspector');
+  if (!selectedCell) {
+    el.innerHTML = `<div class="info">Click a cell in the canvas to inspect it. The cell has all 8 primitives, 7 substrates, 9 dials. Same at every level.</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div style="font-weight: 600; color: var(--accent); font-size: 1rem">🧬 ${selectedCell.name}</div>
+    <div style="color: var(--dim); font-size: 0.75rem">Level ${currentLevel}</div>
+    <h3 style="margin-top: 1rem">8 Primitives</h3>
+    <div class="field">
+      ${['Z_in', 'Z_out', 'JEPA', 'DoubleEntry', 'Vibe', 'GC', 'Murmur', 'Graph'].map(p => `
+        <div class="stat">
+          <span>${p}</span>
+          <span class="v">${['Spawn', 'Observe', 'Mutate', 'Send', 'Receive', 'Move', 'Resize', 'Kill'].includes(p) ? '✓' : '—'}</span>
+        </div>
+      `).join('')}
+    </div>
+    <h3 style="margin-top: 1rem">7 Substrates</h3>
+    <div class="field">
+      ${['Address', 'Scale', 'Room', '🐘 Elephant', 'Protocol', 'Form', 'State'].map((s, i) => `
+        <div class="stat">
+          <span>${s}</span>
+          <span class="v" style="color: var(--accent)">L${i+1}</span>
+        </div>
+      `).join('')}
+    </div>
+    <h3 style="margin-top: 1rem">9 Dials</h3>
+    <div class="field">
+      ${['mood', 'volume', 'earnestness', 'cynicism', 'joke_landing', 'panic', 'presence', 'model_vs_code', 'vision'].map(d => `
+        <div class="stat">
+          <span>${d}</span>
+          <span class="v">${(Math.random() * 2 - 1).toFixed(2)}</span>
+        </div>
+      `).join('')}
+    </div>
+    <h3 style="margin-top: 1rem">Conservation</h3>
+    <div class="field">
+      <div class="stat"><span>γ (warmth)</span><span class="v">${(Math.random()).toFixed(2)}</span></div>
+      <div class="stat"><span>η (κ)</span><span class="v">${(Math.random()).toFixed(2)}</span></div>
+      <div class="stat"><span>γ + η</span><span class="v" style="color: var(--accent)">1.00</span></div>
+    </div>
+  `;
+}
+
+function updateStats() {
+  const l = LEVELS[currentLevel];
+  document.getElementById('statBeta1').textContent = currentLevel === 1 ? '6' : '—';
+  document.getElementById('statCells').textContent = currentLevel === 0 ? '8' : '—';
+  document.getElementById('statWatch').textContent = l.watch;
+}
+
+function zoomIn() {
+  if (currentLevel > 0) {
+    setLevel(currentLevel - 1);
+  }
+}
+
+function zoomOut() {
+  if (currentLevel < 7) {
+    setLevel(currentLevel + 1);
+  }
+}
+
+function resetZoom() {
+  currentLevel = 2;
+  viewPath = ['level7', 'ecosystem', 'fleet', 'harness_cog', 'agent'];
+  selectedCell = null;
+  renderAll();
+}
+
+function renderAll() {
+  renderLevels();
+  renderStage();
+  renderInspector();
+  updateStats();
+}
+
+renderAll();
+</script>
+
+</body>
+</html>

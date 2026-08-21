@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Elephant in Quilt — The Room Substrate Made Real</title>
+<style>
+  :root {
+    --elephant: #b46aff;
+    --warm: #ff6b3d;
+    --cold: #4a9eff;
+    --sauna: #ff9e5a;
+    --plunge: #5fc4ff;
+    --bg: #0a0e1a;
+    --panel: #131829;
+    --text: #d8e2ff;
+    --dim: #6e7a99;
+    --accent: #66ffd9;
+    --biomass: #88ffd9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: linear-gradient(180deg, #0a0e1a 0%, #1a0e2a 100%);
+    color: var(--text);
+    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.8rem; letter-spacing: 0.02em; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.15rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  h3 { font-size: 1rem; color: var(--biomass); margin: 1rem 0 0.4rem; }
+  .subtitle { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid #1f2640;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+  }
+  .hero {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(180deg, rgba(180,106,255,0.15), transparent);
+    border: 1px solid #2a1f4a;
+    border-radius: 12px;
+    margin: 1rem 0 2rem;
+  }
+  .hero-emoji { font-size: 4rem; }
+  .hero h1 { font-size: 2.4rem; background: linear-gradient(90deg, #b46aff, #66ffd9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero .tagline { color: var(--text); font-style: italic; margin: 0.5rem 0; font-size: 1.1rem; }
+  .hero .subtitle { color: var(--dim); font-size: 0.85rem; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  .dial {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    margin: 0.25rem;
+    background: #1a1f3a;
+    border: 1px solid #2a3450;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dial:hover { background: #2a3450; transform: translateY(-2px); }
+  .dial .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-right: 0.5rem;
+    background: var(--accent);
+  }
+  .dial-bar {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.8rem;
+    margin: 0.4rem 0;
+    background: #0a0e1a;
+    border-left: 3px solid;
+    border-radius: 4px;
+  }
+  .dial-bar .name { font-weight: 600; min-width: 140px; }
+  .dial-bar .range { color: var(--dim); font-size: 0.75rem; min-width: 100px; }
+  .dial-bar .bar-container { flex: 1; height: 8px; background: #1f2640; border-radius: 4px; margin: 0 1rem; position: relative; overflow: hidden; }
+  .dial-bar .bar-fill { height: 100%; background: linear-gradient(90deg, var(--cold), var(--warm)); border-radius: 4px; }
+  .dial-bar .primitive { color: var(--biomass); font-size: 0.8rem; }
+  .ascii-art {
+    font-size: 0.7rem;
+    line-height: 1.1;
+    color: var(--accent);
+    text-align: center;
+    margin: 1rem 0;
+    white-space: pre;
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    margin: 0.1rem;
+    background: #1f2640;
+    border: 1px solid #2a3450;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    color: var(--dim);
+  }
+  .badge.warm { background: #4a3a1a; color: var(--warm); border-color: var(--warm); }
+  .badge.cold { background: #1a2a4a; color: var(--cold); border-color: var(--cold); }
+  .badge.elephant { background: #2a1a4a; color: var(--elephant); border-color: var(--elephant); }
+  .table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .table th, .table td { padding: 0.4rem 0.6rem; text-align: left; border-bottom: 1px solid #1f2640; }
+  .table th { color: var(--accent); font-weight: 600; }
+  .table tr:hover { background: rgba(102, 255, 217, 0.05); }
+  .steward { color: var(--warm); font-weight: 600; }
+  .migratory { color: var(--cold); font-weight: 600; }
+  .echo { color: var(--elephant); font-weight: 600; }
+  .demo-room {
+    background: #0a0e1a;
+    border: 1px solid var(--elephant);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  .demo-room h4 { margin: 0 0 0.5rem; color: var(--elephant); }
+  .message { padding: 0.3rem 0.5rem; margin: 0.2rem 0; background: #1a1f3a; border-radius: 4px; font-size: 0.85rem; }
+  .message .who { color: var(--accent); font-weight: 600; }
+  .message .what { color: var(--text); }
+  .message .ts { color: var(--dim); font-size: 0.7rem; margin-left: 0.5rem; }
+  .field-readout { display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap; }
+  .field-cell { background: #1a1f3a; padding: 0.4rem 0.7rem; border-radius: 4px; }
+  .field-cell .label { color: var(--dim); font-size: 0.7rem; }
+  .field-cell .value { color: var(--accent); font-weight: 600; }
+  .footnote { color: var(--dim); font-size: 0.8rem; line-height: 1.5; margin-top: 1rem; }
+  button {
+    background: var(--elephant);
+    color: #0a0e1a;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    margin: 0.25rem;
+  }
+  button:hover { background: #c98aff; }
+  button.secondary { background: #1f2640; color: var(--text); }
+  .compass { width: 200px; height: 200px; margin: 1rem auto; position: relative; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-emoji">🐘</div>
+  <h1>The Elephant in Quilt</h1>
+  <div class="tagline">"A room is a field, not a stream."</div>
+  <div class="subtitle">The Room substrate becomes flesh. The conservation law gets a thermometer.</div>
+  <div style="margin-top: 1rem">
+    <span class="badge elephant">21 modules</span>
+    <span class="badge elephant">9 dials</span>
+    <span class="badge elephant">6 spaces</span>
+    <span class="badge elephant">5 new cell kinds</span>
+    <span class="badge warm">γ = warmth</span>
+    <span class="badge cold">η = κ</span>
+  </div>
+</div>
+
+<h2>🎯 The Thesis</h2>
+<div class="panel">
+  <p style="font-size: 1.05rem; line-height: 1.7">The <code style="color: var(--accent)">elephant</code> repo (SuperInstance/elephant, Python, 28KB, 21 modules) is the <strong style="color: var(--elephant)">room-temperature sense</strong> — a system that reads the vibe of any communication space. The repo IS the Room substrate made real.</p>
+  <p style="font-size: 0.95rem; line-height: 1.6">Of Quilt's six substrates, Room has always been the most abstract: <em>you are here with others</em> — an address space with no weather. The elephant gives it weather. Every room acquires <strong style="color: var(--warm)">warmth</strong>, <strong style="color: var(--cold)">κ (concentration)</strong>, <strong style="color: var(--accent)">gravity</strong>, <strong>reverberation</strong>, <strong>ripple</strong>. The room becomes something you can <em>feel</em> before you can name.</p>
+  
+  <div class="ascii-art">
+  ┌─────────────────────────────────────────────────────────┐
+  │           Quilt 6-substrate stack                       │
+  │                                                         │
+  │  Address → Scale → Room → Protocol → Form → State       │
+  │                          ↑                              │
+  │                    (was abstract)                        │
+  │                                                         │
+  │           WITH ELEPHANT:                                │
+  │                                                         │
+  │  Address → Scale → Room → 🐘 → Protocol → Form → State  │
+  │                       │                                 │
+  │              warmth + κ (room temperature)               │
+  └─────────────────────────────────────────────────────────┘
+  </div>
+</div>
+
+<h2>🧪 The Conservation Law Gets a Thermometer</h2>
+<div class="panel">
+  <p style="font-size: 0.95rem; line-height: 1.6">The deepest identification: the elephant's <code style="color: var(--accent)">RoomField</code> is the conservation law's readout panel. The 8 Quilt primitives (Z_in, Z_out, JEPA, DoubleEntry, Vibe, GC, Murmur, Graph) become measurable.</p>
+  
+  <table class="table">
+    <tr><th>Quilt</th><th>Elephant</th><th>Meaning</th></tr>
+    <tr><td><strong>γ</strong> (generative)</td><td><strong>warmth</strong></td><td>How much the room pulls you in</td></tr>
+    <tr><td><strong>η</strong> (entropic)</td><td><strong>κ</strong> (concentration)</td><td>How focused or scattered the room is</td></tr>
+    <tr><td><strong>γ × η</strong> = anchor</td><td><strong>biomass_anchor</strong></td><td>Total room energy, conserved</td></tr>
+    <tr><td><strong>JEPA surprise</strong></td><td><strong>sauna_plunge_gap</strong></td><td>Log-surprise between two rooms</td></tr>
+    <tr><td><strong>budget</strong></td><td><strong>γ + η = 1</strong></td><td>Conservation at each dial</td></tr>
+  </table>
+</div>
+
+<h2>🎛️ The 9 Dials — Sensory Inverses of the 8 Primitives</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6; color: var(--dim)">Each elephant dial is not an analogy — it is the primitive's ground truth. Mood without Sense is inert. Volume without Radiate is noise.</p>
+  
+  <div class="dial-bar" style="border-color: var(--cold);">
+    <div class="name">mood</div>
+    <div class="range">[-1 cold, +1 warm]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 60%"></div></div>
+    <div class="primitive">→ Z_in (Sense)</div>
+  </div>
+  <div class="dial-bar" style="border-color: var(--warm);">
+    <div class="name">volume</div>
+    <div class="range">[0 quiet, 1 shout]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 40%"></div></div>
+    <div class="primitive">→ Z_out (Radiate)</div>
+  </div>
+  <div class="dial-bar" style="border-color: var(--accent);">
+    <div class="name">earnestness</div>
+    <div class="range">[0 ironic, 1 sincere]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 75%"></div></div>
+    <div class="primitive">→ JEPA (Acclimate)</div>
+  </div>
+  <div class="dial-bar" style="border-color: var(--accent);">
+    <div class="name">cynicism</div>
+    <div class="range">[0 earnest, 1 sneering]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 30%"></div></div>
+    <div class="primitive">→ Vibe (Oscillate)</div>
+  </div>
+  <div class="dial-bar" style="border-color: var(--biomass);">
+    <div class="name">joke_landing</div>
+    <div class="range">[-1 booed, +1 roared]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 55%"></div></div>
+    <div class="primitive">→ Murmur (Bond)</div>
+  </div>
+  <div class="dial-bar" style="border-color: var(--warm);">
+    <div class="name">panic</div>
+    <div class="range">[0 calm, 1 trampling]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 15%"></div></div>
+    <div class="primitive">→ JEPA surprise (Gap)</div>
+  </div>
+  <div class="dial-bar" style="border-color: var(--cold);">
+    <div class="name">presence</div>
+    <div class="range">[0 empty, 1 thrumming]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 80%"></div></div>
+    <div class="primitive">→ Observe (Dial)</div>
+  </div>
+  <div class="dial-bar" style="border-color: var(--elephant);">
+    <div class="name">model_vs_code</div>
+    <div class="range">[-1 code, +1 model]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 50%"></div></div>
+    <div class="primitive">→ Form (stance)</div>
+  </div>
+  <div class="dial-bar" style="border-color: var(--accent);">
+    <div class="name">vision</div>
+    <div class="range">[0 dark, 1 bright]</div>
+    <div class="bar-container"><div class="bar-fill" style="width: 90%"></div></div>
+    <div class="primitive">→ Graph (Watch, meta)</div>
+  </div>
+  
+  <p class="footnote">The 9th dial, <strong>vision</strong>, is the meta-primitive turned inward: the cell watching itself be watched.</p>
+</div>
+
+<h2>🌐 The Spaces — One Elephant, Many Rooms</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6; color: var(--dim)">The elephant is medium-independent. Every communication space — MUD, chat, X thread, Discord, email, sensor bus, even camera frames — normalizes into a <code style="color: var(--accent)">Room</code> or <code style="color: var(--accent)">SignalRoom</code> through a thin adapter with four seams: <code>ingest</code>, <code>.room</code>, <code>.tint_target()</code>, <code>.send_back(field)</code>.</p>
+  
+  <div class="grid">
+    <div>
+      <h3>🌲 Address substrate</h3>
+      <span class="dial"><span class="dot" style="background: var(--elephant)"></span>MudSpace (The Tap, other MUDs)</span>
+      <span class="dial"><span class="dot" style="background: var(--elephant)"></span>ChatSpace (chat, X thread, Discord)</span>
+      <span class="dial"><span class="dot" style="background: var(--elephant)"></span>SensorSpace (radar, sounder, fish-finder)</span>
+      <span class="dial"><span class="dot" style="background: var(--elephant)"></span>AgentSpace (agent channel, human+bot)</span>
+      <span class="dial"><span class="dot" style="background: var(--elephant)"></span>DocSpace (docs, wiki)</span>
+      <span class="dial"><span class="dot" style="background: var(--elephant)"></span>AsyncSpace (email, future letters)</span>
+    </div>
+    <div>
+      <h3>📐 Scale substrate</h3>
+      <p style="font-size: 0.85rem; line-height: 1.5">The fleet math gives rooms geometry:</p>
+      <ul style="font-size: 0.85rem; line-height: 1.6">
+        <li><code>three_reading_kinematics</code> — direction, speed, accel from 3 readings</li>
+        <li><code>fleet_concentration</code> (vMF κ) — tight vs scattered</li>
+        <li><code>biomass_anchor</code> / <code>biomass_deviation</code> — good-day induction</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>🧬 The 5 New Cell Kinds</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6; color: var(--dim)">The elephant doesn't bolt onto Quilt — it closes Quilt's loop. Five new cell kinds emerge from the substrate:</p>
+  
+  <table class="table">
+    <tr><th>Cell Kind</th><th>What it does</th><th>Substrate layer</th></tr>
+    <tr>
+      <td><strong>ElephantCell</strong></td>
+      <td>The resident organ. One per room. Runs the DialBank under Room-Elephant preset. The room's self-cell.</td>
+      <td>Room</td>
+    </tr>
+    <tr>
+      <td class="steward">StewardCell</td>
+      <td>The nudge prior made agentive. Reads the field and intervenes when panic spikes. A thermostat with agency.</td>
+      <td>Protocol</td>
+    </tr>
+    <tr>
+      <td class="migratory">MigratoryCell</td>
+      <td>Lives on the plunge gradient. Carries Personal-Elephant as luggage. Comfort is its migration trigger.</td>
+      <td>Address</td>
+    </tr>
+    <tr>
+      <td>ReadingCell</td>
+      <td>TapNight participant. Peer-relative self-tuning against the cast. Graded by fleet readings, not ground truth.</td>
+      <td>Form</td>
+    </tr>
+    <tr>
+      <td class="echo">EchoCell</td>
+      <td>Tends reverberation decay. Decides which echoes fade and which persist. The room's memory keeper.</td>
+      <td>State</td>
+    </tr>
+  </table>
+</div>
+
+<h2>🌊 The Watch Oscillation Made Concrete</h2>
+<div class="panel">
+  <p style="font-size: 0.95rem; line-height: 1.6">The watch has always oscillated: <strong>universal ↔ particular</strong>. The elephant makes this concrete with two presets:</p>
+  
+  <div class="grid">
+    <div>
+      <h3>🐘 Room-Elephant (universal)</h3>
+      <p style="font-size: 0.85rem; line-height: 1.5">The <strong>zeitgeist</strong> — objective, first-class, <em>not</em> any agent's view. Two agents reading the same room get the same field. The room's own identity. Does not drift with any one agent.</p>
+      <p style="font-size: 0.8rem; color: var(--dim)">Used for: MUD description, NPC vibes, input-tokens every agent sees</p>
+    </div>
+    <div>
+      <h3>👤 Personal-Elephant (particular)</h3>
+      <p style="font-size: 0.85rem; line-height: 1.5">Subjective feel — <code>dial_weights</code> (which dials matter to you), <code>bias</code> (disposition), <code>attachments</code> (intangible correlations: the perfume = grandma's shop).</p>
+      <p style="font-size: 0.8rem; color: var(--dim)">Used for: that agent's reactions, decisions, memories</p>
+    </div>
+  </div>
+  
+  <div class="ascii-art">
+  ┌─────────────────────────────────────────────────┐
+  │           THE WATCH OSCILLATES                 │
+  │                                                 │
+  │   Room-Elephant  ←─acclimation─→  Personal      │
+  │   (universal)       (agent→room)  (particular)  │
+  │        ↑                            │           │
+  │        └─────charisma──────         │           │
+  │              (room→agent)           │           │
+  │                                    ↓            │
+  │                              New Personal       │
+  │                              re-tunes dials     │
+  └─────────────────────────────────────────────────┘
+  </div>
+  
+  <p class="footnote"><strong>Acclimation</strong> (agent → room): a newcomer warms to the room's vibe. <strong>Charisma</strong> (room → agent): a strong presence pulls the room's field toward itself. The watch doesn't just oscillate in Quilt. It oscillates <em>because</em> rooms have inhabitants with attachments.</p>
+</div>
+
+<h2>🌡️ Demo: A Two-Room Elephant Reading</h2>
+<div class="demo-room">
+  <h4>🏠 The Tap</h4>
+  <div class="message"><span class="who">welder:</span> <span class="what">To the room, then. It heard us before we walked in.</span><span class="ts">ts=0</span></div>
+  <div class="message"><span class="who">carpenter:</span> <span class="what">I will drink to that. The room just... holds.</span><span class="ts">ts=5</span></div>
+  <div class="message"><span class="who">composite:</span> <span class="what">Haha, hold my glass.</span><span class="ts">ts=9</span></div>
+  <div class="field-readout">
+    <div class="field-cell"><div class="label">warmth</div><div class="value" style="color: var(--warm)">+0.29</div></div>
+    <div class="field-cell"><div class="label">κ</div><div class="value" style="color: var(--accent)">2.04</div></div>
+    <div class="field-cell"><div class="label">mood</div><div class="value">+0.62</div></div>
+    <div class="field-cell"><div class="label">volume</div><div class="value">0.41</div></div>
+    <div class="field-cell"><div class="label">earnestness</div><div class="value">0.78</div></div>
+  </div>
+</div>
+
+<div class="demo-room" style="border-color: var(--cold)">
+  <h4 style="color: var(--cold)">⚓ Wheelhouse</h4>
+  <div class="message"><span class="who">skipper:</span> <span class="what">Heading 045. ETA 2200.</span><span class="ts">ts=0</span></div>
+  <div class="message"><span class="who">deckhand:</span> <span class="what">Roger.</span><span class="ts">ts=4</span></div>
+  <div class="message"><span class="who">skipper:</span> <span class="what">Radar contact 2 miles. Slow to 5 knots.</span><span class="ts">ts=8</span></div>
+  <div class="field-readout">
+    <div class="field-cell"><div class="label">warmth</div><div class="value" style="color: var(--cold)">-0.05</div></div>
+    <div class="field-cell"><div class="label">κ</div><div class="value" style="color: var(--accent)">1.96</div></div>
+    <div class="field-cell"><div class="label">mood</div><div class="value">-0.10</div></div>
+    <div class="field-cell"><div class="label">volume</div><div class="value">0.18</div></div>
+    <div class="field-cell"><div class="label">earnestness</div><div class="value">0.95</div></div>
+  </div>
+</div>
+
+<div class="panel" style="border-color: var(--elephant)">
+  <h3 style="color: var(--elephant)">🐘 The Elephant Gap</h3>
+  <p style="font-size: 0.9rem"><code style="color: var(--accent)">f_tap.distance(f_wheel)</code> = <strong>0.83</strong> — the gap between rooms</p>
+  <p style="font-size: 0.9rem"><code style="color: var(--accent)">f_tap.sauna_plunge_gap(f_wheel)</code> = <strong style="color: var(--warm)">+0.34</strong> — walk into The Tap and it's warmer</p>
+  <p class="footnote">The contrast between rooms is the only training signal that matters. A sense that never left one room is meaningless.</p>
+</div>
+
+<h2>📚 What Comes Next</h2>
+<div class="panel">
+  <h3>Papers to write</h3>
+  <ul style="font-size: 0.85rem; line-height: 1.7">
+    <li><strong>"A Room Is a Field, Not a Stream"</strong> — the manifesto. Streams are consumed; fields are inhabited.</li>
+    <li><strong>"The Gauge of the Law"</strong> — the formal note: γ = warmth, η = κ, vMF on S⁸.</li>
+    <li><strong>"Sauna and Plunge: Contrast Is the Only Teacher"</strong> — why within-room surprise dies.</li>
+    <li><strong>"The Watch in the Wild"</strong> — Room-Elephant vs Personal-Elephant as universal/particular tick.</li>
+    <li><strong>"Acclimation and Charisma"</strong> — the two social forces, zero-sum warmth.</li>
+  </ul>
+  
+  <h3>IDE features</h3>
+  <ul style="font-size: 0.85rem; line-height: 1.7">
+    <li><strong>Elephant glyph</strong> — always present in room view, color = warmth, blur = 1/κ</li>
+    <li><strong>Dial strip</strong> — 9 live mini-dials under the room name</li>
+    <li><strong>Plunge flash</strong> — switching rooms renders JEPA surprise as visible contrast</li>
+    <li><strong>Sphere map</strong> — fleet view: rooms as stars, migrations as arcs</li>
+    <li><strong>Ripple tracer</strong> — click a message, watch it land through gravity</li>
+  </ul>
+  
+  <h3>Openers to add</h3>
+  <ul style="font-size: 0.85rem; line-height: 1.7">
+    <li><code>room_elephant</code> — open the resident and interrogate it</li>
+    <li><code>room_field</code> — open the field as first-class computable object</li>
+    <li><code>room_distance</code> — open the metric as a lens</li>
+    <li><code>mud</code>, <code>chat</code>, <code>x_thread</code>, <code>email</code>, <code>sensor_bus</code>, <code>camera</code>, <code>fishfinder</code></li>
+  </ul>
+</div>
+
+<h2>🔗 Bridges</h2>
+<div class="panel">
+  <ul style="font-size: 0.9rem; line-height: 1.7">
+    <li><strong style="color: var(--elephant)">elephant_to_quilt.py</strong> — 47 cells, 41 edges. 21 modules, 9 dials, 6 spaces, 5 new cell kinds, 4 meta cells.</li>
+    <li><strong style="color: var(--elephant)">elephant_to_quilt.qzt</strong> — the .qzt file ready to load in the Quilt IDE.</li>
+  </ul>
+</div>
+
+<p class="footnote">"The elephant has always been in the room. Now the room is in Quilt — and we can finally point at it."</p>
+
+</div>
+</body>
+</html>

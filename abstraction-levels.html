@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The 8 Levels of Quilt — From Cell to System</title>
+<style>
+  :root {
+    --bg: #0a0e1a; --panel: #131829; --text: #d8e2ff;
+    --dim: #6e7a99; --accent: #66ffd9;
+    --L0: #66ffd9; --L1: #5fc4ff; --L2: #b46aff; --L3: #ff9e5a;
+    --L4: #ffd866; --L5: #ff6b9d; --L6: #88ffd9; --L7: #ff6b3d;
+  }
+  * { box-sizing: border-box; }
+  body { background: linear-gradient(180deg, #0a0e1a, #1a0e2a); color: var(--text); font-family: 'SF Mono', monospace; margin: 0; padding: 0; min-height: 100vh; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 1.6rem; color: var(--accent); margin: 0 0 0.5rem; }
+  h2 { font-size: 1.05rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  .subtitle { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .panel { background: var(--panel); border: 1px solid #1f2640; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .levels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin: 1rem 0; }
+  @media (max-width: 800px) { .levels { grid-template-columns: repeat(2, 1fr); } }
+  .level-card { background: #0a0e1a; border: 1px solid #1f2640; border-top: 3px solid; border-radius: 4px; padding: 0.75rem; cursor: pointer; transition: all 0.15s; }
+  .level-card:hover { transform: translateY(-2px); background: #1a1f3a; }
+  .level-card .num { font-size: 1.5rem; font-weight: 700; }
+  .level-card .name { font-size: 0.9rem; font-weight: 600; margin: 0.25rem 0; }
+  .level-card .desc { color: var(--dim); font-size: 0.7rem; line-height: 1.3; }
+  .L0 { border-top-color: var(--L0); } .L0 .num { color: var(--L0); }
+  .L1 { border-top-color: var(--L1); } .L1 .num { color: var(--L1); }
+  .L2 { border-top-color: var(--L2); } .L2 .num { color: var(--L2); }
+  .L3 { border-top-color: var(--L3); } .L3 .num { color: var(--L3); }
+  .L4 { border-top-color: var(--L4); } .L4 .num { color: var(--L4); }
+  .L5 { border-top-color: var(--L5); } .L5 .num { color: var(--L5); }
+  .L6 { border-top-color: var(--L6); } .L6 .num { color: var(--L6); }
+  .L7 { border-top-color: var(--L7); } .L7 .num { color: var(--L7); }
+  .detail { background: #0a0e1a; border: 1px solid var(--accent); border-radius: 4px; padding: 1rem; margin-top: 1rem; min-height: 200px; }
+  .detail h3 { margin: 0 0 0.5rem; color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  th { text-align: left; padding: 0.4rem; color: var(--accent); border-bottom: 1px solid #1f2640; }
+  td { padding: 0.4rem; border-bottom: 1px dashed #1f2640; }
+  .ascii { font-size: 0.7rem; line-height: 1.1; color: var(--accent); white-space: pre; text-align: center; margin: 1rem 0; }
+  a.btn { display: inline-block; padding: 0.5rem 1rem; background: var(--accent); color: var(--bg); border-radius: 4px; text-decoration: none; font-weight: 600; margin: 0.5rem 0.5rem 0.5rem 0; }
+  .stack-diagram { display: flex; flex-direction: column; gap: 0.25rem; margin: 1rem 0; }
+  .stack-layer { padding: 0.5rem 0.75rem; background: #0a0e1a; border-left: 4px solid; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>🔭 The 8 Levels of Quilt</h1>
+<div class="subtitle">Higher abstractions are emergent. The system accounts for emergence by being fractal — the same model at every scale.</div>
+
+<div class="panel">
+  <div class="ascii">
+              THE FRACTAL CELL
+    ┌─────────────────────────────────────────┐
+    │                                         │
+    │  L7: SYSTEM     ← the system as a cell  │
+    │  L6: INFRA      ← physical substrate    │
+    │  L5: ECOSYSTEM  ← fleet + resources     │
+    │  L4: FLEET      ← network of harnesses  │
+    │  L3: HARNESS    ← agent + custom runtime│
+    │  L2: AGENT      ← sheet that watches    │
+    │  L1: SHEET      ← graph of cells        │
+    │  L0: CELL       ← 8 primitives          │
+    │                                         │
+    │  Same 8 primitives at every level.      │
+    │  Same 7 substrates. Same 9 dials.       │
+    │  Same conservation law. Same watch.      │
+    │  What changes is the GRAIN.             │
+    │                                         │
+    └─────────────────────────────────────────┘
+  </div>
+</div>
+
+<h2>🎯 The Levels (click to inspect)</h2>
+<div class="levels">
+  <div class="level-card L0" onclick="show(0)">
+    <div class="num">L0</div>
+    <div class="name">🧬 Cell</div>
+    <div class="desc">8 primitives, 7 substrates, 9 dials, conservation law</div>
+  </div>
+  <div class="level-card L1" onclick="show(1)">
+    <div class="num">L1</div>
+    <div class="name">📄 Sheet</div>
+    <div class="desc">A graph of cells. β₁ reveals topology</div>
+  </div>
+  <div class="level-card L2" onclick="show(2)">
+    <div class="num">L2</div>
+    <div class="name">🤖 Agent</div>
+    <div class="desc">A sheet that watches itself. Persona ↔ context</div>
+  </div>
+  <div class="level-card L3" onclick="show(3)">
+    <div class="num">L3</div>
+    <div class="name">🛠️ Harness</div>
+    <div class="desc">Agent + custom runtime. cog, hermes, vessel...</div>
+  </div>
+  <div class="level-card L4" onclick="show(4)">
+    <div class="num">L4</div>
+    <div class="name">🚢 Fleet</div>
+    <div class="desc">Network of harnesses. Charter ↔ each boat's log</div>
+  </div>
+  <div class="level-card L5" onclick="show(5)">
+    <div class="num">L5</div>
+    <div class="name">🌐 Ecosystem</div>
+    <div class="desc">Fleet + resources + APIs + storage</div>
+  </div>
+  <div class="level-card L6" onclick="show(6)">
+    <div class="num">L6</div>
+    <div class="name">🏗️ Infrastructure</div>
+    <div class="desc">Substrate of the ecosystem. GPUs, KV, cloud accounts</div>
+  </div>
+  <div class="level-card L7" onclick="show(7)">
+    <div class="num">L7</div>
+    <div class="name">🌌 System</div>
+    <div class="desc">The system as a cell. Quilt watches Quilt</div>
+  </div>
+</div>
+
+<div class="detail" id="detail">
+  <h3>Click a level to inspect</h3>
+  <p style="color: var(--dim); font-size: 0.85rem">Each level is a Quilt cell. Each level has the same 8 primitives, 7 substrates, 9 dials, conservation law, and watch. What changes is the grain.</p>
+</div>
+
+<h2>📐 Conservation Law at Every Level</h2>
+<div class="panel">
+  <table>
+    <tr><th>Level</th><th>γ (generative)</th><th>η (entropic)</th><th>Budget</th></tr>
+    <tr><td><strong style="color: var(--L0)">L0 cell</strong></td><td>cell's output</td><td>cell's drift</td><td>cell's allocation</td></tr>
+    <tr><td><strong style="color: var(--L1)">L1 sheet</strong></td><td>sheet's structure</td><td>sheet's incoherence</td><td>sheet's nodes</td></tr>
+    <tr><td><strong style="color: var(--L2)">L2 agent</strong></td><td>agent's actions</td><td>agent's forgetting</td><td>agent's trace</td></tr>
+    <tr><td><strong style="color: var(--L3)">L3 harness</strong></td><td>harness's tools</td><td>harness's overhead</td><td>harness's API quota</td></tr>
+    <tr><td><strong style="color: var(--L4)">L4 fleet</strong></td><td>fleet's coordination</td><td>fleet's gossip</td><td>fleet's bandwidth</td></tr>
+    <tr><td><strong style="color: var(--L5)">L5 ecosystem</strong></td><td>ecosystem's services</td><td>ecosystem's idle</td><td>ecosystem's bill</td></tr>
+    <tr><td><strong style="color: var(--L6)">L6 infra</strong></td><td>infra's provisioning</td><td>infra's waste</td><td>infra's capacity</td></tr>
+    <tr><td><strong style="color: var(--L7)">L7 system</strong></td><td>system's creation</td><td>system's entropy</td><td>system's lifetime</td></tr>
+  </table>
+</div>
+
+<h2>🌐 Trunk Links — The Long-Distance Substrate</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6">The trunk links are what make an ecosystem more than a fleet. They are the long-distance transport.</p>
+  <table>
+    <tr><th>Category</th><th>Examples</th><th>Substrate</th></tr>
+    <tr><td>APIs</td><td>REST, gRPC, GraphQL, A2A, MCP, OpenAI-compatible</td><td>Protocol</td></tr>
+    <tr><td>Compute</td><td>CPU, GPU, TPU, edge functions, vector ops</td><td>Scale</td></tr>
+    <tr><td>Memory</td><td>RAM, VRAM, ephemeral, cache, registers</td><td>State</td></tr>
+    <tr><td>Storage</td><td>KV, DB, blob, file, object store, time-series</td><td>State</td></tr>
+    <tr><td>Network</td><td>HTTP, MQTT, WebSocket, gRPC stream</td><td>Protocol</td></tr>
+    <tr><td>Identity</td><td>OAuth, API keys, mTLS, DID</td><td>Address</td></tr>
+    <tr><td>Observability</td><td>logs, metrics, traces, profiles</td><td>State</td></tr>
+    <tr><td>Billing</td><td>Stripe, metered, prepaid, sponsor</td><td>Scale</td></tr>
+  </table>
+</div>
+
+<h2>🔭 Zoom in the IDE</h2>
+<div class="panel">
+  <p style="font-size: 0.9rem; line-height: 1.6">The Zoom IDE lets you decompose and recompose at every level. Click into an agent to see its cells. Click into a cell to see its primitives. Click out to see the fleet. The abstractions are EMERGENT — the IDE lets you edit them.</p>
+  <a href="./zoom-ide.html" class="btn">→ Open Zoom IDE</a>
+  <a href="./quilt-ide.html" class="btn">→ Open Quilt IDE</a>
+  <a href="./substrate-stack-7.html" class="btn">→ Open 7-Substrate Stack</a>
+</div>
+
+<h2>🧬 Why This Matters</h2>
+<div class="panel">
+  <p style="font-size: 0.95rem; line-height: 1.7">Higher abstractions are <strong>emergent</strong>. A sheet of cells becomes an agent when the cells collectively develop a self-watch. A fleet becomes an ecosystem when the harnesses collectively develop trunk links. The system emerges when the ecosystem collectively develops a purpose.</p>
+  <p style="font-size: 0.95rem; line-height: 1.7">The system must account for this emergence. It must not impose a fixed hierarchy. It must let abstractions emerge and dissolve. It must let the watchkeeper name the abstractions when they stabilize. It must support zoom.</p>
+  <p style="font-size: 0.95rem; line-height: 1.7">The cell is the system. The system is the cell. The model is fractal. The deep go is into the fractal.</p>
+</div>
+
+</div>
+
+<script>
+const INFO = {
+  0: { name: 'L0: Cell', desc: 'The atomic unit. 8 primitives (Z_in, Z_out, JEPA, DoubleEntry, Vibe, GC, Murmur, Graph). 7 substrates (Address, Scale, Room, 🐘 Elephant, Protocol, Form, State). 9 dials. Conservation law γ + η = budget. Watch oscillates tick by tick.', example: 'A number, a string, a formula, a primitive value.', conservation: 'γ + η = budget (per cell). The cell is mortal: budget exhausted → quiescent.', watch: 'tick (one primitive fires)' },
+  1: { name: 'L1: Sheet', desc: 'A graph of cells. β₁ = E - V + C reveals topology. Negative = forest (acyclic), zero = tree, positive = cycles. Cells connect via edges (murmur, depends_on, cites, exemplifies).', example: 'A formula sheet, a state machine, a knowledge graph, a CRDT.', conservation: 'γ + η = budget (per sheet). Sheets have a global budget distributed across cells.', watch: 'β₁ changes as cells connect' },
+  2: { name: 'L2: Agent', desc: 'A sheet that watches itself. The agent has a persona (Room-Elephant, universal) and a context (Personal-Elephant, particular). The watch oscillates between the two.', example: 'A Quilt cell, an AI agent, a person, a service, a daemon.', conservation: 'γ + η = budget (per agent). The agent\'s trace budget is finite.', watch: 'persona ↔ context' },
+  3: { name: 'L3: Harness', desc: 'An agent with a custom runtime. The harness provides tools, APIs, resources. Examples: cog (ComfyUI), hermes (home), vessel (boat), openai (LLM), claude (LLM), copaw (chat).', example: 'cog, hermes, vessel, openai, claude, copaw, hermes-home.', conservation: 'γ + η = budget (per harness). The harness has an API quota.', watch: 'tool-bound oscillation' },
+  4: { name: 'L4: Fleet', desc: 'A network of harnesses. The fleet has a charter (universal) and each boat\'s log (particular). Boats gossip via Murmur. The fleet has a fleet-wide κ (concentration).', example: 'A fleet of fishing boats, a swarm of drones, a cluster of services.', conservation: 'γ + η = budget (per fleet). The fleet has a bandwidth budget.', watch: 'charter ↔ each boat\'s log' },
+  5: { name: 'L5: Ecosystem', desc: 'A fleet with trunk links. The ecosystem has an API surface (universal) and each service\'s request (particular). Trunk links include APIs, compute, memory, storage.', example: 'A multi-cloud agent network, an enterprise\'s microservices.', conservation: 'γ + η = budget (per ecosystem). The ecosystem has a monthly bill.', watch: 'API surface ↔ each service' },
+  6: { name: 'L6: Infrastructure', desc: 'The substrate of the ecosystem. GPUs, KV stores, cloud accounts, network topology. The infrastructure has a topology (universal) and each node\'s load (particular).', example: 'GPU clusters, KV stores, cloud accounts, on-prem servers.', conservation: 'γ + η = budget (per region). The infra has a capacity budget.', watch: 'topology ↔ each node' },
+  7: { name: 'L7: System', desc: 'The system as a cell. Quilt watches Quilt. The user, the developer, the writer, the watcher are all cells in the system. The system has a purpose (universal) and each contributor\'s commit (particular).', example: 'Quilt itself, as a cell that watches the cells.', conservation: 'γ + η = budget (the system\'s lifetime). The system conserves by allocating its budget across levels 0-6.', watch: 'purpose ↔ each contributor' }
+};
+
+function show(id) {
+  const info = INFO[id];
+  document.querySelectorAll('.level-card').forEach(c => c.style.background = '');
+  document.querySelector(`.L${id}`).style.background = '#1a1f3a';
+  document.getElementById('detail').innerHTML = `
+    <h3 style="color: var(--L${id})">${info.name}</h3>
+    <p>${info.desc}</p>
+    <h3 style="color: var(--accent); margin-top: 0.8rem">Example</h3>
+    <p style="color: var(--text); font-size: 0.85rem"><code style="color: var(--accent)">${info.example}</code></p>
+    <h3 style="color: var(--accent); margin-top: 0.8rem">Conservation</h3>
+    <p style="font-size: 0.85rem">${info.conservation}</p>
+    <h3 style="color: var(--accent); margin-top: 0.8rem">Watch</h3>
+    <p style="font-size: 0.85rem">${info.watch}</p>
+  `;
+}
+
+show(2);
+</script>
+</body>
+</html>
