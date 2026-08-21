@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<!--
+  rooms-quilt.html — The spatial registry as a Quilt sheet.
+
+  The terrain family (SuperInstance/terrain, spatial-registry, mud-engine,
+  elephant, hermit-crab) defines a sophisticated spatial world model:
+  4 worlds, 33 rooms, 6 cross-world portals. The room is the atomic unit
+  of space. The portal is the connection. The world is the collection.
+
+  This page is the Quilt bridge: each room becomes a Quilt cell, each
+  portal becomes a Quilt cell, each world becomes a Quilt cell. The
+  full registry becomes a Quilt sheet (a graph of cells).
+
+  3 views from the same cell graph:
+  - TOP (spatial): the 33 rooms plotted by (x, y), colored by world
+  - FRONT (signals): active rooms, recent activity, agent presence
+  - SIDE (temporal): a timeline of room visits and cross-world jumps
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quilt Rooms — the spatial registry as a cell graph</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+    --plato: #58a6ff; --oq: #a371f7; --tap: #f0883e; --scumm: #3fb950;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .toolbar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-left: auto; }
+  button, select {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: white; }
+  .container { display: grid; grid-template-columns: 240px 1fr; height: calc(100vh - 70px); }
+  .sidebar {
+    background: #0d1117; border-right: 1px solid var(--border);
+    padding: 0.8rem; overflow-y: auto;
+  }
+  .sidebar h3 { margin: 0.5rem 0 0.3rem; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .main { display: flex; flex-direction: column; overflow: hidden; }
+  .view-tabs { display: flex; gap: 0.2rem; padding: 0.5rem; background: #0d1117; border-bottom: 1px solid var(--border); }
+  .view-tab { padding: 0.4rem 0.9rem; cursor: pointer; border-radius: 4px; font-size: 0.85rem; color: var(--muted); }
+  .view-tab.active { background: var(--panel); color: var(--fg); }
+  .view-area { flex: 1; overflow: auto; padding: 1rem; position: relative; }
+  .status-bar { padding: 0.4rem 1rem; background: #0d1117; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); }
+
+  /* World list (sidebar) */
+  .world-row {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.4rem 0.6rem; margin-bottom: 0.3rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .world-row .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .world-row .name { flex: 1; font-size: 0.85rem; }
+  .world-row .count { font-size: 0.75rem; color: var(--muted); }
+
+  /* TOP view (spatial map) */
+  .map-area {
+    position: relative; background: #04111c;
+    border: 1px solid var(--border); border-radius: 4px;
+    width: 100%; height: 600px;
+    background-image:
+      linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent);
+    background-size: 40px 40px;
+    overflow: hidden;
+  }
+  .room {
+    position: absolute; width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.5);
+    cursor: pointer; transition: all 0.15s;
+    transform: translate(-50%, -50%);
+  }
+  .room:hover { transform: translate(-50%, -50%) scale(1.5); z-index: 10; }
+  .room.selected { box-shadow: 0 0 12px var(--accent); }
+  .room.plato { background: var(--plato); }
+  .room.oq { background: var(--oq); }
+  .room.tap { background: var(--tap); }
+  .room.scumm { background: var(--scumm); }
+  .room .label {
+    position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+    font-size: 0.65rem; color: var(--fg); white-space: nowrap;
+    pointer-events: none; opacity: 0.7;
+  }
+  .exit {
+    position: absolute; height: 1px; background: rgba(255,255,255,0.15);
+    transform-origin: 0 50%;
+    pointer-events: none;
+  }
+  .exit.cross-world {
+    background: var(--orange); height: 2px; opacity: 0.6;
+  }
+
+  /* FRONT view (dashboard) */
+  .dash-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.7rem;
+  }
+  .dash-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.8rem;
+  }
+  .dash-card .world-tag {
+    display: inline-block; padding: 0.1rem 0.4rem; border-radius: 3px;
+    font-size: 0.7rem; color: white;
+  }
+  .dash-card .world-tag.plato { background: var(--plato); }
+  .dash-card .world-tag.oq { background: var(--oq); }
+  .dash-card .world-tag.tap { background: var(--tap); }
+  .dash-card .world-tag.scumm { background: var(--scumm); }
+  .dash-card .name { font-weight: bold; font-size: 0.95rem; margin: 0.3rem 0; }
+  .dash-card .meta { font-size: 0.75rem; color: var(--muted); }
+  .dash-card .tags { margin-top: 0.3rem; }
+  .dash-card .tag {
+    display: inline-block; background: #21262d;
+    padding: 0.05rem 0.3rem; border-radius: 3px; font-size: 0.7rem;
+    margin-right: 0.2rem;
+  }
+  .dash-card .address {
+    font-family: ui-monospace, monospace; font-size: 0.7rem;
+    color: var(--accent); margin-top: 0.3rem; word-break: break-all;
+  }
+
+  /* SIDE view (timeline) */
+  .timeline-area {
+    position: relative; background: #04111c;
+    border: 1px solid var(--border); border-radius: 4px;
+    width: 100%; min-height: 500px;
+    overflow: auto;
+    padding: 1rem;
+  }
+  .track {
+    display: grid; grid-template-columns: 160px 1fr;
+    margin-bottom: 0.4rem; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 4px;
+    min-height: 60px;
+  }
+  .track .name { padding: 0.5rem; border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; }
+  .track .name .label { font-weight: bold; font-size: 0.85rem; }
+  .track .name .kind { font-size: 0.7rem; color: var(--muted); }
+  .track .timeline {
+    position: relative; min-height: 60px;
+    background: linear-gradient(90deg, transparent 0%, transparent 100%);
+    background-size: 10% 100%;
+  }
+  .tl-event {
+    position: absolute; top: 8px; height: 44px;
+    background: var(--accent); border-radius: 3px;
+    padding: 0.3rem 0.4rem; font-size: 0.7rem;
+    cursor: pointer; overflow: hidden;
+  }
+  .tl-event.visited { background: var(--ok); }
+  .tl-event.cross-world { background: var(--orange); }
+  .tl-event.locked { background: var(--err); }
+
+  .legend { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .legend span { display: inline-block; margin-right: 0.8rem; }
+  .legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 0.2rem; vertical-align: middle; }
+  .empty { text-align: center; padding: 2rem; color: var(--muted); }
+  code {
+    background: #21262d; padding: 0.1rem 0.3rem; border-radius: 3px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    color: var(--accent); font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🏛 Quilt Rooms</h1>
+    <div class="subtitle">the spatial registry as a cell graph — 4 worlds, 33 rooms, 6 cross-world portals</div>
+  </div>
+  <div class="toolbar">
+    <button class="primary" id="loadBtn">Load from bridge</button>
+    <button id="randomPathBtn">🎲 Sample path</button>
+    <button id="bfsBtn">🔍 BFS all paths</button>
+  </div>
+</div>
+
+<div class="container">
+  <aside class="sidebar">
+    <h3>Worlds</h3>
+    <div id="worldList"></div>
+
+    <h3>Selected room</h3>
+    <div id="roomInfo" class="dash-card">
+      <div class="subtitle">Click a room on the map to inspect.</div>
+    </div>
+
+    <h3>Cross-world portals</h3>
+    <div id="portalList" style="font-size: 0.8rem; color: var(--muted);"></div>
+  </aside>
+
+  <main class="main">
+    <div class="view-tabs">
+      <div class="view-tab active" data-view="map">🗺 TOP (spatial)</div>
+      <div class="view-tab" data-view="dash">📊 FRONT (dashboard)</div>
+      <div class="view-tab" data-view="time">⏪ SIDE (timeline)</div>
+    </div>
+    <div class="view-area" id="viewArea"></div>
+    <div class="status-bar" id="statusBar">Ready. Click "Load from bridge" to populate.</div>
+  </main>
+</div>
+
+<script>
+// ============================================================================
+// State
+// ============================================================================
+const state = {
+  cells: [],
+  rooms: [],         // { id, name, worldId, x, y, z, tags, address }
+  exits: [],         // { id, from, to, type, direction, crossWorld }
+  worlds: [],        // { id, name, color, frame, roomCount }
+  view: 'map',
+  selectedRoom: null,
+};
+
+// ============================================================================
+// Bridge: load from the spatial-registry → Quilt file
+// ============================================================================
+async function loadFromBridge() {
+  try {
+    const resp = await fetch('./bridges/spatial-quilt.qzt');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const sheet = await resp.json();
+    state.cells = sheet.cells;
+
+    // Extract worlds
+    state.worlds = sheet.cells
+      .filter(c => c.path === c.path.match(/^world\.[^.]+\.name$/)?.[0] && c.kind === 'value')
+      .map(c => {
+        const wid = c.path.split('.')[1];
+        const frameCell = sheet.cells.find(x => x.path === `world.${wid}.frame`);
+        const countCell = sheet.cells.find(x => x.path === `world.${wid}.room_count`);
+        return {
+          id: wid,
+          name: c.value,
+          color: getWorldColor(wid),
+          frame: frameCell ? frameCell.value : '?',
+          roomCount: countCell ? countCell.value : 0,
+        };
+      });
+
+    // Extract rooms
+    state.rooms = sheet.cells
+      .filter(c => c.path.match(/^room\.[^.]+\.[^.]+\.name$/))
+      .map(c => {
+        const parts = c.path.split('.');
+        const worldId = parts[1];
+        const roomId = parts[2];
+        const coordCell = sheet.cells.find(x => x.path === `room.${worldId}.${roomId}.coordinates`);
+        const tagsCell = sheet.cells.find(x => x.path === `room.${worldId}.${roomId}.tags`);
+        const addrCell = sheet.cells.find(x => x.path === `room.${worldId}.${roomId}.address`);
+        const distCell = sheet.cells.find(x => x.path === `room.${worldId}.${roomId}.distance`);
+        const c2 = coordCell ? coordCell.value : { x: 0, y: 0, z: 0 };
+        return {
+          id: roomId,
+          name: c.value,
+          worldId,
+          x: c2.x, y: c2.y, z: c2.z,
+          tags: tagsCell ? tagsCell.value : [],
+          address: addrCell ? addrCell.value : '',
+          distance: distCell ? distCell.value : 0,
+        };
+      });
+
+    // Extract exits
+    state.exits = sheet.cells
+      .filter(c => c.path.match(/^portal\..+\.from$/))
+      .map(c => {
+        const portalId = c.path.split('.')[1];
+        const toCell = sheet.cells.find(x => x.path === `portal.${portalId}.to`);
+        const typeCell = sheet.cells.find(x => x.path === `portal.${portalId}.type`);
+        const dirCell = sheet.cells.find(x => x.path === `portal.${portalId}.direction`);
+        const crossCell = sheet.cells.find(x => x.path === `portal.${portalId}.cross_world`);
+        return {
+          id: portalId,
+          from: c.value,
+          to: toCell ? toCell.value : '?',
+          type: typeCell ? typeCell.value : 'walk',
+          direction: dirCell ? dirCell.value : null,
+          crossWorld: crossCell ? crossCell.value : false,
+        };
+      });
+
+    renderAll();
+    const stats = sheet.metadata;
+    document.getElementById('statusBar').textContent =
+      `✓ Loaded: ${stats['n_worlds']} worlds, ${stats['n_rooms']} rooms, ${stats['n_exits']} exits (${sheet.cells.length} cells)`;
+    document.getElementById('statusBar').style.color = 'var(--ok)';
+  } catch (e) {
+    document.getElementById('statusBar').textContent = '✗ Load failed: ' + e.message;
+    document.getElementById('statusBar').style.color = 'var(--err)';
+  }
+}
+
+function getWorldColor(wid) {
+  if (wid === 'platos-shell') return 'plato';
+  if (wid === 'officers-quarters') return 'oq';
+  if (wid === 'the-tap') return 'tap';
+  if (wid === 'scummvm-arcade') return 'scumm';
+  return 'plato';
+}
+
+// ============================================================================
+// Render
+// ============================================================================
+function renderAll() {
+  renderSidebar();
+  renderView();
+}
+
+function renderSidebar() {
+  // World list
+  const list = document.getElementById('worldList');
+  list.innerHTML = '';
+  for (const w of state.worlds) {
+    const row = document.createElement('div');
+    row.className = 'world-row';
+    row.innerHTML = `
+      <div class="dot" style="background: var(--${w.color})"></div>
+      <div class="name">${w.name}</div>
+      <div class="count">${w.roomCount} rooms</div>
+    `;
+    list.appendChild(row);
+  }
+  // Portal list (cross-world only)
+  const portalList = document.getElementById('portalList');
+  const xWorlds = state.exits.filter(e => e.crossWorld);
+  portalList.innerHTML = '';
+  for (const e of xWorlds) {
+    const div = document.createElement('div');
+    div.style.cssText = 'padding: 0.2rem 0; border-bottom: 1px solid var(--border);';
+    div.innerHTML = `<span style="color:var(--orange)">⟷</span> ${e.from} <span style="color:var(--muted)">→</span> ${e.to}`;
+    portalList.appendChild(div);
+  }
+  if (xWorlds.length === 0) portalList.innerHTML = '<div>No cross-world portals yet.</div>';
+}
+
+function selectRoom(r) {
+  state.selectedRoom = r;
+  document.querySelectorAll('.room').forEach(el => el.classList.remove('selected'));
+  const el = document.querySelector(`.room[data-id="${r.id}"]`);
+  if (el) el.classList.add('selected');
+  const info = document.getElementById('roomInfo');
+  info.innerHTML = `
+    <span class="world-tag ${getWorldColor(r.worldId)}">${state.worlds.find(w => w.id === r.worldId)?.name || r.worldId}</span>
+    <div class="name">${r.name}</div>
+    <div class="meta">coordinates (${r.x}, ${r.y}, ${r.z})</div>
+    <div class="tags">${r.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    <div class="address">${r.address}</div>
+    <div class="meta" style="margin-top:0.3rem">distance from origin: ${r.distance}</div>
+  `;
+}
+
+function renderView() {
+  const area = document.getElementById('viewArea');
+  if (state.view === 'map') renderMap(area);
+  else if (state.view === 'dash') renderDash(area);
+  else if (state.view === 'time') renderTime(area);
+}
+
+function renderMap(area) {
+  area.innerHTML = '';
+  const legend = document.createElement('div');
+  legend.className = 'legend';
+  legend.innerHTML = `
+    <span><span class="swatch" style="background: var(--plato)"></span>Plato's Shell</span>
+    <span><span class="swatch" style="background: var(--oq)"></span>Officers' Quarters</span>
+    <span><span class="swatch" style="background: var(--tap)"></span>The Tap</span>
+    <span><span class="swatch" style="background: var(--scumm)"></span>ScummVM Arcade</span>
+    <span style="margin-left:1rem"><span class="swatch" style="background: var(--orange); border-radius: 0; height: 2px;"></span>cross-world portal</span>
+  `;
+  area.appendChild(legend);
+
+  const map = document.createElement('div');
+  map.className = 'map-area';
+  area.appendChild(map);
+
+  // Compute bounds
+  let minX = 0, maxX = 0, minY = 0, maxY = 0;
+  for (const r of state.rooms) {
+    minX = Math.min(minX, r.x);
+    maxX = Math.max(maxX, r.x);
+    minY = Math.min(minY, r.y);
+    maxY = Math.max(maxY, r.y);
+  }
+  const padding = 30;
+  const w = map.clientWidth - 2 * padding;
+  const h = map.clientHeight - 2 * padding;
+  const rangeX = Math.max(1, maxX - minX);
+  const rangeY = Math.max(1, maxY - minY);
+  const scaleX = w / rangeX;
+  const scaleY = h / rangeY;
+  const scale = Math.min(scaleX, scaleY) * 0.8;
+
+  const project = (r) => ({
+    px: padding + (r.x - minX) * scale,
+    py: map.clientHeight - padding - (r.y - minY) * scale,  // flip Y
+  });
+
+  // Draw exits first (so rooms overlay them)
+  for (const e of state.exits) {
+    const from = state.rooms.find(r => r.id === e.from);
+    const to = state.rooms.find(r => r.id === e.to);
+    if (!from || !to) continue;
+    const fp = project(from);
+    const tp = project(to);
+    const dx = tp.px - fp.px;
+    const dy = tp.py - fp.py;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    if (len < 2) continue;
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const line = document.createElement('div');
+    line.className = 'exit' + (e.crossWorld ? ' cross-world' : '');
+    line.style.left = fp.px + 'px';
+    line.style.top = fp.py + 'px';
+    line.style.width = len + 'px';
+    line.style.transform = `rotate(${angle}deg)`;
+    line.title = `${e.from} → ${e.to}${e.crossWorld ? ' (cross-world)' : ''}`;
+    map.appendChild(line);
+  }
+
+  // Draw rooms
+  for (const r of state.rooms) {
+    const p = project(r);
+    const div = document.createElement('div');
+    div.className = `room ${getWorldColor(r.worldId)}`;
+    div.dataset.id = r.id;
+    div.style.left = p.px + 'px';
+    div.style.top = p.py + 'px';
+    div.title = `${r.name} (${r.worldId})`;
+    div.onclick = () => selectRoom(r);
+    map.appendChild(div);
+    // Label
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = r.name;
+    map.appendChild(label);
+    label.style.left = p.px + 'px';
+    label.style.top = (p.py + 14) + 'px';
+  }
+}
+
+function renderDash(area) {
+  area.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'dash-grid';
+  for (const r of state.rooms) {
+    const card = document.createElement('div');
+    card.className = 'dash-card';
+    card.innerHTML = `
+      <span class="world-tag ${getWorldColor(r.worldId)}">${r.worldId}</span>
+      <div class="name">${r.name}</div>
+      <div class="meta">coords (${r.x}, ${r.y}, ${r.z}) · distance ${r.distance}</div>
+      <div class="tags">${r.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="address">${r.address}</div>
+    `;
+    card.onclick = () => selectRoom(r);
+    grid.appendChild(card);
+  }
+  area.appendChild(grid);
+}
+
+function renderTime(area) {
+  area.innerHTML = '';
+  const legend = document.createElement('div');
+  legend.className = 'legend';
+  legend.innerHTML = `
+    <span><span class="swatch" style="background: var(--accent)"></span>visit</span>
+    <span><span class="swatch" style="background: var(--ok)"></span>visited (resolved)</span>
+    <span><span class="swatch" style="background: var(--orange)"></span>cross-world jump</span>
+    <span><span class="swatch" style="background: var(--err)"></span>locked</span>
+    <span style="margin-left:1rem">tracks: one per world + portals + pathfinding</span>
+  `;
+  area.appendChild(legend);
+
+  const tl = document.createElement('div');
+  tl.className = 'timeline-area';
+  area.appendChild(tl);
+
+  // Generate a synthetic timeline: a BFS walk visiting rooms in order
+  const visited = bfsWalk('wheelhouse', 30);
+  // Tracks: one per world + one for cross-world events
+  const tracks = [
+    ...state.worlds.map(w => ({
+      name: w.name, kind: 'world', worldId: w.id,
+      events: visited.filter(v => v.worldId === w.id).map((v, i) => ({
+        time: i * 5, dur: 4, kind: 'visit', text: v.name, room: v.id,
+      })),
+    })),
+    {
+      name: 'Cross-world', kind: 'portal', worldId: null,
+      events: state.exits.filter(e => e.crossWorld).map((e, i) => ({
+        time: 5 + i * 8, dur: 3, kind: 'cross-world', text: `${e.from} → ${e.to}`, portal: e.id,
+      })),
+    },
+    {
+      name: 'Pathfinding', kind: 'path', worldId: null,
+      events: visited.map((v, i) => ({
+        time: i * 3, dur: 2, kind: 'visited', text: `${i+1}. ${v.name} (${v.worldId})`, room: v.id,
+      })),
+    },
+  ];
+
+  const maxTime = 100;
+  for (const t of tracks) {
+    const tr = document.createElement('div');
+    tr.className = 'track';
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.innerHTML = `<div class="label">${t.name}</div><div class="kind">${t.kind} · ${t.events.length} events</div>`;
+    tr.appendChild(name);
+    const timeline = document.createElement('div');
+    timeline.className = 'timeline';
+    for (const e of t.events) {
+      const cell = document.createElement('div');
+      cell.className = 'tl-event ' + e.kind;
+      const left = (e.time / maxTime) * 100;
+      const width = Math.max(((e.dur || 2) / maxTime) * 100, 2);
+      cell.style.left = left + '%';
+      cell.style.width = width + '%';
+      cell.textContent = e.text;
+      cell.title = e.text;
+      timeline.appendChild(cell);
+    }
+    tr.appendChild(timeline);
+    tl.appendChild(tr);
+  }
+}
+
+function bfsWalk(start, maxSteps) {
+  if (state.rooms.length === 0) return [];
+  const adj = {};
+  for (const r of state.rooms) adj[r.id] = [];
+  for (const e of state.exits) {
+    if (adj[e.from]) adj[e.from].push(e.to);
+  }
+  const visited = [state.rooms.find(r => r.id === start) || state.rooms[0]];
+  for (let i = 0; i < maxSteps && visited.length < state.rooms.length; i++) {
+    const current = visited[visited.length - 1];
+    const neighbors = (adj[current.id] || []).filter(n => !visited.find(v => v.id === n));
+    if (neighbors.length === 0) {
+      // Bounce to a random unvisited
+      const unvisited = state.rooms.filter(r => !visited.find(v => v.id === r.id));
+      if (unvisited.length === 0) break;
+      const next = unvisited[Math.floor(Math.random() * unvisited.length)];
+      visited.push(next);
+    } else {
+      visited.push(state.rooms.find(r => r.id === neighbors[0]));
+    }
+  }
+  return visited.filter(Boolean);
+}
+
+// ============================================================================
+// Wire up
+// ============================================================================
+document.getElementById('loadBtn').onclick = loadFromBridge;
+document.querySelectorAll('.view-tab').forEach(tab => {
+  tab.onclick = () => {
+    state.view = tab.dataset.view;
+    document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t === tab));
+    renderView();
+  };
+});
+document.getElementById('randomPathBtn').onclick = () => {
+  if (state.rooms.length === 0) return;
+  // Pick a random room and walk from it
+  const start = state.rooms[Math.floor(Math.random() * state.rooms.length)];
+  selectRoom(start);
+  state.view = 'time';
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'time'));
+  renderView();
+};
+document.getElementById('bfsBtn').onclick = () => {
+  state.view = 'time';
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'time'));
+  renderView();
+};
+
+// Auto-load
+setTimeout(loadFromBridge, 100);
+</script>
+</body>
+</html>

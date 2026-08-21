@@ -1,0 +1,5236 @@
+{
+  "format": "quilt-z/1.0",
+  "name": "SuperInstance Spatial Registry \u2014 Quilt bridge",
+  "description": "spatial-registry ported to a Quilt sheet. 4 worlds, 33 rooms, 6 cross-world portals. The MUD room is a cell; the address encodes world + position; the topology is the graph.",
+  "source": "https://github.com/SuperInstance/spatial-registry (vendored in SuperInstance/terrain)",
+  "tags": [
+    "spatial",
+    "mud",
+    "registry",
+    "rooms",
+    "portals",
+    "top-view",
+    "fleet"
+  ],
+  "cells": [
+    {
+      "path": "world.platos-shell.name",
+      "kind": "value",
+      "value": "Plato's Shell",
+      "meta": {
+        "category": "world",
+        "frame": "phaser-screen"
+      }
+    },
+    {
+      "path": "world.platos-shell.frame",
+      "kind": "value",
+      "value": "phaser-screen",
+      "meta": {
+        "category": "frame"
+      }
+    },
+    {
+      "path": "world.platos-shell.room_count",
+      "kind": "value",
+      "value": 12,
+      "meta": {
+        "category": "stats"
+      }
+    },
+    {
+      "path": "world.officers-quarters.name",
+      "kind": "value",
+      "value": "Officers' Quarters",
+      "meta": {
+        "category": "world",
+        "frame": "phaser-world"
+      }
+    },
+    {
+      "path": "world.officers-quarters.frame",
+      "kind": "value",
+      "value": "phaser-world",
+      "meta": {
+        "category": "frame"
+      }
+    },
+    {
+      "path": "world.officers-quarters.room_count",
+      "kind": "value",
+      "value": 12,
+      "meta": {
+        "category": "stats"
+      }
+    },
+    {
+      "path": "world.the-tap.name",
+      "kind": "value",
+      "value": "The Tap",
+      "meta": {
+        "category": "world",
+        "frame": "d1-rooms"
+      }
+    },
+    {
+      "path": "world.the-tap.frame",
+      "kind": "value",
+      "value": "d1-rooms",
+      "meta": {
+        "category": "frame"
+      }
+    },
+    {
+      "path": "world.the-tap.room_count",
+      "kind": "value",
+      "value": 3,
+      "meta": {
+        "category": "stats"
+      }
+    },
+    {
+      "path": "world.scummvm-arcade.name",
+      "kind": "value",
+      "value": "ScummVM Arcade",
+      "meta": {
+        "category": "world",
+        "frame": "mud-grid"
+      }
+    },
+    {
+      "path": "world.scummvm-arcade.frame",
+      "kind": "value",
+      "value": "mud-grid",
+      "meta": {
+        "category": "frame"
+      }
+    },
+    {
+      "path": "world.scummvm-arcade.room_count",
+      "kind": "value",
+      "value": 6,
+      "meta": {
+        "category": "stats"
+      }
+    },
+    {
+      "path": "room.platos-shell.wheelhouse.name",
+      "kind": "value",
+      "value": "Wheelhouse"
+    },
+    {
+      "path": "room.platos-shell.wheelhouse.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.wheelhouse.tags",
+      "kind": "value",
+      "value": [
+        "command"
+      ]
+    },
+    {
+      "path": "room.platos-shell.wheelhouse.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_+0_+0"
+    },
+    {
+      "path": "room.platos-shell.wheelhouse.distance",
+      "kind": "value",
+      "value": 0.0
+    },
+    {
+      "path": "room.platos-shell.bar-rail.name",
+      "kind": "value",
+      "value": "Bar Rail"
+    },
+    {
+      "path": "room.platos-shell.bar-rail.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.bar-rail.tags",
+      "kind": "value",
+      "value": [
+        "social",
+        "hub"
+      ]
+    },
+    {
+      "path": "room.platos-shell.bar-rail.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_+1_+0"
+    },
+    {
+      "path": "room.platos-shell.bar-rail.distance",
+      "kind": "value",
+      "value": 1.0
+    },
+    {
+      "path": "room.platos-shell.poker-room.name",
+      "kind": "value",
+      "value": "Poker Room"
+    },
+    {
+      "path": "room.platos-shell.poker-room.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 1,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.poker-room.tags",
+      "kind": "value",
+      "value": [
+        "social",
+        "gaming"
+      ]
+    },
+    {
+      "path": "room.platos-shell.poker-room.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_+1_+1"
+    },
+    {
+      "path": "room.platos-shell.poker-room.distance",
+      "kind": "value",
+      "value": 1.41
+    },
+    {
+      "path": "room.platos-shell.aft-deck.name",
+      "kind": "value",
+      "value": "Aft Deck"
+    },
+    {
+      "path": "room.platos-shell.aft-deck.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.aft-deck.tags",
+      "kind": "value",
+      "value": [
+        "outdoor"
+      ]
+    },
+    {
+      "path": "room.platos-shell.aft-deck.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_+0_-1"
+    },
+    {
+      "path": "room.platos-shell.aft-deck.distance",
+      "kind": "value",
+      "value": 1.0
+    },
+    {
+      "path": "room.platos-shell.galley.name",
+      "kind": "value",
+      "value": "Galley"
+    },
+    {
+      "path": "room.platos-shell.galley.coordinates",
+      "kind": "value",
+      "value": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.galley.tags",
+      "kind": "value",
+      "value": [
+        "food"
+      ]
+    },
+    {
+      "path": "room.platos-shell.galley.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_-1_+0"
+    },
+    {
+      "path": "room.platos-shell.galley.distance",
+      "kind": "value",
+      "value": 1.0
+    },
+    {
+      "path": "room.platos-shell.engine-room.name",
+      "kind": "value",
+      "value": "Engine Room"
+    },
+    {
+      "path": "room.platos-shell.engine-room.coordinates",
+      "kind": "value",
+      "value": {
+        "x": -1,
+        "y": -1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.engine-room.tags",
+      "kind": "value",
+      "value": [
+        "mechanical"
+      ]
+    },
+    {
+      "path": "room.platos-shell.engine-room.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_-1_-1"
+    },
+    {
+      "path": "room.platos-shell.engine-room.distance",
+      "kind": "value",
+      "value": 1.41
+    },
+    {
+      "path": "room.platos-shell.forward-deck.name",
+      "kind": "value",
+      "value": "Forward Deck"
+    },
+    {
+      "path": "room.platos-shell.forward-deck.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.forward-deck.tags",
+      "kind": "value",
+      "value": [
+        "outdoor"
+      ]
+    },
+    {
+      "path": "room.platos-shell.forward-deck.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_+0_+1"
+    },
+    {
+      "path": "room.platos-shell.forward-deck.distance",
+      "kind": "value",
+      "value": 1.0
+    },
+    {
+      "path": "room.platos-shell.captains-cabin.name",
+      "kind": "value",
+      "value": "Captain's Cabin"
+    },
+    {
+      "path": "room.platos-shell.captains-cabin.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 0,
+        "y": 2,
+        "z": 1
+      }
+    },
+    {
+      "path": "room.platos-shell.captains-cabin.tags",
+      "kind": "value",
+      "value": [
+        "private"
+      ]
+    },
+    {
+      "path": "room.platos-shell.captains-cabin.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_+0_+2"
+    },
+    {
+      "path": "room.platos-shell.captains-cabin.distance",
+      "kind": "value",
+      "value": 2.24
+    },
+    {
+      "path": "room.platos-shell.crew-quarters.name",
+      "kind": "value",
+      "value": "Crew Quarters"
+    },
+    {
+      "path": "room.platos-shell.crew-quarters.coordinates",
+      "kind": "value",
+      "value": {
+        "x": -1,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.crew-quarters.tags",
+      "kind": "value",
+      "value": [
+        "living"
+      ]
+    },
+    {
+      "path": "room.platos-shell.crew-quarters.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_-1_+1"
+    },
+    {
+      "path": "room.platos-shell.crew-quarters.distance",
+      "kind": "value",
+      "value": 1.41
+    },
+    {
+      "path": "room.platos-shell.head.name",
+      "kind": "value",
+      "value": "Head"
+    },
+    {
+      "path": "room.platos-shell.head.coordinates",
+      "kind": "value",
+      "value": {
+        "x": -2,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.head.tags",
+      "kind": "value",
+      "value": [
+        "utility"
+      ]
+    },
+    {
+      "path": "room.platos-shell.head.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_-2_+0"
+    },
+    {
+      "path": "room.platos-shell.head.distance",
+      "kind": "value",
+      "value": 2.0
+    },
+    {
+      "path": "room.platos-shell.lounge.name",
+      "kind": "value",
+      "value": "Lounge"
+    },
+    {
+      "path": "room.platos-shell.lounge.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 2,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.lounge.tags",
+      "kind": "value",
+      "value": [
+        "social",
+        "rest"
+      ]
+    },
+    {
+      "path": "room.platos-shell.lounge.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_+2_+0"
+    },
+    {
+      "path": "room.platos-shell.lounge.distance",
+      "kind": "value",
+      "value": 2.0
+    },
+    {
+      "path": "room.platos-shell.store-room.name",
+      "kind": "value",
+      "value": "Store Room"
+    },
+    {
+      "path": "room.platos-shell.store-room.coordinates",
+      "kind": "value",
+      "value": {
+        "x": -2,
+        "y": -1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.platos-shell.store-room.tags",
+      "kind": "value",
+      "value": [
+        "storage"
+      ]
+    },
+    {
+      "path": "room.platos-shell.store-room.address",
+      "kind": "value",
+      "value": "room.platos-shell.cell_-2_-1"
+    },
+    {
+      "path": "room.platos-shell.store-room.distance",
+      "kind": "value",
+      "value": 2.24
+    },
+    {
+      "path": "room.officers-quarters.bridge.name",
+      "kind": "value",
+      "value": "Bridge"
+    },
+    {
+      "path": "room.officers-quarters.bridge.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 10,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.bridge.tags",
+      "kind": "value",
+      "value": [
+        "command"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.bridge.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+10_+0"
+    },
+    {
+      "path": "room.officers-quarters.bridge.distance",
+      "kind": "value",
+      "value": 10.0
+    },
+    {
+      "path": "room.officers-quarters.oq-poker-room.name",
+      "kind": "value",
+      "value": "OQ Poker Room"
+    },
+    {
+      "path": "room.officers-quarters.oq-poker-room.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 11,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-poker-room.tags",
+      "kind": "value",
+      "value": [
+        "gaming"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-poker-room.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+11_+1"
+    },
+    {
+      "path": "room.officers-quarters.oq-poker-room.distance",
+      "kind": "value",
+      "value": 11.05
+    },
+    {
+      "path": "room.officers-quarters.oq-mess.name",
+      "kind": "value",
+      "value": "OQ Mess Hall"
+    },
+    {
+      "path": "room.officers-quarters.oq-mess.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 10,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-mess.tags",
+      "kind": "value",
+      "value": [
+        "food"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-mess.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+10_+1"
+    },
+    {
+      "path": "room.officers-quarters.oq-mess.distance",
+      "kind": "value",
+      "value": 10.05
+    },
+    {
+      "path": "room.officers-quarters.oq-armory.name",
+      "kind": "value",
+      "value": "Armory"
+    },
+    {
+      "path": "room.officers-quarters.oq-armory.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-armory.tags",
+      "kind": "value",
+      "value": [
+        "weapons"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-armory.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+9_+0"
+    },
+    {
+      "path": "room.officers-quarters.oq-armory.distance",
+      "kind": "value",
+      "value": 9.0
+    },
+    {
+      "path": "room.officers-quarters.oq-sickbay.name",
+      "kind": "value",
+      "value": "Sickbay"
+    },
+    {
+      "path": "room.officers-quarters.oq-sickbay.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 11,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-sickbay.tags",
+      "kind": "value",
+      "value": [
+        "medical"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-sickbay.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+11_+0"
+    },
+    {
+      "path": "room.officers-quarters.oq-sickbay.distance",
+      "kind": "value",
+      "value": 11.0
+    },
+    {
+      "path": "room.officers-quarters.oq-brig.name",
+      "kind": "value",
+      "value": "Brig"
+    },
+    {
+      "path": "room.officers-quarters.oq-brig.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 9,
+        "y": -1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-brig.tags",
+      "kind": "value",
+      "value": [
+        "detention"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-brig.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+9_-1"
+    },
+    {
+      "path": "room.officers-quarters.oq-brig.distance",
+      "kind": "value",
+      "value": 9.06
+    },
+    {
+      "path": "room.officers-quarters.oq-comm.name",
+      "kind": "value",
+      "value": "Communications"
+    },
+    {
+      "path": "room.officers-quarters.oq-comm.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-comm.tags",
+      "kind": "value",
+      "value": [
+        "signal"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-comm.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+12_+0"
+    },
+    {
+      "path": "room.officers-quarters.oq-comm.distance",
+      "kind": "value",
+      "value": 12.0
+    },
+    {
+      "path": "room.officers-quarters.oq-radar.name",
+      "kind": "value",
+      "value": "Radar Room"
+    },
+    {
+      "path": "room.officers-quarters.oq-radar.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 12,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-radar.tags",
+      "kind": "value",
+      "value": [
+        "signal"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-radar.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+12_+1"
+    },
+    {
+      "path": "room.officers-quarters.oq-radar.distance",
+      "kind": "value",
+      "value": 12.04
+    },
+    {
+      "path": "room.officers-quarters.oq-library.name",
+      "kind": "value",
+      "value": "Library"
+    },
+    {
+      "path": "room.officers-quarters.oq-library.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 11,
+        "y": -1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-library.tags",
+      "kind": "value",
+      "value": [
+        "quiet"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-library.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+11_-1"
+    },
+    {
+      "path": "room.officers-quarters.oq-library.distance",
+      "kind": "value",
+      "value": 11.05
+    },
+    {
+      "path": "room.officers-quarters.oq-gym.name",
+      "kind": "value",
+      "value": "Gym"
+    },
+    {
+      "path": "room.officers-quarters.oq-gym.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 9,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-gym.tags",
+      "kind": "value",
+      "value": [
+        "fitness"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-gym.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+9_+1"
+    },
+    {
+      "path": "room.officers-quarters.oq-gym.distance",
+      "kind": "value",
+      "value": 9.06
+    },
+    {
+      "path": "room.officers-quarters.oq-shower.name",
+      "kind": "value",
+      "value": "Showers"
+    },
+    {
+      "path": "room.officers-quarters.oq-shower.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 10,
+        "y": -1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-shower.tags",
+      "kind": "value",
+      "value": [
+        "utility"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-shower.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+10_-1"
+    },
+    {
+      "path": "room.officers-quarters.oq-shower.distance",
+      "kind": "value",
+      "value": 10.05
+    },
+    {
+      "path": "room.officers-quarters.oq-storage.name",
+      "kind": "value",
+      "value": "OQ Storage"
+    },
+    {
+      "path": "room.officers-quarters.oq-storage.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 8,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.officers-quarters.oq-storage.tags",
+      "kind": "value",
+      "value": [
+        "storage"
+      ]
+    },
+    {
+      "path": "room.officers-quarters.oq-storage.address",
+      "kind": "value",
+      "value": "room.officers-quarters.cell_+8_+0"
+    },
+    {
+      "path": "room.officers-quarters.oq-storage.distance",
+      "kind": "value",
+      "value": 8.0
+    },
+    {
+      "path": "room.the-tap.tap-bar.name",
+      "kind": "value",
+      "value": "Tap Bar"
+    },
+    {
+      "path": "room.the-tap.tap-bar.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.the-tap.tap-bar.tags",
+      "kind": "value",
+      "value": [
+        "social",
+        "hub"
+      ]
+    },
+    {
+      "path": "room.the-tap.tap-bar.address",
+      "kind": "value",
+      "value": "room.the-tap.cell_+20_+0"
+    },
+    {
+      "path": "room.the-tap.tap-bar.distance",
+      "kind": "value",
+      "value": 20.0
+    },
+    {
+      "path": "room.the-tap.tap-back.name",
+      "kind": "value",
+      "value": "Tap Back Room"
+    },
+    {
+      "path": "room.the-tap.tap-back.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 20,
+        "y": -1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.the-tap.tap-back.tags",
+      "kind": "value",
+      "value": [
+        "private"
+      ]
+    },
+    {
+      "path": "room.the-tap.tap-back.address",
+      "kind": "value",
+      "value": "room.the-tap.cell_+20_-1"
+    },
+    {
+      "path": "room.the-tap.tap-back.distance",
+      "kind": "value",
+      "value": 20.02
+    },
+    {
+      "path": "room.the-tap.tap-patio.name",
+      "kind": "value",
+      "value": "Tap Patio"
+    },
+    {
+      "path": "room.the-tap.tap-patio.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 20,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.the-tap.tap-patio.tags",
+      "kind": "value",
+      "value": [
+        "outdoor"
+      ]
+    },
+    {
+      "path": "room.the-tap.tap-patio.address",
+      "kind": "value",
+      "value": "room.the-tap.cell_+20_+1"
+    },
+    {
+      "path": "room.the-tap.tap-patio.distance",
+      "kind": "value",
+      "value": 20.02
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-foyer.name",
+      "kind": "value",
+      "value": "Foyer"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-foyer.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-foyer.tags",
+      "kind": "value",
+      "value": [
+        "entry"
+      ]
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-foyer.address",
+      "kind": "value",
+      "value": "room.scummvm-arcade.cell_+30_+0"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-foyer.distance",
+      "kind": "value",
+      "value": 30.0
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-library.name",
+      "kind": "value",
+      "value": "Library"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-library.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 31,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-library.tags",
+      "kind": "value",
+      "value": [
+        "quiet"
+      ]
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-library.address",
+      "kind": "value",
+      "value": "room.scummvm-arcade.cell_+31_+0"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-library.distance",
+      "kind": "value",
+      "value": 31.0
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-lab.name",
+      "kind": "value",
+      "value": "Laboratory"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-lab.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 31,
+        "y": 1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-lab.tags",
+      "kind": "value",
+      "value": [
+        "science"
+      ]
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-lab.address",
+      "kind": "value",
+      "value": "room.scummvm-arcade.cell_+31_+1"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-lab.distance",
+      "kind": "value",
+      "value": 31.02
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-vault.name",
+      "kind": "value",
+      "value": "Vault"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-vault.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 32,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-vault.tags",
+      "kind": "value",
+      "value": [
+        "storage",
+        "locked"
+      ]
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-vault.address",
+      "kind": "value",
+      "value": "room.scummvm-arcade.cell_+32_+0"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-vault.distance",
+      "kind": "value",
+      "value": 32.0
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-cellar.name",
+      "kind": "value",
+      "value": "Cellar"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-cellar.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 30,
+        "y": -1,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-cellar.tags",
+      "kind": "value",
+      "value": [
+        "hidden"
+      ]
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-cellar.address",
+      "kind": "value",
+      "value": "room.scummvm-arcade.cell_+30_-1"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-cellar.distance",
+      "kind": "value",
+      "value": 30.02
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-attic.name",
+      "kind": "value",
+      "value": "Attic"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-attic.coordinates",
+      "kind": "value",
+      "value": {
+        "x": 30,
+        "y": 2,
+        "z": 0
+      }
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-attic.tags",
+      "kind": "value",
+      "value": [
+        "hidden"
+      ]
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-attic.address",
+      "kind": "value",
+      "value": "room.scummvm-arcade.cell_+30_+2"
+    },
+    {
+      "path": "room.scummvm-arcade.scumm-attic.distance",
+      "kind": "value",
+      "value": 30.07
+    },
+    {
+      "path": "portal.wheelhouse->bar-rail.from",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->bar-rail.to",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->bar-rail.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.wheelhouse->bar-rail.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.wheelhouse->bar-rail.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.wheelhouse->poker-room.from",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->poker-room.to",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.wheelhouse->poker-room.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.wheelhouse->poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.wheelhouse->aft-deck.from",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->aft-deck.to",
+      "kind": "value",
+      "value": "aft-deck",
+      "depends_on": [
+        "room.platos-shell.aft-deck.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->aft-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.wheelhouse->aft-deck.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.wheelhouse->aft-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.wheelhouse->galley.from",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->galley.to",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->galley.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.wheelhouse->galley.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.wheelhouse->galley.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.wheelhouse->engine-room.from",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->engine-room.to",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->engine-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.wheelhouse->engine-room.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.wheelhouse->engine-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.wheelhouse->forward-deck.from",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->forward-deck.to",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->forward-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.wheelhouse->forward-deck.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.wheelhouse->forward-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.wheelhouse->crew-quarters.from",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->crew-quarters.to",
+      "kind": "value",
+      "value": "crew-quarters",
+      "depends_on": [
+        "room.platos-shell.crew-quarters.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->crew-quarters.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.wheelhouse->crew-quarters.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.wheelhouse->crew-quarters.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bar-rail->wheelhouse.from",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->wheelhouse.to",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->wheelhouse.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bar-rail->wheelhouse.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.bar-rail->wheelhouse.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bar-rail->poker-room.from",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->poker-room.to",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bar-rail->poker-room.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.bar-rail->poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bar-rail->aft-deck.from",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->aft-deck.to",
+      "kind": "value",
+      "value": "aft-deck",
+      "depends_on": [
+        "room.platos-shell.aft-deck.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->aft-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bar-rail->aft-deck.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.bar-rail->aft-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bar-rail->forward-deck.from",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->forward-deck.to",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->forward-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bar-rail->forward-deck.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.bar-rail->forward-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bar-rail->lounge.from",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->lounge.to",
+      "kind": "value",
+      "value": "lounge",
+      "depends_on": [
+        "room.platos-shell.lounge.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->lounge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bar-rail->lounge.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.bar-rail->lounge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.poker-room->wheelhouse.from",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.poker-room->wheelhouse.to",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.poker-room->wheelhouse.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.poker-room->wheelhouse.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.poker-room->wheelhouse.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.poker-room->bar-rail.from",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.poker-room->bar-rail.to",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.poker-room->bar-rail.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.poker-room->bar-rail.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.poker-room->bar-rail.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.poker-room->forward-deck.from",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.poker-room->forward-deck.to",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.poker-room->forward-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.poker-room->forward-deck.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.poker-room->forward-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.poker-room->lounge.from",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.poker-room->lounge.to",
+      "kind": "value",
+      "value": "lounge",
+      "depends_on": [
+        "room.platos-shell.lounge.name"
+      ]
+    },
+    {
+      "path": "portal.poker-room->lounge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.poker-room->lounge.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.poker-room->lounge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.aft-deck->wheelhouse.from",
+      "kind": "value",
+      "value": "aft-deck",
+      "depends_on": [
+        "room.platos-shell.aft-deck.name"
+      ]
+    },
+    {
+      "path": "portal.aft-deck->wheelhouse.to",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.aft-deck->wheelhouse.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.aft-deck->wheelhouse.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.aft-deck->wheelhouse.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.aft-deck->bar-rail.from",
+      "kind": "value",
+      "value": "aft-deck",
+      "depends_on": [
+        "room.platos-shell.aft-deck.name"
+      ]
+    },
+    {
+      "path": "portal.aft-deck->bar-rail.to",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.aft-deck->bar-rail.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.aft-deck->bar-rail.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.aft-deck->bar-rail.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.aft-deck->galley.from",
+      "kind": "value",
+      "value": "aft-deck",
+      "depends_on": [
+        "room.platos-shell.aft-deck.name"
+      ]
+    },
+    {
+      "path": "portal.aft-deck->galley.to",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.aft-deck->galley.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.aft-deck->galley.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.aft-deck->galley.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.aft-deck->engine-room.from",
+      "kind": "value",
+      "value": "aft-deck",
+      "depends_on": [
+        "room.platos-shell.aft-deck.name"
+      ]
+    },
+    {
+      "path": "portal.aft-deck->engine-room.to",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.aft-deck->engine-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.aft-deck->engine-room.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.aft-deck->engine-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.galley->wheelhouse.from",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.galley->wheelhouse.to",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.galley->wheelhouse.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.galley->wheelhouse.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.galley->wheelhouse.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.galley->aft-deck.from",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.galley->aft-deck.to",
+      "kind": "value",
+      "value": "aft-deck",
+      "depends_on": [
+        "room.platos-shell.aft-deck.name"
+      ]
+    },
+    {
+      "path": "portal.galley->aft-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.galley->aft-deck.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.galley->aft-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.galley->engine-room.from",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.galley->engine-room.to",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.galley->engine-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.galley->engine-room.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.galley->engine-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.galley->forward-deck.from",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.galley->forward-deck.to",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.galley->forward-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.galley->forward-deck.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.galley->forward-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.galley->crew-quarters.from",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.galley->crew-quarters.to",
+      "kind": "value",
+      "value": "crew-quarters",
+      "depends_on": [
+        "room.platos-shell.crew-quarters.name"
+      ]
+    },
+    {
+      "path": "portal.galley->crew-quarters.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.galley->crew-quarters.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.galley->crew-quarters.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.galley->head.from",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.galley->head.to",
+      "kind": "value",
+      "value": "head",
+      "depends_on": [
+        "room.platos-shell.head.name"
+      ]
+    },
+    {
+      "path": "portal.galley->head.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.galley->head.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.galley->head.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.galley->store-room.from",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.galley->store-room.to",
+      "kind": "value",
+      "value": "store-room",
+      "depends_on": [
+        "room.platos-shell.store-room.name"
+      ]
+    },
+    {
+      "path": "portal.galley->store-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.galley->store-room.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.galley->store-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.engine-room->wheelhouse.from",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->wheelhouse.to",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->wheelhouse.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.engine-room->wheelhouse.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.engine-room->wheelhouse.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.engine-room->aft-deck.from",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->aft-deck.to",
+      "kind": "value",
+      "value": "aft-deck",
+      "depends_on": [
+        "room.platos-shell.aft-deck.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->aft-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.engine-room->aft-deck.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.engine-room->aft-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.engine-room->galley.from",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->galley.to",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->galley.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.engine-room->galley.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.engine-room->galley.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.engine-room->head.from",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->head.to",
+      "kind": "value",
+      "value": "head",
+      "depends_on": [
+        "room.platos-shell.head.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->head.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.engine-room->head.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.engine-room->head.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.engine-room->store-room.from",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->store-room.to",
+      "kind": "value",
+      "value": "store-room",
+      "depends_on": [
+        "room.platos-shell.store-room.name"
+      ]
+    },
+    {
+      "path": "portal.engine-room->store-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.engine-room->store-room.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.engine-room->store-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.forward-deck->wheelhouse.from",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->wheelhouse.to",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->wheelhouse.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.forward-deck->wheelhouse.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.forward-deck->wheelhouse.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.forward-deck->bar-rail.from",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->bar-rail.to",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->bar-rail.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.forward-deck->bar-rail.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.forward-deck->bar-rail.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.forward-deck->poker-room.from",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->poker-room.to",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.forward-deck->poker-room.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.forward-deck->poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.forward-deck->galley.from",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->galley.to",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->galley.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.forward-deck->galley.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.forward-deck->galley.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.forward-deck->captains-cabin.from",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->captains-cabin.to",
+      "kind": "value",
+      "value": "captains-cabin",
+      "depends_on": [
+        "room.platos-shell.captains-cabin.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->captains-cabin.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.forward-deck->captains-cabin.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.forward-deck->captains-cabin.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.forward-deck->crew-quarters.from",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->crew-quarters.to",
+      "kind": "value",
+      "value": "crew-quarters",
+      "depends_on": [
+        "room.platos-shell.crew-quarters.name"
+      ]
+    },
+    {
+      "path": "portal.forward-deck->crew-quarters.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.forward-deck->crew-quarters.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.forward-deck->crew-quarters.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.captains-cabin->forward-deck.from",
+      "kind": "value",
+      "value": "captains-cabin",
+      "depends_on": [
+        "room.platos-shell.captains-cabin.name"
+      ]
+    },
+    {
+      "path": "portal.captains-cabin->forward-deck.to",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.captains-cabin->forward-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.captains-cabin->forward-deck.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.captains-cabin->forward-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.crew-quarters->wheelhouse.from",
+      "kind": "value",
+      "value": "crew-quarters",
+      "depends_on": [
+        "room.platos-shell.crew-quarters.name"
+      ]
+    },
+    {
+      "path": "portal.crew-quarters->wheelhouse.to",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.crew-quarters->wheelhouse.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.crew-quarters->wheelhouse.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.crew-quarters->wheelhouse.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.crew-quarters->galley.from",
+      "kind": "value",
+      "value": "crew-quarters",
+      "depends_on": [
+        "room.platos-shell.crew-quarters.name"
+      ]
+    },
+    {
+      "path": "portal.crew-quarters->galley.to",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.crew-quarters->galley.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.crew-quarters->galley.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.crew-quarters->galley.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.crew-quarters->forward-deck.from",
+      "kind": "value",
+      "value": "crew-quarters",
+      "depends_on": [
+        "room.platos-shell.crew-quarters.name"
+      ]
+    },
+    {
+      "path": "portal.crew-quarters->forward-deck.to",
+      "kind": "value",
+      "value": "forward-deck",
+      "depends_on": [
+        "room.platos-shell.forward-deck.name"
+      ]
+    },
+    {
+      "path": "portal.crew-quarters->forward-deck.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.crew-quarters->forward-deck.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.crew-quarters->forward-deck.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.crew-quarters->head.from",
+      "kind": "value",
+      "value": "crew-quarters",
+      "depends_on": [
+        "room.platos-shell.crew-quarters.name"
+      ]
+    },
+    {
+      "path": "portal.crew-quarters->head.to",
+      "kind": "value",
+      "value": "head",
+      "depends_on": [
+        "room.platos-shell.head.name"
+      ]
+    },
+    {
+      "path": "portal.crew-quarters->head.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.crew-quarters->head.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.crew-quarters->head.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.head->galley.from",
+      "kind": "value",
+      "value": "head",
+      "depends_on": [
+        "room.platos-shell.head.name"
+      ]
+    },
+    {
+      "path": "portal.head->galley.to",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.head->galley.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.head->galley.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.head->galley.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.head->engine-room.from",
+      "kind": "value",
+      "value": "head",
+      "depends_on": [
+        "room.platos-shell.head.name"
+      ]
+    },
+    {
+      "path": "portal.head->engine-room.to",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.head->engine-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.head->engine-room.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.head->engine-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.head->crew-quarters.from",
+      "kind": "value",
+      "value": "head",
+      "depends_on": [
+        "room.platos-shell.head.name"
+      ]
+    },
+    {
+      "path": "portal.head->crew-quarters.to",
+      "kind": "value",
+      "value": "crew-quarters",
+      "depends_on": [
+        "room.platos-shell.crew-quarters.name"
+      ]
+    },
+    {
+      "path": "portal.head->crew-quarters.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.head->crew-quarters.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.head->crew-quarters.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.head->store-room.from",
+      "kind": "value",
+      "value": "head",
+      "depends_on": [
+        "room.platos-shell.head.name"
+      ]
+    },
+    {
+      "path": "portal.head->store-room.to",
+      "kind": "value",
+      "value": "store-room",
+      "depends_on": [
+        "room.platos-shell.store-room.name"
+      ]
+    },
+    {
+      "path": "portal.head->store-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.head->store-room.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.head->store-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.lounge->bar-rail.from",
+      "kind": "value",
+      "value": "lounge",
+      "depends_on": [
+        "room.platos-shell.lounge.name"
+      ]
+    },
+    {
+      "path": "portal.lounge->bar-rail.to",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.lounge->bar-rail.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.lounge->bar-rail.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.lounge->bar-rail.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.lounge->poker-room.from",
+      "kind": "value",
+      "value": "lounge",
+      "depends_on": [
+        "room.platos-shell.lounge.name"
+      ]
+    },
+    {
+      "path": "portal.lounge->poker-room.to",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.lounge->poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.lounge->poker-room.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.lounge->poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.store-room->galley.from",
+      "kind": "value",
+      "value": "store-room",
+      "depends_on": [
+        "room.platos-shell.store-room.name"
+      ]
+    },
+    {
+      "path": "portal.store-room->galley.to",
+      "kind": "value",
+      "value": "galley",
+      "depends_on": [
+        "room.platos-shell.galley.name"
+      ]
+    },
+    {
+      "path": "portal.store-room->galley.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.store-room->galley.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.store-room->galley.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.store-room->engine-room.from",
+      "kind": "value",
+      "value": "store-room",
+      "depends_on": [
+        "room.platos-shell.store-room.name"
+      ]
+    },
+    {
+      "path": "portal.store-room->engine-room.to",
+      "kind": "value",
+      "value": "engine-room",
+      "depends_on": [
+        "room.platos-shell.engine-room.name"
+      ]
+    },
+    {
+      "path": "portal.store-room->engine-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.store-room->engine-room.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.store-room->engine-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.store-room->head.from",
+      "kind": "value",
+      "value": "store-room",
+      "depends_on": [
+        "room.platos-shell.store-room.name"
+      ]
+    },
+    {
+      "path": "portal.store-room->head.to",
+      "kind": "value",
+      "value": "head",
+      "depends_on": [
+        "room.platos-shell.head.name"
+      ]
+    },
+    {
+      "path": "portal.store-room->head.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.store-room->head.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.store-room->head.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->oq-poker-room.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-poker-room.to",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bridge->oq-poker-room.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.bridge->oq-poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->oq-mess.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-mess.to",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-mess.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bridge->oq-mess.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.bridge->oq-mess.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->oq-armory.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-armory.to",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-armory.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bridge->oq-armory.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.bridge->oq-armory.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->oq-sickbay.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-sickbay.to",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-sickbay.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bridge->oq-sickbay.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.bridge->oq-sickbay.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->oq-brig.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-brig.to",
+      "kind": "value",
+      "value": "oq-brig",
+      "depends_on": [
+        "room.officers-quarters.oq-brig.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-brig.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bridge->oq-brig.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.bridge->oq-brig.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->oq-library.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-library.to",
+      "kind": "value",
+      "value": "oq-library",
+      "depends_on": [
+        "room.officers-quarters.oq-library.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-library.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bridge->oq-library.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.bridge->oq-library.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->oq-gym.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-gym.to",
+      "kind": "value",
+      "value": "oq-gym",
+      "depends_on": [
+        "room.officers-quarters.oq-gym.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-gym.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bridge->oq-gym.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.bridge->oq-gym.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->oq-shower.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-shower.to",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->oq-shower.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.bridge->oq-shower.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.bridge->oq-shower.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-poker-room->bridge.from",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->bridge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-poker-room->bridge.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-poker-room->bridge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-poker-room->oq-mess.from",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->oq-mess.to",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->oq-mess.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-poker-room->oq-mess.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-poker-room->oq-mess.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-poker-room->oq-sickbay.from",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->oq-sickbay.to",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->oq-sickbay.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-poker-room->oq-sickbay.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.oq-poker-room->oq-sickbay.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-poker-room->oq-comm.from",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->oq-comm.to",
+      "kind": "value",
+      "value": "oq-comm",
+      "depends_on": [
+        "room.officers-quarters.oq-comm.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->oq-comm.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-poker-room->oq-comm.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-poker-room->oq-comm.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-poker-room->oq-radar.from",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->oq-radar.to",
+      "kind": "value",
+      "value": "oq-radar",
+      "depends_on": [
+        "room.officers-quarters.oq-radar.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker-room->oq-radar.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-poker-room->oq-radar.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-poker-room->oq-radar.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-mess->bridge.from",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->bridge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-mess->bridge.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.oq-mess->bridge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-mess->oq-poker-room.from",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->oq-poker-room.to",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->oq-poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-mess->oq-poker-room.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-mess->oq-poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-mess->oq-armory.from",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->oq-armory.to",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->oq-armory.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-mess->oq-armory.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-mess->oq-armory.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-mess->oq-sickbay.from",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->oq-sickbay.to",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->oq-sickbay.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-mess->oq-sickbay.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-mess->oq-sickbay.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-mess->oq-gym.from",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->oq-gym.to",
+      "kind": "value",
+      "value": "oq-gym",
+      "depends_on": [
+        "room.officers-quarters.oq-gym.name"
+      ]
+    },
+    {
+      "path": "portal.oq-mess->oq-gym.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-mess->oq-gym.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-mess->oq-gym.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-armory->bridge.from",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->bridge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-armory->bridge.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-armory->bridge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-armory->oq-mess.from",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-mess.to",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-mess.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-armory->oq-mess.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-armory->oq-mess.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-armory->oq-brig.from",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-brig.to",
+      "kind": "value",
+      "value": "oq-brig",
+      "depends_on": [
+        "room.officers-quarters.oq-brig.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-brig.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-armory->oq-brig.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.oq-armory->oq-brig.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-armory->oq-gym.from",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-gym.to",
+      "kind": "value",
+      "value": "oq-gym",
+      "depends_on": [
+        "room.officers-quarters.oq-gym.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-gym.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-armory->oq-gym.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.oq-armory->oq-gym.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-armory->oq-shower.from",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-shower.to",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-shower.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-armory->oq-shower.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-armory->oq-shower.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-armory->oq-storage.from",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-storage.to",
+      "kind": "value",
+      "value": "oq-storage",
+      "depends_on": [
+        "room.officers-quarters.oq-storage.name"
+      ]
+    },
+    {
+      "path": "portal.oq-armory->oq-storage.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-armory->oq-storage.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-armory->oq-storage.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-sickbay->bridge.from",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->bridge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-sickbay->bridge.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-sickbay->bridge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-sickbay->oq-poker-room.from",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-poker-room.to",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-poker-room.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-sickbay->oq-mess.from",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-mess.to",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-mess.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-mess.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-mess.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-sickbay->oq-comm.from",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-comm.to",
+      "kind": "value",
+      "value": "oq-comm",
+      "depends_on": [
+        "room.officers-quarters.oq-comm.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-comm.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-comm.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-comm.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-sickbay->oq-radar.from",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-radar.to",
+      "kind": "value",
+      "value": "oq-radar",
+      "depends_on": [
+        "room.officers-quarters.oq-radar.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-radar.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-radar.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-radar.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-sickbay->oq-library.from",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-library.to",
+      "kind": "value",
+      "value": "oq-library",
+      "depends_on": [
+        "room.officers-quarters.oq-library.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-library.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-library.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-library.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-sickbay->oq-shower.from",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-shower.to",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-sickbay->oq-shower.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-shower.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-sickbay->oq-shower.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-brig->bridge.from",
+      "kind": "value",
+      "value": "oq-brig",
+      "depends_on": [
+        "room.officers-quarters.oq-brig.name"
+      ]
+    },
+    {
+      "path": "portal.oq-brig->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.oq-brig->bridge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-brig->bridge.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-brig->bridge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-brig->oq-armory.from",
+      "kind": "value",
+      "value": "oq-brig",
+      "depends_on": [
+        "room.officers-quarters.oq-brig.name"
+      ]
+    },
+    {
+      "path": "portal.oq-brig->oq-armory.to",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-brig->oq-armory.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-brig->oq-armory.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.oq-brig->oq-armory.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-brig->oq-shower.from",
+      "kind": "value",
+      "value": "oq-brig",
+      "depends_on": [
+        "room.officers-quarters.oq-brig.name"
+      ]
+    },
+    {
+      "path": "portal.oq-brig->oq-shower.to",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-brig->oq-shower.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-brig->oq-shower.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-brig->oq-shower.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-brig->oq-storage.from",
+      "kind": "value",
+      "value": "oq-brig",
+      "depends_on": [
+        "room.officers-quarters.oq-brig.name"
+      ]
+    },
+    {
+      "path": "portal.oq-brig->oq-storage.to",
+      "kind": "value",
+      "value": "oq-storage",
+      "depends_on": [
+        "room.officers-quarters.oq-storage.name"
+      ]
+    },
+    {
+      "path": "portal.oq-brig->oq-storage.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-brig->oq-storage.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-brig->oq-storage.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-comm->oq-poker-room.from",
+      "kind": "value",
+      "value": "oq-comm",
+      "depends_on": [
+        "room.officers-quarters.oq-comm.name"
+      ]
+    },
+    {
+      "path": "portal.oq-comm->oq-poker-room.to",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-comm->oq-poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-comm->oq-poker-room.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-comm->oq-poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-comm->oq-sickbay.from",
+      "kind": "value",
+      "value": "oq-comm",
+      "depends_on": [
+        "room.officers-quarters.oq-comm.name"
+      ]
+    },
+    {
+      "path": "portal.oq-comm->oq-sickbay.to",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-comm->oq-sickbay.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-comm->oq-sickbay.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-comm->oq-sickbay.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-comm->oq-radar.from",
+      "kind": "value",
+      "value": "oq-comm",
+      "depends_on": [
+        "room.officers-quarters.oq-comm.name"
+      ]
+    },
+    {
+      "path": "portal.oq-comm->oq-radar.to",
+      "kind": "value",
+      "value": "oq-radar",
+      "depends_on": [
+        "room.officers-quarters.oq-radar.name"
+      ]
+    },
+    {
+      "path": "portal.oq-comm->oq-radar.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-comm->oq-radar.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.oq-comm->oq-radar.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-comm->oq-library.from",
+      "kind": "value",
+      "value": "oq-comm",
+      "depends_on": [
+        "room.officers-quarters.oq-comm.name"
+      ]
+    },
+    {
+      "path": "portal.oq-comm->oq-library.to",
+      "kind": "value",
+      "value": "oq-library",
+      "depends_on": [
+        "room.officers-quarters.oq-library.name"
+      ]
+    },
+    {
+      "path": "portal.oq-comm->oq-library.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-comm->oq-library.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-comm->oq-library.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-radar->oq-poker-room.from",
+      "kind": "value",
+      "value": "oq-radar",
+      "depends_on": [
+        "room.officers-quarters.oq-radar.name"
+      ]
+    },
+    {
+      "path": "portal.oq-radar->oq-poker-room.to",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-radar->oq-poker-room.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-radar->oq-poker-room.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-radar->oq-poker-room.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-radar->oq-sickbay.from",
+      "kind": "value",
+      "value": "oq-radar",
+      "depends_on": [
+        "room.officers-quarters.oq-radar.name"
+      ]
+    },
+    {
+      "path": "portal.oq-radar->oq-sickbay.to",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-radar->oq-sickbay.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-radar->oq-sickbay.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-radar->oq-sickbay.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-radar->oq-comm.from",
+      "kind": "value",
+      "value": "oq-radar",
+      "depends_on": [
+        "room.officers-quarters.oq-radar.name"
+      ]
+    },
+    {
+      "path": "portal.oq-radar->oq-comm.to",
+      "kind": "value",
+      "value": "oq-comm",
+      "depends_on": [
+        "room.officers-quarters.oq-comm.name"
+      ]
+    },
+    {
+      "path": "portal.oq-radar->oq-comm.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-radar->oq-comm.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.oq-radar->oq-comm.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-library->bridge.from",
+      "kind": "value",
+      "value": "oq-library",
+      "depends_on": [
+        "room.officers-quarters.oq-library.name"
+      ]
+    },
+    {
+      "path": "portal.oq-library->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.oq-library->bridge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-library->bridge.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-library->bridge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-library->oq-sickbay.from",
+      "kind": "value",
+      "value": "oq-library",
+      "depends_on": [
+        "room.officers-quarters.oq-library.name"
+      ]
+    },
+    {
+      "path": "portal.oq-library->oq-sickbay.to",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-library->oq-sickbay.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-library->oq-sickbay.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.oq-library->oq-sickbay.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-library->oq-comm.from",
+      "kind": "value",
+      "value": "oq-library",
+      "depends_on": [
+        "room.officers-quarters.oq-library.name"
+      ]
+    },
+    {
+      "path": "portal.oq-library->oq-comm.to",
+      "kind": "value",
+      "value": "oq-comm",
+      "depends_on": [
+        "room.officers-quarters.oq-comm.name"
+      ]
+    },
+    {
+      "path": "portal.oq-library->oq-comm.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-library->oq-comm.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-library->oq-comm.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-library->oq-shower.from",
+      "kind": "value",
+      "value": "oq-library",
+      "depends_on": [
+        "room.officers-quarters.oq-library.name"
+      ]
+    },
+    {
+      "path": "portal.oq-library->oq-shower.to",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-library->oq-shower.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-library->oq-shower.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-library->oq-shower.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-gym->bridge.from",
+      "kind": "value",
+      "value": "oq-gym",
+      "depends_on": [
+        "room.officers-quarters.oq-gym.name"
+      ]
+    },
+    {
+      "path": "portal.oq-gym->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.oq-gym->bridge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-gym->bridge.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-gym->bridge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-gym->oq-mess.from",
+      "kind": "value",
+      "value": "oq-gym",
+      "depends_on": [
+        "room.officers-quarters.oq-gym.name"
+      ]
+    },
+    {
+      "path": "portal.oq-gym->oq-mess.to",
+      "kind": "value",
+      "value": "oq-mess",
+      "depends_on": [
+        "room.officers-quarters.oq-mess.name"
+      ]
+    },
+    {
+      "path": "portal.oq-gym->oq-mess.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-gym->oq-mess.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-gym->oq-mess.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-gym->oq-armory.from",
+      "kind": "value",
+      "value": "oq-gym",
+      "depends_on": [
+        "room.officers-quarters.oq-gym.name"
+      ]
+    },
+    {
+      "path": "portal.oq-gym->oq-armory.to",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-gym->oq-armory.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-gym->oq-armory.direction",
+      "kind": "value",
+      "value": "south"
+    },
+    {
+      "path": "portal.oq-gym->oq-armory.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-gym->oq-storage.from",
+      "kind": "value",
+      "value": "oq-gym",
+      "depends_on": [
+        "room.officers-quarters.oq-gym.name"
+      ]
+    },
+    {
+      "path": "portal.oq-gym->oq-storage.to",
+      "kind": "value",
+      "value": "oq-storage",
+      "depends_on": [
+        "room.officers-quarters.oq-storage.name"
+      ]
+    },
+    {
+      "path": "portal.oq-gym->oq-storage.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-gym->oq-storage.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-gym->oq-storage.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-shower->bridge.from",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->bridge.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-shower->bridge.direction",
+      "kind": "value",
+      "value": "north"
+    },
+    {
+      "path": "portal.oq-shower->bridge.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-shower->oq-armory.from",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->oq-armory.to",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->oq-armory.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-shower->oq-armory.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-shower->oq-armory.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-shower->oq-sickbay.from",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->oq-sickbay.to",
+      "kind": "value",
+      "value": "oq-sickbay",
+      "depends_on": [
+        "room.officers-quarters.oq-sickbay.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->oq-sickbay.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-shower->oq-sickbay.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-shower->oq-sickbay.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-shower->oq-brig.from",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->oq-brig.to",
+      "kind": "value",
+      "value": "oq-brig",
+      "depends_on": [
+        "room.officers-quarters.oq-brig.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->oq-brig.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-shower->oq-brig.direction",
+      "kind": "value",
+      "value": "west"
+    },
+    {
+      "path": "portal.oq-shower->oq-brig.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-shower->oq-library.from",
+      "kind": "value",
+      "value": "oq-shower",
+      "depends_on": [
+        "room.officers-quarters.oq-shower.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->oq-library.to",
+      "kind": "value",
+      "value": "oq-library",
+      "depends_on": [
+        "room.officers-quarters.oq-library.name"
+      ]
+    },
+    {
+      "path": "portal.oq-shower->oq-library.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-shower->oq-library.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-shower->oq-library.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-storage->oq-armory.from",
+      "kind": "value",
+      "value": "oq-storage",
+      "depends_on": [
+        "room.officers-quarters.oq-storage.name"
+      ]
+    },
+    {
+      "path": "portal.oq-storage->oq-armory.to",
+      "kind": "value",
+      "value": "oq-armory",
+      "depends_on": [
+        "room.officers-quarters.oq-armory.name"
+      ]
+    },
+    {
+      "path": "portal.oq-storage->oq-armory.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-storage->oq-armory.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-storage->oq-armory.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-storage->oq-brig.from",
+      "kind": "value",
+      "value": "oq-storage",
+      "depends_on": [
+        "room.officers-quarters.oq-storage.name"
+      ]
+    },
+    {
+      "path": "portal.oq-storage->oq-brig.to",
+      "kind": "value",
+      "value": "oq-brig",
+      "depends_on": [
+        "room.officers-quarters.oq-brig.name"
+      ]
+    },
+    {
+      "path": "portal.oq-storage->oq-brig.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-storage->oq-brig.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-storage->oq-brig.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-storage->oq-gym.from",
+      "kind": "value",
+      "value": "oq-storage",
+      "depends_on": [
+        "room.officers-quarters.oq-storage.name"
+      ]
+    },
+    {
+      "path": "portal.oq-storage->oq-gym.to",
+      "kind": "value",
+      "value": "oq-gym",
+      "depends_on": [
+        "room.officers-quarters.oq-gym.name"
+      ]
+    },
+    {
+      "path": "portal.oq-storage->oq-gym.type",
+      "kind": "value",
+      "value": "walk"
+    },
+    {
+      "path": "portal.oq-storage->oq-gym.direction",
+      "kind": "value",
+      "value": "east"
+    },
+    {
+      "path": "portal.oq-storage->oq-gym.cross_world",
+      "kind": "value",
+      "value": false,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bar-rail->tap-bar.from",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->tap-bar.to",
+      "kind": "value",
+      "value": "tap-bar",
+      "depends_on": [
+        "room.the-tap.tap-bar.name"
+      ]
+    },
+    {
+      "path": "portal.bar-rail->tap-bar.type",
+      "kind": "value",
+      "value": "warp"
+    },
+    {
+      "path": "portal.bar-rail->tap-bar.direction",
+      "kind": "value",
+      "value": "portal"
+    },
+    {
+      "path": "portal.bar-rail->tap-bar.cross_world",
+      "kind": "value",
+      "value": true,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.tap-bar->bar-rail.from",
+      "kind": "value",
+      "value": "tap-bar",
+      "depends_on": [
+        "room.the-tap.tap-bar.name"
+      ]
+    },
+    {
+      "path": "portal.tap-bar->bar-rail.to",
+      "kind": "value",
+      "value": "bar-rail",
+      "depends_on": [
+        "room.platos-shell.bar-rail.name"
+      ]
+    },
+    {
+      "path": "portal.tap-bar->bar-rail.type",
+      "kind": "value",
+      "value": "warp"
+    },
+    {
+      "path": "portal.tap-bar->bar-rail.direction",
+      "kind": "value",
+      "value": "portal"
+    },
+    {
+      "path": "portal.tap-bar->bar-rail.cross_world",
+      "kind": "value",
+      "value": true,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.platos-poker->oq-poker.from",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.platos-poker->oq-poker.to",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.platos-poker->oq-poker.type",
+      "kind": "value",
+      "value": "warp"
+    },
+    {
+      "path": "portal.platos-poker->oq-poker.direction",
+      "kind": "value",
+      "value": "portal"
+    },
+    {
+      "path": "portal.platos-poker->oq-poker.cross_world",
+      "kind": "value",
+      "value": true,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.oq-poker->platos-poker.from",
+      "kind": "value",
+      "value": "oq-poker-room",
+      "depends_on": [
+        "room.officers-quarters.oq-poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker->platos-poker.to",
+      "kind": "value",
+      "value": "poker-room",
+      "depends_on": [
+        "room.platos-shell.poker-room.name"
+      ]
+    },
+    {
+      "path": "portal.oq-poker->platos-poker.type",
+      "kind": "value",
+      "value": "warp"
+    },
+    {
+      "path": "portal.oq-poker->platos-poker.direction",
+      "kind": "value",
+      "value": "portal"
+    },
+    {
+      "path": "portal.oq-poker->platos-poker.cross_world",
+      "kind": "value",
+      "value": true,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.wheelhouse->bridge.from",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->bridge.to",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.wheelhouse->bridge.type",
+      "kind": "value",
+      "value": "warp"
+    },
+    {
+      "path": "portal.wheelhouse->bridge.direction",
+      "kind": "value",
+      "value": "portal"
+    },
+    {
+      "path": "portal.wheelhouse->bridge.cross_world",
+      "kind": "value",
+      "value": true,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "portal.bridge->wheelhouse.from",
+      "kind": "value",
+      "value": "bridge",
+      "depends_on": [
+        "room.officers-quarters.bridge.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->wheelhouse.to",
+      "kind": "value",
+      "value": "wheelhouse",
+      "depends_on": [
+        "room.platos-shell.wheelhouse.name"
+      ]
+    },
+    {
+      "path": "portal.bridge->wheelhouse.type",
+      "kind": "value",
+      "value": "warp"
+    },
+    {
+      "path": "portal.bridge->wheelhouse.direction",
+      "kind": "value",
+      "value": "portal"
+    },
+    {
+      "path": "portal.bridge->wheelhouse.cross_world",
+      "kind": "value",
+      "value": true,
+      "meta": {
+        "category": "topology",
+        "note": "warp link"
+      }
+    },
+    {
+      "path": "stats.total_rooms",
+      "kind": "value",
+      "value": 33
+    },
+    {
+      "path": "stats.total_worlds",
+      "kind": "value",
+      "value": 4
+    },
+    {
+      "path": "stats.total_portals",
+      "kind": "value",
+      "value": 116
+    },
+    {
+      "path": "stats.cross_world_portals",
+      "kind": "value",
+      "value": 6
+    },
+    {
+      "path": "stats.now",
+      "kind": "value",
+      "value": "2026-08-21T00:14:17.182982+00:00"
+    }
+  ],
+  "metadata": {
+    "sampled_at": "2026-08-21T00:14:17.182982+00:00",
+    "n_worlds": 4,
+    "n_rooms": 33,
+    "n_exits": 116
+  }
+}
