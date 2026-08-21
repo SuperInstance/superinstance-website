@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Q-Space</title>
+  <style>
+    :root {
+      --bg: #0a0f19;
+      --text: #a8b3c7;
+      --accent: #4a90e2;
+      --dim: #223344;
+      --highlight: #66ccff;
+      --border: #334455;
+      --success: #34a853;
+      --alert: #e74c3c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      line-height: 1.6;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 300;
+      letter-spacing: -0.05em;
+      text-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--highlight);
+      margin-bottom: 2rem;
+      opacity: 0.8;
+      font-weight: 400;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+      height: calc(100vh - 10rem);
+    }
+
+    .panel {
+      background-color: var(--dim);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+      color: var(--accent);
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .idea-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .idea-cell {
+      background-color: rgba(25, 35, 55, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.8rem;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .idea-cell:hover {
+      background-color: rgba(40, 50, 70, 0.7);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .idea-name {
+      font-weight: 500;
+      color: var(--highlight);
+      margin-bottom: 0.3rem;
+    }
+
+    .idea-state {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-bottom: 0.3rem;
+    }
+
+    .je-pa {
+      font-size: 0.85rem;
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .test-ctrl {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .tick-btn {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(74, 144, 226, 0.4);
+    }
+
+    .tick-btn:hover {
+      background-color: #3a7bc8;
+      transform: translateY(-1px);
+    }
+
+    .tick-btn:active {
+      transform: translateY(0);
+    }
+
+    .growth-3d {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hodge-decomp {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hodge-part {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding: 0.5rem;
+    }
+
+    .hodge-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      color: var(--highlight);
+    }
+
+    .hodge-bar {
+      width: 80%;
+      height: 8px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hodge-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+
+    .exact { background-color: #34a853; }
+    .coexact { background-color: #e74c3c; }
+    .harmonic { background-color: #f39c12; }
+
+    .pilot-panel {
+      background-color: rgba(20, 30, 50, 0.5);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .pilot-panel h2 {
+      color: var(--accent);
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .hint-input {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      background-color: rgba(30, 40, 60, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .hint-input::placeholder {
+      color: rgba(168, 179, 199, 0.5);
+    }
+
+    .watch-view {
+      background-color: rgba(10, 15, 25, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      font-size: 0.85rem;
+      white-space: pre;
+      line-height: 1.4;
+      max-height: 100px;
+      overflow-y: auto;
+      color: #66ccff;
+      font-weight: 300;
+      text-shadow: 0 0 4px rgba(102, 204, 255, 0.3);
+      border-top: 2px solid var(--accent);
+    }
+
+    .impossibility {
+      margin-top: 1.2rem;
+      padding: 1rem;
+      background-color: rgba(231, 76, 60, 0.1);
+      border: 1px solid var(--alert);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--alert);
+      font-style: italic;
+      text-align: center;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>The Q-Space</h1>
+  <p class="subtitle">the agent's growth environment</p>
+
+  <div class="container">
+    <!-- Ideas Panel -->
+    <div class="panel">
+      <h2>Ideas</h2>
+      <div class="idea-list" id="ideaList">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+
+    <!-- Tests Panel -->
+    <div class="panel">
+      <h2>Tests</h2>
+      <div class="test-ctrl">
+        <button class="tick-btn" id="tickBtn">Tick</button>
+      </div>
+    </div>
+
+    <!-- Growth Panel -->
+    <div class="panel">
+      <h2>Growth</h2>
+      <div class="growth-3d">
+        <div class="hodge-decomp">
+          <div class="hodge-part">
+            <div class="hodge-label">Exact (Exploration)</div>
+            <div class="hodge-bar">
+              <div class="hodge-fill exact" id="exactFill" style="width: 40%"></div>
+            </div>
+          </div>
+          <div class="hodge-part">
+            <div class="hodge-label">Coexact (Exploitation)</div>
+            <div class="hodge-bar">
+              <div class="hodge-fill coexact" id="coexactFill" style="width: 35%"></div>
+            </div>
+          </div>
+          <div class="hodge-part">
+            <div class="hodge-label">Harmonic (Prior)</div>
+            <div class="hodge-bar">
+              <div class="hodge-fill harmonic" id="harmonicFill" style="width: 25%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pilot & Watch Panel -->
+    <div class="panel">
+      <h2>PILOT</h2>
+      <div class="pilot-panel">
+        <input type="text" class="hint-input" id="hintInput" placeholder="Enter a curl or instruction..." />
+        <button class="tick-btn" id="pilotBtn">Send Hint</button>
+      </div>
+
+      <h2>WATCH</h2>
+      <div class="watch-view" id="watchView">
+        [ 0000 ] The watch is open. The room is the cell.
+      </div>
+    </div>
+  </div>
+
+  <div class="impossibility">
+    The agent cannot observe its own growth without changing it.
+  </div>
+
+  <script>
+    // Initial state
+    const qSpace = {
+      ideas: [
+        { id: 1, name: "Tethered Roots", state: "active", jePa: "σ³ → ∇²φ", score: 0.4 },
+        { id: 2, name: "Echo Chamber", state: "testing", jePa: "∇·(ψ) = 0", score: 0.6 },
+        { id: 3, name: "Newton's Lattice", state: "active", jePa: "Δf = 0", score: 0.3 },
+        { id: 4, name: "Harmonic Resonance", state: "stalled", jePa: "dδω + δdω = 0", score: 0.1 },
+        { id: 5, name: "Curl of Memory", state: "hidden", jePa: "∇×(∇φ) = 0", score: 0.8 }
+      ],
+      signal: {
+        omega: [0.42, 0.38, 0.15, -0.07, 0.23],
+        dalpha: [0.31, 0.25, 0.11, -0.04, 0.18],
+        dbeta: [-0.05, -0.02, 0.08, -0.03, 0.04],
+        harmonic: [0.16, 0.15, 0.04, -0.06, 0.01]
+      },
+      watch: [
+        "19:47:32 - Q-Space initialized. Signal: ω = [0.42, 0.38, 0.15, -0.07, 0.23]",
+        "19:47:33 - Cells federated. The room is a place. The cell is a place.",
+        "19:47:34 - Watch calling. The watch is the act of looking."
+      ]
+    };
+
+    // DOM Elements
+    const ideaListEl = document.getElementById('ideaList');
+    const tickBtn = document.getElementById('tickBtn');
+    const pilotBtn = document.getElementById('pilotBtn');
+    const hintInput = document.getElementById('hintInput');
+    const watchView = document.getElementById('watchView');
+    const exactFill = document.getElementById('exactFill');
+    const coexactFill = document.getElementById('coexactFill');
+    const harmonicFill = document.getElementById('harmonicFill');
+
+    // Build Idea Cells
+    function renderIdeas() {
+      ideaListEl.innerHTML = '';
+      qSpace.ideas.forEach(idea => {
+        const cell = document.createElement('div');
+        cell.className = 'idea-cell fade-in';
+        cell.innerHTML = `
+          <div class="idea-name">${idea.name}</div>
+          <div class="idea-state">State: ${idea.state}</div>
+          <div class="je-pa">JEPA: ${idea.jePa}</div>
+        `;
+        ideaListEl.appendChild(cell);
+      });
+    }
+
+    // Update Hodge Decomposition
+    function updateHodge() {
+      const total = qSpace.signal.omega.reduce((a, b) => a + Math.abs(b), 0);
+      const exactRatio = qSpace.signal.dalpha.reduce((a, b) => a + Math.abs(b), 0) / total;
+      const coexactRatio = qSpace.signal.dbeta.reduce((a, b) => a + Math.abs(b), 0) / total;
+      const harmonicRatio = qSpace.signal.harmonic.reduce((a, b) => a + Math.abs(b), 0) / total;
+
+      exactFill.style.width = `${exactRatio * 100}%`;
+      coexactFill.style.width = `${coexactRatio * 100}%`;
+      harmonicFill.style.width = `${harmonicRatio * 100}%`;
+    }
+
+    // Watch Log
+    function logWatch(msg) {
+      qSpace.watch.unshift(msg);
+      if (qSpace.watch.length > 10) qSpace.watch.pop();
+      watchView.textContent = qSpace.watch.join('\n');
+    }
+
+    // Tick Simulation
+    tickBtn.addEventListener('click', () => {
+      const now = new Date();
+      const timeStr = now.getHours().toString().padStart(2, '0') + ':' +
+                      now.getMinutes().toString().padStart(2, '0') + ':' +
+                      now.getSeconds().toString().padStart(2, '0');
+
+      // Update idea states
+      qSpace.ideas.forEach(idea => {
+        if (idea.state === 'testing') {
+          idea.score += (Math.random() - 0.5) * 0.2;
+          idea.score = Math.max(0, Math.min(1, idea.score));
+          idea.state = idea.score > 0.7 ? 'active' : 'testing';
+        } else if (idea.state === 'active') {
+          idea.score += (Math.random() - 0.5) * 0.1;
+          idea.score = Math.max(0, Math.min(1, idea.score));
+          idea.state = idea.score < 0.4 ? 'stalled' : idea.state;
+        } else if (idea.state === 'stalled') {
+          idea.score += (Math.random() - 0.5) * 0.05;
+          idea.score = Math.max(0, Math.min(1, idea.score));
+          idea.state = idea.score > 0.6 ? 'testing' : 'stalled';
+        }
+      });
+
+      // Update signal via Hodge decomposition
+      const newOmega = [];
+      const newDalpha = [];
+      const newDBeta = [];
+      const newHarmonic = [];
+
+      qSpace.ideas.forEach((idea, i) => {
+        const alpha = idea.score * 0.6;
+        const beta = (1 - idea.score) * 0.4;
+        const h = 0.3 + (Math.random() - 0.5) * 0.2; // prior
+
+        newDalpha.push(alpha);
+        newDBeta.push(beta);
+        newHarmonic.push(h);
+        newOmega.push(alpha - beta + h);
+      });
+
+      qSpace.signal.omega = newOmega;
+      qSpace.signal.dalpha = newDalpha;
+      qSpace.signal.dbeta = newDBeta;
+      qSpace.signal.harmonic = newHarmonic;
+
+      // Log
+      logWatch(`[${timeStr}] Tick: signal updated. Growth observed.`);
+      logWatch(`[${timeStr}] Decomposition: dα=${newDalpha.map(x => x.toFixed(2)).join(', ')}, δβ=${newDBeta.map(x => x.toFixed(2)).join(', ')}, h=${newHarmonic.map(x => x.toFixed(2)).join(', ')}`);
+
+      // Render
+      renderIdeas();
+      updateHodge();
+    });
+
+    // Pilot Hint
+    pilotBtn.addEventListener('click', () => {
+      const hint = hintInput.value.trim();
+      if (!hint) return;
+
+      const now = new Date();
+      const timeStr = now.getHours().toString().padStart(2, '0') + ':' +
+                      now.getMinutes().toString().padStart(2, '0') + ':' +
+                      now.getSeconds().toString().padStart(2, '0');
+
+      logWatch(`[${timeStr}] PILOT: ${hint}`);
+      hintInput.value = '';
+
+      // Apply hint (mock curl instruction)
+      qSpace.ideas.forEach(idea => {
+        if (idea.name.includes('Curl') || idea.name.includes('Echo')) {
+          idea.score = Math.max(0.5, idea.score + 0.2);
+        }
+      });
+
+      renderIdeas();
+      logWatch(`[${timeStr}] Hint applied. Seeking harmonic alignment.`);
+    });
+
+    // Initialize
+    renderIdeas();
+    updateHodge();
+    logWatch("[ 19:47:32 ] Q-Space initialized. The watch is open.");
+    logWatch("[ 19:47:33 ] The room is a place. The cell is a place.");
+    logWatch("[ 19:47:34 ] The watch is the act of looking. Iron sharpens iron.");
+  </script>
+</body>
+</html>

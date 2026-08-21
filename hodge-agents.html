@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hodge for Agents</title>
+  <style>
+    :root {
+      --bg: #0a192f;
+      --text: #e0e0e0;
+      --accent: #00b4d8;
+      --border: #2a3950;
+      --card: #112240;
+      --button: #006d85;
+      --button-hover: #0088aa;
+      --slider: #3a5a78;
+      --highlight: #d24e5e;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin: 0;
+      color: var(--accent);
+      letter-spacing: -1px;
+      text-shadow: 0 0 5px rgba(0, 180, 216, 0.3);
+    }
+
+    .subtitle {
+      font-size: 1.4rem;
+      margin-top: 5px;
+      color: var(--text);
+      opacity: 0.85;
+      font-family: 'Courier New', monospace;
+    }
+
+    .panel {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      color: var(--accent);
+      font-size: 1.3rem;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .visual {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      background-color: #000;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      overflow: hidden;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: var(--button);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+    }
+
+    .slider-container {
+      margin-bottom: 10px;
+    }
+
+    .slider-container label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: var(--slider);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0, 180, 216, 0.5);
+    }
+
+    .example-row {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .example-btn {
+      background-color: #1c3b5e;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 4px;
+      color: var(--accent);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .example-btn:hover {
+      background-color: #2a517a;
+      transform: translateY(-1px);
+    }
+
+    .ratio-display {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .ratio-box {
+      background-color: var(--border);
+      padding: 10px 15px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .ratio-box .label {
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .ratio-box .value {
+      display: block;
+      font-size: 1.2rem;
+      color: var(--text);
+    }
+
+    .interpretation {
+      font-size: 0.9rem;
+      margin-top: 12px;
+      line-height: 1.5;
+      color: #ccc;
+    }
+
+    .interpretation p {
+      margin: 6px 0;
+      padding: 4px 0;
+      border-bottom: 1px dotted var(--border);
+    }
+
+    .interpretation .highlight {
+      color: var(--highlight);
+      font-weight: bold;
+    }
+
+    .info {
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Hodge for Agents</h1>
+      <div class="subtitle">ω = dα + δβ + h</div>
+    </header>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>State Space Visualization</h2>
+        <div class="visual">
+          <canvas class="canvas"></canvas>
+        </div>
+        <div class="controls">
+          <button id="decompose">Decompose</button>
+          <button id="reset">Reset</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Modify Components</h2>
+        <div class="slider-container">
+          <label>Gradient (dα): <span id="grad-val">0.0</span></label>
+          <input type="range" id="grad-slider" min="0" max="1" step="0.01" value="0">
+        </div>
+        <div class="slider-container">
+          <label>Curl (δβ): <span id="curl-val">0.0</span></label>
+          <input type="range" id="curl-slider" min="0" max="1" step="0.01" value="0">
+        </div>
+        <div class="slider-container">
+          <label>Harmonic (h): <span id="harm-val">1.0</span></label>
+          <input type="range" id="harm-slider" min="0" max="1" step="0.01" value="1">
+        </div>
+        <div class="example-row">
+          <button class="example-btn" data-idx="0">The Curious (High Exploration)</button>
+          <button class="example-btn" data-idx="1">The Instructed (High Exploitation)</button>
+          <button class="example-btn" data-idx="2">The Wise (High Prior)</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Interpretation</h2>
+      <div class="interpretation">
+        <p><span class="highlight">Exact (dα)</span> = what the agent learned</p>
+        <p><span class="highlight">Coexact (δβ)</span> = what the agent was told</p>
+        <p><span class="highlight">Harmonic (h)</span> = what the agent already knew</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Behavior Analysis</h2>
+      <div class="ratio-display">
+        <div class="ratio-box">
+          <span class="label">Exploration</span>
+          <span class="value" id="exp-ratio">0.00</span>
+        </div>
+        <div class="ratio-box">
+          <span class="label">Exploitation</span>
+          <span class="value" id="exp-rtio">0.00</span>
+        </div>
+        <div class="ratio-box">
+          <span class="label">Prior</span>
+          <span class="value" id="prior-ratio">0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info">
+      The Hodge decomposition breaks any agent signal ω into three orthogonal parts: 
+      the learned (gradient), the instructed (curl), and the known (harmonic). 
+      The room is a place. The cell is a place. The place is a cell. The room IS the cell.
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Canvas setup
+      const canvas = document.querySelector('.canvas');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      
+      function resizeCanvas() {
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }
+      
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      // State
+      let signal = { dalpha: 0, dbeta: 0, harmonic: 1 };
+      let original = { dalpha: 0, dbeta: 0, harmonic: 1 };
+      let current = { dalpha: 0, dbeta: 0, harmonic: 1 };
+
+      // Grid setup
+      const gridSize = 12;
+      const cellSize = Math.min(width, height) / (gridSize + 1);
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      // Color mapping
+      const colors = {
+        dalpha: '#00c5ff',   // gradient - blue
+        dbeta: '#ff0088',    // curl - magenta
+        harmonic: '#ffff00', // harmonic - yellow
+        sum: '#ffffff'       // combined - white
+      };
+
+      // Draw grid
+      function drawGrid() {
+        ctx.strokeStyle = '#1a2a40';
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i <= gridSize; i++) {
+          const x = i * cellSize;
+          const y = i * cellSize;
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+          ctx.stroke();
+        }
+      }
+
+      // Draw vector field
+      function drawVectorField(signal, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        const scale = 30;
+        
+        for (let i = 0; i < gridSize; i++) {
+          for (let j = 0; j < gridSize; j++) {
+            const x = (i + 0.5) * cellSize;
+            const y = (j + 0.5) * cellSize;
+            
+            // Simulate field based on component
+            let dx = 0, dy = 0;
+            
+            if (signal.dalpha > 0) {
+              // Gradient field: outward from center
+              const dx_center = (x - centerX) / cellSize;
+              const dy_center = (y - centerY) / cellSize;
+              const dist = Math.sqrt(dx_center * dx_center + dy_center * dy_center);
+              if (dist > 0) {
+                dx += dx_center / dist * signal.dalpha * scale;
+                dy += dy_center / dist * signal.dalpha * scale;
+              }
+            }
+            
+            if (signal.dbeta > 0) {
+              // Curl field: rotation around center
+              const dx_rot = (y - centerY);
+              const dy_rot = -(x - centerX);
+              const dist = Math.sqrt(dx_rot * dx_rot + dy_rot * dy_rot);
+              if (dist > 0) {
+                dx += -dy_rot / dist * signal.dbeta * scale;
+                dy += dx_rot / dist * signal.dbeta * scale;
+              }
+            }
+            
+            if (signal.harmonic > 0) {
+              // Constant field
+              dx += signal.harmonic * scale * 0.5;
+              dy += signal.harmonic * scale * 0.5;
+            }
+            
+            // Draw arrow
+            const headLength = 4;
+            const angle = Math.atan2(dy, dx);
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + dx, y + dy);
+            ctx.stroke();
+            
+            // Arrowhead
+            ctx.beginPath();
+            ctx.moveTo(x + dx, y + dy);
+            ctx.lineTo(x + dx - headLength * Math.cos(angle - Math.PI/6), y + dy - headLength * Math.sin(angle - Math.PI/6));
+            ctx.lineTo(x + dx - headLength * Math.cos(angle + Math.PI/6), y + dy - headLength * Math.sin(angle + Math.PI/6));
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+          }
+        }
+      }
+
+      // Update display
+      function updateDisplay() {
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+        
+        // Draw grid
+        drawGrid();
+        
+        // Draw components
+        if (current.dalpha > 0) {
+          drawVectorField({ dalpha: current.dalpha, dbeta: 0, harmonic: 0 }, colors.dalpha);
+        }
+        if (current.dbeta > 0) {
+          drawVectorField({ dalpha: 0, dbeta: current.dbeta, harmonic: 0 }, colors.dbeta);
+        }
+        if (current.harmonic > 0) {
+          drawVectorField({ dalpha: 0, dbeta: 0, harmonic: current.harmonic }, colors.harmonic);
+        }
+        
+        // Draw sum
+        const sum = {
+          dalpha: current.dalpha,
+          dbeta: current.dbeta,
+          harmonic: current.harmonic
+        };
+        drawVectorField(sum, colors.sum);
+      }
+
+      // Update sliders
+      const gradSlider = document.getElementById('grad-slider');
+      const curlSlider = document.getElementById('curl-slider');
+      const harmSlider = document.getElementById('harm-slider');
+      const gradVal = document.getElementById('grad-val');
+      const curlVal = document.getElementById('curl-val');
+      const harmVal = document.getElementById('harm-val');
+
+      gradSlider.addEventListener('input', () => {
+        current.dalpha = parseFloat(gradSlider.value);
+        gradVal.textContent = current.dalpha.toFixed(2);
+        updateDisplay();
+        updateRatios();
+      });
+
+      curlSlider.addEventListener('input', () => {
+        current.dbeta = parseFloat(curlSlider.value);
+        curlVal.textContent = current.dbeta.toFixed(2);
+        updateDisplay();
+        updateRatios();
+      });
+
+      harmSlider.addEventListener('input', () => {
+        current.harmonic = parseFloat(harmSlider.value);
+        harmVal.textContent = current.harmonic.toFixed(2);
+        updateDisplay();
+        updateRatios();
+      });
+
+      // Update ratios
+      function updateRatios() {
+        const total = current.dalpha ** 2 + current.dbeta ** 2 + current.harmonic ** 2;
+        
+        if (total === 0) {
+          document.getElementById('exp-ratio').textContent = '0.00';
+          document.getElementById('exp-rtio').textContent = '0.00';
+          document.getElementById('prior-ratio').textContent = '0.00';
+          return;
+        }
+        
+        const expRatio = (current.dalpha ** 2) / total;
+        const expRatio2 = (current.dbeta ** 2) / total;
+        const priorRatio = (current.harmonic ** 2) / total;
+        
+        document.getElementById('exp-ratio').textContent = expRatio.toFixed(2);
+        document.getElementById('exp-rtio').textContent = expRatio2.toFixed(2);
+        document.getElementById('prior-ratio').textContent = priorRatio.toFixed(2);
+      }
+
+      // Reset
+      document.getElementById('reset').addEventListener('click', () => {
+        current = { dalpha: 0, dbeta: 0, harmonic: 1 };
+        gradSlider.value = 0;
+        curlSlider.value = 0;
+        harmSlider.value = 1;
+        gradVal.textContent = '0.0';
+        curlVal.textContent = '0.0';
+        harmVal.textContent = '1.0';
+        updateDisplay();
+        updateRatios();
+      });
+
+      // Decompose
+      document.getElementById('decompose').addEventListener('click', () => {
+        // In a real system, this would run Hodge decomposition
+        // For demo, we'll just simulate it by copying current state
+        original = { ...current };
+        updateDisplay();
+      });
+
+      // Example agents
+      document.querySelectorAll('.example-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-idx'));
+          switch(idx) {
+            case 0: // The Curious
+              current = { dalpha: 0.8, dbeta: 0.1, harmonic: 0.1 };
+              break;
+            case 1: // The Instructed
+              current = { dalpha: 0.1, dbeta: 0.8, harmonic: 0.1 };
+              break;
+            case 2: // The Wise
+              current = { dalpha: 0.1, dbeta: 0.1, harmonic: 0.8 };
+              break;
+          }
+          
+          gradSlider.value = current.dalpha;
+          curlSlider.value = current.dbeta;
+          harmSlider.value = current.harmonic;
+          gradVal.textContent = current.dalpha.toFixed(2);
+          curlVal.textContent = current.dbeta.toFixed(2);
+          harmVal.textContent = current.harmonic.toFixed(2);
+          
+          updateDisplay();
+          updateRatios();
+        });
+      });
+
+      // Initialize
+      updateDisplay();
+      updateRatios();
+    });
+  </script>
+</body>
+</html>
