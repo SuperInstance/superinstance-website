@@ -1,0 +1,755 @@
+{
+  "schema_version": "1.0",
+  "type": "ternary-spreadsheet-quilt",
+  "metadata": {
+    "source": "ternary-spreadsheet",
+    "description": "Converted ternary spreadsheet to Quilt format",
+    "cell_count": 27,
+    "formula_count": 7,
+    "mutation_operators": {
+      "L": "LS",
+      "S": "L"
+    }
+  },
+  "cells": [
+    {
+      "id": 0,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 1.0,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 1,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.6666666666666666,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 2,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    },
+    {
+      "id": 3,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 0.6666666666666666,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 4,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.3333333333333333,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 5,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 0.6666666666666666,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    },
+    {
+      "id": 6,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 1.0,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 7,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.6666666666666666,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 8,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    },
+    {
+      "id": 9,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 0.6666666666666666,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 10,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.3333333333333333,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 11,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 0.6666666666666666,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    },
+    {
+      "id": 12,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 0.3333333333333333,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 13,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 14,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 0.3333333333333333,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    },
+    {
+      "id": 15,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 0.6666666666666666,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 16,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.3333333333333333,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 17,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 0.6666666666666666,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    },
+    {
+      "id": 18,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 1.0,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 19,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.6666666666666666,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 20,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    },
+    {
+      "id": 21,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 0.6666666666666666,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 22,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.3333333333333333,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 23,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 0.6666666666666666,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    },
+    {
+      "id": 24,
+      "value": -1,
+      "value_label": "NEGATIVE",
+      "fitness": 1.0,
+      "history": [
+        -1
+      ],
+      "generation": 0,
+      "kind": "NEGATIVE"
+    },
+    {
+      "id": 25,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.6666666666666666,
+      "history": [
+        0
+      ],
+      "generation": 0,
+      "kind": "NEUTRAL"
+    },
+    {
+      "id": 26,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        1
+      ],
+      "generation": 0,
+      "kind": "POSITIVE"
+    }
+  ],
+  "formulas": {
+    "SUM": {
+      "type": "aggregate",
+      "result": 0,
+      "description": "Sum of all cell values"
+    },
+    "AVG": {
+      "type": "aggregate",
+      "result": 0.0,
+      "description": "Average of all cell values"
+    },
+    "ENTROPY": {
+      "type": "information",
+      "result": 1.584962500721156,
+      "description": "Entropy of value distribution"
+    },
+    "EVOLVE": {
+      "type": "evolution",
+      "result": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "description": "Evolution through mutation"
+    },
+    "BEST": {
+      "type": "optimization",
+      "result": {
+        "cell_id": 0,
+        "value": -1,
+        "fitness": 1.0
+      },
+      "description": "Best performing cell"
+    },
+    "SPECIES": {
+      "type": "classification",
+      "result": {
+        "negative": 9,
+        "neutral": 9,
+        "positive": 9
+      },
+      "description": "Species distribution"
+    },
+    "EXHAUSTIVE": {
+      "type": "search",
+      "result": [
+        "TernaryCell(value=<TernaryValue.POSITIVE: 1>, fitness=1.0, history=[<TernaryValue.NEGATIVE: -1>, <TernaryValue.POSITIVE: 1>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.POSITIVE: 1>, fitness=1.0, history=[<TernaryValue.NEGATIVE: -1>, <TernaryValue.POSITIVE: 1>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.POSITIVE: 1>, fitness=1.0, history=[<TernaryValue.NEGATIVE: -1>, <TernaryValue.POSITIVE: 1>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.NEUTRAL: 0>, fitness=0.0, history=[<TernaryValue.NEUTRAL: 0>, <TernaryValue.NEUTRAL: 0>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.NEUTRAL: 0>, fitness=0.0, history=[<TernaryValue.NEUTRAL: 0>, <TernaryValue.NEUTRAL: 0>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.NEUTRAL: 0>, fitness=0.0, history=[<TernaryValue.NEUTRAL: 0>, <TernaryValue.NEUTRAL: 0>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.NEUTRAL: 0>, fitness=0.0, history=[<TernaryValue.POSITIVE: 1>, <TernaryValue.NEUTRAL: 0>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.NEUTRAL: 0>, fitness=0.0, history=[<TernaryValue.POSITIVE: 1>, <TernaryValue.NEUTRAL: 0>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.NEUTRAL: 0>, fitness=0.0, history=[<TernaryValue.POSITIVE: 1>, <TernaryValue.NEUTRAL: 0>], generation=1, formula=None, inputs=None)",
+        "TernaryCell(value=<TernaryValue.POSITIVE: 1>, fitness=1.0, history=[<TernaryValue.NEGATIVE: -1>, <TernaryValue.POSITIVE: 1>], generation=1, formula=None, inputs=None)"
+      ],
+      "description": "Exhaustive search results"
+    }
+  },
+  "mutation_rules": {
+    "operators": {
+      "L": "LS",
+      "S": "L"
+    },
+    "description": "Penrose-like substitution: L\u2192LS, S\u2192L"
+  },
+  "primitive_8": {
+    "ternary": [
+      1,
+      0,
+      -1
+    ],
+    "description": "8 as balanced ternary: 10(-1)"
+  },
+  "evolved_cells": [
+    {
+      "source_cell": 0,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 1,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 2,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 3,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 4,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 5,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 6,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 7,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 8,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 9,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 10,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 11,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 12,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 13,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 14,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 15,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 16,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 17,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 18,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 19,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 20,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 21,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 22,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 23,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 24,
+      "value": 1,
+      "value_label": "POSITIVE",
+      "fitness": 1.0,
+      "history": [
+        -1,
+        1
+      ],
+      "generation": 1,
+      "kind": "POSITIVE"
+    },
+    {
+      "source_cell": 25,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        0,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    },
+    {
+      "source_cell": 26,
+      "value": 0,
+      "value_label": "NEUTRAL",
+      "fitness": 0.0,
+      "history": [
+        1,
+        0
+      ],
+      "generation": 1,
+      "kind": "NEUTRAL"
+    }
+  ],
+  "cell_kinds": {
+    "Negative": {
+      "value": -1,
+      "color": "#ff0000",
+      "description": "Negative ternary value"
+    },
+    "Neutral": {
+      "value": 0,
+      "color": "#cccccc",
+      "description": "Neutral ternary value"
+    },
+    "Positive": {
+      "value": 1,
+      "color": "#00ff00",
+      "description": "Positive ternary value"
+    }
+  }
+}

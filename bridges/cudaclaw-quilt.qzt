@@ -1,0 +1,2419 @@
+{
+  "schema_version": "0.1",
+  "sheet_name": "CudaClaw GPU Persistent Worker Kernel",
+  "sheet_version": "1.0",
+  "created": "2026-08-21T03:26:08.510013+00:00",
+  "metadata": {
+    "performance": {
+      "host_device_communication": "sub-microsecond",
+      "queue_operation": "lock-free",
+      "parallelism": "warp-level",
+      "memory_type": "unified",
+      "agents_per_warp": 32,
+      "dispatch_operations": 8
+    }
+  },
+  "substrate": {
+    "type": "unified_memory",
+    "description": "Unified memory space shared between host and device",
+    "properties": {
+      "memory_type": "CUDA_DEVICE_MANAGED",
+      "access": "host_device_shared",
+      "coherence": "hardware_managed",
+      "allocation": "cudaMallocManaged"
+    }
+  },
+  "cells": [
+    {
+      "id": "prim_command_queue",
+      "type": "primitive",
+      "name": "CommandQueue",
+      "description": "Lock-free command queue in unified memory for agent command dispatch",
+      "metadata": {
+        "implementation": "lock_free",
+        "memory": "unified",
+        "operations": [
+          "enqueue",
+          "dequeue",
+          "peek"
+        ],
+        "synchronization": "atomic_operations",
+        "performance": "O(1) operations"
+      },
+      "connections": [
+        {
+          "target": "prim_cuda_kernel",
+          "type": "polled_by"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508867+00:00"
+    },
+    {
+      "id": "prim_cuda_kernel",
+      "type": "primitive",
+      "name": "CudaKernel",
+      "description": "Persistent worker kernel that polls the command queue",
+      "metadata": {
+        "type": "persistent_kernel",
+        "polling": "continuous",
+        "execution": "gpu_resident",
+        "lifetime": "application_duration"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "polls"
+        },
+        {
+          "target": "prim_agent",
+          "type": "manages"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508910+00:00"
+    },
+    {
+      "id": "prim_agent",
+      "type": "primitive",
+      "name": "Agent",
+      "description": "Agent entity with 32 instances per warp for parallel command processing",
+      "metadata": {
+        "instances_per_warp": 32,
+        "parallelism": "warp_level",
+        "state": "per_agent",
+        "scheduling": "warp_cooperative"
+      },
+      "connections": [
+        {
+          "target": "prim_dispatch_op",
+          "type": "executes"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508915+00:00"
+    },
+    {
+      "id": "prim_dispatch_op",
+      "type": "primitive",
+      "name": "DispatchOp",
+      "description": "Operation to be dispatched to agents for execution",
+      "metadata": {
+        "types": [
+          "compute",
+          "memory",
+          "sync",
+          "io"
+        ],
+        "priority_levels": 4,
+        "queueing": "fifo",
+        "execution_model": "async"
+      },
+      "connections": [
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508919+00:00"
+    },
+    {
+      "id": "prim_memory_page",
+      "type": "primitive",
+      "name": "MemoryPage",
+      "description": "Unified memory page for data exchange between host and device",
+      "metadata": {
+        "page_size": "4096_bytes",
+        "memory_type": "unified",
+        "access_pattern": "random",
+        "coherence": "hardware_managed"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "backing_memory"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508922+00:00"
+    },
+    {
+      "id": "agent_00",
+      "type": "agent",
+      "name": "Agent_00",
+      "description": "Agent instance at warp slot 0 for parallel command processing",
+      "metadata": {
+        "warp_slot": 0,
+        "lane_id": 0,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508937+00:00"
+    },
+    {
+      "id": "agent_01",
+      "type": "agent",
+      "name": "Agent_01",
+      "description": "Agent instance at warp slot 1 for parallel command processing",
+      "metadata": {
+        "warp_slot": 1,
+        "lane_id": 1,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508945+00:00"
+    },
+    {
+      "id": "agent_02",
+      "type": "agent",
+      "name": "Agent_02",
+      "description": "Agent instance at warp slot 2 for parallel command processing",
+      "metadata": {
+        "warp_slot": 2,
+        "lane_id": 2,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508961+00:00"
+    },
+    {
+      "id": "agent_03",
+      "type": "agent",
+      "name": "Agent_03",
+      "description": "Agent instance at warp slot 3 for parallel command processing",
+      "metadata": {
+        "warp_slot": 3,
+        "lane_id": 3,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508969+00:00"
+    },
+    {
+      "id": "agent_04",
+      "type": "agent",
+      "name": "Agent_04",
+      "description": "Agent instance at warp slot 4 for parallel command processing",
+      "metadata": {
+        "warp_slot": 4,
+        "lane_id": 4,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508975+00:00"
+    },
+    {
+      "id": "agent_05",
+      "type": "agent",
+      "name": "Agent_05",
+      "description": "Agent instance at warp slot 5 for parallel command processing",
+      "metadata": {
+        "warp_slot": 5,
+        "lane_id": 5,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508980+00:00"
+    },
+    {
+      "id": "agent_06",
+      "type": "agent",
+      "name": "Agent_06",
+      "description": "Agent instance at warp slot 6 for parallel command processing",
+      "metadata": {
+        "warp_slot": 6,
+        "lane_id": 6,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508985+00:00"
+    },
+    {
+      "id": "agent_07",
+      "type": "agent",
+      "name": "Agent_07",
+      "description": "Agent instance at warp slot 7 for parallel command processing",
+      "metadata": {
+        "warp_slot": 7,
+        "lane_id": 7,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508989+00:00"
+    },
+    {
+      "id": "agent_08",
+      "type": "agent",
+      "name": "Agent_08",
+      "description": "Agent instance at warp slot 8 for parallel command processing",
+      "metadata": {
+        "warp_slot": 8,
+        "lane_id": 8,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.508994+00:00"
+    },
+    {
+      "id": "agent_09",
+      "type": "agent",
+      "name": "Agent_09",
+      "description": "Agent instance at warp slot 9 for parallel command processing",
+      "metadata": {
+        "warp_slot": 9,
+        "lane_id": 9,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509002+00:00"
+    },
+    {
+      "id": "agent_10",
+      "type": "agent",
+      "name": "Agent_10",
+      "description": "Agent instance at warp slot 10 for parallel command processing",
+      "metadata": {
+        "warp_slot": 10,
+        "lane_id": 10,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509011+00:00"
+    },
+    {
+      "id": "agent_11",
+      "type": "agent",
+      "name": "Agent_11",
+      "description": "Agent instance at warp slot 11 for parallel command processing",
+      "metadata": {
+        "warp_slot": 11,
+        "lane_id": 11,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509016+00:00"
+    },
+    {
+      "id": "agent_12",
+      "type": "agent",
+      "name": "Agent_12",
+      "description": "Agent instance at warp slot 12 for parallel command processing",
+      "metadata": {
+        "warp_slot": 12,
+        "lane_id": 12,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509021+00:00"
+    },
+    {
+      "id": "agent_13",
+      "type": "agent",
+      "name": "Agent_13",
+      "description": "Agent instance at warp slot 13 for parallel command processing",
+      "metadata": {
+        "warp_slot": 13,
+        "lane_id": 13,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509025+00:00"
+    },
+    {
+      "id": "agent_14",
+      "type": "agent",
+      "name": "Agent_14",
+      "description": "Agent instance at warp slot 14 for parallel command processing",
+      "metadata": {
+        "warp_slot": 14,
+        "lane_id": 14,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509029+00:00"
+    },
+    {
+      "id": "agent_15",
+      "type": "agent",
+      "name": "Agent_15",
+      "description": "Agent instance at warp slot 15 for parallel command processing",
+      "metadata": {
+        "warp_slot": 15,
+        "lane_id": 15,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509034+00:00"
+    },
+    {
+      "id": "agent_16",
+      "type": "agent",
+      "name": "Agent_16",
+      "description": "Agent instance at warp slot 16 for parallel command processing",
+      "metadata": {
+        "warp_slot": 16,
+        "lane_id": 16,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509043+00:00"
+    },
+    {
+      "id": "agent_17",
+      "type": "agent",
+      "name": "Agent_17",
+      "description": "Agent instance at warp slot 17 for parallel command processing",
+      "metadata": {
+        "warp_slot": 17,
+        "lane_id": 17,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509049+00:00"
+    },
+    {
+      "id": "agent_18",
+      "type": "agent",
+      "name": "Agent_18",
+      "description": "Agent instance at warp slot 18 for parallel command processing",
+      "metadata": {
+        "warp_slot": 18,
+        "lane_id": 18,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509058+00:00"
+    },
+    {
+      "id": "agent_19",
+      "type": "agent",
+      "name": "Agent_19",
+      "description": "Agent instance at warp slot 19 for parallel command processing",
+      "metadata": {
+        "warp_slot": 19,
+        "lane_id": 19,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509063+00:00"
+    },
+    {
+      "id": "agent_20",
+      "type": "agent",
+      "name": "Agent_20",
+      "description": "Agent instance at warp slot 20 for parallel command processing",
+      "metadata": {
+        "warp_slot": 20,
+        "lane_id": 20,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509067+00:00"
+    },
+    {
+      "id": "agent_21",
+      "type": "agent",
+      "name": "Agent_21",
+      "description": "Agent instance at warp slot 21 for parallel command processing",
+      "metadata": {
+        "warp_slot": 21,
+        "lane_id": 21,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509079+00:00"
+    },
+    {
+      "id": "agent_22",
+      "type": "agent",
+      "name": "Agent_22",
+      "description": "Agent instance at warp slot 22 for parallel command processing",
+      "metadata": {
+        "warp_slot": 22,
+        "lane_id": 22,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509084+00:00"
+    },
+    {
+      "id": "agent_23",
+      "type": "agent",
+      "name": "Agent_23",
+      "description": "Agent instance at warp slot 23 for parallel command processing",
+      "metadata": {
+        "warp_slot": 23,
+        "lane_id": 23,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509092+00:00"
+    },
+    {
+      "id": "agent_24",
+      "type": "agent",
+      "name": "Agent_24",
+      "description": "Agent instance at warp slot 24 for parallel command processing",
+      "metadata": {
+        "warp_slot": 24,
+        "lane_id": 24,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509097+00:00"
+    },
+    {
+      "id": "agent_25",
+      "type": "agent",
+      "name": "Agent_25",
+      "description": "Agent instance at warp slot 25 for parallel command processing",
+      "metadata": {
+        "warp_slot": 25,
+        "lane_id": 25,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509102+00:00"
+    },
+    {
+      "id": "agent_26",
+      "type": "agent",
+      "name": "Agent_26",
+      "description": "Agent instance at warp slot 26 for parallel command processing",
+      "metadata": {
+        "warp_slot": 26,
+        "lane_id": 26,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509106+00:00"
+    },
+    {
+      "id": "agent_27",
+      "type": "agent",
+      "name": "Agent_27",
+      "description": "Agent instance at warp slot 27 for parallel command processing",
+      "metadata": {
+        "warp_slot": 27,
+        "lane_id": 27,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509111+00:00"
+    },
+    {
+      "id": "agent_28",
+      "type": "agent",
+      "name": "Agent_28",
+      "description": "Agent instance at warp slot 28 for parallel command processing",
+      "metadata": {
+        "warp_slot": 28,
+        "lane_id": 28,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509115+00:00"
+    },
+    {
+      "id": "agent_29",
+      "type": "agent",
+      "name": "Agent_29",
+      "description": "Agent instance at warp slot 29 for parallel command processing",
+      "metadata": {
+        "warp_slot": 29,
+        "lane_id": 29,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509123+00:00"
+    },
+    {
+      "id": "agent_30",
+      "type": "agent",
+      "name": "Agent_30",
+      "description": "Agent instance at warp slot 30 for parallel command processing",
+      "metadata": {
+        "warp_slot": 30,
+        "lane_id": 30,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509131+00:00"
+    },
+    {
+      "id": "agent_31",
+      "type": "agent",
+      "name": "Agent_31",
+      "description": "Agent instance at warp slot 31 for parallel command processing",
+      "metadata": {
+        "warp_slot": 31,
+        "lane_id": 31,
+        "warp_id": 0,
+        "state": "idle",
+        "command_buffer_size": 64,
+        "processing_rate": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "command_source"
+        },
+        {
+          "target": "prim_cuda_kernel",
+          "type": "execution_context"
+        },
+        {
+          "target": "prim_memory_page",
+          "type": "memory_access"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509140+00:00"
+    },
+    {
+      "id": "dispatch_op_0",
+      "type": "dispatch_operation",
+      "name": "DispatchOp_Compute",
+      "description": "Dispatch compute operation to agents",
+      "metadata": {
+        "op_type": "compute",
+        "priority": 0,
+        "payload_size": "128_bytes",
+        "execution_time": "sub_microsecond"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "queued"
+        },
+        {
+          "target": "agent_00",
+          "type": "target"
+        },
+        {
+          "target": "agent_01",
+          "type": "target"
+        },
+        {
+          "target": "agent_02",
+          "type": "target"
+        },
+        {
+          "target": "agent_03",
+          "type": "target"
+        },
+        {
+          "target": "agent_04",
+          "type": "target"
+        },
+        {
+          "target": "agent_05",
+          "type": "target"
+        },
+        {
+          "target": "agent_06",
+          "type": "target"
+        },
+        {
+          "target": "agent_07",
+          "type": "target"
+        },
+        {
+          "target": "agent_08",
+          "type": "target"
+        },
+        {
+          "target": "agent_09",
+          "type": "target"
+        },
+        {
+          "target": "agent_10",
+          "type": "target"
+        },
+        {
+          "target": "agent_11",
+          "type": "target"
+        },
+        {
+          "target": "agent_12",
+          "type": "target"
+        },
+        {
+          "target": "agent_13",
+          "type": "target"
+        },
+        {
+          "target": "agent_14",
+          "type": "target"
+        },
+        {
+          "target": "agent_15",
+          "type": "target"
+        },
+        {
+          "target": "agent_16",
+          "type": "target"
+        },
+        {
+          "target": "agent_17",
+          "type": "target"
+        },
+        {
+          "target": "agent_18",
+          "type": "target"
+        },
+        {
+          "target": "agent_19",
+          "type": "target"
+        },
+        {
+          "target": "agent_20",
+          "type": "target"
+        },
+        {
+          "target": "agent_21",
+          "type": "target"
+        },
+        {
+          "target": "agent_22",
+          "type": "target"
+        },
+        {
+          "target": "agent_23",
+          "type": "target"
+        },
+        {
+          "target": "agent_24",
+          "type": "target"
+        },
+        {
+          "target": "agent_25",
+          "type": "target"
+        },
+        {
+          "target": "agent_26",
+          "type": "target"
+        },
+        {
+          "target": "agent_27",
+          "type": "target"
+        },
+        {
+          "target": "agent_28",
+          "type": "target"
+        },
+        {
+          "target": "agent_29",
+          "type": "target"
+        },
+        {
+          "target": "agent_30",
+          "type": "target"
+        },
+        {
+          "target": "agent_31",
+          "type": "target"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509148+00:00"
+    },
+    {
+      "id": "dispatch_op_1",
+      "type": "dispatch_operation",
+      "name": "DispatchOp_MemoryRead",
+      "description": "Dispatch memory read operation",
+      "metadata": {
+        "op_type": "memory_read",
+        "priority": 1,
+        "payload_size": "256_bytes",
+        "memory_region": "unified"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "queued"
+        },
+        {
+          "target": "agent_00",
+          "type": "target"
+        },
+        {
+          "target": "agent_01",
+          "type": "target"
+        },
+        {
+          "target": "agent_02",
+          "type": "target"
+        },
+        {
+          "target": "agent_03",
+          "type": "target"
+        },
+        {
+          "target": "agent_04",
+          "type": "target"
+        },
+        {
+          "target": "agent_05",
+          "type": "target"
+        },
+        {
+          "target": "agent_06",
+          "type": "target"
+        },
+        {
+          "target": "agent_07",
+          "type": "target"
+        },
+        {
+          "target": "agent_08",
+          "type": "target"
+        },
+        {
+          "target": "agent_09",
+          "type": "target"
+        },
+        {
+          "target": "agent_10",
+          "type": "target"
+        },
+        {
+          "target": "agent_11",
+          "type": "target"
+        },
+        {
+          "target": "agent_12",
+          "type": "target"
+        },
+        {
+          "target": "agent_13",
+          "type": "target"
+        },
+        {
+          "target": "agent_14",
+          "type": "target"
+        },
+        {
+          "target": "agent_15",
+          "type": "target"
+        },
+        {
+          "target": "agent_16",
+          "type": "target"
+        },
+        {
+          "target": "agent_17",
+          "type": "target"
+        },
+        {
+          "target": "agent_18",
+          "type": "target"
+        },
+        {
+          "target": "agent_19",
+          "type": "target"
+        },
+        {
+          "target": "agent_20",
+          "type": "target"
+        },
+        {
+          "target": "agent_21",
+          "type": "target"
+        },
+        {
+          "target": "agent_22",
+          "type": "target"
+        },
+        {
+          "target": "agent_23",
+          "type": "target"
+        },
+        {
+          "target": "agent_24",
+          "type": "target"
+        },
+        {
+          "target": "agent_25",
+          "type": "target"
+        },
+        {
+          "target": "agent_26",
+          "type": "target"
+        },
+        {
+          "target": "agent_27",
+          "type": "target"
+        },
+        {
+          "target": "agent_28",
+          "type": "target"
+        },
+        {
+          "target": "agent_29",
+          "type": "target"
+        },
+        {
+          "target": "agent_30",
+          "type": "target"
+        },
+        {
+          "target": "agent_31",
+          "type": "target"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509193+00:00"
+    },
+    {
+      "id": "dispatch_op_2",
+      "type": "dispatch_operation",
+      "name": "DispatchOp_MemoryWrite",
+      "description": "Dispatch memory write operation",
+      "metadata": {
+        "op_type": "memory_write",
+        "priority": 1,
+        "payload_size": "256_bytes",
+        "memory_region": "unified"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "queued"
+        },
+        {
+          "target": "agent_00",
+          "type": "target"
+        },
+        {
+          "target": "agent_01",
+          "type": "target"
+        },
+        {
+          "target": "agent_02",
+          "type": "target"
+        },
+        {
+          "target": "agent_03",
+          "type": "target"
+        },
+        {
+          "target": "agent_04",
+          "type": "target"
+        },
+        {
+          "target": "agent_05",
+          "type": "target"
+        },
+        {
+          "target": "agent_06",
+          "type": "target"
+        },
+        {
+          "target": "agent_07",
+          "type": "target"
+        },
+        {
+          "target": "agent_08",
+          "type": "target"
+        },
+        {
+          "target": "agent_09",
+          "type": "target"
+        },
+        {
+          "target": "agent_10",
+          "type": "target"
+        },
+        {
+          "target": "agent_11",
+          "type": "target"
+        },
+        {
+          "target": "agent_12",
+          "type": "target"
+        },
+        {
+          "target": "agent_13",
+          "type": "target"
+        },
+        {
+          "target": "agent_14",
+          "type": "target"
+        },
+        {
+          "target": "agent_15",
+          "type": "target"
+        },
+        {
+          "target": "agent_16",
+          "type": "target"
+        },
+        {
+          "target": "agent_17",
+          "type": "target"
+        },
+        {
+          "target": "agent_18",
+          "type": "target"
+        },
+        {
+          "target": "agent_19",
+          "type": "target"
+        },
+        {
+          "target": "agent_20",
+          "type": "target"
+        },
+        {
+          "target": "agent_21",
+          "type": "target"
+        },
+        {
+          "target": "agent_22",
+          "type": "target"
+        },
+        {
+          "target": "agent_23",
+          "type": "target"
+        },
+        {
+          "target": "agent_24",
+          "type": "target"
+        },
+        {
+          "target": "agent_25",
+          "type": "target"
+        },
+        {
+          "target": "agent_26",
+          "type": "target"
+        },
+        {
+          "target": "agent_27",
+          "type": "target"
+        },
+        {
+          "target": "agent_28",
+          "type": "target"
+        },
+        {
+          "target": "agent_29",
+          "type": "target"
+        },
+        {
+          "target": "agent_30",
+          "type": "target"
+        },
+        {
+          "target": "agent_31",
+          "type": "target"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509219+00:00"
+    },
+    {
+      "id": "dispatch_op_3",
+      "type": "dispatch_operation",
+      "name": "DispatchOp_Sync",
+      "description": "Dispatch synchronization operation",
+      "metadata": {
+        "op_type": "sync",
+        "priority": 2,
+        "sync_type": "barrier",
+        "scope": "warp"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "queued"
+        },
+        {
+          "target": "agent_00",
+          "type": "target"
+        },
+        {
+          "target": "agent_01",
+          "type": "target"
+        },
+        {
+          "target": "agent_02",
+          "type": "target"
+        },
+        {
+          "target": "agent_03",
+          "type": "target"
+        },
+        {
+          "target": "agent_04",
+          "type": "target"
+        },
+        {
+          "target": "agent_05",
+          "type": "target"
+        },
+        {
+          "target": "agent_06",
+          "type": "target"
+        },
+        {
+          "target": "agent_07",
+          "type": "target"
+        },
+        {
+          "target": "agent_08",
+          "type": "target"
+        },
+        {
+          "target": "agent_09",
+          "type": "target"
+        },
+        {
+          "target": "agent_10",
+          "type": "target"
+        },
+        {
+          "target": "agent_11",
+          "type": "target"
+        },
+        {
+          "target": "agent_12",
+          "type": "target"
+        },
+        {
+          "target": "agent_13",
+          "type": "target"
+        },
+        {
+          "target": "agent_14",
+          "type": "target"
+        },
+        {
+          "target": "agent_15",
+          "type": "target"
+        },
+        {
+          "target": "agent_16",
+          "type": "target"
+        },
+        {
+          "target": "agent_17",
+          "type": "target"
+        },
+        {
+          "target": "agent_18",
+          "type": "target"
+        },
+        {
+          "target": "agent_19",
+          "type": "target"
+        },
+        {
+          "target": "agent_20",
+          "type": "target"
+        },
+        {
+          "target": "agent_21",
+          "type": "target"
+        },
+        {
+          "target": "agent_22",
+          "type": "target"
+        },
+        {
+          "target": "agent_23",
+          "type": "target"
+        },
+        {
+          "target": "agent_24",
+          "type": "target"
+        },
+        {
+          "target": "agent_25",
+          "type": "target"
+        },
+        {
+          "target": "agent_26",
+          "type": "target"
+        },
+        {
+          "target": "agent_27",
+          "type": "target"
+        },
+        {
+          "target": "agent_28",
+          "type": "target"
+        },
+        {
+          "target": "agent_29",
+          "type": "target"
+        },
+        {
+          "target": "agent_30",
+          "type": "target"
+        },
+        {
+          "target": "agent_31",
+          "type": "target"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509244+00:00"
+    },
+    {
+      "id": "dispatch_op_4",
+      "type": "dispatch_operation",
+      "name": "DispatchOp_IO",
+      "description": "Dispatch I/O operation",
+      "metadata": {
+        "op_type": "io",
+        "priority": 3,
+        "io_type": "async",
+        "buffer_size": "1KB"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "queued"
+        },
+        {
+          "target": "agent_00",
+          "type": "target"
+        },
+        {
+          "target": "agent_01",
+          "type": "target"
+        },
+        {
+          "target": "agent_02",
+          "type": "target"
+        },
+        {
+          "target": "agent_03",
+          "type": "target"
+        },
+        {
+          "target": "agent_04",
+          "type": "target"
+        },
+        {
+          "target": "agent_05",
+          "type": "target"
+        },
+        {
+          "target": "agent_06",
+          "type": "target"
+        },
+        {
+          "target": "agent_07",
+          "type": "target"
+        },
+        {
+          "target": "agent_08",
+          "type": "target"
+        },
+        {
+          "target": "agent_09",
+          "type": "target"
+        },
+        {
+          "target": "agent_10",
+          "type": "target"
+        },
+        {
+          "target": "agent_11",
+          "type": "target"
+        },
+        {
+          "target": "agent_12",
+          "type": "target"
+        },
+        {
+          "target": "agent_13",
+          "type": "target"
+        },
+        {
+          "target": "agent_14",
+          "type": "target"
+        },
+        {
+          "target": "agent_15",
+          "type": "target"
+        },
+        {
+          "target": "agent_16",
+          "type": "target"
+        },
+        {
+          "target": "agent_17",
+          "type": "target"
+        },
+        {
+          "target": "agent_18",
+          "type": "target"
+        },
+        {
+          "target": "agent_19",
+          "type": "target"
+        },
+        {
+          "target": "agent_20",
+          "type": "target"
+        },
+        {
+          "target": "agent_21",
+          "type": "target"
+        },
+        {
+          "target": "agent_22",
+          "type": "target"
+        },
+        {
+          "target": "agent_23",
+          "type": "target"
+        },
+        {
+          "target": "agent_24",
+          "type": "target"
+        },
+        {
+          "target": "agent_25",
+          "type": "target"
+        },
+        {
+          "target": "agent_26",
+          "type": "target"
+        },
+        {
+          "target": "agent_27",
+          "type": "target"
+        },
+        {
+          "target": "agent_28",
+          "type": "target"
+        },
+        {
+          "target": "agent_29",
+          "type": "target"
+        },
+        {
+          "target": "agent_30",
+          "type": "target"
+        },
+        {
+          "target": "agent_31",
+          "type": "target"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509269+00:00"
+    },
+    {
+      "id": "dispatch_op_5",
+      "type": "dispatch_operation",
+      "name": "DispatchOp_Matrix",
+      "description": "Dispatch matrix computation operation",
+      "metadata": {
+        "op_type": "compute",
+        "priority": 0,
+        "matrix_size": "32x32",
+        "precision": "float32"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "queued"
+        },
+        {
+          "target": "agent_00",
+          "type": "target"
+        },
+        {
+          "target": "agent_01",
+          "type": "target"
+        },
+        {
+          "target": "agent_02",
+          "type": "target"
+        },
+        {
+          "target": "agent_03",
+          "type": "target"
+        },
+        {
+          "target": "agent_04",
+          "type": "target"
+        },
+        {
+          "target": "agent_05",
+          "type": "target"
+        },
+        {
+          "target": "agent_06",
+          "type": "target"
+        },
+        {
+          "target": "agent_07",
+          "type": "target"
+        },
+        {
+          "target": "agent_08",
+          "type": "target"
+        },
+        {
+          "target": "agent_09",
+          "type": "target"
+        },
+        {
+          "target": "agent_10",
+          "type": "target"
+        },
+        {
+          "target": "agent_11",
+          "type": "target"
+        },
+        {
+          "target": "agent_12",
+          "type": "target"
+        },
+        {
+          "target": "agent_13",
+          "type": "target"
+        },
+        {
+          "target": "agent_14",
+          "type": "target"
+        },
+        {
+          "target": "agent_15",
+          "type": "target"
+        },
+        {
+          "target": "agent_16",
+          "type": "target"
+        },
+        {
+          "target": "agent_17",
+          "type": "target"
+        },
+        {
+          "target": "agent_18",
+          "type": "target"
+        },
+        {
+          "target": "agent_19",
+          "type": "target"
+        },
+        {
+          "target": "agent_20",
+          "type": "target"
+        },
+        {
+          "target": "agent_21",
+          "type": "target"
+        },
+        {
+          "target": "agent_22",
+          "type": "target"
+        },
+        {
+          "target": "agent_23",
+          "type": "target"
+        },
+        {
+          "target": "agent_24",
+          "type": "target"
+        },
+        {
+          "target": "agent_25",
+          "type": "target"
+        },
+        {
+          "target": "agent_26",
+          "type": "target"
+        },
+        {
+          "target": "agent_27",
+          "type": "target"
+        },
+        {
+          "target": "agent_28",
+          "type": "target"
+        },
+        {
+          "target": "agent_29",
+          "type": "target"
+        },
+        {
+          "target": "agent_30",
+          "type": "target"
+        },
+        {
+          "target": "agent_31",
+          "type": "target"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509296+00:00"
+    },
+    {
+      "id": "dispatch_op_6",
+      "type": "dispatch_operation",
+      "name": "DispatchOp_Reduce",
+      "description": "Dispatch reduction operation",
+      "metadata": {
+        "op_type": "compute",
+        "priority": 1,
+        "reduction_type": "sum",
+        "input_size": "1024_elements"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "queued"
+        },
+        {
+          "target": "agent_00",
+          "type": "target"
+        },
+        {
+          "target": "agent_01",
+          "type": "target"
+        },
+        {
+          "target": "agent_02",
+          "type": "target"
+        },
+        {
+          "target": "agent_03",
+          "type": "target"
+        },
+        {
+          "target": "agent_04",
+          "type": "target"
+        },
+        {
+          "target": "agent_05",
+          "type": "target"
+        },
+        {
+          "target": "agent_06",
+          "type": "target"
+        },
+        {
+          "target": "agent_07",
+          "type": "target"
+        },
+        {
+          "target": "agent_08",
+          "type": "target"
+        },
+        {
+          "target": "agent_09",
+          "type": "target"
+        },
+        {
+          "target": "agent_10",
+          "type": "target"
+        },
+        {
+          "target": "agent_11",
+          "type": "target"
+        },
+        {
+          "target": "agent_12",
+          "type": "target"
+        },
+        {
+          "target": "agent_13",
+          "type": "target"
+        },
+        {
+          "target": "agent_14",
+          "type": "target"
+        },
+        {
+          "target": "agent_15",
+          "type": "target"
+        },
+        {
+          "target": "agent_16",
+          "type": "target"
+        },
+        {
+          "target": "agent_17",
+          "type": "target"
+        },
+        {
+          "target": "agent_18",
+          "type": "target"
+        },
+        {
+          "target": "agent_19",
+          "type": "target"
+        },
+        {
+          "target": "agent_20",
+          "type": "target"
+        },
+        {
+          "target": "agent_21",
+          "type": "target"
+        },
+        {
+          "target": "agent_22",
+          "type": "target"
+        },
+        {
+          "target": "agent_23",
+          "type": "target"
+        },
+        {
+          "target": "agent_24",
+          "type": "target"
+        },
+        {
+          "target": "agent_25",
+          "type": "target"
+        },
+        {
+          "target": "agent_26",
+          "type": "target"
+        },
+        {
+          "target": "agent_27",
+          "type": "target"
+        },
+        {
+          "target": "agent_28",
+          "type": "target"
+        },
+        {
+          "target": "agent_29",
+          "type": "target"
+        },
+        {
+          "target": "agent_30",
+          "type": "target"
+        },
+        {
+          "target": "agent_31",
+          "type": "target"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509324+00:00"
+    },
+    {
+      "id": "dispatch_op_7",
+      "type": "dispatch_operation",
+      "name": "DispatchOp_Status",
+      "description": "Dispatch status query operation",
+      "metadata": {
+        "op_type": "status",
+        "priority": 3,
+        "query_type": "queue_depth",
+        "response_time": "nanoseconds"
+      },
+      "connections": [
+        {
+          "target": "prim_command_queue",
+          "type": "queued"
+        },
+        {
+          "target": "agent_00",
+          "type": "target"
+        },
+        {
+          "target": "agent_01",
+          "type": "target"
+        },
+        {
+          "target": "agent_02",
+          "type": "target"
+        },
+        {
+          "target": "agent_03",
+          "type": "target"
+        },
+        {
+          "target": "agent_04",
+          "type": "target"
+        },
+        {
+          "target": "agent_05",
+          "type": "target"
+        },
+        {
+          "target": "agent_06",
+          "type": "target"
+        },
+        {
+          "target": "agent_07",
+          "type": "target"
+        },
+        {
+          "target": "agent_08",
+          "type": "target"
+        },
+        {
+          "target": "agent_09",
+          "type": "target"
+        },
+        {
+          "target": "agent_10",
+          "type": "target"
+        },
+        {
+          "target": "agent_11",
+          "type": "target"
+        },
+        {
+          "target": "agent_12",
+          "type": "target"
+        },
+        {
+          "target": "agent_13",
+          "type": "target"
+        },
+        {
+          "target": "agent_14",
+          "type": "target"
+        },
+        {
+          "target": "agent_15",
+          "type": "target"
+        },
+        {
+          "target": "agent_16",
+          "type": "target"
+        },
+        {
+          "target": "agent_17",
+          "type": "target"
+        },
+        {
+          "target": "agent_18",
+          "type": "target"
+        },
+        {
+          "target": "agent_19",
+          "type": "target"
+        },
+        {
+          "target": "agent_20",
+          "type": "target"
+        },
+        {
+          "target": "agent_21",
+          "type": "target"
+        },
+        {
+          "target": "agent_22",
+          "type": "target"
+        },
+        {
+          "target": "agent_23",
+          "type": "target"
+        },
+        {
+          "target": "agent_24",
+          "type": "target"
+        },
+        {
+          "target": "agent_25",
+          "type": "target"
+        },
+        {
+          "target": "agent_26",
+          "type": "target"
+        },
+        {
+          "target": "agent_27",
+          "type": "target"
+        },
+        {
+          "target": "agent_28",
+          "type": "target"
+        },
+        {
+          "target": "agent_29",
+          "type": "target"
+        },
+        {
+          "target": "agent_30",
+          "type": "target"
+        },
+        {
+          "target": "agent_31",
+          "type": "target"
+        },
+        {
+          "target": "substrate_unified_memory",
+          "type": "memory_backing"
+        }
+      ],
+      "timestamp": "2026-08-21T03:26:08.509353+00:00"
+    }
+  ],
+  "cell_count": 45,
+  "checksum": "e1bf19b5c8a8104d4fcd24cebb952a4daca61b43aa2339436403d58668edf1c3"
+}

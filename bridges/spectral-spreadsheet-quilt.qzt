@@ -1,0 +1,412 @@
+{
+  "schema_version": "1.0",
+  "type": "spectral_spreadsheet",
+  "title": "Spectral Spreadsheet Quilt",
+  "description": "Browser-based spreadsheet with spectral graph theory computations",
+  "created": "2026-08-21T03:26:08.592135+00:00",
+  "cells": [
+    {
+      "id": "cell_001",
+      "kind": "number",
+      "value": 2.0,
+      "formula": null,
+      "metadata": {
+        "description": "Spectral radius of P4"
+      },
+      "timestamp": "2026-08-21T03:26:08.592011+00:00"
+    },
+    {
+      "id": "cell_002",
+      "kind": "number",
+      "value": 4.0,
+      "formula": null,
+      "metadata": {
+        "description": "Number of vertices in K4"
+      },
+      "timestamp": "2026-08-21T03:26:08.592064+00:00"
+    },
+    {
+      "id": "cell_003",
+      "kind": "graph",
+      "value": [
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ]
+      ],
+      "formula": null,
+      "metadata": {
+        "description": "Path graph P4",
+        "nodes": 4
+      },
+      "timestamp": "2026-08-21T03:26:08.592072+00:00"
+    },
+    {
+      "id": "cell_004",
+      "kind": "graph",
+      "value": [
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0
+        ]
+      ],
+      "formula": null,
+      "metadata": {
+        "description": "Cycle graph C4",
+        "nodes": 4
+      },
+      "timestamp": "2026-08-21T03:26:08.592079+00:00"
+    },
+    {
+      "id": "cell_005",
+      "kind": "graph",
+      "value": [
+        [
+          0,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          0
+        ]
+      ],
+      "formula": null,
+      "metadata": {
+        "description": "Complete graph K4",
+        "nodes": 4
+      },
+      "timestamp": "2026-08-21T03:26:08.592085+00:00"
+    },
+    {
+      "id": "cell_006",
+      "kind": "graph",
+      "value": [
+        [
+          0,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "formula": null,
+      "metadata": {
+        "description": "Star graph S4",
+        "nodes": 4
+      },
+      "timestamp": "2026-08-21T03:26:08.592091+00:00"
+    },
+    {
+      "id": "cell_007",
+      "kind": "eigenvalue",
+      "value": 2.0,
+      "formula": "=EIGVAL",
+      "metadata": {
+        "description": "Largest eigenvalue of P4",
+        "matrix_ref": "cell_003"
+      },
+      "timestamp": "2026-08-21T03:26:08.592097+00:00"
+    },
+    {
+      "id": "cell_008",
+      "kind": "eigenvalue",
+      "value": 2.0,
+      "formula": "=EIGVAL",
+      "metadata": {
+        "description": "Largest eigenvalue of C4",
+        "matrix_ref": "cell_004"
+      },
+      "timestamp": "2026-08-21T03:26:08.592105+00:00"
+    },
+    {
+      "id": "cell_009",
+      "kind": "eigenvalue",
+      "value": 3.0,
+      "formula": "=EIGVAL",
+      "metadata": {
+        "description": "Largest eigenvalue of K4",
+        "matrix_ref": "cell_005"
+      },
+      "timestamp": "2026-08-21T03:26:08.592110+00:00"
+    },
+    {
+      "id": "cell_010",
+      "kind": "CR",
+      "value": 0.5,
+      "formula": "=CR",
+      "metadata": {
+        "description": "Cheeger ratio of P4",
+        "graph_ref": "cell_003",
+        "color": "#FFFF00"
+      },
+      "timestamp": "2026-08-21T03:26:08.592114+00:00"
+    },
+    {
+      "id": "cell_011",
+      "kind": "CR",
+      "value": 0.25,
+      "formula": "=CR",
+      "metadata": {
+        "description": "Cheeger ratio of C4",
+        "graph_ref": "cell_004",
+        "color": "#00FF00"
+      },
+      "timestamp": "2026-08-21T03:26:08.592118+00:00"
+    },
+    {
+      "id": "cell_012",
+      "kind": "CR",
+      "value": 0.75,
+      "formula": "=CR",
+      "metadata": {
+        "description": "Cheeger ratio of K4",
+        "graph_ref": "cell_005",
+        "color": "#FFA500"
+      },
+      "timestamp": "2026-08-21T03:26:08.592121+00:00"
+    },
+    {
+      "id": "cell_013",
+      "kind": "CR",
+      "value": 0.6,
+      "formula": "=CR",
+      "metadata": {
+        "description": "Cheeger ratio of S4",
+        "graph_ref": "cell_006",
+        "color": "#FFA500"
+      },
+      "timestamp": "2026-08-21T03:26:08.592124+00:00"
+    }
+  ],
+  "formulas": [
+    {
+      "name": "=EIGVAL",
+      "description": "Compute the largest eigenvalue of a graph's adjacency matrix",
+      "implementation": "lambda_max(A) where A is the adjacency matrix",
+      "parameters": [
+        "matrix_ref"
+      ],
+      "category": "spectral"
+    },
+    {
+      "name": "=CR",
+      "description": "Compute the Cheeger Ratio (isoperimetric number)",
+      "implementation": "min(|\u2202S|/|S|) for all subsets S of vertices",
+      "parameters": [
+        "graph_ref"
+      ],
+      "category": "spectral"
+    },
+    {
+      "name": "=FIEDLER",
+      "description": "Compute the Fiedler vector (second smallest eigenvector of Laplacian)",
+      "implementation": "eigenvector corresponding to second smallest eigenvalue of L",
+      "parameters": [
+        "graph_ref"
+      ],
+      "category": "spectral"
+    },
+    {
+      "name": "=SPECTRAL_GAP",
+      "description": "Compute the spectral gap (difference between largest eigenvalues)",
+      "implementation": "lambda_1 - lambda_2",
+      "parameters": [
+        "matrix_ref"
+      ],
+      "category": "spectral"
+    },
+    {
+      "name": "=ADJ_MATRIX",
+      "description": "Get the adjacency matrix of a graph",
+      "implementation": "A[i][j] = 1 if vertices i and j are adjacent, else 0",
+      "parameters": [
+        "graph_ref"
+      ],
+      "category": "spectral"
+    },
+    {
+      "name": "=DEGREE",
+      "description": "Compute the degree matrix of a graph",
+      "implementation": "D[i][i] = degree of vertex i",
+      "parameters": [
+        "graph_ref"
+      ],
+      "category": "spectral"
+    }
+  ],
+  "color_mappings": [
+    {
+      "name": "CR_GOOD",
+      "min_value": 0.0,
+      "max_value": 0.3,
+      "color": "#00FF00",
+      "description": "Good connectivity (low CR)"
+    },
+    {
+      "name": "CR_MODERATE",
+      "min_value": 0.3,
+      "max_value": 0.6,
+      "color": "#FFFF00",
+      "description": "Moderate connectivity"
+    },
+    {
+      "name": "CR_POOR",
+      "min_value": 0.6,
+      "max_value": 0.8,
+      "color": "#FFA500",
+      "description": "Poor connectivity"
+    },
+    {
+      "name": "CR_BAD",
+      "min_value": 0.8,
+      "max_value": 1.0,
+      "color": "#FF0000",
+      "description": "Bad connectivity (high CR)"
+    }
+  ],
+  "graph_families": [
+    {
+      "name": "Path Graphs",
+      "description": "Simple paths with n vertices",
+      "spectral_properties": {
+        "eigenvalues": "2*cos(k*pi/(n+1)) for k=1,...,n",
+        "spectral_gap": "2 - 2*cos(pi/(n+1))",
+        "cr": "~2/(n+1) for large n"
+      },
+      "examples": [
+        "P3",
+        "P4",
+        "P5"
+      ]
+    },
+    {
+      "name": "Cycle Graphs",
+      "description": "Cycles with n vertices",
+      "spectral_properties": {
+        "eigenvalues": "2*cos(2*pi*k/n) for k=0,...,n-1",
+        "spectral_gap": "2 - 2*cos(2*pi/n)",
+        "cr": "2/n"
+      },
+      "examples": [
+        "C3",
+        "C4",
+        "C5"
+      ]
+    },
+    {
+      "name": "Complete Graphs",
+      "description": "Fully connected graphs with n vertices",
+      "spectral_properties": {
+        "eigenvalues": "n-1 (once), -1 (n-1 times)",
+        "spectral_gap": "n",
+        "cr": "~1/n"
+      },
+      "examples": [
+        "K3",
+        "K4",
+        "K5"
+      ]
+    },
+    {
+      "name": "Star Graphs",
+      "description": "Central vertex connected to all others",
+      "spectral_properties": {
+        "eigenvalues": "sqrt(n-1), -sqrt(n-1), 0 (n-2 times)",
+        "spectral_gap": "1",
+        "cr": "1/sqrt(n-1)"
+      },
+      "examples": [
+        "S3",
+        "S4",
+        "S5"
+      ]
+    }
+  ],
+  "features": {
+    "cell_kinds": [
+      "number",
+      "graph",
+      "eigenvalue",
+      "CR"
+    ],
+    "formula_count": 6,
+    "cell_count": 13,
+    "visual_mappings": [
+      "CR color coding"
+    ],
+    "graph_family_connections": true
+  }
+}

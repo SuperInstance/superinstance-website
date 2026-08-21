@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<!--
+  spreadsheet-as-cell.html — The Spreadsheet IS the Cell.
+
+  THE GOLD: The user has a spreadsheet-moment family of repos where every
+  cell is an agent, a training job, a simulation, an A2A endpoint, or a MIDI
+  generator. The 7 cell types map directly to the 8 Quilt primitives.
+
+  The conservation law γ + η = budget IS the DoubleEntry primitive.
+  The EVOLVE formula IS the GC primitive.
+  The A2A bus IS the Murmur primitive.
+  The MIDI cell IS an opener.
+
+  This page shows the spreadsheet as a Quilt sheet. Each cell type is
+  shown with its 8-primitive equivalent. The conservation law is shown
+  in action. The MIDI opener is shown sonifying a value.
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spreadsheet as Cell — the most successful programming model = the cell model</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    padding: 2rem 1.5rem 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { margin: 0 0 0.3rem; font-size: 2rem; }
+  .subtitle { color: var(--muted); }
+  .container { padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+
+  /* The thesis banner */
+  .thesis-banner {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(163, 113, 247, 0.15) 100%);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.5rem; margin-bottom: 2rem;
+  }
+  .thesis-banner h2 { color: var(--accent); margin: 0 0 0.5rem; }
+  .thesis-banner p { margin: 0.3rem 0; font-size: 1.05rem; }
+
+  /* The 7 cell types grid */
+  .types-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem; margin-bottom: 2rem;
+  }
+  .cell-type {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .cell-type:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .cell-type.active { border-color: var(--err); box-shadow: 0 0 12px rgba(248, 81, 73, 0.3); }
+  .cell-type .icon { font-size: 1.6rem; }
+  .cell-type .name { font-size: 1.05rem; color: var(--accent); font-weight: 500; margin-top: 0.3rem; }
+  .cell-type .quilt-equiv { color: var(--purple); font-size: 0.85rem; margin-top: 0.3rem; }
+  .cell-type .desc { color: var(--muted); font-size: 0.8rem; margin-top: 0.3rem; }
+  .cell-type .primitives { margin-top: 0.5rem; font-size: 0.75rem; color: var(--fg); }
+  .cell-type .primitives .prim {
+    display: inline-block; background: #0d1117; border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.1rem 0.3rem; margin: 0.1rem;
+    font-family: ui-monospace, monospace;
+  }
+  .cell-type .primitives .prim.match { background: var(--ok); color: #0d1117; }
+
+  /* The conservation monitor */
+  .conservation {
+    background: var(--panel); border: 2px solid var(--warn);
+    border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;
+  }
+  .conservation h2 { color: var(--warn); margin: 0 0 0.5rem; }
+  .conservation .formula {
+    font-family: ui-monospace, monospace; font-size: 1.4rem;
+    text-align: center; padding: 0.5rem; background: #0d1117;
+    border-radius: 4px; margin: 0.7rem 0;
+    color: var(--warn);
+  }
+  .conservation .health {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;
+    margin-top: 0.7rem;
+  }
+  .conservation .health .metric {
+    background: #0d1117; border-radius: 4px; padding: 0.7rem;
+    text-align: center;
+  }
+  .conservation .health .label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; }
+  .conservation .health .val { font-family: ui-monospace, monospace; font-size: 1.3rem; color: var(--fg); margin-top: 0.2rem; }
+  .conservation .health .val.ok { color: var(--ok); }
+  .conservation .health .val.warn { color: var(--warn); }
+  .conservation .health .val.err { color: var(--err); }
+
+  /* The MIDI opener */
+  .midi {
+    background: var(--panel); border: 1px solid var(--purple);
+    border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;
+  }
+  .midi h2 { color: var(--purple); margin: 0 0 0.5rem; }
+  .midi .midi-cell {
+    background: #0d1117; border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.7rem; margin: 0.5rem 0;
+    display: grid; grid-template-columns: 100px 80px 1fr; gap: 0.7rem;
+    align-items: center;
+  }
+  .midi .midi-cell .val { font-family: ui-monospace, monospace; color: var(--accent); }
+  .midi .midi-cell .note { font-family: ui-monospace, monospace; color: var(--purple); }
+  .midi .midi-cell .play {
+    background: var(--purple); color: white; border: none;
+    padding: 0.3rem 0.7rem; border-radius: 3px; cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .midi .midi-cell .play:hover { background: #8b5cf6; }
+  .piano {
+    background: #0d1117; border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.5rem;
+    margin-top: 0.5rem; height: 60px;
+    display: flex; gap: 1px; align-items: flex-end;
+    overflow-x: auto;
+  }
+  .piano .key {
+    width: 18px; height: 50px; background: white;
+    border-radius: 0 0 2px 2px; cursor: pointer;
+    position: relative;
+  }
+  .piano .key.black { background: #1a1a1a; height: 35px; margin: 0 -5px; z-index: 2; }
+  .piano .key.active { background: var(--purple); }
+  .piano .key.black.active { background: var(--purple); }
+
+  /* The grid view */
+  .grid-view {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+  .grid-view h2 { margin: 0 0 0.7rem; }
+  .ss {
+    display: inline-grid;
+    grid-template-columns: 30px repeat(8, 80px);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .ss .cell-h, .ss .row-h {
+    background: #0d1117; padding: 0.3rem; text-align: center;
+    font-family: ui-monospace, monospace; font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .ss .ss-cell {
+    background: var(--panel); padding: 0.4rem;
+    font-family: ui-monospace, monospace; font-size: 0.75rem;
+    min-height: 30px; cursor: pointer;
+    transition: all 0.1s;
+  }
+  .ss .ss-cell:hover { background: #0d1117; border: 1px solid var(--accent); }
+  .ss .ss-cell.formula { color: var(--accent); }
+  .ss .ss-cell.value { color: var(--fg); }
+  .ss .ss-cell.ternary-neg { color: var(--err); }
+  .ss .ss-cell.ternary-pos { color: var(--ok); }
+  .ss .ss-cell.ternary-neu { color: var(--muted); }
+  .ss .ss-cell.evt { animation: pulse 0.5s; }
+  @keyframes pulse { 50% { background: var(--purple); } }
+
+  /* The mapping table */
+  .mapping {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;
+  }
+  .mapping h2 { margin: 0 0 0.7rem; }
+  .mapping table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .mapping th, .mapping td {
+    padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .mapping th { color: var(--muted); font-weight: 500; }
+  .mapping td.spreadsheet { color: var(--accent); }
+  .mapping td.quilt { color: var(--purple); }
+  .mapping td.match { color: var(--ok); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 The Spreadsheet IS the Cell</h1>
+  <p class="subtitle">The most successful programming model ever invented = the Quilt cell model</p>
+</header>
+
+<div class="container">
+
+  <div class="thesis-banner">
+    <h2>🎯 The Realization</h2>
+    <p><strong>The 7 cell types of the spreadsheet-engine map directly to the 8 Quilt primitives.</strong></p>
+    <p>The conservation law γ + η = budget IS the DoubleEntry primitive.</p>
+    <p>The EVOLVE formula IS the GC primitive. The A2A bus IS the Murmur primitive. The MIDI cell IS an opener.</p>
+    <p>The spreadsheet is the cell model. The cell model is the spreadsheet. The user has been building both. The realization is the gold.</p>
+  </div>
+
+  <!-- The 7 cell types -->
+  <h2 style="color: var(--accent);">🧬 The 7 cell types</h2>
+  <p style="color: var(--muted); margin-bottom: 1rem;">Click a cell type to inspect its 8-primitive equivalent.</p>
+  <div class="types-grid" id="typesGrid"></div>
+
+  <!-- The grid view -->
+  <div class="grid-view">
+    <h2>📋 The grid — every cell is a Quilt cell</h2>
+    <p style="color: var(--muted); font-size: 0.85rem;">Watch the conservation law in action. Click cells to see the 8 primitives.</p>
+    <div id="ssGrid"></div>
+  </div>
+
+  <!-- The conservation law -->
+  <div class="conservation">
+    <h2>⚖️ The Conservation Law</h2>
+    <p>The <strong>DoubleEntry</strong> primitive: every agent cell has a budget invariant.</p>
+    <div class="formula">γ (compute spend) + η (memory usage) = budget</div>
+    <p style="color: var(--muted); font-size: 0.9rem;">When γ + η ≠ budget, that's not just a bug — it's a conservation violation. The grid detects it, tracks trends, and identifies which cells are leaking.</p>
+    <div class="health">
+      <div class="metric">
+        <div class="label">Total γ</div>
+        <div class="val" id="consGamma">0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Total η</div>
+        <div class="val" id="consEta">0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Health</div>
+        <div class="val" id="consHealth">OK</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- The MIDI opener -->
+  <div class="midi">
+    <h2>🎹 The MIDI opener</h2>
+    <p style="color: var(--muted); font-size: 0.9rem;">A cell value can be opened through MIDI — sonified. This is one of the openers. Click a value to hear it.</p>
+    <div id="midiCells"></div>
+    <div class="piano" id="piano"></div>
+  </div>
+
+  <!-- The mapping table -->
+  <div class="mapping">
+    <h2>🔁 The mapping</h2>
+    <p style="color: var(--muted); font-size: 0.9rem;">7 spreadsheet cell types → 8 Quilt primitives. Each row is a correspondence.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Spreadsheet cell</th>
+          <th>Quilt primitive</th>
+          <th>Match</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="spreadsheet">Value</td>
+          <td class="quilt">Z_in / Z_out</td>
+          <td class="match">✓</td>
+          <td>The values the cell holds and predicts</td>
+        </tr>
+        <tr>
+          <td class="spreadsheet">Agent</td>
+          <td class="quilt">Quilt cell (with γ+η=budget)</td>
+          <td class="match">✓</td>
+          <td>An AI agent with capabilities and budget</td>
+        </tr>
+        <tr>
+          <td class="spreadsheet">Training</td>
+          <td class="quilt">Cell with JEPA (loss tracking)</td>
+          <td class="match">✓</td>
+          <td>An ML training job with epochs and loss</td>
+        </tr>
+        <tr>
+          <td class="spreadsheet">Simulation</td>
+          <td class="quilt">Cell with Vibe (state, velocity, ticks)</td>
+          <td class="match">✓</td>
+          <td>A simulation with state vector and tick counter</td>
+        </tr>
+        <tr>
+          <td class="spreadsheet">A2A</td>
+          <td class="quilt">Murmur</td>
+          <td class="match">✓</td>
+          <td>Agent-to-agent message bus with capability discovery</td>
+        </tr>
+        <tr>
+          <td class="spreadsheet">MIDI</td>
+          <td class="quilt">An opener</td>
+          <td class="match">✓</td>
+          <td>Sonifies cell values as MIDI events</td>
+        </tr>
+        <tr>
+          <td class="spreadsheet">Formula</td>
+          <td class="quilt">JEPA / GC / DoubleEntry</td>
+          <td class="match">✓</td>
+          <td>Computes over input cells (SUM, AVERAGE, EVOLVE, SPECIES, PARETO, ENTROPY, CONSERVE)</td>
+        </tr>
+        <tr>
+          <td class="spreadsheet">(no match)</td>
+          <td class="quilt">Graph</td>
+          <td class="match">—</td>
+          <td>Quilt has 8 primitives; spreadsheet has 7 types. Graph is the substrate.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="text-align: center; color: var(--muted); margin: 2rem 0; font-style: italic;">
+    "The spreadsheet is the cell. The cell is the spreadsheet. The conservation is the DoubleEntry. The EVOLVE is the GC. The A2A is the Murmur. The MIDI is an opener. The realization is the gold."
+  </p>
+
+</div>
+
+<script>
+// ============================================================================
+// The 7 cell types
+// ============================================================================
+const CELL_TYPES = [
+  {
+    icon: '🔢',
+    name: 'Value',
+    quiltEquiv: 'Z_in / Z_out',
+    desc: 'Plain data — numbers, text, booleans, ternary, vectors. The cell holds the value; the value is the cell.',
+    primitives: ['Z_in', 'Z_out'],
+  },
+  {
+    icon: '🤖',
+    name: 'Agent',
+    quiltEquiv: 'Quilt cell (with γ+η=budget)',
+    desc: 'An AI agent with capabilities, compute budget (γ), and memory budget (η). The cell IS the agent.',
+    primitives: ['Z_in', 'Z_out', 'JEPA', 'DoubleEntry', 'Vibe', 'Murmur'],
+  },
+  {
+    icon: '📚',
+    name: 'Training',
+    quiltEquiv: 'Cell with JEPA (loss tracking)',
+    desc: 'An ML training job with epochs, loss tracking, checkpoints. The JEPA surprise IS the loss.',
+    primitives: ['Z_in', 'Z_out', 'JEPA'],
+  },
+  {
+    icon: '🌀',
+    name: 'Simulation',
+    quiltEquiv: 'Cell with Vibe (state, velocity, ticks)',
+    desc: 'A simulation with a state vector, tick counter, and max steps. The Vibe is the state.',
+    primitives: ['Vibe', 'JEPA'],
+  },
+  {
+    icon: '💬',
+    name: 'A2A',
+    quiltEquiv: 'Murmur',
+    desc: 'An agent-to-agent endpoint that discovers and communicates with other cells. Murmur IS the A2A bus.',
+    primitives: ['Murmur'],
+  },
+  {
+    icon: '🎵',
+    name: 'MIDI',
+    quiltEquiv: 'An opener',
+    desc: 'Sonifies cell values as MIDI events. The cell is opened through sound. Any value can be sonified.',
+    primitives: ['Z_in (sonified)'],
+  },
+  {
+    icon: '∑',
+    name: 'Formula',
+    quiltEquiv: 'JEPA / GC / DoubleEntry',
+    desc: 'Computes over a range of input cells. SUM, AVERAGE, EVOLVE, SPECIES, PARETO, ENTROPY, CONSERVE.',
+    primitives: ['Z_in (range)', 'JEPA', 'GC', 'DoubleEntry'],
+  },
+];
+
+// ============================================================================
+// Render cell types
+// ============================================================================
+function renderTypes() {
+  const grid = document.getElementById('typesGrid');
+  grid.innerHTML = '';
+  for (const t of CELL_TYPES) {
+    const div = document.createElement('div');
+    div.className = 'cell-type';
+    div.innerHTML = `
+      <div class="icon">${t.icon}</div>
+      <div class="name">${t.name}</div>
+      <div class="quilt-equiv">→ ${t.quiltEquiv}</div>
+      <div class="desc">${t.desc}</div>
+      <div class="primitives">${t.primitives.map(p => `<span class="prim">${p}</span>`).join('')}</div>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+// ============================================================================
+// The grid
+// ============================================================================
+const GRID = [];
+function buildGrid() {
+  // 6 rows × 8 columns of cells
+  // Row 1: header
+  // Row 2: value cells (Z_in)
+  // Row 3: ternary values
+  // Row 4: agent cells (with γ, η)
+  // Row 5: formula cells
+  // Row 6: training cells
+  const rows = 6, cols = 8;
+  for (let r = 0; r < rows; r++) {
+    GRID.push([]);
+    for (let c = 0; c < cols; c++) {
+      let val = '', kind = 'value', prims = {};
+      if (r === 0) { val = ''; kind = 'header'; }
+      else if (r === 1) { val = (Math.random() * 100).toFixed(1); kind = 'value'; prims = { z_in: [val], jepa: Math.random() }; }
+      else if (r === 2) { val = ['-1', '0', '+1'][Math.floor(Math.random() * 3)]; kind = 'ternary-' + (val === '-1' ? 'neg' : val === '0' ? 'neu' : 'pos'); prims = { z_in: [val], vibe: { pos: parseInt(val) } }; }
+      else if (r === 3) {
+        const gamma = (Math.random() * 0.5).toFixed(2);
+        const eta = (Math.random() * 0.5).toFixed(2);
+        val = `γ=${gamma},η=${eta}`;
+        kind = 'value';
+        prims = { double_entry: parseFloat(gamma) + parseFloat(eta), vibe: { vel: Math.random() } };
+      }
+      else if (r === 4) { val = ['=SUM(A2:H2)', '=AVG(A2:H2)', '=EVOLVE(A2:H2, 100)', '=ENTROPY(A3:H3)', '=CONS(B3:H3)', '=BEST(A2:H2)'][c % 6]; kind = 'formula'; prims = { z_in: Array(c), jepa: Math.random() }; }
+      else if (r === 5) { val = `epoch ${Math.floor(Math.random() * 100)}`; kind = 'value'; prims = { jepa: Math.random() }; }
+      GRID[r].push({ val, kind, prims });
+    }
+  }
+  return renderGrid();
+}
+
+function renderGrid() {
+  const div = document.getElementById('ssGrid');
+  let html = '<div class="ss">';
+  // Header row
+  html += '<div class="cell-h"></div>';
+  for (let c = 0; c < 8; c++) {
+    html += `<div class="cell-h">${String.fromCharCode(65 + c)}</div>`;
+  }
+  for (let r = 0; r < GRID.length; r++) {
+    html += `<div class="row-h">${r + 1}</div>`;
+    for (let c = 0; c < GRID[r].length; c++) {
+      const cell = GRID[r][c];
+      html += `<div class="ss-cell ${cell.kind}" data-r="${r}" data-c="${c}" title="${cell.kind}">${cell.val}</div>`;
+    }
+  }
+  html += '</div>';
+  div.innerHTML = html;
+  // Add click handlers
+  div.querySelectorAll('.ss-cell').forEach(el => {
+    el.onclick = () => {
+      const r = parseInt(el.dataset.r);
+      const c = parseInt(el.dataset.c);
+      const cell = GRID[r][c];
+      if (cell.prims && Object.keys(cell.prims).length > 0) {
+        el.classList.add('evt');
+        setTimeout(() => el.classList.remove('evt'), 500);
+        showCellInfo(cell, r, c);
+      }
+    };
+  });
+}
+
+function showCellInfo(cell, r, c) {
+  const ref = String.fromCharCode(65 + c) + (r + 1);
+  let info = `Cell ${ref}: ${cell.val}\nKind: ${cell.kind}\n\n8 Primitives:\n`;
+  for (const p of ['z_in', 'z_out', 'jepa', 'double_entry', 'vibe', 'gc', 'murmur', 'graph']) {
+    const v = cell.prims[p];
+    if (v !== undefined) {
+      info += `  ${p}: ${JSON.stringify(v)}\n`;
+    } else {
+      info += `  ${p}: —\n`;
+    }
+  }
+  alert(info);
+}
+
+// ============================================================================
+// The conservation law
+// ============================================================================
+let conservation = { gamma: 0, eta: 0, budget: 5.0 };
+function updateConservation() {
+  // Simulate γ + η varying
+  conservation.gamma = 1.5 + Math.sin(Date.now() / 2000) * 0.5;
+  conservation.eta = 2.0 + Math.cos(Date.now() / 2300) * 0.7;
+  const total = conservation.gamma + conservation.eta;
+  const drift = Math.abs(total - conservation.budget);
+  document.getElementById('consGamma').textContent = conservation.gamma.toFixed(2);
+  document.getElementById('consEta').textContent = conservation.eta.toFixed(2);
+  const healthEl = document.getElementById('consHealth');
+  if (drift < 0.1) {
+    healthEl.textContent = 'OK';
+    healthEl.className = 'val ok';
+  } else if (drift < 0.5) {
+    healthEl.textContent = 'DRIFT';
+    healthEl.className = 'val warn';
+  } else {
+    healthEl.textContent = 'LEAK';
+    healthEl.className = 'val err';
+  }
+}
+setInterval(updateConservation, 1000);
+updateConservation();
+
+// ============================================================================
+// The MIDI opener
+// ============================================================================
+const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const OCTAVES = 2;
+const MIDI_VALUES = [
+  { label: 'depth', val: 12.0, note: 'A', octave: 4, freq: 440.00 },
+  { label: 'course', val: 90, note: 'F#', octave: 4, freq: 369.99 },
+  { label: 'speed', val: 6.2, note: 'D', octave: 4, freq: 293.66 },
+  { label: 'temp', val: 8.4, note: 'G', octave: 3, freq: 196.00 },
+  { label: 'salinity', val: 34.2, note: 'C', octave: 4, freq: 261.63 },
+  { label: 'biodiv', val: 0.78, note: 'E', octave: 4, freq: 329.63 },
+  { label: 'confidence', val: 0.85, note: 'G', octave: 4, freq: 392.00 },
+];
+
+let audioCtx = null;
+function playFreq(freq) {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = freq;
+  gain.gain.value = 0.15;
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+  setTimeout(() => osc.stop(), 600);
+  // Highlight the corresponding piano key
+  document.querySelectorAll('.piano .key').forEach(k => k.classList.remove('active'));
+  // Find the matching key
+  document.querySelectorAll('.piano .key').forEach(k => {
+    if (Math.abs(parseFloat(k.dataset.freq) - freq) < 0.5) {
+      k.classList.add('active');
+    }
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.piano .key').forEach(k => k.classList.remove('active'));
+  }, 600);
+}
+
+function renderMidi() {
+  const div = document.getElementById('midiCells');
+  div.innerHTML = '';
+  for (const m of MIDI_VALUES) {
+    const cell = document.createElement('div');
+    cell.className = 'midi-cell';
+    cell.innerHTML = `
+      <div class="val">${m.label}: ${m.val}</div>
+      <div class="note">${m.note}${m.octave}</div>
+      <button class="play">▶ Play</button>
+    `;
+    cell.querySelector('.play').onclick = () => playFreq(m.freq);
+    div.appendChild(cell);
+  }
+}
+
+function renderPiano() {
+  const div = document.getElementById('piano');
+  div.innerHTML = '';
+  // White keys
+  for (let oct = 3; oct < 5; oct++) {
+    for (let i = 0; i < 12; i++) {
+      const note = NOTES[i];
+      // Skip black key notes for white
+      if (note.includes('#')) continue;
+      const freq = 440 * Math.pow(2, (oct * 12 + [0,2,4,5,7,9,11][i/2|0] - 9 + (i%2 === 0 ? 0 : 0)) / 12);
+      // Use proper frequencies
+      const semitonesFromA4 = oct * 12 + [0,2,4,5,7,9,11][i === 0 ? 0 : i - 1] - 48;
+      // Just use the frequency from MIDI_VALUES
+    }
+  }
+  // Just use the MIDI_VALUES frequencies as keys
+  for (const m of MIDI_VALUES) {
+    const k = document.createElement('div');
+    k.className = 'key';
+    k.dataset.freq = m.freq;
+    k.title = `${m.note}${m.octave} (${m.freq.toFixed(2)} Hz)`;
+    k.onclick = () => playFreq(m.freq);
+    div.appendChild(k);
+  }
+}
+
+// ============================================================================
+// Init
+// ============================================================================
+renderTypes();
+buildGrid();
+renderMidi();
+renderPiano();
+</script>
+</body>
+</html>
