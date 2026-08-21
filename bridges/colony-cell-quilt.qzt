@@ -1,0 +1,672 @@
+{
+  "format_version": "1.0",
+  "sheet_type": "colony_cell",
+  "metadata": {
+    "title": "Colony-Cell Filesystem Sandbox",
+    "description": "Filesystem sandbox with cell hierarchy and symlink edges",
+    "created": "2026-08-21T02:29:08.531449",
+    "source_repo": "/workspace/colony-cell",
+    "cell_counts": {
+      "total_cells": 32,
+      "root_cells": 8,
+      "child_cells": 24
+    },
+    "edge_counts": {
+      "total_edges": 27,
+      "parent_child_edges": 24,
+      "symlink_edges": 3
+    }
+  },
+  "cells": [
+    {
+      "id": "cell_001",
+      "name": "alpha",
+      "path": "/workspace/colony-cell/alpha",
+      "type": "root",
+      "level": 0,
+      "parent": null,
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.475669",
+        "description": "Root cell: alpha"
+      }
+    },
+    {
+      "id": "cell_002",
+      "name": "cell_1",
+      "path": "/workspace/colony-cell/alpha/cell_1",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_001",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.477010",
+        "description": "Child cell: cell_1"
+      }
+    },
+    {
+      "id": "cell_003",
+      "name": "cell_2",
+      "path": "/workspace/colony-cell/alpha/cell_2",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_001",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.477033",
+        "description": "Child cell: cell_2"
+      }
+    },
+    {
+      "id": "cell_004",
+      "name": "cell_3",
+      "path": "/workspace/colony-cell/alpha/cell_3",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_001",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.477047",
+        "description": "Child cell: cell_3"
+      }
+    },
+    {
+      "id": "cell_005",
+      "name": "beta",
+      "path": "/workspace/colony-cell/beta",
+      "type": "root",
+      "level": 0,
+      "parent": null,
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.477061",
+        "description": "Root cell: beta"
+      }
+    },
+    {
+      "id": "cell_006",
+      "name": "cell_1",
+      "path": "/workspace/colony-cell/beta/cell_1",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_005",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.478310",
+        "description": "Child cell: cell_1"
+      }
+    },
+    {
+      "id": "cell_007",
+      "name": "cell_2",
+      "path": "/workspace/colony-cell/beta/cell_2",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_005",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.478331",
+        "description": "Child cell: cell_2"
+      }
+    },
+    {
+      "id": "cell_008",
+      "name": "cell_3",
+      "path": "/workspace/colony-cell/beta/cell_3",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_005",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.478348",
+        "description": "Child cell: cell_3"
+      }
+    },
+    {
+      "id": "cell_009",
+      "name": "delta",
+      "path": "/workspace/colony-cell/delta",
+      "type": "root",
+      "level": 0,
+      "parent": null,
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.478365",
+        "description": "Root cell: delta"
+      }
+    },
+    {
+      "id": "cell_010",
+      "name": "cell_1",
+      "path": "/workspace/colony-cell/delta/cell_1",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_009",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.479649",
+        "description": "Child cell: cell_1"
+      }
+    },
+    {
+      "id": "cell_011",
+      "name": "cell_2",
+      "path": "/workspace/colony-cell/delta/cell_2",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_009",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.479669",
+        "description": "Child cell: cell_2"
+      }
+    },
+    {
+      "id": "cell_012",
+      "name": "cell_3",
+      "path": "/workspace/colony-cell/delta/cell_3",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_009",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.479680",
+        "description": "Child cell: cell_3"
+      }
+    },
+    {
+      "id": "cell_013",
+      "name": "epsilon",
+      "path": "/workspace/colony-cell/epsilon",
+      "type": "root",
+      "level": 0,
+      "parent": null,
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.479699",
+        "description": "Root cell: epsilon"
+      }
+    },
+    {
+      "id": "cell_014",
+      "name": "cell_1",
+      "path": "/workspace/colony-cell/epsilon/cell_1",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_013",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.480998",
+        "description": "Child cell: cell_1"
+      }
+    },
+    {
+      "id": "cell_015",
+      "name": "cell_2",
+      "path": "/workspace/colony-cell/epsilon/cell_2",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_013",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.481016",
+        "description": "Child cell: cell_2"
+      }
+    },
+    {
+      "id": "cell_016",
+      "name": "cell_3",
+      "path": "/workspace/colony-cell/epsilon/cell_3",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_013",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.481033",
+        "description": "Child cell: cell_3"
+      }
+    },
+    {
+      "id": "cell_017",
+      "name": "eta",
+      "path": "/workspace/colony-cell/eta",
+      "type": "root",
+      "level": 0,
+      "parent": null,
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.481044",
+        "description": "Root cell: eta"
+      }
+    },
+    {
+      "id": "cell_018",
+      "name": "cell_1",
+      "path": "/workspace/colony-cell/eta/cell_1",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_017",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.482139",
+        "description": "Child cell: cell_1"
+      }
+    },
+    {
+      "id": "cell_019",
+      "name": "cell_2",
+      "path": "/workspace/colony-cell/eta/cell_2",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_017",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.482171",
+        "description": "Child cell: cell_2"
+      }
+    },
+    {
+      "id": "cell_020",
+      "name": "cell_3",
+      "path": "/workspace/colony-cell/eta/cell_3",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_017",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.482188",
+        "description": "Child cell: cell_3"
+      }
+    },
+    {
+      "id": "cell_021",
+      "name": "gamma",
+      "path": "/workspace/colony-cell/gamma",
+      "type": "root",
+      "level": 0,
+      "parent": null,
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.482201",
+        "description": "Root cell: gamma"
+      }
+    },
+    {
+      "id": "cell_022",
+      "name": "cell_1",
+      "path": "/workspace/colony-cell/gamma/cell_1",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_021",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.483603",
+        "description": "Child cell: cell_1"
+      }
+    },
+    {
+      "id": "cell_023",
+      "name": "cell_2",
+      "path": "/workspace/colony-cell/gamma/cell_2",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_021",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.483622",
+        "description": "Child cell: cell_2"
+      }
+    },
+    {
+      "id": "cell_024",
+      "name": "cell_3",
+      "path": "/workspace/colony-cell/gamma/cell_3",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_021",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.483638",
+        "description": "Child cell: cell_3"
+      }
+    },
+    {
+      "id": "cell_025",
+      "name": "theta",
+      "path": "/workspace/colony-cell/theta",
+      "type": "root",
+      "level": 0,
+      "parent": null,
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.483649",
+        "description": "Root cell: theta"
+      }
+    },
+    {
+      "id": "cell_026",
+      "name": "cell_1",
+      "path": "/workspace/colony-cell/theta/cell_1",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_025",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.484867",
+        "description": "Child cell: cell_1"
+      }
+    },
+    {
+      "id": "cell_027",
+      "name": "cell_2",
+      "path": "/workspace/colony-cell/theta/cell_2",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_025",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.484885",
+        "description": "Child cell: cell_2"
+      }
+    },
+    {
+      "id": "cell_028",
+      "name": "cell_3",
+      "path": "/workspace/colony-cell/theta/cell_3",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_025",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.484902",
+        "description": "Child cell: cell_3"
+      }
+    },
+    {
+      "id": "cell_029",
+      "name": "zeta",
+      "path": "/workspace/colony-cell/zeta",
+      "type": "root",
+      "level": 0,
+      "parent": null,
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.484914",
+        "description": "Root cell: zeta"
+      }
+    },
+    {
+      "id": "cell_030",
+      "name": "cell_1",
+      "path": "/workspace/colony-cell/zeta/cell_1",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_029",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.486101",
+        "description": "Child cell: cell_1"
+      }
+    },
+    {
+      "id": "cell_031",
+      "name": "cell_2",
+      "path": "/workspace/colony-cell/zeta/cell_2",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_029",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.486117",
+        "description": "Child cell: cell_2"
+      }
+    },
+    {
+      "id": "cell_032",
+      "name": "cell_3",
+      "path": "/workspace/colony-cell/zeta/cell_3",
+      "type": "child",
+      "level": 1,
+      "parent": "cell_029",
+      "metadata": {
+        "permissions": "0o755",
+        "owner": 0,
+        "group": 0,
+        "created": "2026-08-21T02:29:08.486127",
+        "description": "Child cell: cell_3"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "cell_001",
+      "target": "cell_002",
+      "type": "parent_child",
+      "label": "alpha -> cell_1"
+    },
+    {
+      "source": "cell_001",
+      "target": "cell_003",
+      "type": "parent_child",
+      "label": "alpha -> cell_2"
+    },
+    {
+      "source": "cell_001",
+      "target": "cell_004",
+      "type": "parent_child",
+      "label": "alpha -> cell_3"
+    },
+    {
+      "source": "cell_005",
+      "target": "cell_006",
+      "type": "parent_child",
+      "label": "beta -> cell_1"
+    },
+    {
+      "source": "cell_005",
+      "target": "cell_007",
+      "type": "parent_child",
+      "label": "beta -> cell_2"
+    },
+    {
+      "source": "cell_005",
+      "target": "cell_008",
+      "type": "parent_child",
+      "label": "beta -> cell_3"
+    },
+    {
+      "source": "cell_009",
+      "target": "cell_010",
+      "type": "parent_child",
+      "label": "delta -> cell_1"
+    },
+    {
+      "source": "cell_009",
+      "target": "cell_011",
+      "type": "parent_child",
+      "label": "delta -> cell_2"
+    },
+    {
+      "source": "cell_009",
+      "target": "cell_012",
+      "type": "parent_child",
+      "label": "delta -> cell_3"
+    },
+    {
+      "source": "cell_013",
+      "target": "cell_014",
+      "type": "parent_child",
+      "label": "epsilon -> cell_1"
+    },
+    {
+      "source": "cell_013",
+      "target": "cell_015",
+      "type": "parent_child",
+      "label": "epsilon -> cell_2"
+    },
+    {
+      "source": "cell_013",
+      "target": "cell_016",
+      "type": "parent_child",
+      "label": "epsilon -> cell_3"
+    },
+    {
+      "source": "cell_017",
+      "target": "cell_018",
+      "type": "parent_child",
+      "label": "eta -> cell_1"
+    },
+    {
+      "source": "cell_017",
+      "target": "cell_019",
+      "type": "parent_child",
+      "label": "eta -> cell_2"
+    },
+    {
+      "source": "cell_017",
+      "target": "cell_020",
+      "type": "parent_child",
+      "label": "eta -> cell_3"
+    },
+    {
+      "source": "cell_021",
+      "target": "cell_022",
+      "type": "parent_child",
+      "label": "gamma -> cell_1"
+    },
+    {
+      "source": "cell_021",
+      "target": "cell_023",
+      "type": "parent_child",
+      "label": "gamma -> cell_2"
+    },
+    {
+      "source": "cell_021",
+      "target": "cell_024",
+      "type": "parent_child",
+      "label": "gamma -> cell_3"
+    },
+    {
+      "source": "cell_025",
+      "target": "cell_026",
+      "type": "parent_child",
+      "label": "theta -> cell_1"
+    },
+    {
+      "source": "cell_025",
+      "target": "cell_027",
+      "type": "parent_child",
+      "label": "theta -> cell_2"
+    },
+    {
+      "source": "cell_025",
+      "target": "cell_028",
+      "type": "parent_child",
+      "label": "theta -> cell_3"
+    },
+    {
+      "source": "cell_029",
+      "target": "cell_030",
+      "type": "parent_child",
+      "label": "zeta -> cell_1"
+    },
+    {
+      "source": "cell_029",
+      "target": "cell_031",
+      "type": "parent_child",
+      "label": "zeta -> cell_2"
+    },
+    {
+      "source": "cell_029",
+      "target": "cell_032",
+      "type": "parent_child",
+      "label": "zeta -> cell_3"
+    },
+    {
+      "source": "cell_002",
+      "target": "cell_005",
+      "type": "symlink",
+      "label": "cell_1/link_to_beta -> /workspace/colony-cell/beta/cell_2",
+      "symlink_name": "link_to_beta",
+      "symlink_target": "/workspace/colony-cell/beta/cell_2"
+    },
+    {
+      "source": "cell_015",
+      "target": "cell_029",
+      "type": "symlink",
+      "label": "cell_2/link_to_zeta -> /workspace/colony-cell/zeta/cell_1",
+      "symlink_name": "link_to_zeta",
+      "symlink_target": "/workspace/colony-cell/zeta/cell_1"
+    },
+    {
+      "source": "cell_024",
+      "target": "cell_009",
+      "type": "symlink",
+      "label": "cell_3/link_to_delta -> /workspace/colony-cell/delta/cell_1",
+      "symlink_name": "link_to_delta",
+      "symlink_target": "/workspace/colony-cell/delta/cell_1"
+    }
+  ]
+}

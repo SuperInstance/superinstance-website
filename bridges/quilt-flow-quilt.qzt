@@ -1,0 +1,453 @@
+{
+  "metadata": {
+    "format": "quilt-sheet",
+    "version": "1.0",
+    "generated": "2026-08-21T02:29:08.589482Z",
+    "source": "quilt-flow",
+    "description": "Quilt-flow dataflow engine primitives converted to Quilt sheet format"
+  },
+  "cells": [
+    {
+      "id": "source",
+      "type": "Source",
+      "description": "A cell that produces values",
+      "state": {
+        "producing": "Currently producing values",
+        "idle": "Not producing values",
+        "error": "Error in production"
+      },
+      "methods": [
+        {
+          "name": "produce",
+          "description": "Produce a value",
+          "transition": "idle -> producing"
+        },
+        {
+          "name": "stop",
+          "description": "Stop producing",
+          "transition": "producing -> idle"
+        },
+        {
+          "name": "error",
+          "description": "Handle production error",
+          "transition": "producing -> error"
+        }
+      ],
+      "transitions": [
+        {
+          "from": "idle",
+          "to": "producing",
+          "trigger": "produce"
+        },
+        {
+          "from": "producing",
+          "to": "idle",
+          "trigger": "stop"
+        },
+        {
+          "from": "producing",
+          "to": "error",
+          "trigger": "error"
+        },
+        {
+          "from": "error",
+          "to": "idle",
+          "trigger": "reset"
+        }
+      ]
+    },
+    {
+      "id": "sink",
+      "type": "Sink",
+      "description": "A cell that consumes values",
+      "state": {
+        "consuming": "Currently consuming values",
+        "idle": "Waiting for values",
+        "error": "Error in consumption"
+      },
+      "methods": [
+        {
+          "name": "consume",
+          "description": "Consume a value",
+          "transition": "idle -> consuming"
+        },
+        {
+          "name": "pause",
+          "description": "Pause consumption",
+          "transition": "consuming -> idle"
+        },
+        {
+          "name": "error",
+          "description": "Handle consumption error",
+          "transition": "consuming -> error"
+        }
+      ],
+      "transitions": [
+        {
+          "from": "idle",
+          "to": "consuming",
+          "trigger": "consume"
+        },
+        {
+          "from": "consuming",
+          "to": "idle",
+          "trigger": "pause"
+        },
+        {
+          "from": "consuming",
+          "to": "error",
+          "trigger": "error"
+        },
+        {
+          "from": "error",
+          "to": "idle",
+          "trigger": "reset"
+        }
+      ]
+    },
+    {
+      "id": "filter",
+      "type": "Filter",
+      "description": "A cell that transforms values",
+      "state": {
+        "transforming": "Currently transforming values",
+        "idle": "Waiting for values",
+        "error": "Error in transformation"
+      },
+      "methods": [
+        {
+          "name": "transform",
+          "description": "Transform a value",
+          "transition": "idle -> transforming"
+        },
+        {
+          "name": "pass_through",
+          "description": "Pass value without transformation",
+          "transition": "idle -> idle"
+        },
+        {
+          "name": "error",
+          "description": "Handle transformation error",
+          "transition": "transforming -> error"
+        }
+      ],
+      "transitions": [
+        {
+          "from": "idle",
+          "to": "transforming",
+          "trigger": "transform"
+        },
+        {
+          "from": "transforming",
+          "to": "idle",
+          "trigger": "complete"
+        },
+        {
+          "from": "transforming",
+          "to": "error",
+          "trigger": "error"
+        },
+        {
+          "from": "error",
+          "to": "idle",
+          "trigger": "reset"
+        }
+      ]
+    },
+    {
+      "id": "junction",
+      "type": "Junction",
+      "description": "A cell that splits or merges values",
+      "state": {
+        "splitting": "Splitting values to multiple outputs",
+        "merging": "Merging values from multiple inputs",
+        "idle": "Waiting for values",
+        "error": "Error in junction operation"
+      },
+      "methods": [
+        {
+          "name": "split",
+          "description": "Split value to multiple outputs",
+          "transition": "idle -> splitting"
+        },
+        {
+          "name": "merge",
+          "description": "Merge values from multiple inputs",
+          "transition": "idle -> merging"
+        },
+        {
+          "name": "error",
+          "description": "Handle junction error",
+          "transition": "splitting/merging -> error"
+        }
+      ],
+      "transitions": [
+        {
+          "from": "idle",
+          "to": "splitting",
+          "trigger": "split"
+        },
+        {
+          "from": "idle",
+          "to": "merging",
+          "trigger": "merge"
+        },
+        {
+          "from": "splitting",
+          "to": "idle",
+          "trigger": "complete"
+        },
+        {
+          "from": "merging",
+          "to": "idle",
+          "trigger": "complete"
+        },
+        {
+          "from": "splitting",
+          "to": "error",
+          "trigger": "error"
+        },
+        {
+          "from": "merging",
+          "to": "error",
+          "trigger": "error"
+        },
+        {
+          "from": "error",
+          "to": "idle",
+          "trigger": "reset"
+        }
+      ]
+    },
+    {
+      "id": "buffer",
+      "type": "Buffer",
+      "description": "A cell that queues values",
+      "state": {
+        "buffering": "Currently buffering values",
+        "empty": "Buffer is empty",
+        "full": "Buffer is full",
+        "error": "Error in buffering"
+      },
+      "methods": [
+        {
+          "name": "enqueue",
+          "description": "Add value to buffer",
+          "transition": "empty/buffering -> buffering"
+        },
+        {
+          "name": "dequeue",
+          "description": "Remove value from buffer",
+          "transition": "buffering/full -> buffering"
+        },
+        {
+          "name": "clear",
+          "description": "Clear the buffer",
+          "transition": "any -> empty"
+        },
+        {
+          "name": "error",
+          "description": "Handle buffer error",
+          "transition": "any -> error"
+        }
+      ],
+      "transitions": [
+        {
+          "from": "empty",
+          "to": "buffering",
+          "trigger": "enqueue"
+        },
+        {
+          "from": "buffering",
+          "to": "buffering",
+          "trigger": "enqueue/dequeue"
+        },
+        {
+          "from": "buffering",
+          "to": "full",
+          "trigger": "buffer_full"
+        },
+        {
+          "from": "full",
+          "to": "buffering",
+          "trigger": "dequeue"
+        },
+        {
+          "from": "any",
+          "to": "empty",
+          "trigger": "clear"
+        },
+        {
+          "from": "any",
+          "to": "error",
+          "trigger": "error"
+        },
+        {
+          "from": "error",
+          "to": "empty",
+          "trigger": "reset"
+        }
+      ]
+    },
+    {
+      "id": "throttle",
+      "type": "Throttle",
+      "description": "A cell that rate-limits values",
+      "state": {
+        "throttling": "Currently rate-limiting values",
+        "idle": "Waiting for values",
+        "limited": "Rate limit reached",
+        "error": "Error in throttling"
+      },
+      "methods": [
+        {
+          "name": "process",
+          "description": "Process a value within rate limit",
+          "transition": "idle -> throttling"
+        },
+        {
+          "name": "limit",
+          "description": "Apply rate limit",
+          "transition": "throttling -> limited"
+        },
+        {
+          "name": "release",
+          "description": "Release rate limit",
+          "transition": "limited -> throttling"
+        },
+        {
+          "name": "error",
+          "description": "Handle throttle error",
+          "transition": "any -> error"
+        }
+      ],
+      "transitions": [
+        {
+          "from": "idle",
+          "to": "throttling",
+          "trigger": "process"
+        },
+        {
+          "from": "throttling",
+          "to": "limited",
+          "trigger": "rate_limit_reached"
+        },
+        {
+          "from": "limited",
+          "to": "throttling",
+          "trigger": "release"
+        },
+        {
+          "from": "throttling",
+          "to": "idle",
+          "trigger": "complete"
+        },
+        {
+          "from": "any",
+          "to": "error",
+          "trigger": "error"
+        },
+        {
+          "from": "error",
+          "to": "idle",
+          "trigger": "reset"
+        }
+      ]
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "source",
+        "type": "source",
+        "label": "Source"
+      },
+      {
+        "id": "filter",
+        "type": "filter",
+        "label": "Filter"
+      },
+      {
+        "id": "junction",
+        "type": "junction",
+        "label": "Junction"
+      },
+      {
+        "id": "buffer",
+        "type": "buffer",
+        "label": "Buffer"
+      },
+      {
+        "id": "throttle",
+        "type": "throttle",
+        "label": "Throttle"
+      },
+      {
+        "id": "sink",
+        "type": "sink",
+        "label": "Sink"
+      }
+    ],
+    "edges": [
+      {
+        "source": "source",
+        "target": "filter",
+        "type": "data_flow",
+        "label": "source -> filter"
+      },
+      {
+        "source": "source",
+        "target": "buffer",
+        "type": "data_flow",
+        "label": "source -> buffer"
+      },
+      {
+        "source": "filter",
+        "target": "junction",
+        "type": "data_flow",
+        "label": "filter -> junction"
+      },
+      {
+        "source": "filter",
+        "target": "sink",
+        "type": "data_flow",
+        "label": "filter -> sink"
+      },
+      {
+        "source": "junction",
+        "target": "buffer",
+        "type": "data_flow",
+        "label": "junction -> buffer"
+      },
+      {
+        "source": "junction",
+        "target": "throttle",
+        "type": "data_flow",
+        "label": "junction -> throttle"
+      },
+      {
+        "source": "buffer",
+        "target": "throttle",
+        "type": "data_flow",
+        "label": "buffer -> throttle"
+      },
+      {
+        "source": "buffer",
+        "target": "sink",
+        "type": "data_flow",
+        "label": "buffer -> sink"
+      },
+      {
+        "source": "throttle",
+        "target": "sink",
+        "type": "data_flow",
+        "label": "throttle -> sink"
+      }
+    ]
+  },
+  "connections": {
+    "source_to_sink": "Data flows from sources through filters/junctions to sinks",
+    "buffering": "Buffers provide queuing between cells",
+    "throttling": "Throttles control rate of data flow"
+  }
+}

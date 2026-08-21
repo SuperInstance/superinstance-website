@@ -1,0 +1,281 @@
+{
+  "format": "quilt-sheet",
+  "version": "1.0",
+  "metadata": {
+    "title": "Othismos-Reef Knowledge Graph",
+    "description": "Knowledge graph of coral reef ecosystem concepts and relationships",
+    "source": "othismos-reef",
+    "created": "2026-08-21T02:29:08.177045+00:00",
+    "concept_count": 20,
+    "relationship_count": 30,
+    "categories": [
+      "entity",
+      "attribute",
+      "action",
+      "state",
+      "relation"
+    ],
+    "relationship_types": [
+      "is-a",
+      "has-a",
+      "causes",
+      "prevents",
+      "precedes",
+      "follows"
+    ]
+  },
+  "cells": [
+    {
+      "id": "c01",
+      "label": "Ocean",
+      "category": "entity"
+    },
+    {
+      "id": "c02",
+      "label": "Coral Reef",
+      "category": "entity"
+    },
+    {
+      "id": "c03",
+      "label": "Fish",
+      "category": "entity"
+    },
+    {
+      "id": "c04",
+      "label": "Algae",
+      "category": "entity"
+    },
+    {
+      "id": "c05",
+      "label": "Water",
+      "category": "entity"
+    },
+    {
+      "id": "c06",
+      "label": "Salinity",
+      "category": "attribute"
+    },
+    {
+      "id": "c07",
+      "label": "Temperature",
+      "category": "attribute"
+    },
+    {
+      "id": "c08",
+      "label": "Depth",
+      "category": "attribute"
+    },
+    {
+      "id": "c09",
+      "label": "Clarity",
+      "category": "attribute"
+    },
+    {
+      "id": "c10",
+      "label": "Photosynthesis",
+      "category": "action"
+    },
+    {
+      "id": "c11",
+      "label": "Predation",
+      "category": "action"
+    },
+    {
+      "id": "c12",
+      "label": "Symbiosis",
+      "category": "action"
+    },
+    {
+      "id": "c13",
+      "label": "Migration",
+      "category": "action"
+    },
+    {
+      "id": "c14",
+      "label": "Healthy",
+      "category": "state"
+    },
+    {
+      "id": "c15",
+      "label": "Bleached",
+      "category": "state"
+    },
+    {
+      "id": "c16",
+      "label": "Overfished",
+      "category": "state"
+    },
+    {
+      "id": "c17",
+      "label": "Nutrient-rich",
+      "category": "state"
+    },
+    {
+      "id": "c18",
+      "label": "Part of",
+      "category": "relation"
+    },
+    {
+      "id": "c19",
+      "label": "Depends on",
+      "category": "relation"
+    },
+    {
+      "id": "c20",
+      "label": "Threatens",
+      "category": "relation"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c02",
+      "target": "c01",
+      "type": "is-a"
+    },
+    {
+      "source": "c03",
+      "target": "c01",
+      "type": "is-a"
+    },
+    {
+      "source": "c04",
+      "target": "c01",
+      "type": "is-a"
+    },
+    {
+      "source": "c05",
+      "target": "c01",
+      "type": "is-a"
+    },
+    {
+      "source": "c14",
+      "target": "c02",
+      "type": "is-a"
+    },
+    {
+      "source": "c02",
+      "target": "c04",
+      "type": "has-a"
+    },
+    {
+      "source": "c02",
+      "target": "c03",
+      "type": "has-a"
+    },
+    {
+      "source": "c01",
+      "target": "c05",
+      "type": "has-a"
+    },
+    {
+      "source": "c01",
+      "target": "c06",
+      "type": "has-a"
+    },
+    {
+      "source": "c01",
+      "target": "c07",
+      "type": "has-a"
+    },
+    {
+      "source": "c10",
+      "target": "c17",
+      "type": "causes"
+    },
+    {
+      "source": "c11",
+      "target": "c16",
+      "type": "causes"
+    },
+    {
+      "source": "c07",
+      "target": "c15",
+      "type": "causes"
+    },
+    {
+      "source": "c08",
+      "target": "c09",
+      "type": "causes"
+    },
+    {
+      "source": "c12",
+      "target": "c14",
+      "type": "causes"
+    },
+    {
+      "source": "c12",
+      "target": "c15",
+      "type": "prevents"
+    },
+    {
+      "source": "c14",
+      "target": "c16",
+      "type": "prevents"
+    },
+    {
+      "source": "c09",
+      "target": "c15",
+      "type": "prevents"
+    },
+    {
+      "source": "c17",
+      "target": "c15",
+      "type": "prevents"
+    },
+    {
+      "source": "c13",
+      "target": "c16",
+      "type": "prevents"
+    },
+    {
+      "source": "c10",
+      "target": "c17",
+      "type": "precedes"
+    },
+    {
+      "source": "c11",
+      "target": "c16",
+      "type": "precedes"
+    },
+    {
+      "source": "c07",
+      "target": "c15",
+      "type": "precedes"
+    },
+    {
+      "source": "c08",
+      "target": "c09",
+      "type": "precedes"
+    },
+    {
+      "source": "c13",
+      "target": "c12",
+      "type": "precedes"
+    },
+    {
+      "source": "c17",
+      "target": "c10",
+      "type": "follows"
+    },
+    {
+      "source": "c16",
+      "target": "c11",
+      "type": "follows"
+    },
+    {
+      "source": "c15",
+      "target": "c07",
+      "type": "follows"
+    },
+    {
+      "source": "c09",
+      "target": "c08",
+      "type": "follows"
+    },
+    {
+      "source": "c12",
+      "target": "c13",
+      "type": "follows"
+    }
+  ]
+}
