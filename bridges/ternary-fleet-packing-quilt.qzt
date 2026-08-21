@@ -1,0 +1,1945 @@
+{
+  "format_version": "1.0",
+  "sheet_type": "ternary_fleet_packing",
+  "title": "Ternary Fleet Packing Quilt Sheet",
+  "description": "A Quilt sheet representation of ternary fleet packing with hierarchical structure",
+  "statistics": {
+    "total_cells": 34,
+    "total_edges": 129,
+    "ternary_cells": 27,
+    "meta_cells": 3,
+    "sub_meta_cells": 3,
+    "super_cells": 1
+  },
+  "cells": [
+    {
+      "id": "T_000",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_100",
+        "T_010",
+        "T_001"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "ternary_value": 0,
+        "states": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_001",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_101",
+        "T_011",
+        "T_002"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          0,
+          1
+        ],
+        "ternary_value": 1,
+        "states": [
+          0,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_002",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_102",
+        "T_012",
+        "T_000"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          0,
+          2
+        ],
+        "ternary_value": 2,
+        "states": [
+          0,
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "id": "T_010",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_110",
+        "T_020",
+        "T_011"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          1,
+          0
+        ],
+        "ternary_value": 3,
+        "states": [
+          0,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_011",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_111",
+        "T_021",
+        "T_012"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          1,
+          1
+        ],
+        "ternary_value": 4,
+        "states": [
+          0,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_012",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_112",
+        "T_022",
+        "T_010"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          1,
+          2
+        ],
+        "ternary_value": 5,
+        "states": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "id": "T_020",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_120",
+        "T_000",
+        "T_021"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          2,
+          0
+        ],
+        "ternary_value": 6,
+        "states": [
+          0,
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_021",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_121",
+        "T_001",
+        "T_022"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          2,
+          1
+        ],
+        "ternary_value": 7,
+        "states": [
+          0,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_022",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_122",
+        "T_002",
+        "T_020"
+      ],
+      "metadata": {
+        "position": [
+          0,
+          2,
+          2
+        ],
+        "ternary_value": 8,
+        "states": [
+          0,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "id": "T_100",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_200",
+        "T_110",
+        "T_101"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          0,
+          0
+        ],
+        "ternary_value": 9,
+        "states": [
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_101",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_201",
+        "T_111",
+        "T_102"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          0,
+          1
+        ],
+        "ternary_value": 10,
+        "states": [
+          1,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_102",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_202",
+        "T_112",
+        "T_100"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          0,
+          2
+        ],
+        "ternary_value": 11,
+        "states": [
+          1,
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "id": "T_110",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_210",
+        "T_120",
+        "T_111"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          1,
+          0
+        ],
+        "ternary_value": 12,
+        "states": [
+          1,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_111",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_211",
+        "T_121",
+        "T_112"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          1,
+          1
+        ],
+        "ternary_value": 13,
+        "states": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_112",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_212",
+        "T_122",
+        "T_110"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          1,
+          2
+        ],
+        "ternary_value": 14,
+        "states": [
+          1,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "id": "T_120",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_220",
+        "T_100",
+        "T_121"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          2,
+          0
+        ],
+        "ternary_value": 15,
+        "states": [
+          1,
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_121",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_221",
+        "T_101",
+        "T_122"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          2,
+          1
+        ],
+        "ternary_value": 16,
+        "states": [
+          1,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_122",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_222",
+        "T_102",
+        "T_120"
+      ],
+      "metadata": {
+        "position": [
+          1,
+          2,
+          2
+        ],
+        "ternary_value": 17,
+        "states": [
+          1,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "id": "T_200",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_000",
+        "T_210",
+        "T_201"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          0,
+          0
+        ],
+        "ternary_value": 18,
+        "states": [
+          2,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_201",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_001",
+        "T_211",
+        "T_202"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          0,
+          1
+        ],
+        "ternary_value": 19,
+        "states": [
+          2,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_202",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_002",
+        "T_212",
+        "T_200"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          0,
+          2
+        ],
+        "ternary_value": 20,
+        "states": [
+          2,
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "id": "T_210",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_010",
+        "T_220",
+        "T_211"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          1,
+          0
+        ],
+        "ternary_value": 21,
+        "states": [
+          2,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_211",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_011",
+        "T_221",
+        "T_212"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          1,
+          1
+        ],
+        "ternary_value": 22,
+        "states": [
+          2,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_212",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_012",
+        "T_222",
+        "T_210"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          1,
+          2
+        ],
+        "ternary_value": 23,
+        "states": [
+          2,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "id": "T_220",
+      "type": "ternary",
+      "state": 1,
+      "connections": [
+        "T_020",
+        "T_200",
+        "T_221"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          2,
+          0
+        ],
+        "ternary_value": 24,
+        "states": [
+          2,
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "id": "T_221",
+      "type": "ternary",
+      "state": 2,
+      "connections": [
+        "T_021",
+        "T_201",
+        "T_222"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          2,
+          1
+        ],
+        "ternary_value": 25,
+        "states": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "id": "T_222",
+      "type": "ternary",
+      "state": 0,
+      "connections": [
+        "T_022",
+        "T_202",
+        "T_220"
+      ],
+      "metadata": {
+        "position": [
+          2,
+          2,
+          2
+        ],
+        "ternary_value": 26,
+        "states": [
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "id": "M_A",
+      "type": "meta",
+      "state": 0,
+      "connections": [
+        "T_000",
+        "T_001",
+        "T_002",
+        "T_010",
+        "T_011",
+        "T_012",
+        "T_020",
+        "T_021",
+        "T_022"
+      ],
+      "metadata": {
+        "trinity_position": 0,
+        "name": "A",
+        "description": "Trinity meta-cell A"
+      }
+    },
+    {
+      "id": "M_B",
+      "type": "meta",
+      "state": 1,
+      "connections": [
+        "T_100",
+        "T_101",
+        "T_102",
+        "T_110",
+        "T_111",
+        "T_112",
+        "T_120",
+        "T_121",
+        "T_122"
+      ],
+      "metadata": {
+        "trinity_position": 1,
+        "name": "B",
+        "description": "Trinity meta-cell B"
+      }
+    },
+    {
+      "id": "M_C",
+      "type": "meta",
+      "state": 2,
+      "connections": [
+        "T_200",
+        "T_201",
+        "T_202",
+        "T_210",
+        "T_211",
+        "T_212",
+        "T_220",
+        "T_221",
+        "T_222"
+      ],
+      "metadata": {
+        "trinity_position": 2,
+        "name": "C",
+        "description": "Trinity meta-cell C"
+      }
+    },
+    {
+      "id": "SM_AB",
+      "type": "sub_meta",
+      "state": 1,
+      "connections": [
+        "M_A",
+        "M_B",
+        "T_000",
+        "T_001",
+        "T_002"
+      ],
+      "metadata": {
+        "pair": [
+          "A",
+          "B"
+        ],
+        "pair_indices": [
+          0,
+          1
+        ],
+        "description": "Sub-meta-cell for pair A-B"
+      }
+    },
+    {
+      "id": "SM_AC",
+      "type": "sub_meta",
+      "state": 2,
+      "connections": [
+        "M_A",
+        "M_C",
+        "T_010",
+        "T_011",
+        "T_012"
+      ],
+      "metadata": {
+        "pair": [
+          "A",
+          "C"
+        ],
+        "pair_indices": [
+          0,
+          2
+        ],
+        "description": "Sub-meta-cell for pair A-C"
+      }
+    },
+    {
+      "id": "SM_BC",
+      "type": "sub_meta",
+      "state": 0,
+      "connections": [
+        "M_B",
+        "M_C",
+        "T_020",
+        "T_021",
+        "T_022"
+      ],
+      "metadata": {
+        "pair": [
+          "B",
+          "C"
+        ],
+        "pair_indices": [
+          1,
+          2
+        ],
+        "description": "Sub-meta-cell for pair B-C"
+      }
+    },
+    {
+      "id": "SUPER",
+      "type": "super",
+      "state": 0,
+      "connections": [
+        "M_A",
+        "M_B",
+        "M_C",
+        "SM_AB",
+        "SM_AC",
+        "SM_BC"
+      ],
+      "metadata": {
+        "description": "Super-cell representing the entire ternary fleet",
+        "total_ternary_cells": 27,
+        "total_meta_cells": 3,
+        "total_sub_meta_cells": 9
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "T_000",
+      "target": "T_100",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_000",
+      "target": "T_010",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_000",
+      "target": "T_001",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_001",
+      "target": "T_101",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_001",
+      "target": "T_011",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_001",
+      "target": "T_002",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_002",
+      "target": "T_102",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_002",
+      "target": "T_012",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_002",
+      "target": "T_000",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_010",
+      "target": "T_110",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_010",
+      "target": "T_020",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_010",
+      "target": "T_011",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_011",
+      "target": "T_111",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_011",
+      "target": "T_021",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_011",
+      "target": "T_012",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_012",
+      "target": "T_112",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_012",
+      "target": "T_022",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_012",
+      "target": "T_010",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_020",
+      "target": "T_120",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_020",
+      "target": "T_000",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_020",
+      "target": "T_021",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_021",
+      "target": "T_121",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_021",
+      "target": "T_001",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_021",
+      "target": "T_022",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_022",
+      "target": "T_122",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_022",
+      "target": "T_002",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_022",
+      "target": "T_020",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_100",
+      "target": "T_200",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_100",
+      "target": "T_110",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_100",
+      "target": "T_101",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_101",
+      "target": "T_201",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_101",
+      "target": "T_111",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_101",
+      "target": "T_102",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_102",
+      "target": "T_202",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_102",
+      "target": "T_112",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_102",
+      "target": "T_100",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_110",
+      "target": "T_210",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_110",
+      "target": "T_120",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_110",
+      "target": "T_111",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_111",
+      "target": "T_211",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_111",
+      "target": "T_121",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_111",
+      "target": "T_112",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_112",
+      "target": "T_212",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_112",
+      "target": "T_122",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_112",
+      "target": "T_110",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_120",
+      "target": "T_220",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_120",
+      "target": "T_100",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_120",
+      "target": "T_121",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_121",
+      "target": "T_221",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_121",
+      "target": "T_101",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_121",
+      "target": "T_122",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_122",
+      "target": "T_222",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_122",
+      "target": "T_102",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_122",
+      "target": "T_120",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_200",
+      "target": "T_000",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_200",
+      "target": "T_210",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_200",
+      "target": "T_201",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_201",
+      "target": "T_001",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_201",
+      "target": "T_211",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_201",
+      "target": "T_202",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_202",
+      "target": "T_002",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_202",
+      "target": "T_212",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_202",
+      "target": "T_200",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_210",
+      "target": "T_010",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_210",
+      "target": "T_220",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_210",
+      "target": "T_211",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_211",
+      "target": "T_011",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_211",
+      "target": "T_221",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_211",
+      "target": "T_212",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_212",
+      "target": "T_012",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_212",
+      "target": "T_222",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_212",
+      "target": "T_210",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_220",
+      "target": "T_020",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_220",
+      "target": "T_200",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_220",
+      "target": "T_221",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_221",
+      "target": "T_021",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_221",
+      "target": "T_201",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_221",
+      "target": "T_222",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_222",
+      "target": "T_022",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_222",
+      "target": "T_202",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "T_222",
+      "target": "T_220",
+      "weight": 1.0,
+      "metadata": {
+        "type": "ternary_connection",
+        "dimension": "sequence"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_000",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_001",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_002",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_010",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_011",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_012",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_020",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_021",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_A",
+      "target": "T_022",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_100",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_101",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_102",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_110",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_111",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_112",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_120",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_121",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_B",
+      "target": "T_122",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_200",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_201",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_202",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_210",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_211",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_212",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_220",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_221",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "M_C",
+      "target": "T_222",
+      "weight": 0.5,
+      "metadata": {
+        "type": "meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_AB",
+      "target": "M_A",
+      "weight": 0.7,
+      "metadata": {
+        "type": "sub_meta_to_meta"
+      }
+    },
+    {
+      "source": "SM_AB",
+      "target": "M_B",
+      "weight": 0.7,
+      "metadata": {
+        "type": "sub_meta_to_meta"
+      }
+    },
+    {
+      "source": "SM_AB",
+      "target": "T_000",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_AB",
+      "target": "T_001",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_AB",
+      "target": "T_002",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_AC",
+      "target": "M_A",
+      "weight": 0.7,
+      "metadata": {
+        "type": "sub_meta_to_meta"
+      }
+    },
+    {
+      "source": "SM_AC",
+      "target": "M_C",
+      "weight": 0.7,
+      "metadata": {
+        "type": "sub_meta_to_meta"
+      }
+    },
+    {
+      "source": "SM_AC",
+      "target": "T_010",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_AC",
+      "target": "T_011",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_AC",
+      "target": "T_012",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_BC",
+      "target": "M_B",
+      "weight": 0.7,
+      "metadata": {
+        "type": "sub_meta_to_meta"
+      }
+    },
+    {
+      "source": "SM_BC",
+      "target": "M_C",
+      "weight": 0.7,
+      "metadata": {
+        "type": "sub_meta_to_meta"
+      }
+    },
+    {
+      "source": "SM_BC",
+      "target": "T_020",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_BC",
+      "target": "T_021",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SM_BC",
+      "target": "T_022",
+      "weight": 0.3,
+      "metadata": {
+        "type": "sub_meta_to_ternary"
+      }
+    },
+    {
+      "source": "SUPER",
+      "target": "M_A",
+      "weight": 0.9,
+      "metadata": {
+        "type": "super_to_hierarchy"
+      }
+    },
+    {
+      "source": "SUPER",
+      "target": "M_B",
+      "weight": 0.9,
+      "metadata": {
+        "type": "super_to_hierarchy"
+      }
+    },
+    {
+      "source": "SUPER",
+      "target": "M_C",
+      "weight": 0.9,
+      "metadata": {
+        "type": "super_to_hierarchy"
+      }
+    },
+    {
+      "source": "SUPER",
+      "target": "SM_AB",
+      "weight": 0.9,
+      "metadata": {
+        "type": "super_to_hierarchy"
+      }
+    },
+    {
+      "source": "SUPER",
+      "target": "SM_AC",
+      "weight": 0.9,
+      "metadata": {
+        "type": "super_to_hierarchy"
+      }
+    },
+    {
+      "source": "SUPER",
+      "target": "SM_BC",
+      "weight": 0.9,
+      "metadata": {
+        "type": "super_to_hierarchy"
+      }
+    }
+  ],
+  "hierarchy": {
+    "super_cell": "SUPER",
+    "meta_cells": [
+      "M_A",
+      "M_B",
+      "M_C"
+    ],
+    "sub_meta_cells": [
+      "SM_AB",
+      "SM_AC",
+      "SM_BC"
+    ],
+    "ternary_cells": [
+      "T_000",
+      "T_001",
+      "T_002",
+      "T_010",
+      "T_011",
+      "T_012",
+      "T_020",
+      "T_021",
+      "T_022",
+      "T_100",
+      "T_101",
+      "T_102",
+      "T_110",
+      "T_111",
+      "T_112",
+      "T_120",
+      "T_121",
+      "T_122",
+      "T_200",
+      "T_201",
+      "T_202",
+      "T_210",
+      "T_211",
+      "T_212",
+      "T_220",
+      "T_221",
+      "T_222"
+    ]
+  }
+}
