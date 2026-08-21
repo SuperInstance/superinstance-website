@@ -1,750 +1,876 @@
+<!-- 
+  8 PRIMITIVES: 
+    - id: string (unique)
+    - kind: "value", "formula", "room", "agent"
+    - value: any JSON-serializable
+    - formula: string (JS expression)
+    - room: string (refers to a room)
+    - vibe: number (0-1, represents state)
+    - gamma: number (0-1, represents influence)
+    - metadata: object (for future)
+
+  4 ENDPOINTS:
+    - /cell (POST/GET)
+    - /agent (POST/GET/PUT/DELETE)
+    - /bridge (POST/GET)
+    - /session (POST/GET)
+
+  Q-SPACE: 
+    - cells form a graph
+    - agents consume cells
+    - bridges translate between formats
+    - all state persists in localStorage
+
+  MARITIME TONE: salt-stained, workmanlike, iron sharpens iron
+  THE ROOM IS THE CELL. THE CELL IS A PLACE. THE PLACE IS A CELL.
+  THE ROOM IS THE CELL.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quilt Studio · sheet editor</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Quilt Studio</title>
   <style>
+    :root {
+      --bg: #0a1929;
+      --text: #c0d6e4;
+      --accent: #d4a857;
+      --border: #1e3a5f;
+      --card: #12263a;
+      --highlight: #e8c06b;
+    }
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+      line-height: 1.5;
     }
     body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: #1e1f2b;
-      color: #e5e7eb;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      overflow-x: hidden;
     }
     header {
-      background: #2a2b3c;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid #3d3f52;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      z-index: 10;
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
     }
-    header h1 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      color: #c7d2fe;
-      margin-right: 8px;
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+    h2 {
+      font-size: 1.5rem;
+      margin: 20px 0 10px;
+      color: var(--highlight);
+    }
+    .stats {
+      font-size: 0.9rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
     }
     .btn {
-      background: #3a3b4e;
-      border: 1px solid #4f5168;
-      color: #e0e2f0;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn:hover {
-      background: #4a4c66;
-      border-color: #6b6e8f;
-    }
-    .btn.primary {
-      background: #4f46e5;
-      border-color: #6c63ff;
-      color: white;
-    }
-    .btn.primary:hover {
-      background: #5f57ea;
-    }
-    .btn.danger {
-      color: #fca5a5;
-    }
-    .btn.danger:hover {
-      background: #4a2c2c;
-      border-color: #b91c1c;
-    }
-    .spacer {
-      flex: 1;
-    }
-    main {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 240px 1fr 320px;
-      gap: 0;
-      min-height: 0;
-    }
-    .panel {
-      background: #232433;
-      overflow-y: auto;
-      padding: 12px;
-      border-right: 1px solid #33344a;
-    }
-    .panel:last-child {
-      border-right: none;
-      border-left: 1px solid #33344a;
-    }
-    .panel h3 {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #9da0b9;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #3d3f52;
-      padding-bottom: 6px;
-    }
-    /* left cell list */
-    .cell-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .cell-item {
-      background: #2e2f42;
-      border: 1px solid #3d3f52;
-      padding: 8px 10px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: 0.1s;
-    }
-    .cell-item.active {
-      border-color: #818cf8;
-      background: #3b3c58;
-      box-shadow: 0 0 0 1px #6366f1;
-    }
-    .cell-item .name {
-      font-weight: 500;
-      font-size: 0.85rem;
-    }
-    .badge {
-      font-size: 0.6rem;
-      padding: 2px 6px;
-      border-radius: 20px;
-      background: #4b4d6a;
-      color: #cbd5e1;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-    .badge.value { background: #2d6a4f; }
-    .badge.formula { background: #5f0f40; }
-    .badge.listener { background: #9c4a1c; }
-    .badge.api { background: #1e3a8a; }
-    .badge.ai { background: #6b21a8; }
-    .badge.program { background: #4a3f35; }
-    .badge.sensor { background: #0f766e; }
-    .badge.router { background: #b45309; }
-    .badge.vector_store { background: #a21caf; }
-    .cell-actions {
-      display: flex;
-      gap: 4px;
-    }
-    .icon-btn {
-      background: transparent;
-      border: none;
-      color: #9ca3af;
+      background-color: var(--card);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 12px 20px;
+      margin: 0 5px;
       font-size: 1rem;
       cursor: pointer;
-      padding: 2px 4px;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       border-radius: 4px;
     }
-    .icon-btn:hover { background: #4b4d6a; color: white; }
-    .add-cell {
-      margin-top: 12px;
-      width: 100%;
+    .btn:hover {
+      background-color: var(--accent);
+      color: var(--bg);
     }
-    /* center editor */
-    .editor-area {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--bg);
     }
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+    .btn-primary:hover {
+      background-color: #c1954a;
     }
-    .field-group label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #a5a8c5;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
-    .field-group input, .field-group textarea, .field-group select {
-      background: #1b1c2b;
-      border: 1px solid #3d3f52;
-      color: #e5e7eb;
-      padding: 8px 10px;
+    .panel {
+      background-color: var(--card);
+      border: 1px solid var(--border);
       border-radius: 6px;
-      font-size: 0.85rem;
-      font-family: inherit;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    .field-group textarea {
-      min-height: 60px;
-      resize: vertical;
+    .form-group {
+      margin-bottom: 15px;
     }
-    .field-group input:focus, .field-group textarea:focus, .field-group select:focus {
-      outline: 2px solid #6366f1;
-      border-color: transparent;
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: var(--highlight);
     }
-    .depends-input {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
     }
-    .dep-tag {
-      background: #393b54;
-      padding: 4px 8px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    textarea {
+      height: 80px;
+      font-family: 'Courier New', monospace;
     }
-    .dep-tag button {
-      background: none;
-      border: none;
-      color: #f87171;
-      cursor: pointer;
-      font-size: 0.8rem;
-    }
-    .dep-input-row {
-      display: flex;
-      gap: 4px;
-    }
-    .dep-input-row input {
-      flex: 1;
-    }
-    .preview-box {
-      background: #1b1c2b;
-      border: 1px dashed #4f5168;
-      padding: 12px;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 0.8rem;
+    .preview {
+      background-color: #0e2337;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px;
+      margin-top: 10px;
       white-space: pre-wrap;
-      word-break: break-word;
-      max-height: 120px;
+      font-size: 0.9rem;
+      max-height: 100px;
       overflow-y: auto;
     }
-    /* graph */
-    .graph-container {
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .cell-list {
+      list-style: none;
+      margin-top: 10px;
+    }
+    .cell-item {
+      background-color: #162d45;
+      padding: 8px;
+      margin-bottom: 5px;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    .cell-item button {
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      margin-left: 5px;
+    }
+    .visual {
+      height: 120px;
+      background-color: #0e2337;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-top: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .echogram {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      height: 40px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .echobeam {
+      height: 100%;
+      background: linear-gradient(to bottom, #143b5e, transparent);
+      width: 1px;
+      opacity: 0.7;
+    }
+    .echobeam:nth-child(odd) {
+      background: linear-gradient(to bottom, #0f324d, transparent);
+    }
+    .hodge-visual {
       width: 100%;
       height: 100%;
-      background: #1a1b28;
-      border-radius: 8px;
+      position: relative;
+    }
+    .hodge-vector {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .graph {
+      width: 100%;
+      height: 150px;
+      background-color: #0e2337;
+      border: 1px solid var(--border);
+      border-radius: 4px;
       position: relative;
       overflow: hidden;
     }
-    #graphCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .graph-legend {
+    .graph-node {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: #2a2b3c;
-      padding: 6px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      color: #b9bcd6;
-      display: flex;
-      gap: 12px;
-      border: 1px solid #3d3f52;
-    }
-    .legend-dot {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
+      background-color: var(--accent);
       border-radius: 50%;
-      display: inline-block;
-      margin-right: 4px;
+      transform: translate(-50%, -50%);
     }
-    .dirty { fill: #fbbf24; }
-    .evaluating { fill: #f87171; }
-    .normal { fill: #34d399; }
-    .edge { stroke: #6b7280; stroke-width: 1.5; }
-    .edge-dirty { stroke: #fbbf24; stroke-width: 2.5; }
-    .node-text { fill: #e5e7eb; font-size: 10px; text-anchor: middle; }
-    .node-rect { fill: #2e2f42; stroke: #4f5168; stroke-width: 1.5; rx: 4; }
-    .node-rect.dirty { stroke: #fbbf24; }
-    .node-rect.evaluating { stroke: #f87171; }
+    .graph-edge {
+      position: absolute;
+      height: 1px;
+      background-color: var(--border);
+      transform-origin: 0 0;
+    }
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      color: var(--accent);
+    }
+    .nav a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+    .nav a:hover {
+      color: var(--highlight);
+    }
   </style>
 </head>
 <body>
-<header>
-  <h1>🧵 Quilt Studio</h1>
-  <button class="btn" id="addValueBtn">+ value</button>
-  <button class="btn" id="addFormulaBtn">+ formula</button>
-  <button class="btn" id="addListenerBtn">+ listener</button>
-  <button class="btn" id="addApiBtn">+ api</button>
-  <button class="btn" id="addAiBtn">+ ai</button>
-  <button class="btn" id="addProgramBtn">+ program</button>
-  <button class="btn" id="addSensorBtn">+ sensor</button>
-  <button class="btn" id="addRouterBtn">+ router</button>
-  <button class="btn" id="addVectorBtn">+ vector</button>
-  <span class="spacer"></span>
-  <button class="btn" id="runBtn">▶ run</button>
-  <button class="btn" id="saveBtn">💾 save .qzt</button>
-  <button class="btn" id="loadBtn">📂 load</button>
-  <button class="btn" id="exportJsonBtn">📄 json</button>
-  <input type="file" id="fileInput" accept=".qzt,.json" style="display: none;">
-</header>
-<main>
-  <!-- LEFT -->
-  <div class="panel" style="display: flex; flex-direction: column;">
-    <h3>📋 cells</h3>
-    <div class="cell-list" id="cellList"></div>
-    <button class="btn add-cell" id="addCellBtn">+ new cell</button>
-  </div>
-  <!-- CENTER -->
-  <div class="panel" style="flex: 1; border-right: 1px solid #33344a;">
-    <h3>✏️ editor</h3>
-    <div class="editor-area" id="editorArea">
-      <div style="color:#9da0b9; font-size:0.9rem; padding:20px; text-align:center;">select a cell from the left<br>or create a new one</div>
+  <header>
+    <h1>The Quilt Studio</h1>
+    <p class="subtitle">Where cells are made, agents grow, and ideas become real work</p>
+    <div class="stats">
+      <span id="stats-cells">0 cells</span>
+      <span id="stats-qzt">0 .qzt saved</span>
+      <span id="stats-agents">0 active agents</span>
     </div>
-  </div>
-  <!-- RIGHT -->
-  <div class="panel" style="padding: 8px;">
-    <h3>🕸️ live graph</h3>
-    <div class="graph-container">
-      <canvas id="graphCanvas" width="600" height="500"></canvas>
-      <div class="graph-legend">
-        <span><span class="legend-dot normal"></span>normal</span>
-        <span><span class="legend-dot dirty"></span>dirty</span>
-        <span><span class="legend-dot evaluating"></span>eval</span>
+    <div style="margin-top: 15px;">
+      <button class="btn btn-primary" id="btn-build-cell">Build a Cell</button>
+      <button class="btn btn-primary" id="btn-grow-agent">Grow an Agent</button>
+      <button class="btn btn-primary" id="btn-create-bridge">Create a Bridge</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Cell Builder</h2>
+      <form id="form-cell">
+        <div class="form-group">
+          <label for="cell-id">ID</label>
+          <input type="text" id="cell-id" placeholder="e.g., temp_sensor_1" required />
+        </div>
+        <div class="form-group">
+          <label for="cell-kind">Kind</label>
+          <select id="cell-kind">
+            <option value="value">value</option>
+            <option value="formula">formula</option>
+            <option value="room">room</option>
+            <option value="agent">agent</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cell-value">Value</label>
+          <textarea id="cell-value" placeholder="Enter value (JSON, number, string)"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="cell-formula">Formula (if kind=formula)</label>
+          <textarea id="cell-formula" placeholder="e.g., a + b"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="cell-room">Room (if kind=room or agent)</label>
+          <input type="text" id="cell-room" placeholder="e.g., kitchen, lighthouse" />
+        </div>
+        <div class="form-group">
+          <label for="cell-gamma">Gamma (0-1)</label>
+          <input type="range" id="cell-gamma" min="0" max="1" step="0.01" value="0.5" />
+          <span id="gamma-value">0.5</span>
+        </div>
+        <div class="form-group">
+          <label for="cell-vibe">Vibe (0-1)</label>
+          <input type="range" id="cell-vibe" min="0" max="1" step="0.01" value="0.5" />
+          <span id="vibe-value">0.5</span>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn" id="btn-save-cell">Save Cell</button>
+          <button type="button" class="btn" id="btn-tick-cell">Tick</button>
+          <button type="button" class="btn" id="btn-export-qzt">Export .qzt</button>
+        </div>
+      </form>
+
+      <div class="preview" id="cell-preview">
+        <!-- Live preview -->
+      </div>
+
+      <h2>Saved Cells</h2>
+      <ul class="cell-list" id="cell-list">
+        <!-- Dynamically generated -->
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h2>Agent Grower</h2>
+      <form id="form-agent">
+        <div class="form-group">
+          <label for="agent-name">Name</label>
+          <input type="text" id="agent-name" placeholder="e.g., Watchman" required />
+        </div>
+        <div class="form-group">
+          <label for="agent-cells">Subscribe to Cells</label>
+          <textarea id="agent-cells" placeholder="e.g., temp_sensor_1, humidity_2"></textarea>
+        </div>
+        <button type="button" class="btn" id="btn-register-agent">Register</button>
+        <button type="button" class="btn" id="btn-set-signal">Set Signal</button>
+        <button type="button" class="btn" id="btn-decompose">Decompose (Hodge)</button>
+        <div class="grid">
+          <div class="form-group">
+            <label for="ratio-explore">Exploration</label>
+            <input type="range" id="ratio-explore" min="0" max="1" step="0.01" value="0.5" />
+          </div>
+          <div class="form-group">
+            <label for="ratio-exploit">Exploitation</label>
+            <input type="range" id="ratio-exploit" min="0" max="1" step="0.01" value="0.3" />
+          </div>
+          <div class="form-group">
+            <label for="ratio-prior">Prior</label>
+            <input type="range" id="ratio-prior" min="0" max="1" step="0.01" value="0.2" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="agent-mode">Dominant Mode</label>
+          <select id="agent-mode">
+            <option value="explorer">Explorer</option>
+            <option value="practitioner">Practitioner</option>
+            <option value="master">Master</option>
+          </select>
+        </div>
+        <button type="button" class="btn" id="btn-tick-agent">Tick Agent</button>
+      </form>
+
+      <div class="visual" id="signal-visual">
+        <div class="hodge-visual" id="hodge-visual"></div>
+      </div>
+
+      <button type="button" class="btn" id="btn-save-agent">Save Agent</button>
+    </div>
+
+    <div class="panel">
+      <h2>Bridge Creator</h2>
+      <form id="form-bridge">
+        <div class="form-group">
+          <label for="bridge-source">Source Type</label>
+          <select id="bridge-source">
+            <option value="json">JSON</option>
+            <option value="csv">CSV</option>
+            <option value="xml">XML</option>
+            <option value="api">API</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="bridge-target">Target Format</label>
+          <select id="bridge-target">
+            <option value="json">JSON</option>
+            <option value="csv">CSV</option>
+            <option value="xml">XML</option>
+            <option value="database">Database</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="bridge-map">Field Mapping</label>
+          <textarea id="bridge-map" placeholder="e.g., name → full_name, age → years"></textarea>
+        </div>
+        <button type="button" class="btn" id="btn-generate-code">Generate Code</button>
+      </form>
+
+      <div class="preview" id="bridge-preview">
+        <!-- Python code preview -->
+      </div>
+
+      <button type="button" class="btn" id="btn-save-bridge">Save Bridge Spec</button>
+    </div>
+
+    <div class="panel">
+      <h2>Session Management</h2>
+      <button type="button" class="btn" id="btn-save-session">Save Session (.qzt)</button>
+      <button type="button" class="btn" id="btn-load-session">Load Session (.qzt)</button>
+      <button type="button" class="btn" id="btn-reset">Reset</button>
+
+      <h2>Visualizations</h2>
+      <div class="visual">
+        <div class="echogram" id="echogram">
+          <!-- Animated echograms -->
+        </div>
+      </div>
+
+      <div class="visual">
+        <div class="graph" id="cell-graph"></div>
       </div>
     </div>
   </div>
-</main>
-<script>
-  (function(){
-    // ---------- state ----------
-    let cells = {};  // id -> cell object
-    let order = [];  // array of ids for stable list
-    let selectedId = null;
-    let dirtySet = new Set();
-    let evaluatingSet = new Set();
 
-    // ---------- utils ----------
-    function uid() { return 'c' + Math.random().toString(36).substr(2, 8) + Date.now().toString(36).slice(-4); }
-    function defaultCell(kind) {
-      const base = { id: uid(), kind, name: kind.slice(0,3)+Math.floor(Math.random()*100) };
-      switch(kind) {
-        case 'value': return { ...base, type: 'text', value: '' };
-        case 'formula': return { ...base, body: 'return 1;', depends_on: [] };
-        case 'listener': return { ...base, listens: '', fn: 'console.log("hi")' };
-        case 'api': return { ...base, endpoint: 'https://api.example.com', interval: 60, method: 'GET' };
-        case 'ai': return { ...base, prompt: 'Explain', system: 'You are helpful', model: 'gpt-4o', response_model: 'text' };
-        case 'program': return { ...base, program: 'print("hello")' };
-        case 'sensor': return { ...base, sensor_type: 'temperature', sample_rate: 1.0 };
-        case 'router': return { ...base, routes: '{"default": "c1"}' };
-        case 'vector_store': return { ...base, collection: 'docs', dimensions: 128 };
-        default: return { ...base };
+  <div class="nav">
+    <a href="/echogram">Echogram</a>
+    <a href="/q-space">Q-Space</a>
+    <a href="/lighthouse">Lighthouse</a>
+    <a href="/kitchen">Kitchen</a>
+    <a href="/logbook">Logbook</a>
+  </div>
+
+  <script>
+    // Global state
+    let state = {
+      cells: [],
+      agents: [],
+      bridges: [],
+      session: {
+        timestamp: Date.now(),
+        version: "0.0.1"
       }
-    }
+    };
 
-    // ---------- persistence ----------
-    function saveToStorage() {
-      localStorage.setItem('quilt_sheet', JSON.stringify({ cells, order }));
-    }
-    function loadFromStorage() {
-      const raw = localStorage.getItem('quilt_sheet');
-      if (raw) {
-        try { const data = JSON.parse(raw); cells = data.cells || {}; order = data.order || Object.keys(cells); 
-          if(order.length===0) order = Object.keys(cells);
-          // ensure all ids in order
-          order = order.filter(id => cells[id]);
-          Object.keys(cells).forEach(id => { if(!order.includes(id)) order.push(id); });
-        } catch(e){}
+    // Load from localStorage
+    function loadState() {
+      const saved = localStorage.getItem('quilt-studio-state');
+      if (saved) {
+        state = JSON.parse(saved);
       }
-      if (!order.length) {
-        // seed with a few cells
-        const c1 = defaultCell('value'); c1.name='greeting'; c1.value='hello quilt';
-        const c2 = defaultCell('formula'); c2.name='shout'; c2.body='return depends_on[0].toUpperCase()'; c2.depends_on=['greeting'];
-        cells[c1.id]=c1; cells[c2.id]=c2; order=[c1.id,c2.id];
-      }
-    }
-    // ---------- graph rendering ----------
-    const canvas = document.getElementById('graphCanvas');
-    const ctx = canvas.getContext('2d');
-    function resizeCanvas() {
-      const container = canvas.parentElement;
-      canvas.width = container.clientWidth;
-      canvas.height = container.clientHeight;
-    }
-    window.addEventListener('resize', () => { resizeCanvas(); drawGraph(); });
-
-    function drawGraph() {
-      resizeCanvas();
-      ctx.clearRect(0,0,canvas.width, canvas.height);
-      const ids = order;
-      if (ids.length === 0) return;
-      const w = canvas.width, h = canvas.height;
-      const positions = {};
-      const cols = Math.ceil(Math.sqrt(ids.length));
-      const rows = Math.ceil(ids.length / cols);
-      const cellW = Math.min(120, w/(cols+1));
-      const cellH = 40;
-      ids.forEach((id, idx) => {
-        const col = idx % cols;
-        const row = Math.floor(idx / cols);
-        const x = 30 + col * (w-60)/Math.max(1,cols-1) + (cols===1? w/2-50:0);
-        const y = 30 + row * (h-60)/Math.max(1,rows-1);
-        positions[id] = { x, y };
-      });
-      // edges
-      ctx.lineWidth = 1.5;
-      ids.forEach(id => {
-        const cell = cells[id];
-        if (!cell) return;
-        let deps = [];
-        if (cell.kind === 'formula' && Array.isArray(cell.depends_on)) deps = cell.depends_on;
-        if (cell.kind === 'listener' && cell.listens) deps = [cell.listens];
-        deps.forEach(dep => {
-          if (!cells[dep]) return;
-          const from = positions[dep];
-          const to = positions[id];
-          if (!from || !to) return;
-          const dirtyEdge = dirtySet.has(dep) || dirtySet.has(id);
-          ctx.beginPath();
-          ctx.strokeStyle = dirtyEdge ? '#fbbf24' : '#6b7280';
-          ctx.lineWidth = dirtyEdge ? 2.5 : 1.5;
-          ctx.moveTo(from.x, from.y);
-          ctx.lineTo(to.x, to.y);
-          ctx.stroke();
-        });
-      });
-      // nodes
-      ids.forEach(id => {
-        const pos = positions[id];
-        const cell = cells[id];
-        if (!pos || !cell) return;
-        const wNode = 100, hNode = 30;
-        const x = pos.x - wNode/2, y = pos.y - hNode/2;
-        let cls = 'normal';
-        if (dirtySet.has(id)) cls = 'dirty';
-        if (evaluatingSet.has(id)) cls = 'evaluating';
-        ctx.fillStyle = cls === 'dirty' ? '#fbbf24' : (cls==='evaluating' ? '#f87171' : '#34d399');
-        ctx.strokeStyle = cls === 'dirty' ? '#fbbf24' : (cls==='evaluating' ? '#f87171' : '#4f5168');
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.roundRect(x, y, wNode, hNode, 6);
-        ctx.fillStyle = '#2e2f42';
-        ctx.fill();
-        ctx.stroke();
-        // small status dot
-        ctx.beginPath();
-        ctx.arc(x+8, y+8, 4, 0, 2*Math.PI);
-        ctx.fillStyle = cls === 'dirty' ? '#fbbf24' : (cls==='evaluating' ? '#f87171' : '#34d399');
-        ctx.fill();
-        ctx.strokeStyle = '#1a1b28';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        // label
-        ctx.fillStyle = '#e5e7eb';
-        ctx.font = '10px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(cell.name || id, x + wNode/2, y + hNode/2);
-      });
-    }
-
-    // ---------- reactive engine (simplified) ----------
-    function computeCell(id, visited = new Set()) {
-      const cell = cells[id];
-      if (!cell) return undefined;
-      if (visited.has(id)) return undefined;
-      visited.add(id);
-      evaluatingSet.add(id);
-      dirtySet.delete(id);
-      drawGraph();
-      try {
-        if (cell.kind === 'value') return cell.value;
-        if (cell.kind === 'formula') {
-          const deps = (cell.depends_on || []).map(dep => computeCell(dep, visited));
-          // eslint-disable-next-line no-new-func
-          const fn = new Function('depends_on', `"use strict"; ${cell.body}`);
-          return fn(deps);
-        }
-        if (cell.kind === 'listener') {
-          // just run fn (side effect)
-          try { new Function('value', cell.fn)(computeCell(cell.listens, visited)); } catch(e){}
-          return undefined;
-        }
-        if (cell.kind === 'api') {
-          return `[api:${cell.endpoint}]`;
-        }
-        if (cell.kind === 'ai') return `[ai:${cell.model}]`;
-        if (cell.kind === 'program') return `[program]`;
-        if (cell.kind === 'sensor') return `[sensor:${cell.sensor_type}]`;
-        if (cell.kind === 'router') return `[router]`;
-        if (cell.kind === 'vector_store') return `[vector:${cell.collection}]`;
-      } finally {
-        evaluatingSet.delete(id);
-      }
-      return undefined;
-    }
-
-    function runSheet() {
-      dirtySet.clear();
-      evaluatingSet.clear();
-      // mark all as dirty first
-      order.forEach(id => dirtySet.add(id));
-      // evaluate all
-      order.forEach(id => {
-        computeCell(id);
-      });
-      dirtySet.clear();
-      evaluatingSet.clear();
-      drawGraph();
-      renderEditor();
-    }
-
-    // ---------- UI rendering ----------
-    function renderCellList() {
-      const list = document.getElementById('cellList');
-      list.innerHTML = '';
-      order.forEach(id => {
-        const cell = cells[id];
-        if (!cell) return;
-        const div = document.createElement('div');
-        div.className = 'cell-item' + (selectedId === id ? ' active' : '');
-        div.dataset.id = id;
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'name';
-        nameSpan.textContent = cell.name || id;
-        const badge = document.createElement('span');
-        badge.className = `badge ${cell.kind}`;
-        badge.textContent = cell.kind;
-        const actions = document.createElement('span');
-        actions.className = 'cell-actions';
-        const delBtn = document.createElement('button');
-        delBtn.className = 'icon-btn';
-        delBtn.textContent = '🗑️';
-        delBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          deleteCell(id);
-        });
-        actions.appendChild(delBtn);
-        div.appendChild(nameSpan);
-        div.appendChild(badge);
-        div.appendChild(actions);
-        div.addEventListener('click', () => {
-          selectedId = id;
-          renderCellList();
-          renderEditor();
-          drawGraph();
-        });
-        list.appendChild(div);
-      });
-    }
-
-    function deleteCell(id) {
-      // remove from graph
-      delete cells[id];
-      order = order.filter(x => x !== id);
-      if (selectedId === id) selectedId = null;
-      // clean depends_on references
-      Object.values(cells).forEach(c => {
-        if (c.depends_on) c.depends_on = c.depends_on.filter(d => d !== id);
-        if (c.listens === id) c.listens = '';
-      });
-      saveToStorage();
+      updateStats();
       renderCellList();
-      renderEditor();
-      drawGraph();
+      renderCellGraph();
+      animateEchogram();
+      animateHodge();
     }
 
-    function renderEditor() {
-      const area = document.getElementById('editorArea');
-      if (!selectedId || !cells[selectedId]) {
-        area.innerHTML = `<div style="color:#9da0b9; padding:20px; text-align:center;">select a cell</div>`;
+    // Save to localStorage
+    function saveState() {
+      localStorage.setItem('quilt-studio-state', JSON.stringify(state));
+    }
+
+    // Update stats
+    function updateStats() {
+      const cells = state.cells.length;
+      const agents = state.agents.length;
+      const qzt = localStorage.length; // rough estimate
+      document.getElementById('stats-cells').textContent = `${cells} cells`;
+      document.getElementById('stats-agents').textContent = `${agents} active agents`;
+      document.getElementById('stats-qzt').textContent = `${qzt} .qzt saved`;
+    }
+
+    // --- Cell Builder ---
+    document.getElementById('btn-save-cell').addEventListener('click', () => {
+      const id = document.getElementById('cell-id').value.trim();
+      const kind = document.getElementById('cell-kind').value;
+      const value = document.getElementById('cell-value').value;
+      const formula = document.getElementById('cell-formula').value;
+      const room = document.getElementById('cell-room').value.trim();
+      const gamma = parseFloat(document.getElementById('cell-gamma').value);
+      const vibe = parseFloat(document.getElementById('cell-vibe').value);
+
+      if (!id) {
+        alert('Cell ID is required');
         return;
       }
-      const cell = cells[selectedId];
-      const kind = cell.kind;
-      let html = `<div class="field-group"><label>name</label><input id="cellName" value="${cell.name || ''}"></div>`;
-      html += `<div class="field-group"><label>kind</label><span class="badge ${kind}">${kind}</span></div>`;
 
-      if (kind === 'value') {
-        html += `<div class="field-group"><label>type</label><select id="valueType"><option value="text" ${cell.type==='text'?'selected':''}>text</option><option value="number" ${cell.type==='number'?'selected':''}>number</option></select></div>`;
-        html += `<div class="field-group"><label>value</label><textarea id="valueField" rows="2">${cell.value || ''}</textarea></div>`;
-      } else if (kind === 'formula') {
-        html += `<div class="field-group"><label>depends_on (comma separated ids)</label><div class="depends-input" id="dependsContainer"></div><div class="dep-input-row"><input id="newDep" placeholder="cell id"><button class="btn" id="addDepBtn">+ add</button></div></div>`;
-        html += `<div class="field-group"><label>function body (use depends_on array)</label><textarea id="formulaBody" rows="4">${cell.body || ''}</textarea></div>`;
-      } else if (kind === 'listener') {
-        html += `<div class="field-group"><label>listens to (cell id)</label><input id="listensField" value="${cell.listens || ''}"></div>`;
-        html += `<div class="field-group"><label>fn body (value param)</label><textarea id="listenerFn" rows="3">${cell.fn || ''}</textarea></div>`;
-      } else if (kind === 'api') {
-        html += `<div class="field-group"><label>endpoint</label><input id="apiEndpoint" value="${cell.endpoint || ''}"></div>`;
-        html += `<div class="field-group"><label>interval (s)</label><input id="apiInterval" type="number" value="${cell.interval || 60}"></div>`;
-        html += `<div class="field-group"><label>method</label><select id="apiMethod"><option ${cell.method==='GET'?'selected':''}>GET</option><option ${cell.method==='POST'?'selected':''}>POST</option></select></div>`;
-      } else if (kind === 'ai') {
-        html += `<div class="field-group"><label>prompt</label><textarea id="aiPrompt" rows="2">${cell.prompt || ''}</textarea></div>`;
-        html += `<div class="field-group"><label>system</label><input id="aiSystem" value="${cell.system || ''}"></div>`;
-        html += `<div class="field-group"><label>model</label><input id="aiModel" value="${cell.model || 'gpt-4o'}"></div>`;
-        html += `<div class="field-group"><label>response model</label><input id="aiResp" value="${cell.response_model || 'text'}"></div>`;
-      } else if (kind === 'program') {
-        html += `<div class="field-group"><label>program</label><textarea id="programField" rows="5">${cell.program || ''}</textarea></div>`;
-      } else if (kind === 'sensor') {
-        html += `<div class="field-group"><label>sensor type</label><input id="sensorType" value="${cell.sensor_type || ''}"></div>`;
-        html += `<div class="field-group"><label>sample rate</label><input id="sensorRate" type="number" step="0.1" value="${cell.sample_rate || 1}"></div>`;
-      } else if (kind === 'router') {
-        html += `<div class="field-group"><label>routes (JSON)</label><textarea id="routerRoutes" rows="4">${cell.routes || '{}'}</textarea></div>`;
-      } else if (kind === 'vector_store') {
-        html += `<div class="field-group"><label>collection</label><input id="vectorCol" value="${cell.collection || ''}"></div>`;
-        html += `<div class="field-group"><label>dimensions</label><input id="vectorDim" type="number" value="${cell.dimensions || 128}"></div>`;
-      }
-      html += `<div style="margin-top:16px; display:flex; gap:8px;"><button class="btn primary" id="applyBtn">apply changes</button><button class="btn" id="previewBtn">preview</button></div>`;
-      html += `<div class="preview-box" id="previewBox" style="margin-top:12px;">preview</div>`;
-      area.innerHTML = html;
-
-      // depends_on rendering
-      if (kind === 'formula') {
-        const container = document.getElementById('dependsContainer');
-        (cell.depends_on || []).forEach(dep => {
-          const tag = document.createElement('span');
-          tag.className = 'dep-tag';
-          tag.innerHTML = `${dep} <button data-dep="${dep}">✕</button>`;
-          tag.querySelector('button').addEventListener('click', (e) => {
-            cell.depends_on = cell.depends_on.filter(x => x !== dep);
-            renderEditor();
-          });
-          container.appendChild(tag);
-        });
-        document.getElementById('addDepBtn').addEventListener('click', () => {
-          const inp = document.getElementById('newDep');
-          if (inp.value.trim()) {
-            if (!cell.depends_on) cell.depends_on = [];
-            if (!cell.depends_on.includes(inp.value.trim())) cell.depends_on.push(inp.value.trim());
-            renderEditor();
-          }
-        });
-      }
-
-      document.getElementById('applyBtn').addEventListener('click', () => {
-        applyChanges(cell);
-        saveToStorage();
-        renderCellList();
-        renderEditor();
-        drawGraph();
-      });
-      document.getElementById('previewBtn').addEventListener('click', () => {
-        applyChanges(cell);
-        const val = computeCell(cell.id);
-        document.getElementById('previewBox').textContent = (val === undefined ? 'undefined' : JSON.stringify(val));
-        drawGraph();
-      });
-    }
-
-    function applyChanges(cell) {
-      const get = (id) => document.getElementById(id);
-      if (get('cellName')) cell.name = get('cellName').value;
-      if (cell.kind === 'value') {
-        if (get('valueType')) cell.type = get('valueType').value;
-        if (get('valueField')) cell.value = get('valueField').value;
-      } else if (cell.kind === 'formula') {
-        if (get('formulaBody')) cell.body = get('formulaBody').value;
-      } else if (cell.kind === 'listener') {
-        if (get('listensField')) cell.listens = get('listensField').value;
-        if (get('listenerFn')) cell.fn = get('listenerFn').value;
-      } else if (cell.kind === 'api') {
-        if (get('apiEndpoint')) cell.endpoint = get('apiEndpoint').value;
-        if (get('apiInterval')) cell.interval = parseFloat(get('apiInterval').value) || 60;
-        if (get('apiMethod')) cell.method = get('apiMethod').value;
-      } else if (cell.kind === 'ai') {
-        if (get('aiPrompt')) cell.prompt = get('aiPrompt').value;
-        if (get('aiSystem')) cell.system = get('aiSystem').value;
-        if (get('aiModel')) cell.model = get('aiModel').value;
-        if (get('aiResp')) cell.response_model = get('aiResp').value;
-      } else if (cell.kind === 'program') {
-        if (get('programField')) cell.program = get('programField').value;
-      } else if (cell.kind === 'sensor') {
-        if (get('sensorType')) cell.sensor_type = get('sensorType').value;
-        if (get('sensorRate')) cell.sample_rate = parseFloat(get('sensorRate').value) || 1;
-      } else if (cell.kind === 'router') {
-        if (get('routerRoutes')) cell.routes = get('routerRoutes').value;
-      } else if (cell.kind === 'vector_store') {
-        if (get('vectorCol')) cell.collection = get('vectorCol').value;
-        if (get('vectorDim')) cell.dimensions = parseInt(get('vectorDim').value) || 128;
-      }
-    }
-
-    // ---------- create & add ----------
-    function addCell(kind) {
-      const cell = defaultCell(kind);
-      cells[cell.id] = cell;
-      order.push(cell.id);
-      selectedId = cell.id;
-      saveToStorage();
-      renderCellList();
-      renderEditor();
-      drawGraph();
-    }
-
-    // ---------- export / import ----------
-    function exportJSON() {
-      const data = { cells, order };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'quilt_sheet.qzt';
-      a.click(); URL.revokeObjectURL(url);
-    }
-    function importJSON(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const data = JSON.parse(e.target.result);
-          if (data.cells && data.order) {
-            cells = data.cells; order = data.order.filter(id => cells[id]);
-            selectedId = null;
-            saveToStorage();
-            renderCellList(); renderEditor(); drawGraph();
-          } else { alert('invalid quilt file'); }
-        } catch(err) { alert('parse error'); }
+      const cell = {
+        id, kind, value: value ? JSON.parse(value) : null,
+        formula: formula || null,
+        room: room || null,
+        gamma,
+        vibe,
+        metadata: { created: Date.now(), modified: Date.now() }
       };
-      reader.readAsText(file);
-    }
 
-    // ---------- wire events ----------
-    document.getElementById('addCellBtn').addEventListener('click', () => addCell('value'));
-    document.getElementById('addValueBtn').addEventListener('click', () => addCell('value'));
-    document.getElementById('addFormulaBtn').addEventListener('click', () => addCell('formula'));
-    document.getElementById('addListenerBtn').addEventListener('click', () => addCell('listener'));
-    document.getElementById('addApiBtn').addEventListener('click', () => addCell('api'));
-    document.getElementById('addAiBtn').addEventListener('click', () => addCell('ai'));
-    document.getElementById('addProgramBtn').addEventListener('click', () => addCell('program'));
-    document.getElementById('addSensorBtn').addEventListener('click', () => addCell('sensor'));
-    document.getElementById('addRouterBtn').addEventListener('click', () => addCell('router'));
-    document.getElementById('addVectorBtn').addEventListener('click', () => addCell('vector_store'));
-    document.getElementById('runBtn').addEventListener('click', runSheet);
-    document.getElementById('saveBtn').addEventListener('click', exportJSON);
-    document.getElementById('exportJsonBtn').addEventListener('click', exportJSON);
-    document.getElementById('loadBtn').addEventListener('click', () => document.getElementById('fileInput').click());
-    document.getElementById('fileInput').addEventListener('change', (e) => {
-      if (e.target.files[0]) importJSON(e.target.files[0]);
-      e.target.value = '';
+      const existingIndex = state.cells.findIndex(c => c.id === id);
+      if (existingIndex >= 0) {
+        state.cells[existingIndex] = cell;
+      } else {
+        state.cells.push(cell);
+      }
+
+      saveState();
+      updateStats();
+      renderCellList();
+      updateCellPreview();
     });
 
-    // init
-    loadFromStorage();
-    if (order.length > 0) selectedId = order[0];
-    renderCellList();
-    renderEditor();
-    drawGraph();
-  })();
-</script>
+    document.getElementById('btn-tick-cell').addEventListener('click', () => {
+      const id = document.getElementById('cell-id').value.trim();
+      const cell = state.cells.find(c => c.id === id);
+      if (!cell) return;
+
+      cell.vibe = (cell.vibe + Math.random() * 0.2) % 1;
+      cell.metadata.modified = Date.now();
+
+      saveState();
+      updateStats();
+      renderCellList();
+      updateCellPreview();
+    });
+
+    document.getElementById('btn-export-qzt').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `quilt-${Date.now()}.qzt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    function updateCellPreview() {
+      const id = document.getElementById('cell-id').value.trim();
+      const cell = state.cells.find(c => c.id === id);
+      if (!cell) {
+        document.getElementById('cell-preview').textContent = 'No cell selected';
+        return;
+      }
+
+      const preview = `
+        ID: ${cell.id}
+        Kind: ${cell.kind}
+        Value: ${JSON.stringify(cell.value, null, 2)}
+        Formula: ${cell.formula || 'none'}
+        Room: ${cell.room || 'none'}
+        Gamma: ${cell.gamma.toFixed(2)}
+        Vibe: ${cell.vibe.toFixed(2)}
+      `;
+      document.getElementById('cell-preview').textContent = preview;
+    }
+
+    function renderCellList() {
+      const list = document.getElementById('cell-list');
+      list.innerHTML = '';
+      state.cells.forEach(cell => {
+        const li = document.createElement('li');
+        li.className = 'cell-item';
+        li.innerHTML = `
+          <span>${cell.id} (${cell.kind})</span>
+          <div>
+            <button class="btn" data-action="edit" data-id="${cell.id}">Edit</button>
+            <button class="btn" data-action="delete" data-id="${cell.id}">Delete</button>
+            <button class="btn" data-action="transfer" data-id="${cell.id}">Transfer</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+
+      // Attach event listeners
+      document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = e.target.getAttribute('data-id');
+          const cell = state.cells.find(c => c.id === id);
+          if (!cell) return;
+
+          document.getElementById('cell-id').value = cell.id;
+          document.getElementById('cell-kind').value = cell.kind;
+          document.getElementById('cell-value').value = JSON.stringify(cell.value, null, 2);
+          document.getElementById('cell-formula').value = cell.formula || '';
+          document.getElementById('cell-room').value = cell.room || '';
+          document.getElementById('cell-gamma').value = cell.gamma;
+          document.getElementById('gamma-value').textContent = cell.gamma.toFixed(2);
+          document.getElementById('cell-vibe').value = cell.vibe;
+          document.getElementById('vibe-value').textContent = cell.vibe.toFixed(2);
+        });
+      });
+
+      document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          if (confirm('Delete cell?')) {
+            const id = e.target.getAttribute('data-id');
+            state.cells = state.cells.filter(c => c.id !== id);
+            saveState();
+            updateStats();
+            renderCellList();
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-action="transfer"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = e.target.getAttribute('data-id');
+          const cell = state.cells.find(c => c.id === id);
+          if (!cell) return;
+
+          alert(`Transfer ${cell.id} to another cell? (Not implemented yet)`);
+        });
+      });
+    }
+
+    // --- Agent Grower ---
+    document.getElementById('btn-register-agent').addEventListener('click', () => {
+      const name = document.getElementById('agent-name').value.trim();
+      const cellList = document.getElementById('agent-cells').value.split(',').map(c => c.trim()).filter(c => c);
+
+      if (!name) {
+        alert('Agent name required');
+        return;
+      }
+
+      const agent = {
+        name, cells: cellList,
+        ratio: { explore: 0.5, exploit: 0.3, prior: 0.2 },
+        mode: 'explorer',
+        signal: Array(10).fill(0).map(() => Math.random()),
+        metadata: { created: Date.now(), modified: Date.now() }
+      };
+
+      state.agents.push(agent);
+      saveState();
+      updateStats();
+    });
+
+    document.getElementById('btn-set-signal').addEventListener('click', () => {
+      const agent = state.agents.find(a => a.name === document.getElementById('agent-name').value.trim());
+      if (!agent) return;
+
+      agent.signal = Array(10).fill(0).map(() => Math.random());
+      agent.metadata.modified = Date.now();
+      saveState();
+      animateHodge();
+    });
+
+    document.getElementById('btn-decompose').addEventListener('click', () => {
+      const agent = state.agents.find(a => a.name === document.getElementById('agent-name').value.trim());
+      if (!agent) return;
+
+      // Hodge decomposition: ω = dα + δβ + h
+      const n = agent.signal.length;
+      const dAlpha = agent.signal.map((_, i) => i === 0 ? 0 : agent.signal[i] - agent.signal[i-1]);
+      const deltaBeta = agent.signal.map((_, i) => i === n-1 ? 0 : agent.signal[i] - agent.signal[i+1]);
+      const h = agent.signal.reduce((a, b) => a + b, 0) / n;
+
+      agent.decomp = { dAlpha, deltaBeta, h };
+      saveState();
+      animateHodge();
+    });
+
+    document.getElementById('btn-tick-agent').addEventListener('click', () => {
+      const agent = state.agents.find(a => a.name === document.getElementById('agent-name').value.trim());
+      if (!agent) return;
+
+      // Simulate tick
+      agent.signal = agent.signal.map(s => s + (Math.random() - 0.5) * 0.1);
+      agent.signal = agent.signal.map(s => Math.max(0, Math.min(1, s)));
+
+      agent.metadata.modified = Date.now();
+      saveState();
+      animateHodge();
+    });
+
+    // --- Bridge Creator ---
+    document.getElementById('btn-generate-code').addEventListener('click', () => {
+      const source = document.getElementById('bridge-source').value;
+      const target = document.getElementById('bridge-target').value;
+      const map = document.getElementById('bridge-map').value.split('\n');
+
+      let code = `# Bridge from ${source} to ${target}\n`;
+      code += `import json\nimport csv\n\n`;
+
+      if (source === 'json' && target === 'csv') {
+        code += `def json_to_csv(json_data, output_file):\n`;
+        code += `    with open(output_file, 'w', newline='') as f:\n`;
+        code += `        writer = csv.DictWriter(f, fieldnames=json_data[0].keys())\n`;
+        code += `        writer.writeheader()\n`;
+        code += `        for row in json_data:\n`;
+        code += `            writer.writerow(row)\n`;
+        code += `\n`;
+        code += `# Example\n`;
+        code += `data = ${map.length > 0 ? '[{"name": "John", "age": 30}]' : '[]'}\n`;
+        code += `json_to_csv(data, "output.csv")\n`;
+      } else if (source === 'csv' && target === 'json') {
+        code += `def csv_to_json(csv_file, output_file):\n`;
+        code += `    data = []\n`;
+        code += `    with open(csv_file, 'r') as f:\n`;
+        code += `        reader = csv.DictReader(f)\n`;
+        code += `        for row in reader:\n`;
+        code += `            data.append(row)\n`;
+        code += `    with open(output_file, 'w') as f:\n`;
+        code += `        json.dump(data, f, indent=2)\n`;
+        code += `\n`;
+        code += `# Example\n`;
+        code += `csv_to_json("input.csv", "output.json")\n`;
+      } else {
+        code += `# Bridge not yet implemented for ${source} to ${target}\n`;
+      }
+
+      document.getElementById('bridge-preview').textContent = code;
+    });
+
+    // --- Session Management ---
+    document.getElementById('btn-save-session').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `session-${Date.now()}.qzt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('btn-load-session').addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.qzt';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const loaded = JSON.parse(event.target.result);
+            state = loaded;
+            saveState();
+            loadState();
+          } catch (err) {
+            alert('Invalid session file');
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      if (confirm('Reset all data?')) {
+        localStorage.clear();
+        state = {
+          cells: [],
+          agents: [],
+          bridges: [],
+          session: { timestamp: Date.now(), version: "0.0.1" }
+        };
+        saveState();
+        loadState();
+      }
+    });
+
+    // --- Visualizations ---
+    function animateEchogram() {
+      const echogram = document.getElementById('echogram');
+      echogram.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const beam = document.createElement('div');
+        beam.className = 'echobeam';
+        const height = Math.random() * 30 + 10;
+        beam.style.height = `${height}px`;
+        beam.style.backgroundColor = `rgba(196, 168, 87, ${Math.random() * 0.5 + 0.3})`;
+        echogram.appendChild(beam);
+      }
+
+      setTimeout(animateEchogram, 1500 + Math.random() * 1000);
+    }
+
+    function animateHodge() {
+      const hodge = document.getElementById('hodge-visual');
+      hodge.innerHTML = '';
+      const agent = state.agents.find(a => a.name === document.getElementById('agent-name').value.trim());
+      if (!agent || !agent.decomp) return;
+
+      const { dAlpha, deltaBeta, h } = agent.decomp;
+      const n = dAlpha.length;
+
+      dAlpha.forEach((val, i) => {
+        const vec = document.createElement('div');
+        vec.className = 'hodge-vector';
+        const x = (i / n) * 100;
+        const y = 50 + (val * 30);
+        vec.style.left = `${x}%`;
+        vec.style.top = `${y}%`;
+        hodge.appendChild(vec);
+      });
+
+      deltaBeta.forEach((val, i) => {
+        const vec = document.createElement('div');
+        vec.className = 'hodge-vector';
+        const x = (i / n) * 100;
+        const y = 50 + (val * 30);
+        vec.style.left = `${x}%`;
+        vec.style.top = `${y}%`;
+        vec.style.backgroundColor = '#8f3e21';
+        hodge.appendChild(vec);
+      });
+
+      const hvec = document.createElement('div');
+      hvec.className = 'hodge-vector';
+      hvec.style.left = '50%';
+      hvec.style.top = `${50 + (h * 40)}%`;
+      hvec.style.backgroundColor = '#4a7b4a';
+      hodge.appendChild(hvec);
+    }
+
+    function renderCellGraph() {
+      const graph = document.getElementById('cell-graph');
+      graph.innerHTML = '';
+
+      const cellMap = {};
+      state.cells.forEach((cell, i) => {
+        cellMap[cell.id] = { x: 20 + (i % 5) * 180, y: 20 + Math.floor(i / 5) * 120 };
+      });
+
+      Object.keys(cellMap).forEach(id => {
+        const node = document.createElement('div');
+        node.className = 'graph-node';
+        node.style.left = `${cellMap[id].x}px`;
+        node.style.top = `${cellMap[id].y}px`;
+        node.title = id;
+        graph.appendChild(node);
+      });
+
+      // Draw edges based on room links
+      state.cells.forEach(cell => {
+        if (cell.room) {
+          const target = state.cells.find(c => c.id === cell.room);
+          if (target) {
+            const edge = document.createElement('div');
+            edge.className = 'graph-edge';
+            const dx = cellMap[target.id].x - cellMap[cell.id].x;
+            const dy = cellMap[target.id].y - cellMap[cell.id].y;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx);
+            edge.style.width = `${len}px`;
+            edge.style.left = `${cellMap[cell.id].x}px`;
+            edge.style.top = `${cellMap[cell.id].y}px`;
+            edge.style.transform = `rotate(${angle}rad)`;
+            graph.appendChild(edge);
+          }
+        }
+      });
+    }
+
+    // --- Event Listeners ---
+    document.getElementById('cell-gamma').addEventListener('input', (e) => {
+      document.getElementById('gamma-value').textContent = e.target.value;
+    });
+
+    document.getElementById('cell-vibe').addEventListener('input', (e) => {
+      document.getElementById('vibe-value').textContent = e.target.value;
+    });
+
+    document.getElementById('cell-id').addEventListener('input', updateCellPreview);
+    document.getElementById('cell-kind').addEventListener('input', updateCellPreview);
+    document.getElementById('cell-value').addEventListener('input', updateCellPreview);
+    document.getElementById('cell-formula').addEventListener('input', updateCellPreview);
+    document.getElementById('cell-room').addEventListener('input', updateCellPreview);
+
+    // --- Boot ---
+    loadState();
+  </script>
 </body>
 </html>
