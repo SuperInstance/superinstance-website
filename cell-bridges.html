@@ -124,7 +124,8 @@
     <div class="stat"><div class="num">300+</div><div class="label">repos scouted</div></div>
     <div class="stat"><div class="num">40+</div><div class="label">Quilt ecosystem</div></div>
     <div class="stat"><div class="num">12</div><div class="label">polyformalism langs</div></div>
-    <div class="stat"><div class="num">7</div><div class="label">bridges live</div></div>
+    <div class="stat"><div class="num">23</div><div class="label">bridges live</div></div>
+    <div class="stat"><div class="num">1</div><div class="label"><a href="./quilt-ide.html" style="color: var(--accent)">IDE →</a></div></div>
   </div>
 
   <h2>Live bridges</h2>
@@ -267,6 +268,72 @@ const BRIDGES = [
     duration: null,
     dt: null,
   },
+  {
+    id: "penrose-family",
+    name: "Penrose family (12 repos)",
+    desc: "Aperiodic order, golden ratio, cut-and-project, Penrose tilings as spectral graphs. The substrate of the address. φ is the universal constant.",
+    views: ["TOP", "FRONT"],
+    source: "https://github.com/SuperInstance/penrose-memory",
+    github: "SuperInstance/penrose-*",
+    api: "penrose_family_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "quilt-ai",
+    name: "quilt-ai + quilt-rag",
+    desc: "4 LLM providers × 8 cell kinds. RAG pipeline as a cell chain: ingest → embed → store → query → retrieve → augment → generate.",
+    views: ["FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/quilt-ai",
+    github: "SuperInstance/quilt-ai,quilt-rag",
+    api: "quilt_ai_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "substrate-modules",
+    name: "Substrate modules",
+    desc: "The 6 substrate layers: Address (Penrose), Scale (Fibonacci), Room (Terrain), Protocol (CRDT), Form (Grand Pattern), State (Primitives). A cell lives in all six.",
+    views: ["TOP", "FRONT", "SIDE"],
+    source: "./meta-quilt.html",
+    github: "SuperInstance/quilt-ecosystem",
+    api: "substrate_modules_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "quilt-mesh",
+    name: "quilt-mesh",
+    desc: "The distributed cell mesh. MeshNode, MeshEdge, MeshRouter, QuorumCell. The transport substrate for cross-node gossip.",
+    views: ["FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/quilt-mesh",
+    github: "SuperInstance/quilt-mesh",
+    api: "quilt_mesh_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "wesley",
+    name: "wesley (the ensign)",
+    desc: "The barback that counts bottles, sorts receipts, builds the embedding database. WesleyCore, ReceiptSorter, VectorDB, CountingEngine, HighlightReel.",
+    views: ["FRONT", "SIDE"],
+    source: "https://github.com/SuperInstance/wesley",
+    github: "SuperInstance/wesley",
+    api: "wesley_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
+  {
+    id: "provenance-log",
+    name: "provenance-log",
+    desc: "A hash-chained time-ordered cell log. Each cell is a log entry. The chain is the hash of the previous cell. Time as a hash-chained cell.",
+    views: ["SIDE"],
+    source: "https://github.com/SuperInstance/provenance-log",
+    github: "SuperInstance/provenance-log",
+    api: "provenance_log_to_quilt.py",
+    duration: null,
+    dt: null,
+  },
 ];
 
 // -----------------------------------------------------------------------------
@@ -354,10 +421,4 @@ const loadId = params.get('load');
 if (loadId) {
   // Find and click the generate button for the requested bridge
   setTimeout(() => {
-    const card = document.querySelector(`.bridge[data-id="${loadId}"]`);
-    if (card) card.querySelector('button.primary').click();
-  }, 500);
-}
-</script>
-</body>
-</html>
+    const card = document.
