@@ -1,0 +1,2327 @@
+{
+  "version": "1.0",
+  "type": "temporal-heartbeat",
+  "metadata": {
+    "created": "2026-08-21T03:13:20.521009Z",
+    "description": "Temporal heartbeat system converted to Quilt sheet",
+    "system_type": "temporal-heartbeat",
+    "statistics": {
+      "total_cells": 46,
+      "total_edges": 135,
+      "bpm_clocks": 6,
+      "deadlines": 12,
+      "cron_timers": 24,
+      "watchdogs": 4
+    }
+  },
+  "cells": [
+    {
+      "id": "cell_0000",
+      "type": "bpm_clock",
+      "name": "BPM_60",
+      "properties": {
+        "bpm": 60,
+        "beat_interval_ms": 1000.0,
+        "precision": "high",
+        "sync_source": "internal"
+      },
+      "position": [
+        0,
+        0
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0001",
+      "type": "bpm_clock",
+      "name": "BPM_90",
+      "properties": {
+        "bpm": 90,
+        "beat_interval_ms": 666.6666666666666,
+        "precision": "high",
+        "sync_source": "internal"
+      },
+      "position": [
+        0,
+        1
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0002",
+      "type": "bpm_clock",
+      "name": "BPM_120",
+      "properties": {
+        "bpm": 120,
+        "beat_interval_ms": 500.0,
+        "precision": "high",
+        "sync_source": "internal"
+      },
+      "position": [
+        0,
+        2
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0003",
+      "type": "bpm_clock",
+      "name": "BPM_150",
+      "properties": {
+        "bpm": 150,
+        "beat_interval_ms": 400.0,
+        "precision": "high",
+        "sync_source": "internal"
+      },
+      "position": [
+        0,
+        3
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0004",
+      "type": "bpm_clock",
+      "name": "BPM_180",
+      "properties": {
+        "bpm": 180,
+        "beat_interval_ms": 333.3333333333333,
+        "precision": "high",
+        "sync_source": "internal"
+      },
+      "position": [
+        0,
+        4
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0005",
+      "type": "bpm_clock",
+      "name": "BPM_240",
+      "properties": {
+        "bpm": 240,
+        "beat_interval_ms": 250.0,
+        "precision": "high",
+        "sync_source": "internal"
+      },
+      "position": [
+        0,
+        5
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0006",
+      "type": "deadline",
+      "name": "Deadline_00h",
+      "properties": {
+        "hour": 0,
+        "deadline_time": "00:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        0
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0007",
+      "type": "deadline",
+      "name": "Deadline_01h",
+      "properties": {
+        "hour": 1,
+        "deadline_time": "01:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        1
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0008",
+      "type": "deadline",
+      "name": "Deadline_02h",
+      "properties": {
+        "hour": 2,
+        "deadline_time": "02:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        2
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0009",
+      "type": "deadline",
+      "name": "Deadline_03h",
+      "properties": {
+        "hour": 3,
+        "deadline_time": "03:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        3
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0010",
+      "type": "deadline",
+      "name": "Deadline_04h",
+      "properties": {
+        "hour": 4,
+        "deadline_time": "04:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        4
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0011",
+      "type": "deadline",
+      "name": "Deadline_05h",
+      "properties": {
+        "hour": 5,
+        "deadline_time": "05:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        5
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0012",
+      "type": "deadline",
+      "name": "Deadline_06h",
+      "properties": {
+        "hour": 6,
+        "deadline_time": "06:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        0
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0013",
+      "type": "deadline",
+      "name": "Deadline_07h",
+      "properties": {
+        "hour": 7,
+        "deadline_time": "07:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        1
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0014",
+      "type": "deadline",
+      "name": "Deadline_08h",
+      "properties": {
+        "hour": 8,
+        "deadline_time": "08:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        2
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0015",
+      "type": "deadline",
+      "name": "Deadline_09h",
+      "properties": {
+        "hour": 9,
+        "deadline_time": "09:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        3
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0016",
+      "type": "deadline",
+      "name": "Deadline_10h",
+      "properties": {
+        "hour": 10,
+        "deadline_time": "10:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        4
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0017",
+      "type": "deadline",
+      "name": "Deadline_11h",
+      "properties": {
+        "hour": 11,
+        "deadline_time": "11:00:00",
+        "timezone": "UTC",
+        "grace_period_seconds": 300,
+        "action": "check_completion"
+      },
+      "position": [
+        1,
+        5
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0018",
+      "type": "cron_timer",
+      "name": "Cron_00h",
+      "properties": {
+        "hour": 0,
+        "cron_expression": "0 0 * * *",
+        "schedule": "Daily at 00:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        0
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0019",
+      "type": "cron_timer",
+      "name": "Cron_01h",
+      "properties": {
+        "hour": 1,
+        "cron_expression": "0 1 * * *",
+        "schedule": "Daily at 01:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        1
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0020",
+      "type": "cron_timer",
+      "name": "Cron_02h",
+      "properties": {
+        "hour": 2,
+        "cron_expression": "0 2 * * *",
+        "schedule": "Daily at 02:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        2
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0021",
+      "type": "cron_timer",
+      "name": "Cron_03h",
+      "properties": {
+        "hour": 3,
+        "cron_expression": "0 3 * * *",
+        "schedule": "Daily at 03:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        3
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0022",
+      "type": "cron_timer",
+      "name": "Cron_04h",
+      "properties": {
+        "hour": 4,
+        "cron_expression": "0 4 * * *",
+        "schedule": "Daily at 04:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        4
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0023",
+      "type": "cron_timer",
+      "name": "Cron_05h",
+      "properties": {
+        "hour": 5,
+        "cron_expression": "0 5 * * *",
+        "schedule": "Daily at 05:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        5
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0024",
+      "type": "cron_timer",
+      "name": "Cron_06h",
+      "properties": {
+        "hour": 6,
+        "cron_expression": "0 6 * * *",
+        "schedule": "Daily at 06:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        6
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0025",
+      "type": "cron_timer",
+      "name": "Cron_07h",
+      "properties": {
+        "hour": 7,
+        "cron_expression": "0 7 * * *",
+        "schedule": "Daily at 07:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        7
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0026",
+      "type": "cron_timer",
+      "name": "Cron_08h",
+      "properties": {
+        "hour": 8,
+        "cron_expression": "0 8 * * *",
+        "schedule": "Daily at 08:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        0
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0027",
+      "type": "cron_timer",
+      "name": "Cron_09h",
+      "properties": {
+        "hour": 9,
+        "cron_expression": "0 9 * * *",
+        "schedule": "Daily at 09:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        1
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0028",
+      "type": "cron_timer",
+      "name": "Cron_10h",
+      "properties": {
+        "hour": 10,
+        "cron_expression": "0 10 * * *",
+        "schedule": "Daily at 10:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        2
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0029",
+      "type": "cron_timer",
+      "name": "Cron_11h",
+      "properties": {
+        "hour": 11,
+        "cron_expression": "0 11 * * *",
+        "schedule": "Daily at 11:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        3
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0030",
+      "type": "cron_timer",
+      "name": "Cron_12h",
+      "properties": {
+        "hour": 12,
+        "cron_expression": "0 12 * * *",
+        "schedule": "Daily at 12:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        4
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0031",
+      "type": "cron_timer",
+      "name": "Cron_13h",
+      "properties": {
+        "hour": 13,
+        "cron_expression": "0 13 * * *",
+        "schedule": "Daily at 13:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        5
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0032",
+      "type": "cron_timer",
+      "name": "Cron_14h",
+      "properties": {
+        "hour": 14,
+        "cron_expression": "0 14 * * *",
+        "schedule": "Daily at 14:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        6
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0033",
+      "type": "cron_timer",
+      "name": "Cron_15h",
+      "properties": {
+        "hour": 15,
+        "cron_expression": "0 15 * * *",
+        "schedule": "Daily at 15:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        7
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0034",
+      "type": "cron_timer",
+      "name": "Cron_16h",
+      "properties": {
+        "hour": 16,
+        "cron_expression": "0 16 * * *",
+        "schedule": "Daily at 16:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        0
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0035",
+      "type": "cron_timer",
+      "name": "Cron_17h",
+      "properties": {
+        "hour": 17,
+        "cron_expression": "0 17 * * *",
+        "schedule": "Daily at 17:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        1
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0036",
+      "type": "cron_timer",
+      "name": "Cron_18h",
+      "properties": {
+        "hour": 18,
+        "cron_expression": "0 18 * * *",
+        "schedule": "Daily at 18:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        2
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0037",
+      "type": "cron_timer",
+      "name": "Cron_19h",
+      "properties": {
+        "hour": 19,
+        "cron_expression": "0 19 * * *",
+        "schedule": "Daily at 19:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        3
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0038",
+      "type": "cron_timer",
+      "name": "Cron_20h",
+      "properties": {
+        "hour": 20,
+        "cron_expression": "0 20 * * *",
+        "schedule": "Daily at 20:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        4
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0039",
+      "type": "cron_timer",
+      "name": "Cron_21h",
+      "properties": {
+        "hour": 21,
+        "cron_expression": "0 21 * * *",
+        "schedule": "Daily at 21:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        5
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0040",
+      "type": "cron_timer",
+      "name": "Cron_22h",
+      "properties": {
+        "hour": 22,
+        "cron_expression": "0 22 * * *",
+        "schedule": "Daily at 22:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        6
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0041",
+      "type": "cron_timer",
+      "name": "Cron_23h",
+      "properties": {
+        "hour": 23,
+        "cron_expression": "0 23 * * *",
+        "schedule": "Daily at 23:00",
+        "timezone": "UTC",
+        "repeat": "daily"
+      },
+      "position": [
+        2,
+        7
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0042",
+      "type": "watchdog",
+      "name": "Watchdog_BPM",
+      "properties": {
+        "monitor_type": "bpm_clock",
+        "check_interval_seconds": 60,
+        "timeout_seconds": 120,
+        "description": "Monitor BPM clock health",
+        "alert_threshold": 3,
+        "recovery_action": "restart"
+      },
+      "position": [
+        3,
+        0
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0043",
+      "type": "watchdog",
+      "name": "Watchdog_Deadline",
+      "properties": {
+        "monitor_type": "deadline",
+        "check_interval_seconds": 300,
+        "timeout_seconds": 600,
+        "description": "Monitor deadline compliance",
+        "alert_threshold": 3,
+        "recovery_action": "restart"
+      },
+      "position": [
+        3,
+        1
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0044",
+      "type": "watchdog",
+      "name": "Watchdog_Cron",
+      "properties": {
+        "monitor_type": "cron_timer",
+        "check_interval_seconds": 3600,
+        "timeout_seconds": 7200,
+        "description": "Monitor cron execution",
+        "alert_threshold": 3,
+        "recovery_action": "restart"
+      },
+      "position": [
+        3,
+        2
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    },
+    {
+      "id": "cell_0045",
+      "type": "watchdog",
+      "name": "Watchdog_System",
+      "properties": {
+        "monitor_type": "system",
+        "check_interval_seconds": 60,
+        "timeout_seconds": 120,
+        "description": "Overall system health",
+        "alert_threshold": 3,
+        "recovery_action": "restart"
+      },
+      "position": [
+        3,
+        3
+      ],
+      "state": {
+        "status": "active",
+        "last_heartbeat": null,
+        "health": "unknown"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_0000",
+      "source": "cell_0000",
+      "target": "cell_0006",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0001",
+      "source": "cell_0000",
+      "target": "cell_0007",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0002",
+      "source": "cell_0001",
+      "target": "cell_0008",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0003",
+      "source": "cell_0001",
+      "target": "cell_0009",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0004",
+      "source": "cell_0002",
+      "target": "cell_0010",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0005",
+      "source": "cell_0002",
+      "target": "cell_0011",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0006",
+      "source": "cell_0003",
+      "target": "cell_0012",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0007",
+      "source": "cell_0003",
+      "target": "cell_0013",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0008",
+      "source": "cell_0004",
+      "target": "cell_0014",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0009",
+      "source": "cell_0004",
+      "target": "cell_0015",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0010",
+      "source": "cell_0005",
+      "target": "cell_0016",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0011",
+      "source": "cell_0005",
+      "target": "cell_0017",
+      "type": "monitors",
+      "properties": {
+        "monitoring_type": "deadline",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "edge_0012",
+      "source": "cell_0000",
+      "target": "cell_0018",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0013",
+      "source": "cell_0001",
+      "target": "cell_0019",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0014",
+      "source": "cell_0002",
+      "target": "cell_0020",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0015",
+      "source": "cell_0003",
+      "target": "cell_0021",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0016",
+      "source": "cell_0004",
+      "target": "cell_0022",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0017",
+      "source": "cell_0005",
+      "target": "cell_0023",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0018",
+      "source": "cell_0000",
+      "target": "cell_0024",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0019",
+      "source": "cell_0001",
+      "target": "cell_0025",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0020",
+      "source": "cell_0002",
+      "target": "cell_0026",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0021",
+      "source": "cell_0003",
+      "target": "cell_0027",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0022",
+      "source": "cell_0004",
+      "target": "cell_0028",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0023",
+      "source": "cell_0005",
+      "target": "cell_0029",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0024",
+      "source": "cell_0000",
+      "target": "cell_0030",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0025",
+      "source": "cell_0001",
+      "target": "cell_0031",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0026",
+      "source": "cell_0002",
+      "target": "cell_0032",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0027",
+      "source": "cell_0003",
+      "target": "cell_0033",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0028",
+      "source": "cell_0004",
+      "target": "cell_0034",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0029",
+      "source": "cell_0005",
+      "target": "cell_0035",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0030",
+      "source": "cell_0000",
+      "target": "cell_0036",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0031",
+      "source": "cell_0001",
+      "target": "cell_0037",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0032",
+      "source": "cell_0002",
+      "target": "cell_0038",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0033",
+      "source": "cell_0003",
+      "target": "cell_0039",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0034",
+      "source": "cell_0004",
+      "target": "cell_0040",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0035",
+      "source": "cell_0005",
+      "target": "cell_0041",
+      "type": "timing_source",
+      "properties": {
+        "sync_type": "bpm",
+        "precision": "high"
+      }
+    },
+    {
+      "id": "edge_0036",
+      "source": "cell_0018",
+      "target": "cell_0006",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0037",
+      "source": "cell_0020",
+      "target": "cell_0007",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0038",
+      "source": "cell_0022",
+      "target": "cell_0008",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0039",
+      "source": "cell_0024",
+      "target": "cell_0009",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0040",
+      "source": "cell_0026",
+      "target": "cell_0010",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0041",
+      "source": "cell_0028",
+      "target": "cell_0011",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0042",
+      "source": "cell_0030",
+      "target": "cell_0012",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0043",
+      "source": "cell_0032",
+      "target": "cell_0013",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0044",
+      "source": "cell_0034",
+      "target": "cell_0014",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0045",
+      "source": "cell_0036",
+      "target": "cell_0015",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0046",
+      "source": "cell_0038",
+      "target": "cell_0016",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0047",
+      "source": "cell_0040",
+      "target": "cell_0017",
+      "type": "triggers_check",
+      "properties": {
+        "check_type": "deadline_compliance"
+      }
+    },
+    {
+      "id": "edge_0048",
+      "source": "cell_0042",
+      "target": "cell_0000",
+      "type": "monitors_heartbeat",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0049",
+      "source": "cell_0042",
+      "target": "cell_0001",
+      "type": "monitors_heartbeat",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0050",
+      "source": "cell_0042",
+      "target": "cell_0002",
+      "type": "monitors_heartbeat",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0051",
+      "source": "cell_0042",
+      "target": "cell_0003",
+      "type": "monitors_heartbeat",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0052",
+      "source": "cell_0042",
+      "target": "cell_0004",
+      "type": "monitors_heartbeat",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0053",
+      "source": "cell_0042",
+      "target": "cell_0005",
+      "type": "monitors_heartbeat",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0054",
+      "source": "cell_0043",
+      "target": "cell_0006",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0055",
+      "source": "cell_0043",
+      "target": "cell_0007",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0056",
+      "source": "cell_0043",
+      "target": "cell_0008",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0057",
+      "source": "cell_0043",
+      "target": "cell_0009",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0058",
+      "source": "cell_0043",
+      "target": "cell_0010",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0059",
+      "source": "cell_0043",
+      "target": "cell_0011",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0060",
+      "source": "cell_0043",
+      "target": "cell_0012",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0061",
+      "source": "cell_0043",
+      "target": "cell_0013",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0062",
+      "source": "cell_0043",
+      "target": "cell_0014",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0063",
+      "source": "cell_0043",
+      "target": "cell_0015",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0064",
+      "source": "cell_0043",
+      "target": "cell_0016",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0065",
+      "source": "cell_0043",
+      "target": "cell_0017",
+      "type": "monitors_compliance",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0066",
+      "source": "cell_0044",
+      "target": "cell_0018",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0067",
+      "source": "cell_0044",
+      "target": "cell_0019",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0068",
+      "source": "cell_0044",
+      "target": "cell_0020",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0069",
+      "source": "cell_0044",
+      "target": "cell_0021",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0070",
+      "source": "cell_0044",
+      "target": "cell_0022",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0071",
+      "source": "cell_0044",
+      "target": "cell_0023",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0072",
+      "source": "cell_0044",
+      "target": "cell_0024",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0073",
+      "source": "cell_0044",
+      "target": "cell_0025",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0074",
+      "source": "cell_0044",
+      "target": "cell_0026",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0075",
+      "source": "cell_0044",
+      "target": "cell_0027",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0076",
+      "source": "cell_0044",
+      "target": "cell_0028",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0077",
+      "source": "cell_0044",
+      "target": "cell_0029",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0078",
+      "source": "cell_0044",
+      "target": "cell_0030",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0079",
+      "source": "cell_0044",
+      "target": "cell_0031",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0080",
+      "source": "cell_0044",
+      "target": "cell_0032",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0081",
+      "source": "cell_0044",
+      "target": "cell_0033",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0082",
+      "source": "cell_0044",
+      "target": "cell_0034",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0083",
+      "source": "cell_0044",
+      "target": "cell_0035",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0084",
+      "source": "cell_0044",
+      "target": "cell_0036",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0085",
+      "source": "cell_0044",
+      "target": "cell_0037",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0086",
+      "source": "cell_0044",
+      "target": "cell_0038",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0087",
+      "source": "cell_0044",
+      "target": "cell_0039",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0088",
+      "source": "cell_0044",
+      "target": "cell_0040",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0089",
+      "source": "cell_0044",
+      "target": "cell_0041",
+      "type": "monitors_execution",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0090",
+      "source": "cell_0045",
+      "target": "cell_0000",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0091",
+      "source": "cell_0045",
+      "target": "cell_0001",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0092",
+      "source": "cell_0045",
+      "target": "cell_0002",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0093",
+      "source": "cell_0045",
+      "target": "cell_0003",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0094",
+      "source": "cell_0045",
+      "target": "cell_0004",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0095",
+      "source": "cell_0045",
+      "target": "cell_0005",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0096",
+      "source": "cell_0045",
+      "target": "cell_0006",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0097",
+      "source": "cell_0045",
+      "target": "cell_0007",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0098",
+      "source": "cell_0045",
+      "target": "cell_0008",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0099",
+      "source": "cell_0045",
+      "target": "cell_0009",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0100",
+      "source": "cell_0045",
+      "target": "cell_0010",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0101",
+      "source": "cell_0045",
+      "target": "cell_0011",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0102",
+      "source": "cell_0045",
+      "target": "cell_0012",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0103",
+      "source": "cell_0045",
+      "target": "cell_0013",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0104",
+      "source": "cell_0045",
+      "target": "cell_0014",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0105",
+      "source": "cell_0045",
+      "target": "cell_0015",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0106",
+      "source": "cell_0045",
+      "target": "cell_0016",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0107",
+      "source": "cell_0045",
+      "target": "cell_0017",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0108",
+      "source": "cell_0045",
+      "target": "cell_0018",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0109",
+      "source": "cell_0045",
+      "target": "cell_0019",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0110",
+      "source": "cell_0045",
+      "target": "cell_0020",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0111",
+      "source": "cell_0045",
+      "target": "cell_0021",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0112",
+      "source": "cell_0045",
+      "target": "cell_0022",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0113",
+      "source": "cell_0045",
+      "target": "cell_0023",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0114",
+      "source": "cell_0045",
+      "target": "cell_0024",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0115",
+      "source": "cell_0045",
+      "target": "cell_0025",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0116",
+      "source": "cell_0045",
+      "target": "cell_0026",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0117",
+      "source": "cell_0045",
+      "target": "cell_0027",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0118",
+      "source": "cell_0045",
+      "target": "cell_0028",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0119",
+      "source": "cell_0045",
+      "target": "cell_0029",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0120",
+      "source": "cell_0045",
+      "target": "cell_0030",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0121",
+      "source": "cell_0045",
+      "target": "cell_0031",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0122",
+      "source": "cell_0045",
+      "target": "cell_0032",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0123",
+      "source": "cell_0045",
+      "target": "cell_0033",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0124",
+      "source": "cell_0045",
+      "target": "cell_0034",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0125",
+      "source": "cell_0045",
+      "target": "cell_0035",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0126",
+      "source": "cell_0045",
+      "target": "cell_0036",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0127",
+      "source": "cell_0045",
+      "target": "cell_0037",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0128",
+      "source": "cell_0045",
+      "target": "cell_0038",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0129",
+      "source": "cell_0045",
+      "target": "cell_0039",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0130",
+      "source": "cell_0045",
+      "target": "cell_0040",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0131",
+      "source": "cell_0045",
+      "target": "cell_0041",
+      "type": "system_health",
+      "properties": {
+        "check_interval": "continuous",
+        "alert_on_failure": true
+      }
+    },
+    {
+      "id": "edge_0132",
+      "source": "cell_0042",
+      "target": "cell_0043",
+      "type": "health_dependency",
+      "properties": {
+        "description": "BPM health affects deadline monitoring"
+      }
+    },
+    {
+      "id": "edge_0133",
+      "source": "cell_0043",
+      "target": "cell_0044",
+      "type": "health_dependency",
+      "properties": {
+        "description": "Deadline compliance affects cron scheduling"
+      }
+    },
+    {
+      "id": "edge_0134",
+      "source": "cell_0044",
+      "target": "cell_0045",
+      "type": "health_dependency",
+      "properties": {
+        "description": "Cron health affects overall system"
+      }
+    }
+  ],
+  "layout": {
+    "grid_size": [
+      12,
+      8
+    ],
+    "cell_spacing": 1.0
+  }
+}
