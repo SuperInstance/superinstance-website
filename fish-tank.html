@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fish Tank</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #container {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      border: 2px solid #0f0;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+      overflow: hidden;
+    }
+    #tank {
+      width: 100%;
+      height: 100%;
+      background-color: #001122;
+      position: relative;
+    }
+    #echogram {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 100px;
+      height: 100%;
+      background-color: #000;
+      border-left: 1px solid #0f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+    .echopulse {
+      height: 1px;
+      background-color: #0f0;
+      width: 100%;
+      opacity: 0.7;
+    }
+    .fish {
+      position: absolute;
+      border-radius: 50%;
+      background-color: #0f0;
+      opacity: 0.8;
+      box-shadow: 0 0 3px #0f0;
+    }
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+    button {
+      background-color: #000;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 8px 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background-color: #0f0;
+      color: #000;
+    }
+    .title {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #0f0;
+      text-align: center;
+      text-shadow: 0 0 10px #0f0;
+    }
+    .subtitle {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 16px;
+      color: #0f0;
+      opacity: 0.7;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div class="title">Fish Tank</div>
+    <div class="subtitle">the school is real</div>
+    <div id="tank"></div>
+    <div id="echogram"></div>
+    <div class="controls">
+      <button id="feed">FEED</button>
+      <button id="lightsOut">LIGHTS OUT</button>
+    </div>
+  </div>
+
+  <script>
+    const tank = document.getElementById('tank');
+    const echogram = document.getElementById('echogram');
+    const feedBtn = document.getElementById('feed');
+    const lightsOutBtn = document.getElementById('lightsOut');
+    
+    const width = 800;
+    const height = 600;
+    const fishCount = 6;
+    const echogramWidth = 100;
+    const echogramHeight = height;
+    const echogramDepth = 1000; // in pixels, 1px = 10 depth units
+    const tickInterval = 150; // ms
+    
+    let fish = [];
+    let echogramData = [];
+    let isFeeding = false;
+    let isLightsOut = false;
+    let tickCount = 0;
+    let lastTick = 0;
+    
+    // Initialize echogram
+    function initEchogram() {
+      echogram.innerHTML = '';
+      for (let i = 0; i < echogramHeight; i++) {
+        const pulse = document.createElement('div');
+        pulse.className = 'echopulse';
+        pulse.style.height = '1px';
+        pulse.style.opacity = '0';
+        echogram.appendChild(pulse);
+      }
+    }
+    
+    // Create fish
+    function createFish() {
+      for (let i = 0; i < fishCount; i++) {
+        const fishEl = document.createElement('div');
+        fishEl.className = 'fish';
+        fishEl.style.width = '12px';
+        fishEl.style.height = '12px';
+        fishEl.style.left = Math.random() * (width - 20) + 'px';
+        fishEl.style.top = Math.random() * (height - 20) + 'px';
+        fishEl.style.opacity = Math.random() * 0.3 + 0.7;
+        
+        tank.appendChild(fishEl);
+        
+        fish.push({
+          element: fishEl,
+          x: parseFloat(fishEl.style.left),
+          y: parseFloat(fishEl.style.top),
+          dx: (Math.random() - 0.5) * 2,
+          dy: (Math.random() - 0.5) * 2,
+          speed: 1 + Math.random() * 2,
+          depth: Math.random() * 1000
+        });
+      }
+    }
+    
+    // Update echogram with depth readings
+    function updateEchogram() {
+      // Get current depth reading from fish
+      const depths = fish.map(f => f.y);
+      const avgDepth = depths.reduce((a, b) => a + b, 0) / depths.length;
+      const depthPixel = Math.max(0, Math.min(echogramHeight - 1, Math.floor(avgDepth / 6)));
+      
+      // Add new pulse
+      const pulses = echogram.querySelectorAll('.echopulse');
+      const newPulse = pulses[pulses.length - 1];
+      newPulse.style.opacity = '0.7';
+      newPulse.style.height = '2px';
+      
+      // Shift echogram data
+      if (echogramData.length >= echogramWidth) {
+        echogramData.shift();
+      }
+      echogramData.push(depthPixel);
+      
+      // Update echogram display
+      const timestamp = new Date().getTime();
+      const tick = Math.floor(timestamp / tickInterval) % echogramWidth;
+      
+      // Clear previous pulses
+      const allPulses = echogram.querySelectorAll('.echopulse');
+      allPulses.forEach((p, i) => {
+        if (i === allPulses.length - 1) return; // Don't clear last pulse
+        p.style.opacity = '0';
+      });
+      
+      // Redraw echogram
+      echogramData.forEach((depth, i) => {
+        const pulse = echogram.querySelectorAll('.echopulse')[i];
+        if (pulse) {
+          pulse.style.height = '1px';
+          pulse.style.opacity = '0.3';
+          // Color based on depth
+          const intensity = (depth / echogramHeight) * 0.7 + 0.3;
+          pulse.style.backgroundColor = `rgba(0, 255, 0, ${intensity})`;
+        }
+      });
+    }
+    
+    // Move fish
+    function moveFish() {
+      fish.forEach(f => {
+        // Apply speed modifiers
+        const speedMultiplier = (isFeeding ? 1.8 : 1) * (isLightsOut ? 0.4 : 1);
+        f.speed = 1 + Math.random() * 2;
+        
+        // Update position
+        f.x += f.dx * f.speed * (isFeeding ? 1.5 : 1) * (isLightsOut ? 0.6 : 1);
+        f.y += f.dy * f.speed * (isFeeding ? 1.5 : 1) * (isLightsOut ? 0.6 : 1);
+        
+        // Bounce off walls
+        if (f.x < 0 || f.x > width - 12) {
+          f.dx *= -1;
+          f.x = Math.max(0, Math.min(width - 12, f.x));
+        }
+        if (f.y < 0 || f.y > height - 12) {
+          f.dy *= -1;
+          f.y = Math.max(0, Math.min(height - 12, f.y));
+        }
+        
+        // Randomly change direction occasionally
+        if (Math.random() < 0.02) {
+          f.dx = (Math.random() - 0.5) * 2;
+          f.dy = (Math.random() - 0.5) * 2;
+        }
+        
+        // Update visual
+        f.element.style.left = f.x + 'px';
+        f.element.style.top = f.y + 'px';
+        
+        // Update depth
+        f.depth = f.y;
+      });
+    }
+    
+    // Animation loop
+    function animate(timestamp) {
+      if (lastTick === 0) lastTick = timestamp;
+      
+      const elapsed = timestamp - lastTick;
+      if (elapsed >= tickInterval) {
+        moveFish();
+        updateEchogram();
+        tickCount++;
+        lastTick = timestamp;
+      }
+      
+      requestAnimationFrame(animate);
+    }
+    
+    // Event handlers
+    feedBtn.addEventListener('click', () => {
+      isFeeding = !isFeeding;
+      feedBtn.textContent = isFeeding ? 'FEEDING...' : 'FEED';
+      feedBtn.style.backgroundColor = isFeeding ? '#0f0' : '#000';
+      feedBtn.style.color = isFeeding ? '#000' : '#0f0';
+    });
+    
+    lightsOutBtn.addEventListener('click', () => {
+      isLightsOut = !isLightsOut;
+      lightsOutBtn.textContent = isLightsOut ? 'LIGHTS ON' : 'LIGHTS OUT';
+      lightsOutBtn.style.backgroundColor = isLightsOut ? '#0f0' : '#000';
+      lightsOutBtn.style.color = isLightsOut ? '#000' : '#0f0';
+    });
+    
+    // Initialize
+    initEchogram();
+    createFish();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

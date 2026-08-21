@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pomodoro Quilt</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #e2e8f0;
+      --accent: #38bdf8;
+      --border: #1e293b;
+      --cell-sz: 60px;
+      --gap: 8px;
+      --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      padding: 2rem;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.8;
+      margin-bottom: 2rem;
+    }
+
+    .timer-container {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .timer {
+      font-size: 4.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin: 1rem 0;
+      display: block;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .status {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      color: #a5b4fc;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(56, 189, 248, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(56, 189, 248, 0.4);
+    }
+
+    button:disabled {
+      background-color: #64748b;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+
+    .stat {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      min-width: 120px;
+    }
+
+    .stat h3 {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat .value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .quilt {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(var(--cell-sz), 1fr));
+      gap: var(--gap);
+      width: 100%;
+      max-width: 800px;
+      margin-top: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: var(--bg);
+      padding: 10px;
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+    }
+
+    .cell.mood-1 { background-color: #fbbf24; }
+    .cell.mood-2 { background-color: #a7f3d0; }
+    .cell.mood-3 { background-color: #a855f7; }
+
+    .mood-selector {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      font-size: 1.8rem;
+    }
+
+    .mood-selector button {
+      background-color: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .mood-selector button.active {
+      background-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .mood-selector button:hover {
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2.2rem; }
+      .timer { font-size: 3rem; }
+      .stats { gap: 1rem; }
+      .stat { padding: 0.75rem 1rem; font-size: 0.9rem; }
+      .cell { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pomodoro Quilt</h1>
+    <p class="subtitle">every focus session is a cell</p>
+  </header>
+
+  <div class="timer-container">
+    <div class="status" id="status">Focus Time: 25:00</div>
+    <div class="timer" id="timer">25:00</div>
+    <div class="controls">
+      <button id="start">Start</button>
+      <button id="pause" disabled>Pause</button>
+      <button id="reset">Reset</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <h3>Focus Minutes</h3>
+      <div class="value" id="focus-minutes">0</div>
+    </div>
+    <div class="stat">
+      <h3>Streak</h3>
+      <div class="value" id="streak">0</div>
+    </div>
+  </div>
+
+  <div class="quilt" id="quilt"></div>
+
+  <div class="mood-selector" id="mood-selector">
+    <button class="mood-btn" data-mood="1">😐</button>
+    <button class="mood-btn" data-mood="2">🙂</button>
+    <button class="mood-btn" data-mood="3">😊</button>
+  </div>
+
+  <script>
+    // DOM Elements
+    const timerEl = document.getElementById('timer');
+    const statusEl = document.getElementById('status');
+    const startBtn = document.getElementById('start');
+    const pauseBtn = document.getElementById('pause');
+    const resetBtn = document.getElementById('reset');
+    const quiltEl = document.getElementById('quilt');
+    const focusMinutesEl = document.getElementById('focus-minutes');
+    const streakEl = document.getElementById('streak');
+    const moodButtons = document.querySelectorAll('.mood-btn');
+
+    // Timer Settings
+    const WORK_MINUTES = 25;
+    const BREAK_MINUTES = 5;
+    const TOTAL_WORK_TIME = WORK_MINUTES * 60;
+    const TOTAL_BREAK_TIME = BREAK_MINUTES * 60;
+
+    // State
+    let timerInterval = null;
+    let timeLeft = TOTAL_WORK_TIME;
+    let isRunning = false;
+    let isWorkTime = true;
+    let mood = 1;
+    let sessions = [];
+    let focusMinutes = 0;
+    let streak = 0;
+    let today = new Date().toISOString().split('T')[0];
+
+    // Get data from localStorage
+    function loadState() {
+      const saved = localStorage.getItem('pomodoro-quilt');
+      if (saved) {
+        const data = JSON.parse(saved);
+        sessions = data.sessions || [];
+        focusMinutes = data.focusMinutes || 0;
+        streak = data.streak || 0;
+        const lastDate = data.lastDate || '';
+        if (lastDate !== today) {
+          // Reset streak if today is different
+          streak = 0;
+        }
+      }
+    }
+
+    // Save data to localStorage
+    function saveState() {
+      localStorage.setItem('pomodoro-quilt', JSON.stringify({
+        sessions,
+        focusMinutes,
+        streak,
+        lastDate: today
+      }));
+    }
+
+    // Format time as MM:SS
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Update timer display
+    function updateTimer() {
+      timerEl.textContent = formatTime(timeLeft);
+      statusEl.textContent = isWorkTime ? 'Focus Time' : 'Break Time';
+    }
+
+    // Start timer
+    function startTimer() {
+      if (isRunning) return;
+      isRunning = true;
+      startBtn.disabled = true;
+      pauseBtn.disabled = false;
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          isRunning = false;
+          startBtn.disabled = false;
+          pauseBtn.disabled = true;
+
+          // Play sound (silent in this version)
+          if (isWorkTime) {
+            // Work session completed
+            const session = {
+              id: Date.now(),
+              time: formatTime(TOTAL_WORK_TIME),
+              mood: mood,
+              date: today
+            };
+            sessions.push(session);
+            focusMinutes += WORK_MINUTES;
+            updateStats();
+
+            // Check streak
+            const sessionCountToday = sessions.filter(s => s.date === today).length;
+            if (sessionCountToday >= 4) {
+              streak++;
+            }
+
+            // Show mood selector
+            document.querySelector('.mood-selector').style.display = 'flex';
+            moodButtons.forEach(btn => {
+              btn.disabled = false;
+              btn.classList.remove('active');
+            });
+          } else {
+            // Break finished, go back to work
+            isWorkTime = true;
+            timeLeft = TOTAL_WORK_TIME;
+            updateTimer();
+          }
+
+          // Update quilt
+          renderQuilt();
+        }
+      }, 1000);
+    }
+
+    // Pause timer
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+    }
+
+    // Reset timer
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      timeLeft = isWorkTime ? TOTAL_WORK_TIME : TOTAL_BREAK_TIME;
+      isWorkTime = true;
+      updateTimer();
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      document.querySelector('.mood-selector').style.display = 'none';
+    }
+
+    // Update stats display
+    function updateStats() {
+      focusMinutesEl.textContent = focusMinutes;
+      streakEl.textContent = streak;
+      saveState();
+    }
+
+    // Render quilt pattern
+    function renderQuilt() {
+      quiltEl.innerHTML = '';
+      sessions.forEach(session => {
+        const cell = document.createElement('div');
+        cell.className = `cell mood-${session.mood}`;
+        cell.textContent = '●';
+        cell.title = `Session: ${session.time} | Mood: ${['😐', '🙂', '😊'][session.mood - 1]}`;
+        quiltEl.appendChild(cell);
+      });
+      saveState();
+    }
+
+    // Mood selection
+    function selectMood(moodValue) {
+      mood = moodValue;
+      moodButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (parseInt(btn.dataset.mood) === moodValue) {
+          btn.classList.add('active');
+        }
+      });
+      moodButtons.forEach(btn => btn.disabled = true);
+      document.querySelector('.mood-selector').style.display = 'none';
+    }
+
+    // Event Listeners
+    startBtn.addEventListener('click', startTimer);
+    pauseBtn.addEventListener('click', pauseTimer);
+    resetBtn.addEventListener('click', resetTimer);
+
+    moodButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectMood(parseInt(btn.dataset.mood));
+      });
+    });
+
+    // Initialize app
+    loadState();
+    updateTimer();
+    renderQuilt();
+    updateStats();
+
+    // Handle window unload to save state
+    window.addEventListener('beforeunload', saveState);
+  </script>
+</body>
+</html>

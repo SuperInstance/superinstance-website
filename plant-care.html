@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant Care</title>
+  <style>
+    :root {
+      --primary: #2c5e34;
+      --secondary: #4a7d53;
+      --accent: #d4c392;
+      --text: #f0e6d2;
+      --bg: #1a2a1d;
+      --border: #3d5c41;
+      --alert: #c0392b;
+      --good: #27ae60;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .header h1 {
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(212, 195, 146, 0.3);
+    }
+    
+    .header p {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      opacity: 0.8;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .btn {
+      background-color: var(--primary);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 4px;
+    }
+    
+    .btn:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+    }
+    
+    .btn-danger {
+      background-color: var(--alert);
+    }
+    
+    .btn-danger:hover {
+      background-color: #a02d21;
+    }
+    
+    .plants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .plant-card {
+      background-color: rgba(26, 42, 29, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      position: relative;
+      transition: all 0.3s;
+    }
+    
+    .plant-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .plant-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .plant-name {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    
+    .plant-species {
+      font-size: 0.9rem;
+      color: var(--secondary);
+      background-color: rgba(74, 125, 83, 0.2);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+    
+    .plant-photo {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+    }
+    
+    .plant-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    
+    .stat {
+      background-color: rgba(26, 42, 29, 0.3);
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    .stat-label {
+      color: var(--secondary);
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      color: var(--text);
+    }
+    
+    .alert {
+      color: var(--alert);
+      font-weight: bold;
+    }
+    
+    .good {
+      color: var(--good);
+    }
+    
+    .needs-water {
+      background-color: rgba(192, 57, 43, 0.2);
+      border: 1px solid var(--alert);
+    }
+    
+    .needs-light {
+      background-color: rgba(212, 195, 146, 0.2);
+      border: 1px solid var(--accent);
+    }
+    
+    .water-btn {
+      width: 100%;
+      background-color: var(--primary);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      transition: all 0.2s;
+    }
+    
+    .water-btn:hover {
+      background-color: var(--secondary);
+    }
+    
+    .note {
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--secondary);
+      border-top: 1px dashed var(--border);
+      padding-top: 0.5rem;
+    }
+    
+    .garden-view {
+      margin-top: 3rem;
+      background-color: rgba(26, 42, 29, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    
+    .garden-view h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    
+    .graph {
+      display: flex;
+      align-items: flex-end;
+      height: 150px;
+      gap: 8px;
+      padding: 0 10px;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .bar {
+      flex: 1;
+      background-color: var(--primary);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.5s ease;
+      position: relative;
+      text-align: center;
+    }
+    
+    .bar::after {
+      content: attr(data-value);
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    
+    .bar.watered {
+      background-color: var(--good);
+    }
+    
+    .bar.low {
+      background-color: var(--alert);
+      height: 30px;
+    }
+    
+    .add-plant-form {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(26, 42, 29, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      z-index: 100;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group input[type="file"] {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group input[type="file"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 195, 146, 0.3);
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .close-btn {
+      background-color: var(--alert);
+      color: var(--text);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .close-btn:hover {
+      background-color: #a02d21;
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 99;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Plant Care</h1>
+      <p>the garden as a graph</p>
+    </div>
+    
+    <div class="controls">
+      <div class="stats-summary">
+        <span id="total-plants">Plants: 0</span>
+        <span id="needs-water-count">Need water: 0</span>
+        <span id="needs-light-count">Need light: 0</span>
+      </div>
+      <button class="btn" id="add-plant-btn">Add plant</button>
+    </div>
+    
+    <div class="plants-grid" id="plants-grid">
+      <!-- Plant cards will be inserted here -->
+    </div>
+    
+    <div class="garden-view">
+      <h2>Garden View</h2>
+      <div class="graph" id="garden-graph"></div>
+    </div>
+  </div>
+  
+  <div class="overlay" id="overlay" style="display: none;"></div>
+  
+  <div class="add-plant-form" id="add-plant-form" style="display: none;">
+    <h2>Add New Plant</h2>
+    <form id="plant-form">
+      <div class="form-group">
+        <label for="plant-name">Name</label>
+        <input type="text" id="plant-name" required>
+      </div>
+      <div class="form-group">
+        <label for="plant-species">Species</label>
+        <input type="text" id="plant-species" required>
+      </div>
+      <div class="form-group">
+        <label for="plant-photo">Photo</label>
+        <input type="file" id="plant-photo" accept="image/*">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn close-btn" id="close-form">Cancel</button>
+        <button type="submit" class="btn">Add Plant</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const plantsKey = 'plants';
+      let plants = JSON.parse(localStorage.getItem(plantsKey)) || [];
+      
+      // DOM Elements
+      const plantsGrid = document.getElementById('plants-grid');
+      const gardenGraph = document.getElementById('garden-graph');
+      const addPlantBtn = document.getElementById('add-plant-btn');
+      const overlay = document.getElementById('overlay');
+      const addPlantForm = document.getElementById('add-plant-form');
+      const closeFormBtn = document.getElementById('close-form');
+      const plantForm = document.getElementById('plant-form');
+      const totalPlantsEl = document.getElementById('total-plants');
+      const needsWaterCountEl = document.getElementById('needs-water-count');
+      const needsLightCountEl = document.getElementById('needs-light-count');
+      
+      // Initialize
+      renderPlants();
+      updateStats();
+      
+      // Event Listeners
+      addPlantBtn.addEventListener('click', () => {
+        addPlantForm.style.display = 'block';
+        overlay.style.display = 'block';
+      });
+      
+      closeFormBtn.addEventListener('click', () => {
+        addPlantForm.style.display = 'none';
+        overlay.style.display = 'none';
+      });
+      
+      overlay.addEventListener('click', () => {
+        addPlantForm.style.display = 'none';
+        overlay.style.display = 'none';
+      });
+      
+      plantForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('plant-name').value.trim();
+        const species = document.getElementById('plant-species').value.trim();
+        const photoInput = document.getElementById('plant-photo');
+        const photoDataUrl = photoInput.files.length > 0 ? 
+          URL.createObjectURL(photoInput.files[0]) : 
+          'https://via.placeholder.com/300x150?text=No+Photo';
+        
+        const newPlant = {
+          id: Date.now().toString(),
+          name,
+          species,
+          last_watered: null,
+          moisture: 100,
+          light_hours_today: 0,
+          last_note: '',
+          photo: photoDataUrl
+        };
+        
+        plants.push(newPlant);
+        savePlants();
+        renderPlants();
+        updateStats();
+        
+        // Reset form
+        plantForm.reset();
+        addPlantForm.style.display = 'none';
+        overlay.style.display = 'none';
+      });
+      
+      // Functions
+      function savePlants() {
+        localStorage.setItem(plantsKey, JSON.stringify(plants));
+      }
+      
+      function renderPlants() {
+        plantsGrid.innerHTML = '';
+        
+        plants.forEach(plant => {
+          const card = document.createElement('div');
+          card.className = 'plant-card';
+          card.dataset.id = plant.id;
+          
+          // Determine state indicators
+          const now = new Date();
+          const lastWatered = plant.last_watered ? new Date(plant.last_watered) : null;
+          const needsWater = !lastWatered || (now - lastWatered) > 3 * 24 * 60 * 60 * 1000;
+          const needsLight = plant.light_hours_today < 6;
+          
+          // Calculate days since last watering
+          let daysSinceWatering = 0;
+          if (lastWatered) {
+            const diffTime = Math.abs(now - lastWatered);
+            daysSinceWatering = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          }
+          
+          // Format last watered date
+          let lastWateredText = 'Never';
+          if (lastWatered) {
+            lastWateredText = new Date(lastWatered).toLocaleDateString();
+          }
+          
+          card.innerHTML = `
+            <div class="plant-header">
+              <div>
+                <div class="plant-name">${plant.name}</div>
+                <div class="plant-species">${plant.species}</div>
+              </div>
+              ${needsWater ? '<span class="alert">⚠️ Needs Water</span>' : ''}
+            </div>
+            <img src="${plant.photo}" alt="${plant.name}" class="plant-photo">
+            <div class="plant-stats">
+              <div class="stat ${needsWater ? 'needs-water' : ''}">
+                <span class="stat-label">Last Watered</span>
+                <span class="stat-value">${lastWateredText}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Moisture</span>
+                <span class="stat-value">${plant.moisture}%</span>
+              </div>
+              <div class="stat ${needsLight ? 'needs-light' : ''}">
+                <span class="stat-label">Light Today</span>
+                <span class="stat-value">${plant.light_hours_today}h</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Status</span>
+                <span class="stat-value">${needsWater ? 'Dry' : 'Good'}</span>
+              </div>
+            </div>
+            <button class="water-btn" data-id="${plant.id}">Water</button>
+            ${plant.last_note ? `<div class="note">Note: ${plant.last_note}</div>` : ''}
+          `;
+          
+          plantsGrid.appendChild(card);
+        });
+        
+        // Add event listeners to water buttons
+        document.querySelectorAll('.water-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const plantId = e.target.dataset.id;
+            const plant = plants.find(p => p.id === plantId);
+            if (plant) {
+              plant.last_watered = new Date().toISOString();
+              plant.moisture = 100;
+              plant.last_note = `Watered on ${new Date().toLocaleString()}`;
+              savePlants();
+              renderPlants();
+              updateStats();
+            }
+          });
+        });
+      }
+      
+      function updateStats() {
+        totalPlantsEl.textContent = `Plants: ${plants.length}`;
+        
+        const needsWaterCount = plants.filter(plant => {
+          const lastWatered = plant.last_watered ? new Date(plant.last_watered) : null;
+          return !lastWatered || (new Date() - lastWatered) > 3 * 24 * 60 * 60 * 1000;
+        }).length;
+        
+        const needsLightCount = plants.filter(plant => plant.light_hours_today < 6).length;
+        
+        needsWaterCountEl.textContent = `Need water: ${needsWaterCount}`;
+        needsLightCountEl.textContent = `Need light: ${needsLightCount}`;
+        
+        // Update garden graph
+        renderGardenGraph();
+      }
+      
+      function renderGardenGraph() {
+        gardenGraph.innerHTML = '';
+        
+        plants.forEach(plant => {
+          const bar = document.createElement('div');
+          bar.className = 'bar';
+          bar.setAttribute('data-value', `${plant.moisture}%`);
+          
+          // Set height based on moisture
+          const heightPercent = (plant.moisture / 100) * 100;
+          bar.style.height = `${heightPercent}%`;
+          
+          // Color based on moisture level
+          if (plant.moisture < 30) {
+            bar.classList.add('low');
+          } else if (plant.last_watered && (new Date() - new Date(plant.last_watered)) < 24 * 60 * 60 * 1000) {
+            bar.classList.add('watered');
+          }
+          
+          gardenGraph.appendChild(bar);
+        });
+      }
+      
+      // Initial render
+      renderPlants();
+      updateStats();
+    });
+  </script>
+</body>
+</html>

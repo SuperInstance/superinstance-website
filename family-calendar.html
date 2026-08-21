@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Family Calendar</title>
+  <style>
+    :root {
+      --bg: #0a192f;
+      --text: #a8b2d1;
+      --border: #1e293b;
+      --accent: #00b4d8;
+      --busy: #f06292;
+      --semi: #ff9800;
+      --free: #4caf50;
+      --hover: #1e293b;
+      --grid: #1e293b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--grid);
+      padding-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 8px;
+      color: var(--accent);
+      letter-spacing: -1px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text);
+      opacity: 0.8;
+      font-style: italic;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .controls button {
+      background-color: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .controls button:hover {
+      background-color: #0093b6;
+      transform: translateY(-1px);
+    }
+
+    .form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      background-color: var(--border);
+      padding: 15px;
+      border-radius: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form select, .form input {
+      background-color: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--grid);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .form input[type="submit"] {
+      background-color: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .form input[type="submit"]:hover {
+      background-color: #0093b6;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: 100px repeat(7, 1fr);
+      gap: 1px;
+      background-color: var(--grid);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .header-cell {
+      background-color: var(--border);
+      padding: 12px 10px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--accent);
+      border-right: 1px solid var(--grid);
+      position: relative;
+      z-index: 2;
+    }
+
+    .day-header {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .time-header {
+      font-size: 0.85rem;
+      color: var(--text);
+      opacity: 0.6;
+    }
+
+    .day {
+      display: grid;
+      grid-template-rows: repeat(24, 1fr);
+      background-color: var(--bg);
+      border-right: 1px solid var(--grid);
+      position: relative;
+    }
+
+    .day:nth-child(1) { border-left: 1px solid var(--grid); }
+
+    .person {
+      background-color: var(--border);
+      padding: 12px 10px;
+      text-align: center;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+      border-right: 1px solid var(--grid);
+      min-height: 60px;
+    }
+
+    .person-col {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .mood {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin: 0 auto 2px;
+      background-color: var(--free);
+      transition: background-color 0.3s ease;
+    }
+
+    .event {
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      padding: 2px 4px;
+      color: var(--bg);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      z-index: 1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .event:hover {
+      transform: scale(1.05);
+      z-index: 2;
+      transition: all 0.2s ease;
+    }
+
+    .highlight {
+      background-color: rgba(0, 180, 216, 0.3);
+      border: 1px solid rgba(0, 180, 216, 0.5);
+    }
+
+    .free {
+      background-color: rgba(76, 175, 80, 0.2);
+    }
+
+    .grid {
+      border: 1px solid var(--grid);
+      background-color: var(--bg);
+    }
+
+    .busy-1 { background-color: var(--semi); }
+    .busy-2 { background-color: var(--busy); }
+    .busy-3 { background-color: #c62828; }
+    .busy-4 { background-color: #9b0000; }
+    .busy-5 { background-color: #5d0000; }
+
+    .shadows {
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: var(--text);
+      opacity: 0.6;
+      padding-top: 10px;
+      border-top: 1px solid var(--grid);
+    }
+
+    @media (max-width: 768px) {
+      .calendar {
+        font-size: 0.9rem;
+      }
+      .form {
+        flex-direction: column;
+        align-items: center;
+      }
+      .form button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Family Calendar</h1>
+    <p class="subtitle">the household is a graph</p>
+  </header>
+
+  <div class="controls">
+    <div class="form" id="eventForm">
+      <select id="person" required>
+        <option value="">Who</option>
+        <option value="Casey">Casey</option>
+        <option value="Maya">Maya</option>
+        <option value="Tom">Tom</option>
+      </select>
+      <input type="text" id="event" placeholder="What" required />
+      <input type="datetime-local" id="when" required />
+      <input type="submit" value="Add Event" />
+    </div>
+    <button id="whoIsFree">Who's free?</button>
+  </div>
+
+  <div class="calendar" id="calendar">
+    <div class="header-cell"></div>
+    <div class="header-cell">
+      <div class="day-header">Mon</div>
+      <div class="time-header">00:00</div>
+    </div>
+    <div class="header-cell">
+      <div class="day-header">Tue</div>
+      <div class="time-header">00:00</div>
+    </div>
+    <div class="header-cell">
+      <div class="day-header">Wed</div>
+      <div class="time-header">00:00</div>
+    </div>
+    <div class="header-cell">
+      <div class="day-header">Thu</div>
+      <div class="time-header">00:00</div>
+    </div>
+    <div class="header-cell">
+      <div class="day-header">Fri</div>
+      <div class="time-header">00:00</div>
+    </div>
+    <div class="header-cell">
+      <div class="day-header">Sat</div>
+      <div class="time-header">00:00</div>
+    </div>
+    <div class="header-cell">
+      <div class="day-header">Sun</div>
+      <div class="time-header">00:00</div>
+    </div>
+
+    <div class="person-col">
+      <div class="person">Casey</div>
+      <div class="day" data-day="0"></div>
+      <div class="day" data-day="1"></div>
+      <div class="day" data-day="2"></div>
+      <div class="day" data-day="3"></div>
+      <div class="day" data-day="4"></div>
+      <div class="day" data-day="5"></div>
+      <div class="day" data-day="6"></div>
+      <div class="mood" id="mood-Casey"></div>
+    </div>
+
+    <div class="person-col">
+      <div class="person">Maya</div>
+      <div class="day" data-day="0"></div>
+      <div class="day" data-day="1"></div>
+      <div class="day" data-day="2"></div>
+      <div class="day" data-day="3"></div>
+      <div class="day" data-day="4"></div>
+      <div class="day" data-day="5"></div>
+      <div class="day" data-day="6"></div>
+      <div class="mood" id="mood-Maya"></div>
+    </div>
+
+    <div class="person-col">
+      <div class="person">Tom</div>
+      <div class="day" data-day="0"></div>
+      <div class="day" data-day="1"></div>
+      <div class="day" data-day="2"></div>
+      <div class="day" data-day="3"></div>
+      <div class="day" data-day="4"></div>
+      <div class="day" data-day="5"></div>
+      <div class="day" data-day="6"></div>
+      <div class="mood" id="mood-Tom"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    The watch is the parent. Iron sharpens iron. The cells federate.
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('eventForm');
+      const whoIsFreeBtn = document.getElementById('whoIsFree');
+      const calendar = document.getElementById('calendar');
+      const days = calendar.querySelectorAll('.day');
+      const moodIndicators = {
+        Casey: document.getElementById('mood-Casey'),
+        Maya: document.getElementById('mood-Maya'),
+        Tom: document.getElementById('mood-Tom')
+      };
+
+      // Initialize data
+      let events = JSON.parse(localStorage.getItem('familyEvents')) || {};
+      const people = ['Casey', 'Maya', 'Tom'];
+      const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+      // Set initial date headers
+      const now = new Date();
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - now.getDay());
+
+      days.forEach((dayEl, i) => {
+        const date = new Date(startOfWeek);
+        date.setDate(startOfWeek.getDate() + i);
+        const dateStr = date.toISOString().split('T')[0];
+        dayEl.dataset.date = dateStr;
+        
+        // Set day header
+        const header = dayEl.closest('.person-col').querySelector('.day-header');
+        if (header) {
+          header.textContent = daysOfWeek[i];
+        }
+      });
+
+      // Render events
+      const renderEvents = () => {
+        days.forEach(dayEl => {
+          dayEl.innerHTML = '';
+          const date = dayEl.dataset.date;
+          people.forEach(person => {
+            const personEvents = events[person] || [];
+            const dayEvents = personEvents.filter(e => {
+              const eventDate = e.when.split('T')[0];
+              return eventDate === date;
+            });
+
+            dayEvents.forEach(event => {
+              const time = new Date(event.when).getHours();
+              const duration = event.duration || 1;
+              const top = (time * 100) / 24 + '%';
+              const height = (duration * 100) / 24 + '%';
+
+              const eventEl = document.createElement('div');
+              eventEl.className = `event busy-${Math.min(5, dayEvents.length)}`;
+              eventEl.dataset.id = event.id;
+              eventEl.style.top = top;
+              eventEl.style.height = height;
+              eventEl.title = `${event.what} (${event.when})`;
+              eventEl.textContent = event.what;
+              dayEl.appendChild(eventEl);
+            });
+          });
+        });
+
+        // Update mood indicators
+        updateMoodIndicators();
+      };
+
+      // Update mood indicators based on busyness
+      const updateMoodIndicators = () => {
+        people.forEach(person => {
+          const personEvents = events[person] || [];
+          const totalEvents = personEvents.length;
+          const moodEl = moodIndicators[person];
+
+          if (totalEvents === 0) {
+            moodEl.style.backgroundColor = '#4caf50';
+          } else if (totalEvents <= 2) {
+            moodEl.style.backgroundColor = '#ff9800';
+          } else {
+            moodEl.style.backgroundColor = '#f06292';
+          }
+        });
+      };
+
+      // Add event
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const person = document.getElementById('person').value;
+        const what = document.getElementById('event').value;
+        const when = document.getElementById('when').value;
+
+        if (!person || !what || !when) return;
+
+        const id = Date.now();
+        const event = { id, what, when, duration: 1 };
+
+        if (!events[person]) {
+          events[person] = [];
+        }
+
+        events[person].push(event);
+        localStorage.setItem('familyEvents', JSON.stringify(events));
+
+        form.reset();
+        renderEvents();
+      });
+
+      // Who's free?
+      whoIsFreeBtn.addEventListener('click', () => {
+        const freePeople = [];
+        const allEvents = [];
+
+        people.forEach(person => {
+          const personEvents = events[person] || [];
+          personEvents.forEach(e => allEvents.push(e));
+        });
+
+        const busyPeople = new Set(allEvents.map(e => e.person));
+        people.forEach(p => {
+          if (!busyPeople.has(p)) {
+            freePeople.push(p);
+          }
+        });
+
+        // Highlight free people
+        document.querySelectorAll('.person').forEach(p => {
+          const personName = p.textContent;
+          if (freePeople.includes(personName)) {
+            p.classList.add('free');
+          } else {
+            p.classList.remove('free');
+          }
+        });
+
+        // Highlight their days
+        days.forEach(dayEl => {
+          const date = dayEl.dataset.date;
+          const dayFree = people.every(person => {
+            const personEvents = events[person] || [];
+            return !personEvents.some(e => e.when.split('T')[0] === date);
+          });
+
+          if (dayFree) {
+            dayEl.classList.add('highlight');
+          } else {
+            dayEl.classList.remove('highlight');
+          }
+        });
+
+        // Revert after 3 seconds
+        setTimeout(() => {
+          document.querySelectorAll('.person').forEach(p => p.classList.remove('free'));
+          days.forEach(dayEl => dayEl.classList.remove('highlight'));
+        }, 3000);
+      });
+
+      // Initial render
+      renderEvents();
+    });
+  </script>
+</body>
+</html>
