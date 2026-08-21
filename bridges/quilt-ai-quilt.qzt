@@ -1,0 +1,865 @@
+{
+  "schema": "quilt-sheet-v1.0",
+  "metadata": {
+    "title": "Quilt AI & RAG Integration Sheet",
+    "description": "Comprehensive Quilt sheet combining LLM providers, core cell kinds, and RAG pipeline",
+    "version": "1.0.0",
+    "created": "2026-08-21T02:03:47.706150+00:00",
+    "author": "Quilt Bridge Generator",
+    "packages": [
+      "@quilt/ai",
+      "@quilt/rag",
+      "@quilt/core"
+    ]
+  },
+  "rooms": [
+    {
+      "id": "llm_providers",
+      "name": "LLM Providers",
+      "description": "Integration cells for various LLM providers"
+    },
+    {
+      "id": "core_kinds",
+      "name": "Core Cell Kinds",
+      "description": "The 8 fundamental cell types in Quilt"
+    },
+    {
+      "id": "rag_pipeline",
+      "name": "RAG Pipeline",
+      "description": "Retrieval-Augmented Generation pipeline stages"
+    },
+    {
+      "id": "main",
+      "name": "Main",
+      "description": "Main room for general connections"
+    }
+  ],
+  "cells": [
+    {
+      "id": "provider_openai",
+      "type": "llm_provider",
+      "name": "OpenAI Provider",
+      "description": "Integration with OpenAI's GPT models",
+      "properties": {
+        "provider": "OpenAI",
+        "models": [
+          "gpt-4",
+          "gpt-4-turbo",
+          "gpt-3.5-turbo"
+        ],
+        "endpoint": "https://api.openai.com/v1",
+        "capabilities": [
+          "chat",
+          "completion",
+          "embedding",
+          "vision"
+        ],
+        "api_key_required": true,
+        "rate_limit": "5000 req/min"
+      },
+      "room_id": "llm_providers",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.705402+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "provider_anthropic",
+      "type": "llm_provider",
+      "name": "Anthropic Provider",
+      "description": "Integration with Anthropic's Claude models",
+      "properties": {
+        "provider": "Anthropic",
+        "models": [
+          "claude-3-opus",
+          "claude-3-sonnet",
+          "claude-3-haiku"
+        ],
+        "endpoint": "https://api.anthropic.com/v1",
+        "capabilities": [
+          "chat",
+          "completion",
+          "vision"
+        ],
+        "api_key_required": true,
+        "rate_limit": "1000 req/min"
+      },
+      "room_id": "llm_providers",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.705975+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "provider_deepseek",
+      "type": "llm_provider",
+      "name": "DeepSeek Provider",
+      "description": "Integration with DeepSeek's models",
+      "properties": {
+        "provider": "DeepSeek",
+        "models": [
+          "deepseek-chat",
+          "deepseek-coder"
+        ],
+        "endpoint": "https://api.deepseek.com/v1",
+        "capabilities": [
+          "chat",
+          "completion",
+          "code"
+        ],
+        "api_key_required": true,
+        "rate_limit": "2000 req/min"
+      },
+      "room_id": "llm_providers",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.705982+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "provider_zai",
+      "type": "llm_provider",
+      "name": "Z.ai Provider",
+      "description": "Integration with Z.ai's models",
+      "properties": {
+        "provider": "Z.ai",
+        "models": [
+          "zai-chat",
+          "zai-vision"
+        ],
+        "endpoint": "https://api.z.ai/v1",
+        "capabilities": [
+          "chat",
+          "completion",
+          "vision"
+        ],
+        "api_key_required": true,
+        "rate_limit": "1500 req/min"
+      },
+      "room_id": "llm_providers",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.705986+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "kind_number",
+      "type": "core_kind",
+      "name": "Number Cell",
+      "description": "Numeric value cell",
+      "properties": {
+        "kind": "number",
+        "data_type": "float",
+        "validation": "numeric"
+      },
+      "room_id": "core_kinds",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.705998+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "kind_string",
+      "type": "core_kind",
+      "name": "String Cell",
+      "description": "Text string cell",
+      "properties": {
+        "kind": "string",
+        "data_type": "string",
+        "validation": "text"
+      },
+      "room_id": "core_kinds",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706002+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "kind_boolean",
+      "type": "core_kind",
+      "name": "Boolean Cell",
+      "description": "True/False value cell",
+      "properties": {
+        "kind": "boolean",
+        "data_type": "boolean",
+        "validation": "true/false"
+      },
+      "room_id": "core_kinds",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706006+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "kind_array",
+      "type": "core_kind",
+      "name": "Array Cell",
+      "description": "Collection of values cell",
+      "properties": {
+        "kind": "array",
+        "data_type": "array",
+        "validation": "list"
+      },
+      "room_id": "core_kinds",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706016+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "kind_object",
+      "type": "core_kind",
+      "name": "Object Cell",
+      "description": "Key-value pair structure cell",
+      "properties": {
+        "kind": "object",
+        "data_type": "object",
+        "validation": "key-value"
+      },
+      "room_id": "core_kinds",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706021+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "kind_formula",
+      "type": "core_kind",
+      "name": "Formula Cell",
+      "description": "Computed value cell",
+      "properties": {
+        "kind": "formula",
+        "data_type": "computed",
+        "validation": "expression"
+      },
+      "room_id": "core_kinds",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706025+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "kind_cell",
+      "type": "core_kind",
+      "name": "Cell Reference",
+      "description": "Reference to another cell",
+      "properties": {
+        "kind": "cell",
+        "data_type": "reference",
+        "validation": "cell-id"
+      },
+      "room_id": "core_kinds",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706029+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "kind_sheet",
+      "type": "core_kind",
+      "name": "Sheet Cell",
+      "description": "Nested sheet container cell",
+      "properties": {
+        "kind": "sheet",
+        "data_type": "container",
+        "validation": "nested-sheet"
+      },
+      "room_id": "core_kinds",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706032+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "rag_ingest",
+      "type": "rag_stage",
+      "name": "Ingest Stage",
+      "description": "Document ingestion and preprocessing",
+      "properties": {
+        "stage": "ingest",
+        "order": 1,
+        "input": "raw_documents",
+        "output": "processed_chunks",
+        "processors": [
+          "text_extraction",
+          "chunking",
+          "normalization"
+        ]
+      },
+      "room_id": "rag_pipeline",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706047+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "rag_embed",
+      "type": "rag_stage",
+      "name": "Embed Stage",
+      "description": "Generate embeddings for text chunks",
+      "properties": {
+        "stage": "embed",
+        "order": 2,
+        "input": "processed_chunks",
+        "output": "embeddings",
+        "model": "text-embedding-3-small",
+        "dimensions": 1536
+      },
+      "room_id": "rag_pipeline",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706055+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "rag_store",
+      "type": "rag_stage",
+      "name": "Store Stage",
+      "description": "Store embeddings in vector database",
+      "properties": {
+        "stage": "store",
+        "order": 3,
+        "input": "embeddings",
+        "output": "vector_store",
+        "database": "pinecone",
+        "index_type": "cosine"
+      },
+      "room_id": "rag_pipeline",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706058+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "rag_query",
+      "type": "rag_stage",
+      "name": "Query Stage",
+      "description": "Process user queries",
+      "properties": {
+        "stage": "query",
+        "order": 4,
+        "input": "user_query",
+        "output": "query_embedding",
+        "query_processing": [
+          "normalization",
+          "embedding"
+        ]
+      },
+      "room_id": "rag_pipeline",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706061+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "rag_retrieve",
+      "type": "rag_stage",
+      "name": "Retrieve Stage",
+      "description": "Retrieve relevant documents",
+      "properties": {
+        "stage": "retrieve",
+        "order": 5,
+        "input": "query_embedding",
+        "output": "relevant_chunks",
+        "top_k": 5,
+        "similarity_threshold": 0.7
+      },
+      "room_id": "rag_pipeline",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706064+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "rag_augment",
+      "type": "rag_stage",
+      "name": "Augment Stage",
+      "description": "Augment context with retrieved documents",
+      "properties": {
+        "stage": "augment",
+        "order": 6,
+        "input": "relevant_chunks",
+        "output": "augmented_prompt",
+        "augmentation": [
+          "context_addition",
+          "prompt_engineering"
+        ]
+      },
+      "room_id": "rag_pipeline",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706067+00:00",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "rag_generate",
+      "type": "rag_stage",
+      "name": "Generate Stage",
+      "description": "Generate final response using LLM",
+      "properties": {
+        "stage": "generate",
+        "order": 7,
+        "input": "augmented_prompt",
+        "output": "final_response",
+        "model": "gpt-4",
+        "temperature": 0.7
+      },
+      "room_id": "rag_pipeline",
+      "metadata": {
+        "created": "2026-08-21T02:03:47.706070+00:00",
+        "version": "1.0.0"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "provider_openai",
+      "target": "kind_number",
+      "type": "uses",
+      "properties": {
+        "description": "provider_openai uses kind_number"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "kind_string",
+      "type": "uses",
+      "properties": {
+        "description": "provider_openai uses kind_string"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "kind_boolean",
+      "type": "uses",
+      "properties": {
+        "description": "provider_openai uses kind_boolean"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "kind_array",
+      "type": "uses",
+      "properties": {
+        "description": "provider_openai uses kind_array"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "kind_object",
+      "type": "uses",
+      "properties": {
+        "description": "provider_openai uses kind_object"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "kind_formula",
+      "type": "uses",
+      "properties": {
+        "description": "provider_openai uses kind_formula"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "kind_cell",
+      "type": "uses",
+      "properties": {
+        "description": "provider_openai uses kind_cell"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "kind_sheet",
+      "type": "uses",
+      "properties": {
+        "description": "provider_openai uses kind_sheet"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "kind_number",
+      "type": "uses",
+      "properties": {
+        "description": "provider_anthropic uses kind_number"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "kind_string",
+      "type": "uses",
+      "properties": {
+        "description": "provider_anthropic uses kind_string"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "kind_boolean",
+      "type": "uses",
+      "properties": {
+        "description": "provider_anthropic uses kind_boolean"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "kind_array",
+      "type": "uses",
+      "properties": {
+        "description": "provider_anthropic uses kind_array"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "kind_object",
+      "type": "uses",
+      "properties": {
+        "description": "provider_anthropic uses kind_object"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "kind_formula",
+      "type": "uses",
+      "properties": {
+        "description": "provider_anthropic uses kind_formula"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "kind_cell",
+      "type": "uses",
+      "properties": {
+        "description": "provider_anthropic uses kind_cell"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "kind_sheet",
+      "type": "uses",
+      "properties": {
+        "description": "provider_anthropic uses kind_sheet"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "kind_number",
+      "type": "uses",
+      "properties": {
+        "description": "provider_deepseek uses kind_number"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "kind_string",
+      "type": "uses",
+      "properties": {
+        "description": "provider_deepseek uses kind_string"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "kind_boolean",
+      "type": "uses",
+      "properties": {
+        "description": "provider_deepseek uses kind_boolean"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "kind_array",
+      "type": "uses",
+      "properties": {
+        "description": "provider_deepseek uses kind_array"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "kind_object",
+      "type": "uses",
+      "properties": {
+        "description": "provider_deepseek uses kind_object"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "kind_formula",
+      "type": "uses",
+      "properties": {
+        "description": "provider_deepseek uses kind_formula"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "kind_cell",
+      "type": "uses",
+      "properties": {
+        "description": "provider_deepseek uses kind_cell"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "kind_sheet",
+      "type": "uses",
+      "properties": {
+        "description": "provider_deepseek uses kind_sheet"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "kind_number",
+      "type": "uses",
+      "properties": {
+        "description": "provider_zai uses kind_number"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "kind_string",
+      "type": "uses",
+      "properties": {
+        "description": "provider_zai uses kind_string"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "kind_boolean",
+      "type": "uses",
+      "properties": {
+        "description": "provider_zai uses kind_boolean"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "kind_array",
+      "type": "uses",
+      "properties": {
+        "description": "provider_zai uses kind_array"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "kind_object",
+      "type": "uses",
+      "properties": {
+        "description": "provider_zai uses kind_object"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "kind_formula",
+      "type": "uses",
+      "properties": {
+        "description": "provider_zai uses kind_formula"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "kind_cell",
+      "type": "uses",
+      "properties": {
+        "description": "provider_zai uses kind_cell"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "kind_sheet",
+      "type": "uses",
+      "properties": {
+        "description": "provider_zai uses kind_sheet"
+      }
+    },
+    {
+      "source": "rag_ingest",
+      "target": "rag_embed",
+      "type": "pipeline",
+      "properties": {
+        "description": "Stage 1 \u2192 Stage 2",
+        "order": 1
+      }
+    },
+    {
+      "source": "rag_embed",
+      "target": "rag_store",
+      "type": "pipeline",
+      "properties": {
+        "description": "Stage 2 \u2192 Stage 3",
+        "order": 2
+      }
+    },
+    {
+      "source": "rag_store",
+      "target": "rag_query",
+      "type": "pipeline",
+      "properties": {
+        "description": "Stage 3 \u2192 Stage 4",
+        "order": 3
+      }
+    },
+    {
+      "source": "rag_query",
+      "target": "rag_retrieve",
+      "type": "pipeline",
+      "properties": {
+        "description": "Stage 4 \u2192 Stage 5",
+        "order": 4
+      }
+    },
+    {
+      "source": "rag_retrieve",
+      "target": "rag_augment",
+      "type": "pipeline",
+      "properties": {
+        "description": "Stage 5 \u2192 Stage 6",
+        "order": 5
+      }
+    },
+    {
+      "source": "rag_augment",
+      "target": "rag_generate",
+      "type": "pipeline",
+      "properties": {
+        "description": "Stage 6 \u2192 Stage 7",
+        "order": 6
+      }
+    },
+    {
+      "source": "rag_generate",
+      "target": "provider_openai",
+      "type": "uses",
+      "properties": {
+        "description": "Generation uses OpenAI by default"
+      }
+    },
+    {
+      "source": "rag_generate",
+      "target": "provider_anthropic",
+      "type": "uses",
+      "properties": {
+        "description": "Generation can use Anthropic"
+      }
+    },
+    {
+      "source": "rag_ingest",
+      "target": "kind_string",
+      "type": "processes",
+      "properties": {
+        "description": "rag_ingest processes kind_string"
+      }
+    },
+    {
+      "source": "rag_ingest",
+      "target": "kind_array",
+      "type": "produces",
+      "properties": {
+        "description": "rag_ingest produces kind_array"
+      }
+    },
+    {
+      "source": "rag_embed",
+      "target": "kind_array",
+      "type": "produces",
+      "properties": {
+        "description": "rag_embed produces kind_array"
+      }
+    },
+    {
+      "source": "rag_store",
+      "target": "kind_object",
+      "type": "stores",
+      "properties": {
+        "description": "rag_store stores kind_object"
+      }
+    },
+    {
+      "source": "rag_query",
+      "target": "kind_string",
+      "type": "processes",
+      "properties": {
+        "description": "rag_query processes kind_string"
+      }
+    },
+    {
+      "source": "rag_retrieve",
+      "target": "kind_array",
+      "type": "produces",
+      "properties": {
+        "description": "rag_retrieve produces kind_array"
+      }
+    },
+    {
+      "source": "rag_augment",
+      "target": "kind_object",
+      "type": "produces",
+      "properties": {
+        "description": "rag_augment produces kind_object"
+      }
+    },
+    {
+      "source": "rag_generate",
+      "target": "kind_string",
+      "type": "produces",
+      "properties": {
+        "description": "rag_generate produces kind_string"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "rag_embed",
+      "type": "provides_embedding",
+      "properties": {
+        "description": "provider_openai provides_embedding rag_embed"
+      }
+    },
+    {
+      "source": "provider_openai",
+      "target": "rag_generate",
+      "type": "provides_generation",
+      "properties": {
+        "description": "provider_openai provides_generation rag_generate"
+      }
+    },
+    {
+      "source": "provider_anthropic",
+      "target": "rag_generate",
+      "type": "provides_generation",
+      "properties": {
+        "description": "provider_anthropic provides_generation rag_generate"
+      }
+    },
+    {
+      "source": "provider_deepseek",
+      "target": "rag_generate",
+      "type": "provides_generation",
+      "properties": {
+        "description": "provider_deepseek provides_generation rag_generate"
+      }
+    },
+    {
+      "source": "provider_zai",
+      "target": "rag_generate",
+      "type": "provides_generation",
+      "properties": {
+        "description": "provider_zai provides_generation rag_generate"
+      }
+    }
+  ],
+  "stats": {
+    "total_cells": 19,
+    "total_edges": 53,
+    "total_rooms": 4,
+    "cell_types": {
+      "llm_provider": 4,
+      "core_kind": 8,
+      "rag_stage": 7
+    },
+    "edge_types": {
+      "uses": 34,
+      "pipeline": 6,
+      "processes": 2,
+      "produces": 5,
+      "stores": 1,
+      "provides_embedding": 1,
+      "provides_generation": 4
+    }
+  }
+}

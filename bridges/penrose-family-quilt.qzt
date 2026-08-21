@@ -1,0 +1,717 @@
+{
+  "schema": "quilt-zip-target/v1",
+  "metadata": {
+    "name": "Penrose family as Quilt sheet",
+    "description": "The Penrose family \u2014 12 repos expressing the same aperiodic substrate. Aperiodic order is the right substrate for AI agent systems. \u03c6 is the universal constant. The cut-and-project (5D\u21922D), the substitution rules (L\u2192LS, S\u2192L), the spectral graph theory, the twistor geometry, the Eisenstein lattices, the tensor computations \u2014 all are different windows onto the same mathematics.",
+    "generated": "2026-08-21T02:01:16Z",
+    "address_root": "penrose"
+  },
+  "rooms": [
+    {
+      "id": "penrose_memory",
+      "name": "\ud83d\udd2f penrose-memory (Rust + Python)",
+      "cell_count": 6
+    },
+    {
+      "id": "penrose_lattice",
+      "name": "\ud83d\udd2f penrose-lattice (Rust)",
+      "cell_count": 6
+    },
+    {
+      "id": "lau_penrose",
+      "name": "\ud83d\udd2f lau-penrose (Rust)",
+      "cell_count": 6
+    },
+    {
+      "id": "lau_twistor_agents",
+      "name": "\ud83d\udd2f lau-twistor-agents (Makefile)",
+      "cell_count": 6
+    },
+    {
+      "id": "tensor_penrose",
+      "name": "\ud83d\udd2f tensor-penrose (Python)",
+      "cell_count": 6
+    },
+    {
+      "id": "lau_penrose_v2",
+      "name": "\ud83d\udd2f lau-penrose-v2 (Rust)",
+      "cell_count": 6
+    },
+    {
+      "id": "plato_midi_bridge_rs",
+      "name": "\ud83d\udd2f plato-midi-bridge-rs (Rust)",
+      "cell_count": 6
+    },
+    {
+      "id": "lau_penrose_growth",
+      "name": "\ud83d\udd2f lau-penrose-growth (Rust)",
+      "cell_count": 6
+    },
+    {
+      "id": "fibonacci_growth",
+      "name": "\ud83d\udd2f fibonacci-growth (Rust)",
+      "cell_count": 6
+    },
+    {
+      "id": "plato_tour_guide",
+      "name": "\ud83d\udd2f plato-tour-guide (Python)",
+      "cell_count": 6
+    },
+    {
+      "id": "penrose_memory_palace_early_version",
+      "name": "\ud83d\udd2f penrose-memory-palace-early-version (HTML)",
+      "cell_count": 6
+    },
+    {
+      "id": "memory_crystal_early_version",
+      "name": "\ud83d\udd2f memory-crystal-early-version (Rust)",
+      "cell_count": 6
+    }
+  ],
+  "cells": [
+    {
+      "address": "stats.total_repos",
+      "kind": "usize",
+      "value": 12
+    },
+    {
+      "address": "stats.languages",
+      "kind": "usize",
+      "value": 5
+    },
+    {
+      "address": "stats.generated",
+      "kind": "f64",
+      "value": 1787277676.4539871
+    },
+    {
+      "address": "math.phi",
+      "kind": "f64",
+      "value": 1.618033988749895
+    },
+    {
+      "address": "math.inv_phi",
+      "kind": "f64",
+      "value": 0.618033988749895
+    },
+    {
+      "address": "math.cut_and_project",
+      "kind": "string",
+      "value": "5D integer lattice \u2192 2D plane with golden-angle rotation; perpendicular window accepts tiles"
+    },
+    {
+      "address": "math.substitution",
+      "kind": "string",
+      "value": "L \u2192 LS, S \u2192 L; eigenvalues are \u03c6 and -1/\u03c6"
+    },
+    {
+      "address": "thesis.family",
+      "kind": "string",
+      "value": "Aperiodic order is the right substrate for AI agent systems; \u03c6 is its universal constant"
+    },
+    {
+      "address": "repo.penrose_memory.name",
+      "kind": "string",
+      "value": "penrose-memory"
+    },
+    {
+      "address": "repo.penrose_memory.language",
+      "kind": "string",
+      "value": "Rust + Python"
+    },
+    {
+      "address": "repo.penrose_memory.core_idea",
+      "kind": "string",
+      "value": "Aperiodic memory palace with golden-ratio hashing and 3-coloring"
+    },
+    {
+      "address": "repo.penrose_memory.cell[0]",
+      "kind": "string",
+      "value": "Golden-ratio hash function"
+    },
+    {
+      "address": "repo.penrose_memory.cell[1]",
+      "kind": "string",
+      "value": "3-coloring algorithm"
+    },
+    {
+      "address": "repo.penrose_memory.cell[2]",
+      "kind": "string",
+      "value": "Aperiodic memory palace data structure"
+    },
+    {
+      "address": "repo.penrose_memory.cell[3]",
+      "kind": "string",
+      "value": "Fibonacci sequence generator"
+    },
+    {
+      "address": "repo.penrose_lattice.name",
+      "kind": "string",
+      "value": "penrose-lattice"
+    },
+    {
+      "address": "repo.penrose_lattice.language",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.penrose_lattice.core_idea",
+      "kind": "string",
+      "value": "Penrose tilings as spectral graphs with Fibonacci substitution"
+    },
+    {
+      "address": "repo.penrose_lattice.cell[0]",
+      "kind": "string",
+      "value": "Penrose tiling generator"
+    },
+    {
+      "address": "repo.penrose_lattice.cell[1]",
+      "kind": "string",
+      "value": "Spectral graph construction"
+    },
+    {
+      "address": "repo.penrose_lattice.cell[2]",
+      "kind": "string",
+      "value": "Fibonacci substitution system"
+    },
+    {
+      "address": "repo.penrose_lattice.cell[3]",
+      "kind": "string",
+      "value": "Eigenvalue computation"
+    },
+    {
+      "address": "repo.lau_penrose.name",
+      "kind": "string",
+      "value": "lau-penrose"
+    },
+    {
+      "address": "repo.lau_penrose.language",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.lau_penrose.core_idea",
+      "kind": "string",
+      "value": "Base Penrose tiling implementation with golden ratio geometry"
+    },
+    {
+      "address": "repo.lau_penrose.cell[0]",
+      "kind": "string",
+      "value": "Penrose tile primitives"
+    },
+    {
+      "address": "repo.lau_penrose.cell[1]",
+      "kind": "string",
+      "value": "Golden ratio constants"
+    },
+    {
+      "address": "repo.lau_penrose.cell[2]",
+      "kind": "string",
+      "value": "Tiling composition rules"
+    },
+    {
+      "address": "repo.lau_penrose.cell[3]",
+      "kind": "string",
+      "value": "Decomposition algorithm"
+    },
+    {
+      "address": "repo.lau_twistor_agents.name",
+      "kind": "string",
+      "value": "lau-twistor-agents"
+    },
+    {
+      "address": "repo.lau_twistor_agents.language",
+      "kind": "string",
+      "value": "Makefile"
+    },
+    {
+      "address": "repo.lau_twistor_agents.core_idea",
+      "kind": "string",
+      "value": "Penrose's twistor theory applied to multi-agent systems"
+    },
+    {
+      "address": "repo.lau_twistor_agents.cell[0]",
+      "kind": "string",
+      "value": "Twistor space representation"
+    },
+    {
+      "address": "repo.lau_twistor_agents.cell[1]",
+      "kind": "string",
+      "value": "Agent interaction rules"
+    },
+    {
+      "address": "repo.lau_twistor_agents.cell[2]",
+      "kind": "string",
+      "value": "Conformal geometry primitives"
+    },
+    {
+      "address": "repo.lau_twistor_agents.cell[3]",
+      "kind": "string",
+      "value": "Light ray propagation"
+    },
+    {
+      "address": "repo.tensor_penrose.name",
+      "kind": "string",
+      "value": "tensor-penrose"
+    },
+    {
+      "address": "repo.tensor_penrose.language",
+      "kind": "string",
+      "value": "Python"
+    },
+    {
+      "address": "repo.tensor_penrose.core_idea",
+      "kind": "string",
+      "value": "Tensor-based Penrose tiling extracted from forgemaster"
+    },
+    {
+      "address": "repo.tensor_penrose.cell[0]",
+      "kind": "string",
+      "value": "Tensor operations"
+    },
+    {
+      "address": "repo.tensor_penrose.cell[1]",
+      "kind": "string",
+      "value": "Penrose tiling matrices"
+    },
+    {
+      "address": "repo.tensor_penrose.cell[2]",
+      "kind": "string",
+      "value": "Numerical solvers"
+    },
+    {
+      "address": "repo.tensor_penrose.cell[3]",
+      "kind": "string",
+      "value": "Pattern matching algorithms"
+    },
+    {
+      "address": "repo.lau_penrose_v2.name",
+      "kind": "string",
+      "value": "lau-penrose-v2"
+    },
+    {
+      "address": "repo.lau_penrose_v2.language",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.lau_penrose_v2.core_idea",
+      "kind": "string",
+      "value": "Version 2 of Penrose tiling with enhanced performance and features"
+    },
+    {
+      "address": "repo.lau_penrose_v2.cell[0]",
+      "kind": "string",
+      "value": "Optimized tile generation"
+    },
+    {
+      "address": "repo.lau_penrose_v2.cell[1]",
+      "kind": "string",
+      "value": "Parallel processing"
+    },
+    {
+      "address": "repo.lau_penrose_v2.cell[2]",
+      "kind": "string",
+      "value": "Advanced substitution rules"
+    },
+    {
+      "address": "repo.lau_penrose_v2.cell[3]",
+      "kind": "string",
+      "value": "Memory-efficient storage"
+    },
+    {
+      "address": "repo.plato_midi_bridge_rs.name",
+      "kind": "string",
+      "value": "plato-midi-bridge-rs"
+    },
+    {
+      "address": "repo.plato_midi_bridge_rs.language",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.plato_midi_bridge_rs.core_idea",
+      "kind": "string",
+      "value": "Eisenstein lattices + Penrose tilings for multi-scale musical generation"
+    },
+    {
+      "address": "repo.plato_midi_bridge_rs.cell[0]",
+      "kind": "string",
+      "value": "Eisenstein lattice generator"
+    },
+    {
+      "address": "repo.plato_midi_bridge_rs.cell[1]",
+      "kind": "string",
+      "value": "MIDI note mapping"
+    },
+    {
+      "address": "repo.plato_midi_bridge_rs.cell[2]",
+      "kind": "string",
+      "value": "Multi-scale rhythm patterns"
+    },
+    {
+      "address": "repo.plato_midi_bridge_rs.cell[3]",
+      "kind": "string",
+      "value": "Penrose-based harmony"
+    },
+    {
+      "address": "repo.lau_penrose_growth.name",
+      "kind": "string",
+      "value": "lau-penrose-growth"
+    },
+    {
+      "address": "repo.lau_penrose_growth.language",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.lau_penrose_growth.core_idea",
+      "kind": "string",
+      "value": "Growth patterns in Penrose tilings with Fibonacci scaling"
+    },
+    {
+      "address": "repo.lau_penrose_growth.cell[0]",
+      "kind": "string",
+      "value": "Growth simulation"
+    },
+    {
+      "address": "repo.lau_penrose_growth.cell[1]",
+      "kind": "string",
+      "value": "Fibonacci scaling factors"
+    },
+    {
+      "address": "repo.lau_penrose_growth.cell[2]",
+      "kind": "string",
+      "value": "Expansion algorithms"
+    },
+    {
+      "address": "repo.lau_penrose_growth.cell[3]",
+      "kind": "string",
+      "value": "Pattern evolution tracking"
+    },
+    {
+      "address": "repo.fibonacci_growth.name",
+      "kind": "string",
+      "value": "fibonacci-growth"
+    },
+    {
+      "address": "repo.fibonacci_growth.language",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.fibonacci_growth.core_idea",
+      "kind": "string",
+      "value": "Fibonacci team growth with CR = 1/\u03c6. Penrose outward, Mandelbrot inward"
+    },
+    {
+      "address": "repo.fibonacci_growth.cell[0]",
+      "kind": "string",
+      "value": "Fibonacci sequence calculator"
+    },
+    {
+      "address": "repo.fibonacci_growth.cell[1]",
+      "kind": "string",
+      "value": "Golden ratio convergence"
+    },
+    {
+      "address": "repo.fibonacci_growth.cell[2]",
+      "kind": "string",
+      "value": "Mandelbrot set generator"
+    },
+    {
+      "address": "repo.fibonacci_growth.cell[3]",
+      "kind": "string",
+      "value": "Growth rate analysis"
+    },
+    {
+      "address": "repo.plato_tour_guide.name",
+      "kind": "string",
+      "value": "plato-tour-guide"
+    },
+    {
+      "address": "repo.plato_tour_guide.language",
+      "kind": "string",
+      "value": "Python"
+    },
+    {
+      "address": "repo.plato_tour_guide.core_idea",
+      "kind": "string",
+      "value": "Wayfinding and Penrose scoping for navigation through the family"
+    },
+    {
+      "address": "repo.plato_tour_guide.cell[0]",
+      "kind": "string",
+      "value": "Path finding algorithms"
+    },
+    {
+      "address": "repo.plato_tour_guide.cell[1]",
+      "kind": "string",
+      "value": "Penrose scope definitions"
+    },
+    {
+      "address": "repo.plato_tour_guide.cell[2]",
+      "kind": "string",
+      "value": "Navigation graph"
+    },
+    {
+      "address": "repo.plato_tour_guide.cell[3]",
+      "kind": "string",
+      "value": "Context mapping"
+    },
+    {
+      "address": "repo.penrose_memory_palace_early_version.name",
+      "kind": "string",
+      "value": "penrose-memory-palace-early-version"
+    },
+    {
+      "address": "repo.penrose_memory_palace_early_version.language",
+      "kind": "string",
+      "value": "HTML"
+    },
+    {
+      "address": "repo.penrose_memory_palace_early_version.core_idea",
+      "kind": "string",
+      "value": "Archived early version of the memory palace concept"
+    },
+    {
+      "address": "repo.penrose_memory_palace_early_version.cell[0]",
+      "kind": "string",
+      "value": "HTML/CSS layout"
+    },
+    {
+      "address": "repo.penrose_memory_palace_early_version.cell[1]",
+      "kind": "string",
+      "value": "Basic memory palace structure"
+    },
+    {
+      "address": "repo.penrose_memory_palace_early_version.cell[2]",
+      "kind": "string",
+      "value": "Visual representation"
+    },
+    {
+      "address": "repo.penrose_memory_palace_early_version.cell[3]",
+      "kind": "string",
+      "value": "Legacy code preservation"
+    },
+    {
+      "address": "repo.memory_crystal_early_version.name",
+      "kind": "string",
+      "value": "memory-crystal-early-version"
+    },
+    {
+      "address": "repo.memory_crystal_early_version.language",
+      "kind": "string",
+      "value": "Rust"
+    },
+    {
+      "address": "repo.memory_crystal_early_version.core_idea",
+      "kind": "string",
+      "value": "Archived early version of memory crystal with Rust implementation"
+    },
+    {
+      "address": "repo.memory_crystal_early_version.cell[0]",
+      "kind": "string",
+      "value": "Crystal structure primitives"
+    },
+    {
+      "address": "repo.memory_crystal_early_version.cell[1]",
+      "kind": "string",
+      "value": "Memory storage patterns"
+    },
+    {
+      "address": "repo.memory_crystal_early_version.cell[2]",
+      "kind": "string",
+      "value": "Early hash functions"
+    },
+    {
+      "address": "repo.memory_crystal_early_version.cell[3]",
+      "kind": "string",
+      "value": "Legacy algorithms"
+    }
+  ],
+  "edges": [
+    {
+      "from": "repo.penrose_memory",
+      "to": "repo.penrose_lattice",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.penrose_memory",
+      "to": "repo.lau_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.penrose_memory",
+      "to": "repo.penrose_memory_palace_early_version",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.penrose_lattice",
+      "to": "repo.penrose_memory",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.penrose_lattice",
+      "to": "repo.lau_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.penrose_lattice",
+      "to": "repo.lau_penrose_v2",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose",
+      "to": "repo.penrose_memory",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose",
+      "to": "repo.penrose_lattice",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose",
+      "to": "repo.lau_penrose_v2",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose",
+      "to": "repo.lau_penrose_growth",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_twistor_agents",
+      "to": "repo.lau_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_twistor_agents",
+      "to": "repo.tensor_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_twistor_agents",
+      "to": "repo.plato_tour_guide",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.tensor_penrose",
+      "to": "repo.lau_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.tensor_penrose",
+      "to": "repo.lau_twistor_agents",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.tensor_penrose",
+      "to": "repo.plato_midi_bridge_rs",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose_v2",
+      "to": "repo.lau_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose_v2",
+      "to": "repo.penrose_lattice",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose_v2",
+      "to": "repo.lau_penrose_growth",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.plato_midi_bridge_rs",
+      "to": "repo.tensor_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.plato_midi_bridge_rs",
+      "to": "repo.lau_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.plato_midi_bridge_rs",
+      "to": "repo.plato_tour_guide",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose_growth",
+      "to": "repo.lau_penrose",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose_growth",
+      "to": "repo.lau_penrose_v2",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.lau_penrose_growth",
+      "to": "repo.fibonacci_growth",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.fibonacci_growth",
+      "to": "repo.lau_penrose_growth",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.fibonacci_growth",
+      "to": "repo.penrose_memory",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.fibonacci_growth",
+      "to": "repo.penrose_lattice",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.plato_tour_guide",
+      "to": "repo.lau_twistor_agents",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.plato_tour_guide",
+      "to": "repo.plato_midi_bridge_rs",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.plato_tour_guide",
+      "to": "repo.penrose_memory",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.penrose_memory_palace_early_version",
+      "to": "repo.penrose_memory",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.penrose_memory_palace_early_version",
+      "to": "repo.memory_crystal_early_version",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.memory_crystal_early_version",
+      "to": "repo.penrose_memory_palace_early_version",
+      "kind": "connects_to"
+    },
+    {
+      "from": "repo.memory_crystal_early_version",
+      "to": "repo.penrose_memory",
+      "kind": "connects_to"
+    }
+  ],
+  "stats": {
+    "total_cells": 92,
+    "total_rooms": 12,
+    "total_edges": 35,
+    "total_repos": 12,
+    "languages": 5
+  }
+}
