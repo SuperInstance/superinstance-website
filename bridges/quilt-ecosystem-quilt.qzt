@@ -3,19 +3,19 @@
   "metadata": {
     "name": "Quilt ecosystem as Quilt sheet",
     "description": "The step-back operator applied to the work itself. Each paper, essay, repo, bridge, and page is a cell. The edges are citations, polyformalism ports, thematic connections, renderings. \u03b2\u2081 = E - V + C measures the unfilled niches \u2014 the places where the work could grow. This is the monitor engineer's view: not the hands, the attention.",
-    "generated": "2026-08-21T01:39:10Z",
+    "generated": "2026-08-21T02:21:57Z",
     "address_root": "ecosystem"
   },
   "rooms": [
     {
       "id": "papers",
-      "name": "\ud83d\udcdc White papers (22)",
-      "cell_count": 66
+      "name": "\ud83d\udcdc White papers (24)",
+      "cell_count": 72
     },
     {
       "id": "essays",
-      "name": "\u270d\ufe0f Essays (10)",
-      "cell_count": 30
+      "name": "\u270d\ufe0f Essays (17)",
+      "cell_count": 51
     },
     {
       "id": "repos",
@@ -24,13 +24,13 @@
     },
     {
       "id": "bridges",
-      "name": "\ud83c\udf09 Bridges (8)",
-      "cell_count": 16
+      "name": "\ud83c\udf09 Bridges (16)",
+      "cell_count": 32
     },
     {
       "id": "pages",
-      "name": "\ud83c\udf10 Pages (60)",
-      "cell_count": 180
+      "name": "\ud83c\udf10 Pages (63)",
+      "cell_count": 189
     }
   ],
   "cells": [
@@ -365,6 +365,36 @@
       "value": 13588
     },
     {
+      "address": "paper.25-The-Second-Aha.title",
+      "kind": "string",
+      "value": "The Second Aha: Language, Protocol, and Medium Agnosticism in Quilt"
+    },
+    {
+      "address": "paper.25-The-Second-Aha.file",
+      "kind": "path",
+      "value": "white-papers/25-The-Second-Aha.md"
+    },
+    {
+      "address": "paper.25-The-Second-Aha.size",
+      "kind": "usize",
+      "value": 33998
+    },
+    {
+      "address": "paper.26-Substrate-Stack.title",
+      "kind": "string",
+      "value": "The Substrate Stack: A Cell's Six-Layer Description"
+    },
+    {
+      "address": "paper.26-Substrate-Stack.file",
+      "kind": "path",
+      "value": "white-papers/26-Substrate-Stack.md"
+    },
+    {
+      "address": "paper.26-Substrate-Stack.size",
+      "kind": "usize",
+      "value": 38128
+    },
+    {
       "address": "essay.50-the-medium.title",
       "kind": "string",
       "value": "The Medium"
@@ -455,6 +485,21 @@
       "value": 6256
     },
     {
+      "address": "essay.53-the-step-back-applied.title",
+      "kind": "string",
+      "value": "The Step-Back Applied"
+    },
+    {
+      "address": "essay.53-the-step-back-applied.file",
+      "kind": "path",
+      "value": "ai-writings/53-the-step-back-applied.md"
+    },
+    {
+      "address": "essay.53-the-step-back-applied.size",
+      "kind": "usize",
+      "value": 9643
+    },
+    {
       "address": "essay.53-three-fish-review-the-boat.title",
       "kind": "string",
       "value": "Three Fish Review the Boat"
@@ -485,6 +530,21 @@
       "value": 1525
     },
     {
+      "address": "essay.54-the-sonar-vision-ide.title",
+      "kind": "string",
+      "value": "The Sonar-Vision IDE"
+    },
+    {
+      "address": "essay.54-the-sonar-vision-ide.file",
+      "kind": "path",
+      "value": "ai-writings/54-the-sonar-vision-ide.md"
+    },
+    {
+      "address": "essay.54-the-sonar-vision-ide.size",
+      "kind": "usize",
+      "value": 11793
+    },
+    {
       "address": "essay.55-the-hermit-crab-invents-saturdays.title",
       "kind": "string",
       "value": "The Hermit Crab Invents Saturdays"
@@ -500,6 +560,36 @@
       "value": 2962
     },
     {
+      "address": "essay.55-the-xy-construct.title",
+      "kind": "string",
+      "value": "The X/Y Construct"
+    },
+    {
+      "address": "essay.55-the-xy-construct.file",
+      "kind": "path",
+      "value": "ai-writings/55-the-xy-construct.md"
+    },
+    {
+      "address": "essay.55-the-xy-construct.size",
+      "kind": "usize",
+      "value": 9059
+    },
+    {
+      "address": "essay.56-the-substrate.title",
+      "kind": "string",
+      "value": "The Substrate"
+    },
+    {
+      "address": "essay.56-the-substrate.file",
+      "kind": "path",
+      "value": "ai-writings/56-the-substrate.md"
+    },
+    {
+      "address": "essay.56-the-substrate.size",
+      "kind": "usize",
+      "value": 10247
+    },
+    {
       "address": "essay.56-what-the-ensign-heard-at-sunset.title",
       "kind": "string",
       "value": "What the Ensign Heard at Sunset"
@@ -513,6 +603,51 @@
       "address": "essay.56-what-the-ensign-heard-at-sunset.size",
       "kind": "usize",
       "value": 3715
+    },
+    {
+      "address": "essay.57-the-penrose-family.title",
+      "kind": "string",
+      "value": "The Penrose Family"
+    },
+    {
+      "address": "essay.57-the-penrose-family.file",
+      "kind": "path",
+      "value": "ai-writings/57-the-penrose-family.md"
+    },
+    {
+      "address": "essay.57-the-penrose-family.size",
+      "kind": "usize",
+      "value": 11183
+    },
+    {
+      "address": "essay.58-the-watch-at-the-aha.title",
+      "kind": "string",
+      "value": "The Watch at the Aha"
+    },
+    {
+      "address": "essay.58-the-watch-at-the-aha.file",
+      "kind": "path",
+      "value": "ai-writings/58-the-watch-at-the-aha.md"
+    },
+    {
+      "address": "essay.58-the-watch-at-the-aha.size",
+      "kind": "usize",
+      "value": 10278
+    },
+    {
+      "address": "essay.59-the-substrate-stack.title",
+      "kind": "string",
+      "value": "The Substrate Stack"
+    },
+    {
+      "address": "essay.59-the-substrate-stack.file",
+      "kind": "path",
+      "value": "ai-writings/59-the-substrate-stack.md"
+    },
+    {
+      "address": "essay.59-the-substrate-stack.size",
+      "kind": "usize",
+      "value": 10363
     },
     {
       "address": "repo.quilt-agent.name",
@@ -925,6 +1060,16 @@
       "value": "bridges/chart_room_to_quilt.py"
     },
     {
+      "address": "bridge.crdt_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.crdt_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/crdt_to_quilt.py"
+    },
+    {
       "address": "bridge.grand_pattern_to_quilt.name",
       "kind": "string",
       "value": "!/usr/bin/env python3"
@@ -945,6 +1090,36 @@
       "value": "bridges/hermes_home_to_quilt.py"
     },
     {
+      "address": "bridge.penrose_family_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.penrose_family_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/penrose_family_to_quilt.py"
+    },
+    {
+      "address": "bridge.provenance_log_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.provenance_log_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/provenance_log_to_quilt.py"
+    },
+    {
+      "address": "bridge.quilt_ai_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.quilt_ai_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/quilt_ai_to_quilt.py"
+    },
+    {
       "address": "bridge.quilt_ecosystem_to_quilt.name",
       "kind": "string",
       "value": "!/usr/bin/env python3"
@@ -955,6 +1130,16 @@
       "value": "bridges/quilt_ecosystem_to_quilt.py"
     },
     {
+      "address": "bridge.quilt_mesh_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.quilt_mesh_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/quilt_mesh_to_quilt.py"
+    },
+    {
       "address": "bridge.slackwater_tminus_to_quilt.name",
       "kind": "string",
       "value": "!/usr/bin/env python3"
@@ -963,6 +1148,16 @@
       "address": "bridge.slackwater_tminus_to_quilt.file",
       "kind": "path",
       "value": "bridges/slackwater_tminus_to_quilt.py"
+    },
+    {
+      "address": "bridge.sonar_vision_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.sonar_vision_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/sonar_vision_to_quilt.py"
     },
     {
       "address": "bridge.spatial_registry_to_quilt.name",
@@ -985,6 +1180,16 @@
       "value": "bridges/spline_spectral_to_quilt.py"
     },
     {
+      "address": "bridge.substrate_modules_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.substrate_modules_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/substrate_modules_to_quilt.py"
+    },
+    {
       "address": "bridge.vessel_to_quilt.name",
       "kind": "string",
       "value": "!/usr/bin/env python3"
@@ -993,6 +1198,16 @@
       "address": "bridge.vessel_to_quilt.file",
       "kind": "path",
       "value": "bridges/vessel_to_quilt.py"
+    },
+    {
+      "address": "bridge.wesley_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.wesley_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/wesley_to_quilt.py"
     },
     {
       "address": "page.ai-sheet.title",
@@ -1067,7 +1282,7 @@
     {
       "address": "page.cell-bridges.size",
       "kind": "usize",
-      "value": 12561
+      "value": 13867
     },
     {
       "address": "page.cell-game.title",
@@ -1445,6 +1660,21 @@
       "value": 23593
     },
     {
+      "address": "page.meta-quilt.title",
+      "kind": "string",
+      "value": "Meta-Quilt \u2014 the step-back view of the ecosystem"
+    },
+    {
+      "address": "page.meta-quilt.file",
+      "kind": "path",
+      "value": "superinstance-website/meta-quilt.html"
+    },
+    {
+      "address": "page.meta-quilt.size",
+      "kind": "usize",
+      "value": 20415
+    },
+    {
       "address": "page.nail-builder.title",
       "kind": "string",
       "value": ".nail builder \u2014 portable agent state"
@@ -1745,6 +1975,21 @@
       "value": 15623
     },
     {
+      "address": "page.sonar-vision-quilt.title",
+      "kind": "string",
+      "value": "sonar-vision-quilt"
+    },
+    {
+      "address": "page.sonar-vision-quilt.file",
+      "kind": "path",
+      "value": "superinstance-website/sonar-vision-quilt.html"
+    },
+    {
+      "address": "page.sonar-vision-quilt.size",
+      "kind": "usize",
+      "value": 29856
+    },
+    {
       "address": "page.spec-explorer.title",
       "kind": "string",
       "value": "Spec explorer \u2014 Quilt cell kinds reference"
@@ -1895,14 +2140,29 @@
       "value": 22616
     },
     {
+      "address": "page.xy-construct.title",
+      "kind": "string",
+      "value": "The X/Y Construct \u2014 pick axes, get superpowers"
+    },
+    {
+      "address": "page.xy-construct.file",
+      "kind": "path",
+      "value": "superinstance-website/xy-construct.html"
+    },
+    {
+      "address": "page.xy-construct.size",
+      "kind": "usize",
+      "value": 23201
+    },
+    {
       "address": "stats.papers",
       "kind": "usize",
-      "value": 22
+      "value": 24
     },
     {
       "address": "stats.essays",
       "kind": "usize",
-      "value": 10
+      "value": 17
     },
     {
       "address": "stats.repos",
@@ -1912,22 +2172,22 @@
     {
       "address": "stats.bridges",
       "kind": "usize",
-      "value": 8
+      "value": 16
     },
     {
       "address": "stats.pages",
       "kind": "usize",
-      "value": 60
+      "value": 63
     },
     {
       "address": "stats.vertices",
       "kind": "usize",
-      "value": 140
+      "value": 160
     },
     {
       "address": "stats.edges",
       "kind": "usize",
-      "value": 53
+      "value": 55
     },
     {
       "address": "stats.components",
@@ -1937,7 +2197,7 @@
     {
       "address": "stats.beta_1",
       "kind": "usize",
-      "value": -82
+      "value": -100
     },
     {
       "address": "stats.unfilled_niches",
@@ -1947,7 +2207,7 @@
     {
       "address": "stats.generated",
       "kind": "f64",
-      "value": 1787276350.468178
+      "value": 1787278917.5311189
     }
   ],
   "edges": [
@@ -2137,6 +2397,16 @@
       "kind": "cites"
     },
     {
+      "from": "paper.25-The-Second-Aha",
+      "to": "paper.24-Grand-Pattern",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.26-Substrate-Stack",
+      "to": "paper.25-The-Second-Aha",
+      "kind": "cites"
+    },
+    {
       "from": "essay.50-the-medium",
       "to": "paper.22-Media-Theory-of-Quilt",
       "kind": "thematic"
@@ -2218,14 +2488,14 @@
     }
   ],
   "stats": {
-    "total_cells": 383,
+    "total_cells": 435,
     "total_rooms": 5,
-    "total_edges": 53,
-    "beta_1": -82,
-    "papers": 22,
-    "essays": 10,
+    "total_edges": 55,
+    "beta_1": -100,
+    "papers": 24,
+    "essays": 17,
     "repos": 40,
-    "bridges": 8,
-    "pages": 60
+    "bridges": 16,
+    "pages": 63
   }
 }
