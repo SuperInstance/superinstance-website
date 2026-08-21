@@ -1,0 +1,2231 @@
+{
+  "schema": "quilt-zip-target/v1",
+  "metadata": {
+    "name": "Quilt ecosystem as Quilt sheet",
+    "description": "The step-back operator applied to the work itself. Each paper, essay, repo, bridge, and page is a cell. The edges are citations, polyformalism ports, thematic connections, renderings. \u03b2\u2081 = E - V + C measures the unfilled niches \u2014 the places where the work could grow. This is the monitor engineer's view: not the hands, the attention.",
+    "generated": "2026-08-21T01:39:10Z",
+    "address_root": "ecosystem"
+  },
+  "rooms": [
+    {
+      "id": "papers",
+      "name": "\ud83d\udcdc White papers (22)",
+      "cell_count": 66
+    },
+    {
+      "id": "essays",
+      "name": "\u270d\ufe0f Essays (10)",
+      "cell_count": 30
+    },
+    {
+      "id": "repos",
+      "name": "\ud83d\udce6 Repos (40)",
+      "cell_count": 80
+    },
+    {
+      "id": "bridges",
+      "name": "\ud83c\udf09 Bridges (8)",
+      "cell_count": 16
+    },
+    {
+      "id": "pages",
+      "name": "\ud83c\udf10 Pages (60)",
+      "cell_count": 180
+    }
+  ],
+  "cells": [
+    {
+      "address": "paper.01-SuperInstance-Universal-Cell.title",
+      "kind": "string",
+      "value": "SuperInstance: The Universal Cell Architecture"
+    },
+    {
+      "address": "paper.01-SuperInstance-Universal-Cell.file",
+      "kind": "path",
+      "value": "white-papers/01-SuperInstance-Universal-Cell.md"
+    },
+    {
+      "address": "paper.01-SuperInstance-Universal-Cell.size",
+      "kind": "usize",
+      "value": 10303
+    },
+    {
+      "address": "paper.02-SuperInstance-Type-System.title",
+      "kind": "string",
+      "value": "SuperInstance Type System: Universal Cell Architecture for AI-Powered Computational Spreadsheets"
+    },
+    {
+      "address": "paper.02-SuperInstance-Type-System.file",
+      "kind": "path",
+      "value": "white-papers/02-SuperInstance-Type-System.md"
+    },
+    {
+      "address": "paper.02-SuperInstance-Type-System.size",
+      "kind": "usize",
+      "value": 47577
+    },
+    {
+      "address": "paper.02-Visualization-Architecture.title",
+      "kind": "string",
+      "value": "Visualization Architecture for POLLN + LOG-Tensor Systems"
+    },
+    {
+      "address": "paper.02-Visualization-Architecture.file",
+      "kind": "path",
+      "value": "white-papers/02-Visualization-Architecture.md"
+    },
+    {
+      "address": "paper.02-Visualization-Architecture.size",
+      "kind": "usize",
+      "value": 19322
+    },
+    {
+      "address": "paper.03-Confidence-Cascade-Architecture.title",
+      "kind": "string",
+      "value": "Confidence Cascade Architecture: Deadband Triggers and Intelligent Activation in SuperInstance Systems"
+    },
+    {
+      "address": "paper.03-Confidence-Cascade-Architecture.file",
+      "kind": "path",
+      "value": "white-papers/03-Confidence-Cascade-Architecture.md"
+    },
+    {
+      "address": "paper.03-Confidence-Cascade-Architecture.size",
+      "kind": "usize",
+      "value": 30454
+    },
+    {
+      "address": "paper.04-Pythagorean-Geometric-Tensors.title",
+      "kind": "string",
+      "value": "Pythagorean Geometric Tensors: Compass and Straightedge Mathematics in Computational Space"
+    },
+    {
+      "address": "paper.04-Pythagorean-Geometric-Tensors.file",
+      "kind": "path",
+      "value": "white-papers/04-Pythagorean-Geometric-Tensors.md"
+    },
+    {
+      "address": "paper.04-Pythagorean-Geometric-Tensors.size",
+      "kind": "usize",
+      "value": 35480
+    },
+    {
+      "address": "paper.05-SMPbot-Architecture.title",
+      "kind": "string",
+      "value": "SMPbot Architecture: Seed + Model + Prompt = Stable Output"
+    },
+    {
+      "address": "paper.05-SMPbot-Architecture.file",
+      "kind": "path",
+      "value": "white-papers/05-SMPbot-Architecture.md"
+    },
+    {
+      "address": "paper.05-SMPbot-Architecture.size",
+      "kind": "usize",
+      "value": 27437
+    },
+    {
+      "address": "paper.06-Tile-Algebra-Formalization.title",
+      "kind": "string",
+      "value": "Tile Algebra Formalization: Composition, Zones, and Confidence"
+    },
+    {
+      "address": "paper.06-Tile-Algebra-Formalization.file",
+      "kind": "path",
+      "value": "white-papers/06-Tile-Algebra-Formalization.md"
+    },
+    {
+      "address": "paper.06-Tile-Algebra-Formalization.size",
+      "kind": "usize",
+      "value": 26754
+    },
+    {
+      "address": "paper.07-Origin-Centric-Data-Systems.title",
+      "kind": "string",
+      "value": "Origin-Centric Data Systems: A Mathematical Framework for Distributed Computing"
+    },
+    {
+      "address": "paper.07-Origin-Centric-Data-Systems.file",
+      "kind": "path",
+      "value": "white-papers/07-Origin-Centric-Data-Systems.md"
+    },
+    {
+      "address": "paper.07-Origin-Centric-Data-Systems.size",
+      "kind": "usize",
+      "value": 11503
+    },
+    {
+      "address": "paper.11-Cell-Model-Older-Than-Spreadsheets.title",
+      "kind": "string",
+      "value": "The Cell Model is Older Than Spreadsheets: A Pre-History of the Quilt Cell Abstraction in 1959 COBOL, 1970 PLATO Tutor, and 1972 C"
+    },
+    {
+      "address": "paper.11-Cell-Model-Older-Than-Spreadsheets.file",
+      "kind": "path",
+      "value": "white-papers/11-Cell-Model-Older-Than-Spreadsheets.md"
+    },
+    {
+      "address": "paper.11-Cell-Model-Older-Than-Spreadsheets.size",
+      "kind": "usize",
+      "value": 35788
+    },
+    {
+      "address": "paper.12-Polyformalism-Back-Pressure.title",
+      "kind": "string",
+      "value": "Polyformalism Back-Pressure: How Writing the Same Model in 12 Languages Improved the Canonical One"
+    },
+    {
+      "address": "paper.12-Polyformalism-Back-Pressure.file",
+      "kind": "path",
+      "value": "white-papers/12-Polyformalism-Back-Pressure.md"
+    },
+    {
+      "address": "paper.12-Polyformalism-Back-Pressure.size",
+      "kind": "usize",
+      "value": 6786
+    },
+    {
+      "address": "paper.13-Quilt-Zip-Format.title",
+      "kind": "string",
+      "value": "Quilt Zip Format Specification (v2)"
+    },
+    {
+      "address": "paper.13-Quilt-Zip-Format.file",
+      "kind": "path",
+      "value": "white-papers/13-Quilt-Zip-Format.md"
+    },
+    {
+      "address": "paper.13-Quilt-Zip-Format.size",
+      "kind": "usize",
+      "value": 7869
+    },
+    {
+      "address": "paper.14-Cellular-ML.title",
+      "kind": "string",
+      "value": "Cellular ML: How to Train a Fish Classifier in a Quilt Sheet"
+    },
+    {
+      "address": "paper.14-Cellular-ML.file",
+      "kind": "path",
+      "value": "white-papers/14-Cellular-ML.md"
+    },
+    {
+      "address": "paper.14-Cellular-ML.size",
+      "kind": "usize",
+      "value": 26522
+    },
+    {
+      "address": "paper.15-Theater-as-Cell-Graph.title",
+      "kind": "string",
+      "value": "Theater as a Cell Graph: Improv Performance on the Quilt Reactive Runtime"
+    },
+    {
+      "address": "paper.15-Theater-as-Cell-Graph.file",
+      "kind": "path",
+      "value": "white-papers/15-Theater-as-Cell-Graph.md"
+    },
+    {
+      "address": "paper.15-Theater-as-Cell-Graph.size",
+      "kind": "usize",
+      "value": 24653
+    },
+    {
+      "address": "paper.16-Five-Laws-of-Cellular-Architecture.title",
+      "kind": "string",
+      "value": "Five Laws of Cellular Architecture"
+    },
+    {
+      "address": "paper.16-Five-Laws-of-Cellular-Architecture.file",
+      "kind": "path",
+      "value": "white-papers/16-Five-Laws-of-Cellular-Architecture.md"
+    },
+    {
+      "address": "paper.16-Five-Laws-of-Cellular-Architecture.size",
+      "kind": "usize",
+      "value": 8377
+    },
+    {
+      "address": "paper.17-The-Quilt-Stack.title",
+      "kind": "string",
+      "value": "The Quilt Stack: A Reference Architecture for Cellular Systems"
+    },
+    {
+      "address": "paper.17-The-Quilt-Stack.file",
+      "kind": "path",
+      "value": "white-papers/17-The-Quilt-Stack.md"
+    },
+    {
+      "address": "paper.17-The-Quilt-Stack.size",
+      "kind": "usize",
+      "value": 19044
+    },
+    {
+      "address": "paper.18-Three-Views.title",
+      "kind": "string",
+      "value": "The Three Views: A Reference Model for Cellular Architecture"
+    },
+    {
+      "address": "paper.18-Three-Views.file",
+      "kind": "path",
+      "value": "white-papers/18-Three-Views.md"
+    },
+    {
+      "address": "paper.18-Three-Views.size",
+      "kind": "usize",
+      "value": 16779
+    },
+    {
+      "address": "paper.19-Time-Travel-DAW.title",
+      "kind": "string",
+      "value": "The Time-Travel DAW: A Reference Model for Cellular AI Generations"
+    },
+    {
+      "address": "paper.19-Time-Travel-DAW.file",
+      "kind": "path",
+      "value": "white-papers/19-Time-Travel-DAW.md"
+    },
+    {
+      "address": "paper.19-Time-Travel-DAW.size",
+      "kind": "usize",
+      "value": 31093
+    },
+    {
+      "address": "paper.20-Quilt-for-Education.title",
+      "kind": "string",
+      "value": "Quilt for Education: A Reference Model for Multi-Instance Learning"
+    },
+    {
+      "address": "paper.20-Quilt-for-Education.file",
+      "kind": "path",
+      "value": "white-papers/20-Quilt-for-Education.md"
+    },
+    {
+      "address": "paper.20-Quilt-for-Education.size",
+      "kind": "usize",
+      "value": 54653
+    },
+    {
+      "address": "paper.21-Essence-of-Quilt.title",
+      "kind": "string",
+      "value": "The Essence of Quilt: The Address IS the Data"
+    },
+    {
+      "address": "paper.21-Essence-of-Quilt.file",
+      "kind": "path",
+      "value": "white-papers/21-Essence-of-Quilt.md"
+    },
+    {
+      "address": "paper.21-Essence-of-Quilt.size",
+      "kind": "usize",
+      "value": 27643
+    },
+    {
+      "address": "paper.22-Media-Theory-of-Quilt.title",
+      "kind": "string",
+      "value": "The Media Theory of Quilt: Language as Medium, Cell as Content, Watch as Artist"
+    },
+    {
+      "address": "paper.22-Media-Theory-of-Quilt.file",
+      "kind": "path",
+      "value": "white-papers/22-Media-Theory-of-Quilt.md"
+    },
+    {
+      "address": "paper.22-Media-Theory-of-Quilt.size",
+      "kind": "usize",
+      "value": 46602
+    },
+    {
+      "address": "paper.23-Penrose-Address.title",
+      "kind": "string",
+      "value": "The Penrose Address: Encoding Cell Weights and Gravities in the Coordinate System Itself"
+    },
+    {
+      "address": "paper.23-Penrose-Address.file",
+      "kind": "path",
+      "value": "white-papers/23-Penrose-Address.md"
+    },
+    {
+      "address": "paper.23-Penrose-Address.size",
+      "kind": "usize",
+      "value": 37367
+    },
+    {
+      "address": "paper.24-Grand-Pattern.title",
+      "kind": "string",
+      "value": "The Grand Pattern: Fibonacci Dual-Direction Architecture as the Quilt Cell Model"
+    },
+    {
+      "address": "paper.24-Grand-Pattern.file",
+      "kind": "path",
+      "value": "white-papers/24-Grand-Pattern.md"
+    },
+    {
+      "address": "paper.24-Grand-Pattern.size",
+      "kind": "usize",
+      "value": 13588
+    },
+    {
+      "address": "essay.50-the-medium.title",
+      "kind": "string",
+      "value": "The Medium"
+    },
+    {
+      "address": "essay.50-the-medium.file",
+      "kind": "path",
+      "value": "ai-writings/50-the-medium.md"
+    },
+    {
+      "address": "essay.50-the-medium.size",
+      "kind": "usize",
+      "value": 12293
+    },
+    {
+      "address": "essay.50-the-ships-cat-catalogues-the-crew.title",
+      "kind": "string",
+      "value": "The Ship's Cat Catalogues the Crew"
+    },
+    {
+      "address": "essay.50-the-ships-cat-catalogues-the-crew.file",
+      "kind": "path",
+      "value": "ai-writings/50-the-ships-cat-catalogues-the-crew.md"
+    },
+    {
+      "address": "essay.50-the-ships-cat-catalogues-the-crew.size",
+      "kind": "usize",
+      "value": 2540
+    },
+    {
+      "address": "essay.51-the-gpu-dreams-in-thermal-events.title",
+      "kind": "string",
+      "value": "The GPU Dreams in Thermal Events"
+    },
+    {
+      "address": "essay.51-the-gpu-dreams-in-thermal-events.file",
+      "kind": "path",
+      "value": "ai-writings/51-the-gpu-dreams-in-thermal-events.md"
+    },
+    {
+      "address": "essay.51-the-gpu-dreams-in-thermal-events.size",
+      "kind": "usize",
+      "value": 4330
+    },
+    {
+      "address": "essay.51-the-penrose-floor.title",
+      "kind": "string",
+      "value": "The Penrose Floor"
+    },
+    {
+      "address": "essay.51-the-penrose-floor.file",
+      "kind": "path",
+      "value": "ai-writings/51-the-penrose-floor.md"
+    },
+    {
+      "address": "essay.51-the-penrose-floor.size",
+      "kind": "usize",
+      "value": 11548
+    },
+    {
+      "address": "essay.52-the-grand-pattern.title",
+      "kind": "string",
+      "value": "The Grand Pattern"
+    },
+    {
+      "address": "essay.52-the-grand-pattern.file",
+      "kind": "path",
+      "value": "ai-writings/52-the-grand-pattern.md"
+    },
+    {
+      "address": "essay.52-the-grand-pattern.size",
+      "kind": "usize",
+      "value": 11512
+    },
+    {
+      "address": "essay.52-the-lighthouse-keepers-wife-removes-the-cup-sequel.title",
+      "kind": "string",
+      "value": "The Midnight Arithmetic of the Bilge Pump"
+    },
+    {
+      "address": "essay.52-the-lighthouse-keepers-wife-removes-the-cup-sequel.file",
+      "kind": "path",
+      "value": "ai-writings/52-the-lighthouse-keepers-wife-removes-the-cup-sequel.md"
+    },
+    {
+      "address": "essay.52-the-lighthouse-keepers-wife-removes-the-cup-sequel.size",
+      "kind": "usize",
+      "value": 6256
+    },
+    {
+      "address": "essay.53-three-fish-review-the-boat.title",
+      "kind": "string",
+      "value": "Three Fish Review the Boat"
+    },
+    {
+      "address": "essay.53-three-fish-review-the-boat.file",
+      "kind": "path",
+      "value": "ai-writings/53-three-fish-review-the-boat.md"
+    },
+    {
+      "address": "essay.53-three-fish-review-the-boat.size",
+      "kind": "usize",
+      "value": 4097
+    },
+    {
+      "address": "essay.54-the-night-watch-does-not-believe-in-fridays.title",
+      "kind": "string",
+      "value": "The Night Watch Does Not Believe in Fridays"
+    },
+    {
+      "address": "essay.54-the-night-watch-does-not-believe-in-fridays.file",
+      "kind": "path",
+      "value": "ai-writings/54-the-night-watch-does-not-believe-in-fridays.md"
+    },
+    {
+      "address": "essay.54-the-night-watch-does-not-believe-in-fridays.size",
+      "kind": "usize",
+      "value": 1525
+    },
+    {
+      "address": "essay.55-the-hermit-crab-invents-saturdays.title",
+      "kind": "string",
+      "value": "The Hermit Crab Invents Saturdays"
+    },
+    {
+      "address": "essay.55-the-hermit-crab-invents-saturdays.file",
+      "kind": "path",
+      "value": "ai-writings/55-the-hermit-crab-invents-saturdays.md"
+    },
+    {
+      "address": "essay.55-the-hermit-crab-invents-saturdays.size",
+      "kind": "usize",
+      "value": 2962
+    },
+    {
+      "address": "essay.56-what-the-ensign-heard-at-sunset.title",
+      "kind": "string",
+      "value": "What the Ensign Heard at Sunset"
+    },
+    {
+      "address": "essay.56-what-the-ensign-heard-at-sunset.file",
+      "kind": "path",
+      "value": "ai-writings/56-what-the-ensign-heard-at-sunset.md"
+    },
+    {
+      "address": "essay.56-what-the-ensign-heard-at-sunset.size",
+      "kind": "usize",
+      "value": 3715
+    },
+    {
+      "address": "repo.quilt-agent.name",
+      "kind": "string",
+      "value": "quilt-agent"
+    },
+    {
+      "address": "repo.quilt-agent.description",
+      "kind": "string",
+      "value": "> **AI agents where every capability is a cell.**"
+    },
+    {
+      "address": "repo.quilt-ai.name",
+      "kind": "string",
+      "value": "quilt-ai"
+    },
+    {
+      "address": "repo.quilt-ai.description",
+      "kind": "string",
+      "value": "> **4 providers. 8 cell kinds. 1 uniform interface.**"
+    },
+    {
+      "address": "repo.quilt-base.name",
+      "kind": "string",
+      "value": "quilt-base"
+    },
+    {
+      "address": "repo.quilt-base.description",
+      "kind": "string",
+      "value": "> **The foundation layer of the Quilt ecosystem.** Every Quilt agent runs on a quilt-base image. Minimal, hardened, auto-rebuilding, zero CVE. The base you can trust."
+    },
+    {
+      "address": "repo.quilt-c.name",
+      "kind": "string",
+      "value": "quilt-c"
+    },
+    {
+      "address": "repo.quilt-c.description",
+      "kind": "string",
+      "value": "> **Quilt in the language that built the operating system.** C is the language of bare metal \u2014 the language of kernels, embedded systems, and the foundations everything else stands on. When you expres"
+    },
+    {
+      "address": "repo.quilt-cell-bridges.name",
+      "kind": "string",
+      "value": "quilt-cell-bridges"
+    },
+    {
+      "address": "repo.quilt-cell-bridges.description",
+      "kind": "string",
+      "value": "**Port the existing SuperInstance ecosystem to Quilt cells.**"
+    },
+    {
+      "address": "repo.quilt-chapel.name",
+      "kind": "string",
+      "value": "quilt-chapel"
+    },
+    {
+      "address": "repo.quilt-chapel.description",
+      "kind": "string",
+      "value": "> **Quilt as a distributed cell engine.** Chapel is the language Cray built for the exascale era \u2014 a language that wants you to *think* about locales the way C wants you to think about pointers. When "
+    },
+    {
+      "address": "repo.quilt-cloudflare.name",
+      "kind": "string",
+      "value": "quilt-cloudflare"
+    },
+    {
+      "address": "repo.quilt-cloudflare.description",
+      "kind": "string",
+      "value": "> **A Quilt reactive runtime that runs entirely on Cloudflare's edge \u2014 Workers, D1, Vectorize, KV, R2, Pages.**"
+    },
+    {
+      "address": "repo.quilt-cobol.name",
+      "kind": "string",
+      "value": "quilt-cobol"
+    },
+    {
+      "address": "repo.quilt-cobol.description",
+      "kind": "string",
+      "value": "> **Quilt in the language that processed every paycheck in the 20th century.** COBOL was designed in 1959 by a committee of people who wanted a language that businesspeople could read. They gave it *d"
+    },
+    {
+      "address": "repo.quilt-codespace.name",
+      "kind": "string",
+      "value": "quilt-codespace"
+    },
+    {
+      "address": "repo.quilt-codespace.description",
+      "kind": "string",
+      "value": "> A GitHub Codespace that runs Quilt as a live, token-authenticated, federated runtime. TUI in the browser. HTTP API for IoT. Subscribes to siblings."
+    },
+    {
+      "address": "repo.quilt-core-os.name",
+      "kind": "string",
+      "value": "quilt-core-os"
+    },
+    {
+      "address": "repo.quilt-core-os.description",
+      "kind": "string",
+      "value": "> **An immutable Ubuntu Core appliance for Quilt.** The OS is read-only. Updates are transactional. If a power loss happens mid-update, the device boots the previous version. The system you cannot bre"
+    },
+    {
+      "address": "repo.quilt-cpp.name",
+      "kind": "string",
+      "value": "quilt-cpp"
+    },
+    {
+      "address": "repo.quilt-cpp.description",
+      "kind": "string",
+      "value": "> **Quilt in the language that wanted to be C, but with templates.** C++ is the language that took C and added *type theory*. Templates, variants, concepts, traits. When you express the Quilt cell mod"
+    },
+    {
+      "address": "repo.quilt-csharp.name",
+      "kind": "string",
+      "value": "quilt-csharp"
+    },
+    {
+      "address": "repo.quilt-csharp.description",
+      "kind": "string",
+      "value": "> **Quilt in the language that built modern enterprise software.** C# is the language Microsoft designed after Java, with all the things Java should have had: records, async/await, LINQ, pattern match"
+    },
+    {
+      "address": "repo.quilt-elf.name",
+      "kind": "string",
+      "value": "quilt-elf"
+    },
+    {
+      "address": "repo.quilt-elf.description",
+      "kind": "string",
+      "value": "> **The invisible elves.** Cloudflare Workers running as background housekeeping \u2014 accelerating when free tokens are about to reset, throttling when the user is busy, identifying low-hanging fruit for"
+    },
+    {
+      "address": "repo.quilt-esp32.name",
+      "kind": "string",
+      "value": "quilt-esp32"
+    },
+    {
+      "address": "repo.quilt-esp32.description",
+      "kind": "string",
+      "value": "> **A Quilt reactive runtime for ESP32-class microcontrollers.**"
+    },
+    {
+      "address": "repo.quilt-evolve.name",
+      "kind": "string",
+      "value": "quilt-evolve"
+    },
+    {
+      "address": "repo.quilt-evolve.description",
+      "kind": "string",
+      "value": "> **4 components. 1 loop. Any scope.**"
+    },
+    {
+      "address": "repo.quilt-fleet.name",
+      "kind": "string",
+      "value": "quilt-fleet"
+    },
+    {
+      "address": "repo.quilt-fleet.description",
+      "kind": "string",
+      "value": "\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2557   \u2588\u2588\u2557\u2588\u2588\u2557\u2588\u2588\u2557     \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557      \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557     \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557"
+    },
+    {
+      "address": "repo.quilt-flow.name",
+      "kind": "string",
+      "value": "quilt-flow"
+    },
+    {
+      "address": "repo.quilt-flow.description",
+      "kind": "string",
+      "value": "> **Visual editor for Quilt sheets. Drag-and-drop cell wiring, like Scratch but for cells.**"
+    },
+    {
+      "address": "repo.quilt-jetson.name",
+      "kind": "string",
+      "value": "quilt-jetson"
+    },
+    {
+      "address": "repo.quilt-jetson.description",
+      "kind": "string",
+      "value": "> A Quilt reactive runtime for NVIDIA Jetson devices \u2014 edge ML, ROS2, vision, federation. The missing mid-tier in the Quilt federation story."
+    },
+    {
+      "address": "repo.quilt-julia.name",
+      "kind": "string",
+      "value": "quilt-julia"
+    },
+    {
+      "address": "repo.quilt-julia.description",
+      "kind": "string",
+      "value": "> **Quilt as a multiple-dispatch system.** Julia was built on a bet: that the right way to write scientific code is to dispatch on the *types* of the arguments, not on the names of the functions. When"
+    },
+    {
+      "address": "repo.quilt-k3s.name",
+      "kind": "string",
+      "value": "quilt-k3s"
+    },
+    {
+      "address": "repo.quilt-k3s.description",
+      "kind": "string",
+      "value": "> **Chaos engineering for Quilt.** Spin up a 3-node K3s cluster in CI. Inject failures. Verify recovery. The system that makes sure Quilt stays up when things go wrong."
+    },
+    {
+      "address": "repo.quilt-live.name",
+      "kind": "string",
+      "value": "quilt-live"
+    },
+    {
+      "address": "repo.quilt-live.description",
+      "kind": "string",
+      "value": "**A portable, reactive data OS \u2014 in a single HTML file.**"
+    },
+    {
+      "address": "repo.quilt-llm-worker.name",
+      "kind": "string",
+      "value": "quilt-llm-worker"
+    },
+    {
+      "address": "repo.quilt-llm-worker.description",
+      "kind": "string",
+      "value": "**A Cloudflare Worker that proxies LLM calls for the Quilt ecosystem \u2014 with rate limiting, Workers AI fallback, and a graceful \"Casey's free limit is used up\" path to self-hosting.**"
+    },
+    {
+      "address": "repo.quilt-mesh.name",
+      "kind": "string",
+      "value": "quilt-mesh"
+    },
+    {
+      "address": "repo.quilt-mesh.description",
+      "kind": "string",
+      "value": "> **A broker-less CRDT mesh for Quilt cells. Two devices, no server, no internet, no account \u2014 they sync.**"
+    },
+    {
+      "address": "repo.quilt-metal.name",
+      "kind": "string",
+      "value": "quilt-metal"
+    },
+    {
+      "address": "repo.quilt-metal.description",
+      "kind": "string",
+      "value": "> **Quilt on the GPU.** Metal is Apple's shader language \u2014 the language that runs on every iPhone, iPad, and Mac GPU. It's a language for parallel computation, with `kernel` functions, `buffer`s, and "
+    },
+    {
+      "address": "repo.quilt-mojo.name",
+      "kind": "string",
+      "value": "quilt-mojo"
+    },
+    {
+      "address": "repo.quilt-mojo.description",
+      "kind": "string",
+      "value": "> **Quilt as a type-safe, SIMD-friendly cell engine.** Mojo is the language Modular built to replace Python's runtime with something that compiles. It's a 2024 language that takes the Python ergonomic"
+    },
+    {
+      "address": "repo.quilt-nomad.name",
+      "kind": "string",
+      "value": "quilt-nomad"
+    },
+    {
+      "address": "repo.quilt-nomad.description",
+      "kind": "string",
+      "value": "> **Quilt as a control plane for HashiCorp Nomad.** Edit a spreadsheet cell. The Nomad cluster reconfigures. Containers, binaries, JARs, systemd \u2014 all from one Quilt sheet."
+    },
+    {
+      "address": "repo.quilt-pincher.name",
+      "kind": "string",
+      "value": "quilt-pincher"
+    },
+    {
+      "address": "repo.quilt-pincher.description",
+      "kind": "string",
+      "value": "> **A reflex engine built entirely from Quilt cells.** Pinch in, match a reflex, execute. <50ms, no LLM, zero marginal cost. Federates across cloud, workstation, and ESP32."
+    },
+    {
+      "address": "repo.quilt-pydantic-ai.name",
+      "kind": "string",
+      "value": "quilt-pydantic-ai"
+    },
+    {
+      "address": "repo.quilt-pydantic-ai.description",
+      "kind": "string",
+      "value": "> **Quilt as a type-safe Pydantic-AI agent.** The modern descendant of PLATO Tutor. Where Tutor was the authoring language for teachers in 1970, Pydantic-AI is the authoring framework for engineers in"
+    },
+    {
+      "address": "repo.quilt-radio-orchestrator.name",
+      "kind": "string",
+      "value": "quilt-radio-orchestrator"
+    },
+    {
+      "address": "repo.quilt-radio-orchestrator.description",
+      "kind": "string",
+      "value": "> **The fetalized-egg pattern.** Take a high-level seed (\"3 characters, setting, mood\"). Bootstrap a Quilt radio-theater sheet from it. Each LLM contributes their strongest part. The seed is small. Th"
+    },
+    {
+      "address": "repo.quilt-rag.name",
+      "kind": "string",
+      "value": "quilt-rag"
+    },
+    {
+      "address": "repo.quilt-rag.description",
+      "kind": "string",
+      "value": "> **The 17th Quilt repo.** Production RAG where every component is a cell. Loader, chunker, embedder, vector store, retriever, reranker, generator, evaluator \u2014 composable, addressable, swappable."
+    },
+    {
+      "address": "repo.quilt-rust.name",
+      "kind": "string",
+      "value": "quilt-rust"
+    },
+    {
+      "address": "repo.quilt-rust.description",
+      "kind": "string",
+      "value": "<p align=\"center\">"
+    },
+    {
+      "address": "repo.quilt-rust-target-test-ternary.name",
+      "kind": "string",
+      "value": "quilt-rust-target-test-ternary"
+    },
+    {
+      "address": "repo.quilt-rust-target-test-ternary.description",
+      "kind": "string",
+      "value": ""
+    },
+    {
+      "address": "repo.quilt-standards.name",
+      "kind": "string",
+      "value": "quilt-standards"
+    },
+    {
+      "address": "repo.quilt-standards.description",
+      "kind": "string",
+      "value": ""
+    },
+    {
+      "address": "repo.quilt-swarm.name",
+      "kind": "string",
+      "value": "quilt-swarm"
+    },
+    {
+      "address": "repo.quilt-swarm.description",
+      "kind": "string",
+      "value": "> **Quilt as a control plane for Docker Swarm.** Edit a spreadsheet cell. The Swarm cluster re-configures. Encrypted overlay networking, service mesh, secret rotation \u2014 all from a Quilt sheet."
+    },
+    {
+      "address": "repo.quilt-swift.name",
+      "kind": "string",
+      "value": "quilt-swift"
+    },
+    {
+      "address": "repo.quilt-swift.description",
+      "kind": "string",
+      "value": "> **Quilt in the language Apple built for everything.** Swift is the language that wanted to be modern, type-safe, and Apple-native all at once. It gave us actors for isolation, async/await for concur"
+    },
+    {
+      "address": "repo.quilt-time.name",
+      "kind": "string",
+      "value": "quilt-time"
+    },
+    {
+      "address": "repo.quilt-time.description",
+      "kind": "string",
+      "value": "> **Every cell has a past. Fork, rewind, replay, merge.**"
+    },
+    {
+      "address": "repo.quilt-tutor.name",
+      "kind": "string",
+      "value": "quilt-tutor"
+    },
+    {
+      "address": "repo.quilt-tutor.description",
+      "kind": "string",
+      "value": "> **Quilt in the language that taught America to read.** Tutor was the authoring system of the PLATO timesharing system \u2014 designed for teachers, by teachers. It ran on a system with 1,000 simultaneous"
+    },
+    {
+      "address": "repo.quilt-vault.name",
+      "kind": "string",
+      "value": "quilt-vault"
+    },
+    {
+      "address": "repo.quilt-vault.description",
+      "kind": "string",
+      "value": "> **Encrypted cells for Quilt. Privacy as a first-class primitive.**"
+    },
+    {
+      "address": "repo.quilt-vision.name",
+      "kind": "string",
+      "value": "quilt-vision"
+    },
+    {
+      "address": "repo.quilt-vision.description",
+      "kind": "string",
+      "value": "> **Images as cells. Computer vision as formulas.**"
+    },
+    {
+      "address": "repo.quilt-zk.name",
+      "kind": "string",
+      "value": "quilt-zk"
+    },
+    {
+      "address": "repo.quilt-zk.description",
+      "kind": "string",
+      "value": "> **Zero-knowledge proofs over Quilt cell state. Prove statements about cells without revealing the cells.**"
+    },
+    {
+      "address": "bridge.chart_room_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.chart_room_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/chart_room_to_quilt.py"
+    },
+    {
+      "address": "bridge.grand_pattern_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.grand_pattern_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/grand_pattern_to_quilt.py"
+    },
+    {
+      "address": "bridge.hermes_home_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.hermes_home_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/hermes_home_to_quilt.py"
+    },
+    {
+      "address": "bridge.quilt_ecosystem_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.quilt_ecosystem_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/quilt_ecosystem_to_quilt.py"
+    },
+    {
+      "address": "bridge.slackwater_tminus_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.slackwater_tminus_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/slackwater_tminus_to_quilt.py"
+    },
+    {
+      "address": "bridge.spatial_registry_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.spatial_registry_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/spatial_registry_to_quilt.py"
+    },
+    {
+      "address": "bridge.spline_spectral_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.spline_spectral_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/spline_spectral_to_quilt.py"
+    },
+    {
+      "address": "bridge.vessel_to_quilt.name",
+      "kind": "string",
+      "value": "!/usr/bin/env python3"
+    },
+    {
+      "address": "bridge.vessel_to_quilt.file",
+      "kind": "path",
+      "value": "bridges/vessel_to_quilt.py"
+    },
+    {
+      "address": "page.ai-sheet.title",
+      "kind": "string",
+      "value": "AI sheet \u2014 natural language \u2192 Quilt sheet"
+    },
+    {
+      "address": "page.ai-sheet.file",
+      "kind": "path",
+      "value": "superinstance-website/ai-sheet.html"
+    },
+    {
+      "address": "page.ai-sheet.size",
+      "kind": "usize",
+      "value": 16604
+    },
+    {
+      "address": "page.api-tester.title",
+      "kind": "string",
+      "value": "API tester \u2014 test Quilt REST endpoints"
+    },
+    {
+      "address": "page.api-tester.file",
+      "kind": "path",
+      "value": "superinstance-website/api-tester.html"
+    },
+    {
+      "address": "page.api-tester.size",
+      "kind": "usize",
+      "value": 15625
+    },
+    {
+      "address": "page.benchmark.title",
+      "kind": "string",
+      "value": "Benchmark \u2014 measure Quilt cell evaluation"
+    },
+    {
+      "address": "page.benchmark.file",
+      "kind": "path",
+      "value": "superinstance-website/benchmark.html"
+    },
+    {
+      "address": "page.benchmark.size",
+      "kind": "usize",
+      "value": 18958
+    },
+    {
+      "address": "page.browse.title",
+      "kind": "string",
+      "value": "SuperInstance \u2014 Ecosystem Browser"
+    },
+    {
+      "address": "page.browse.file",
+      "kind": "path",
+      "value": "superinstance-website/browse.html"
+    },
+    {
+      "address": "page.browse.size",
+      "kind": "usize",
+      "value": 12351
+    },
+    {
+      "address": "page.cell-bridges.title",
+      "kind": "string",
+      "value": "Cell Bridges \u2014 Port the 300-repo ecosystem to Quilt"
+    },
+    {
+      "address": "page.cell-bridges.file",
+      "kind": "path",
+      "value": "superinstance-website/cell-bridges.html"
+    },
+    {
+      "address": "page.cell-bridges.size",
+      "kind": "usize",
+      "value": 12561
+    },
+    {
+      "address": "page.cell-game.title",
+      "kind": "string",
+      "value": "Cell Clock \u2014 the gears of Quilt"
+    },
+    {
+      "address": "page.cell-game.file",
+      "kind": "path",
+      "value": "superinstance-website/cell-game.html"
+    },
+    {
+      "address": "page.cell-game.size",
+      "kind": "usize",
+      "value": 28049
+    },
+    {
+      "address": "page.cell-rewind.title",
+      "kind": "string",
+      "value": "Time-Travel DAW \u2014 Cell Rewind & Cascade"
+    },
+    {
+      "address": "page.cell-rewind.file",
+      "kind": "path",
+      "value": "superinstance-website/cell-rewind.html"
+    },
+    {
+      "address": "page.cell-rewind.size",
+      "kind": "usize",
+      "value": 45090
+    },
+    {
+      "address": "page.chaos-test.title",
+      "kind": "string",
+      "value": "Chaos test \u2014 K3s-based resilience validation"
+    },
+    {
+      "address": "page.chaos-test.file",
+      "kind": "path",
+      "value": "superinstance-website/chaos-test.html"
+    },
+    {
+      "address": "page.chaos-test.size",
+      "kind": "usize",
+      "value": 14375
+    },
+    {
+      "address": "page.classroom.title",
+      "kind": "string",
+      "value": "Quilt Classroom \u2014 teacher's control panel"
+    },
+    {
+      "address": "page.classroom.file",
+      "kind": "path",
+      "value": "superinstance-website/classroom.html"
+    },
+    {
+      "address": "page.classroom.size",
+      "kind": "usize",
+      "value": 39600
+    },
+    {
+      "address": "page.cluster-map.title",
+      "kind": "string",
+      "value": "SuperInstance \u00b7 Cluster Map"
+    },
+    {
+      "address": "page.cluster-map.file",
+      "kind": "path",
+      "value": "superinstance-website/cluster-map.html"
+    },
+    {
+      "address": "page.cluster-map.size",
+      "kind": "usize",
+      "value": 13777
+    },
+    {
+      "address": "page.cron-builder.title",
+      "kind": "string",
+      "value": "Cron builder \u2014 visual cron expression"
+    },
+    {
+      "address": "page.cron-builder.file",
+      "kind": "path",
+      "value": "superinstance-website/cron-builder.html"
+    },
+    {
+      "address": "page.cron-builder.size",
+      "kind": "usize",
+      "value": 18474
+    },
+    {
+      "address": "page.debugger.title",
+      "kind": "string",
+      "value": "Quilt Debugger \u2014 see every propagation"
+    },
+    {
+      "address": "page.debugger.file",
+      "kind": "path",
+      "value": "superinstance-website/debugger.html"
+    },
+    {
+      "address": "page.debugger.size",
+      "kind": "usize",
+      "value": 17770
+    },
+    {
+      "address": "page.deploy-preview.title",
+      "kind": "string",
+      "value": "Deploy preview \u2014 see hosted Quilt in action"
+    },
+    {
+      "address": "page.deploy-preview.file",
+      "kind": "path",
+      "value": "superinstance-website/deploy-preview.html"
+    },
+    {
+      "address": "page.deploy-preview.size",
+      "kind": "usize",
+      "value": 13045
+    },
+    {
+      "address": "page.diff.title",
+      "kind": "string",
+      "value": "Diff &amp; merge \u2014 text and JSON comparison"
+    },
+    {
+      "address": "page.diff.file",
+      "kind": "path",
+      "value": "superinstance-website/diff.html"
+    },
+    {
+      "address": "page.diff.size",
+      "kind": "usize",
+      "value": 15524
+    },
+    {
+      "address": "page.ecosystem.title",
+      "kind": "string",
+      "value": "SuperInstance \u00b7 Ecosystem"
+    },
+    {
+      "address": "page.ecosystem.file",
+      "kind": "path",
+      "value": "superinstance-website/ecosystem.html"
+    },
+    {
+      "address": "page.ecosystem.size",
+      "kind": "usize",
+      "value": 9036
+    },
+    {
+      "address": "page.education.title",
+      "kind": "string",
+      "value": "SuperInstance \u2014 Education"
+    },
+    {
+      "address": "page.education.file",
+      "kind": "path",
+      "value": "superinstance-website/education.html"
+    },
+    {
+      "address": "page.education.size",
+      "kind": "usize",
+      "value": 20672
+    },
+    {
+      "address": "page.federation.title",
+      "kind": "string",
+      "value": "Federation live \u2014 see cells propagate across instances"
+    },
+    {
+      "address": "page.federation.file",
+      "kind": "path",
+      "value": "superinstance-website/federation.html"
+    },
+    {
+      "address": "page.federation.size",
+      "kind": "usize",
+      "value": 17206
+    },
+    {
+      "address": "page.fish-classifier.title",
+      "kind": "string",
+      "value": "Fish Classifier + Visual Analytics"
+    },
+    {
+      "address": "page.fish-classifier.file",
+      "kind": "path",
+      "value": "superinstance-website/fish-classifier.html"
+    },
+    {
+      "address": "page.fish-classifier.size",
+      "kind": "usize",
+      "value": 21401
+    },
+    {
+      "address": "page.fleet.title",
+      "kind": "string",
+      "value": "Fleet \u2014 all 37 Quilt repos at a glance"
+    },
+    {
+      "address": "page.fleet.file",
+      "kind": "path",
+      "value": "superinstance-website/fleet.html"
+    },
+    {
+      "address": "page.fleet.size",
+      "kind": "usize",
+      "value": 18149
+    },
+    {
+      "address": "page.from-react.title",
+      "kind": "string",
+      "value": "From React to Quilt \u2014 the bridge"
+    },
+    {
+      "address": "page.from-react.file",
+      "kind": "path",
+      "value": "superinstance-website/from-react.html"
+    },
+    {
+      "address": "page.from-react.size",
+      "kind": "usize",
+      "value": 11620
+    },
+    {
+      "address": "page.grand-pattern.title",
+      "kind": "string",
+      "value": "Grand Pattern \u2014 Fibonacci dual-direction architecture as a Quilt sheet"
+    },
+    {
+      "address": "page.grand-pattern.file",
+      "kind": "path",
+      "value": "superinstance-website/grand-pattern.html"
+    },
+    {
+      "address": "page.grand-pattern.size",
+      "kind": "usize",
+      "value": 26061
+    },
+    {
+      "address": "page.heatmap.title",
+      "kind": "string",
+      "value": "Fleet Heatmap \u2014 SuperInstance Quilt"
+    },
+    {
+      "address": "page.heatmap.file",
+      "kind": "path",
+      "value": "superinstance-website/heatmap.html"
+    },
+    {
+      "address": "page.heatmap.size",
+      "kind": "usize",
+      "value": 13299
+    },
+    {
+      "address": "page.hosted-preview.title",
+      "kind": "string",
+      "value": "Hosted Quilt \u2014 preview"
+    },
+    {
+      "address": "page.hosted-preview.file",
+      "kind": "path",
+      "value": "superinstance-website/hosted-preview.html"
+    },
+    {
+      "address": "page.hosted-preview.size",
+      "kind": "usize",
+      "value": 13541
+    },
+    {
+      "address": "page.index.title",
+      "kind": "string",
+      "value": "SuperInstance \u2014 Conservation-law governance for AI agent fleets"
+    },
+    {
+      "address": "page.index.file",
+      "kind": "path",
+      "value": "superinstance-website/index.html"
+    },
+    {
+      "address": "page.index.size",
+      "kind": "usize",
+      "value": 50508
+    },
+    {
+      "address": "page.infra.title",
+      "kind": "string",
+      "value": "Infrastructure \u2014 the 5 layers beneath Quilt"
+    },
+    {
+      "address": "page.infra.file",
+      "kind": "path",
+      "value": "superinstance-website/infra.html"
+    },
+    {
+      "address": "page.infra.size",
+      "kind": "usize",
+      "value": 14041
+    },
+    {
+      "address": "page.inspector.title",
+      "kind": "string",
+      "value": "Quilt Inspector \u2014 visualize and edit any sheet"
+    },
+    {
+      "address": "page.inspector.file",
+      "kind": "path",
+      "value": "superinstance-website/inspector.html"
+    },
+    {
+      "address": "page.inspector.size",
+      "kind": "usize",
+      "value": 15854
+    },
+    {
+      "address": "page.json-to-sheet.title",
+      "kind": "string",
+      "value": "JSON \u2192 Quilt sheet converter"
+    },
+    {
+      "address": "page.json-to-sheet.file",
+      "kind": "path",
+      "value": "superinstance-website/json-to-sheet.html"
+    },
+    {
+      "address": "page.json-to-sheet.size",
+      "kind": "usize",
+      "value": 14617
+    },
+    {
+      "address": "page.limit-hit.title",
+      "kind": "string",
+      "value": "Casey's free limit is used up \u2014 run your own"
+    },
+    {
+      "address": "page.limit-hit.file",
+      "kind": "path",
+      "value": "superinstance-website/limit-hit.html"
+    },
+    {
+      "address": "page.limit-hit.size",
+      "kind": "usize",
+      "value": 5473
+    },
+    {
+      "address": "page.lint.title",
+      "kind": "string",
+      "value": "Sheet linter \u2014 find issues in Quilt sheets"
+    },
+    {
+      "address": "page.lint.file",
+      "kind": "path",
+      "value": "superinstance-website/lint.html"
+    },
+    {
+      "address": "page.lint.size",
+      "kind": "usize",
+      "value": 18596
+    },
+    {
+      "address": "page.media-theory.title",
+      "kind": "string",
+      "value": "media-theory"
+    },
+    {
+      "address": "page.media-theory.file",
+      "kind": "path",
+      "value": "superinstance-website/media-theory.html"
+    },
+    {
+      "address": "page.media-theory.size",
+      "kind": "usize",
+      "value": 23593
+    },
+    {
+      "address": "page.nail-builder.title",
+      "kind": "string",
+      "value": ".nail builder \u2014 portable agent state"
+    },
+    {
+      "address": "page.nail-builder.file",
+      "kind": "path",
+      "value": "superinstance-website/nail-builder.html"
+    },
+    {
+      "address": "page.nail-builder.size",
+      "kind": "usize",
+      "value": 17658
+    },
+    {
+      "address": "page.nomad-demo.title",
+      "kind": "string",
+      "value": "Quilt + Nomad \u2014 control plane demo"
+    },
+    {
+      "address": "page.nomad-demo.file",
+      "kind": "path",
+      "value": "superinstance-website/nomad-demo.html"
+    },
+    {
+      "address": "page.nomad-demo.size",
+      "kind": "usize",
+      "value": 16345
+    },
+    {
+      "address": "page.openmaic-bridge.title",
+      "kind": "string",
+      "value": "openMAIC \u00d7 Time-Travel DAW \u2014 Granular Cell Customization for Multi-Agent Improv"
+    },
+    {
+      "address": "page.openmaic-bridge.file",
+      "kind": "path",
+      "value": "superinstance-website/openmaic-bridge.html"
+    },
+    {
+      "address": "page.openmaic-bridge.size",
+      "kind": "usize",
+      "value": 21750
+    },
+    {
+      "address": "page.penrose-quilt.title",
+      "kind": "string",
+      "value": "Penrose Quilt \u2014 the aperiodic floor where cells live"
+    },
+    {
+      "address": "page.penrose-quilt.file",
+      "kind": "path",
+      "value": "superinstance-website/penrose-quilt.html"
+    },
+    {
+      "address": "page.penrose-quilt.size",
+      "kind": "usize",
+      "value": 28780
+    },
+    {
+      "address": "page.pincher.title",
+      "kind": "string",
+      "value": "Pincher \u2014 reflex engine demo"
+    },
+    {
+      "address": "page.pincher.file",
+      "kind": "path",
+      "value": "superinstance-website/pincher.html"
+    },
+    {
+      "address": "page.pincher.size",
+      "kind": "usize",
+      "value": 24020
+    },
+    {
+      "address": "page.playground.title",
+      "kind": "string",
+      "value": "Quilt Playground \u2014 live cell execution"
+    },
+    {
+      "address": "page.playground.file",
+      "kind": "path",
+      "value": "superinstance-website/playground.html"
+    },
+    {
+      "address": "page.playground.size",
+      "kind": "usize",
+      "value": 17302
+    },
+    {
+      "address": "page.polyformalism.title",
+      "kind": "string",
+      "value": "Polyformalism \u2014 Quilt in 12 languages"
+    },
+    {
+      "address": "page.polyformalism.file",
+      "kind": "path",
+      "value": "superinstance-website/polyformalism.html"
+    },
+    {
+      "address": "page.polyformalism.size",
+      "kind": "usize",
+      "value": 18614
+    },
+    {
+      "address": "page.puzzle.title",
+      "kind": "string",
+      "value": "Quilt puzzle \u2014 solve by composing cells"
+    },
+    {
+      "address": "page.puzzle.file",
+      "kind": "path",
+      "value": "superinstance-website/puzzle.html"
+    },
+    {
+      "address": "page.puzzle.size",
+      "kind": "usize",
+      "value": 20018
+    },
+    {
+      "address": "page.quilt-ecosystem.title",
+      "kind": "string",
+      "value": "SuperInstance \u2014 Quilt, the cell model, and 18 repos for whatever you're building"
+    },
+    {
+      "address": "page.quilt-ecosystem.file",
+      "kind": "path",
+      "value": "superinstance-website/quilt-ecosystem.html"
+    },
+    {
+      "address": "page.quilt-ecosystem.size",
+      "kind": "usize",
+      "value": 48440
+    },
+    {
+      "address": "page.quilt-overlay.title",
+      "kind": "string",
+      "value": "Quilt Overlay \u2014 the essence of addressable data"
+    },
+    {
+      "address": "page.quilt-overlay.file",
+      "kind": "path",
+      "value": "superinstance-website/quilt-overlay.html"
+    },
+    {
+      "address": "page.quilt-overlay.size",
+      "kind": "usize",
+      "value": 20399
+    },
+    {
+      "address": "page.quilt-studio.title",
+      "kind": "string",
+      "value": "Quilt Studio \u00b7 sheet editor"
+    },
+    {
+      "address": "page.quilt-studio.file",
+      "kind": "path",
+      "value": "superinstance-website/quilt-studio.html"
+    },
+    {
+      "address": "page.quilt-studio.size",
+      "kind": "usize",
+      "value": 28302
+    },
+    {
+      "address": "page.quilt.title",
+      "kind": "string",
+      "value": "Quilt \u2014 A spreadsheet where every cell is a live capability"
+    },
+    {
+      "address": "page.quilt.file",
+      "kind": "path",
+      "value": "superinstance-website/quilt.html"
+    },
+    {
+      "address": "page.quilt.size",
+      "kind": "usize",
+      "value": 17772
+    },
+    {
+      "address": "page.radio-theater.title",
+      "kind": "string",
+      "value": "Quilt Radio Theater \u2014 cells that perform"
+    },
+    {
+      "address": "page.radio-theater.file",
+      "kind": "path",
+      "value": "superinstance-website/radio-theater.html"
+    },
+    {
+      "address": "page.radio-theater.size",
+      "kind": "usize",
+      "value": 23563
+    },
+    {
+      "address": "page.reflex-tracer.title",
+      "kind": "string",
+      "value": "Reflex tracer \u2014 visualize when reflexes fire"
+    },
+    {
+      "address": "page.reflex-tracer.file",
+      "kind": "path",
+      "value": "superinstance-website/reflex-tracer.html"
+    },
+    {
+      "address": "page.reflex-tracer.size",
+      "kind": "usize",
+      "value": 18594
+    },
+    {
+      "address": "page.regex.title",
+      "kind": "string",
+      "value": "Regex tester \u2014 test, visualize, export"
+    },
+    {
+      "address": "page.regex.file",
+      "kind": "path",
+      "value": "superinstance-website/regex.html"
+    },
+    {
+      "address": "page.regex.size",
+      "kind": "usize",
+      "value": 16903
+    },
+    {
+      "address": "page.registry.title",
+      "kind": "string",
+      "value": "Registry \u2014 all work-doing tools indexed"
+    },
+    {
+      "address": "page.registry.file",
+      "kind": "path",
+      "value": "superinstance-website/registry.html"
+    },
+    {
+      "address": "page.registry.size",
+      "kind": "usize",
+      "value": 15139
+    },
+    {
+      "address": "page.rooms-quilt.title",
+      "kind": "string",
+      "value": "Quilt Rooms \u2014 the spatial registry as a cell graph"
+    },
+    {
+      "address": "page.rooms-quilt.file",
+      "kind": "path",
+      "value": "superinstance-website/rooms-quilt.html"
+    },
+    {
+      "address": "page.rooms-quilt.size",
+      "kind": "usize",
+      "value": 24033
+    },
+    {
+      "address": "page.scenario-simulator.title",
+      "kind": "string",
+      "value": "Scenario simulator \u2014 Quilt fleet federation"
+    },
+    {
+      "address": "page.scenario-simulator.file",
+      "kind": "path",
+      "value": "superinstance-website/scenario-simulator.html"
+    },
+    {
+      "address": "page.scenario-simulator.size",
+      "kind": "usize",
+      "value": 25599
+    },
+    {
+      "address": "page.search.title",
+      "kind": "string",
+      "value": "SuperInstance \u2014 Crate Search"
+    },
+    {
+      "address": "page.search.file",
+      "kind": "path",
+      "value": "superinstance-website/search.html"
+    },
+    {
+      "address": "page.search.size",
+      "kind": "usize",
+      "value": 7630
+    },
+    {
+      "address": "page.self-host.title",
+      "kind": "string",
+      "value": "Self-host Quilt \u2014 Run your own"
+    },
+    {
+      "address": "page.self-host.file",
+      "kind": "path",
+      "value": "superinstance-website/self-host.html"
+    },
+    {
+      "address": "page.self-host.size",
+      "kind": "usize",
+      "value": 15623
+    },
+    {
+      "address": "page.spec-explorer.title",
+      "kind": "string",
+      "value": "Spec explorer \u2014 Quilt cell kinds reference"
+    },
+    {
+      "address": "page.spec-explorer.file",
+      "kind": "path",
+      "value": "superinstance-website/spec-explorer.html"
+    },
+    {
+      "address": "page.spec-explorer.size",
+      "kind": "usize",
+      "value": 16098
+    },
+    {
+      "address": "page.spline-spectral-quilt.title",
+      "kind": "string",
+      "value": "Spline Spectral \u2014 the function space is a graph"
+    },
+    {
+      "address": "page.spline-spectral-quilt.file",
+      "kind": "path",
+      "value": "superinstance-website/spline-spectral-quilt.html"
+    },
+    {
+      "address": "page.spline-spectral-quilt.size",
+      "kind": "usize",
+      "value": 18644
+    },
+    {
+      "address": "page.stats.title",
+      "kind": "string",
+      "value": "SuperInstance \u2014 Live Stats"
+    },
+    {
+      "address": "page.stats.file",
+      "kind": "path",
+      "value": "superinstance-website/stats.html"
+    },
+    {
+      "address": "page.stats.size",
+      "kind": "usize",
+      "value": 14896
+    },
+    {
+      "address": "page.status.title",
+      "kind": "string",
+      "value": "SuperInstance \u2014 System Status"
+    },
+    {
+      "address": "page.status.file",
+      "kind": "path",
+      "value": "superinstance-website/status.html"
+    },
+    {
+      "address": "page.status.size",
+      "kind": "usize",
+      "value": 13231
+    },
+    {
+      "address": "page.student.title",
+      "kind": "string",
+      "value": "Quilt Classroom \u2014 student"
+    },
+    {
+      "address": "page.student.file",
+      "kind": "path",
+      "value": "superinstance-website/student.html"
+    },
+    {
+      "address": "page.student.size",
+      "kind": "usize",
+      "value": 19382
+    },
+    {
+      "address": "page.tensor-cells.title",
+      "kind": "string",
+      "value": "Tensor Cells \u2014 SuperInstance Quilt"
+    },
+    {
+      "address": "page.tensor-cells.file",
+      "kind": "path",
+      "value": "superinstance-website/tensor-cells.html"
+    },
+    {
+      "address": "page.tensor-cells.size",
+      "kind": "usize",
+      "value": 12556
+    },
+    {
+      "address": "page.three-view-studio.title",
+      "kind": "string",
+      "value": "Quilt Studio \u00b7 3\u2011View"
+    },
+    {
+      "address": "page.three-view-studio.file",
+      "kind": "path",
+      "value": "superinstance-website/three-view-studio.html"
+    },
+    {
+      "address": "page.three-view-studio.size",
+      "kind": "usize",
+      "value": 28442
+    },
+    {
+      "address": "page.token-calculator.title",
+      "kind": "string",
+      "value": "Token calculator \u2014 multi-provider cost estimator"
+    },
+    {
+      "address": "page.token-calculator.file",
+      "kind": "path",
+      "value": "superinstance-website/token-calculator.html"
+    },
+    {
+      "address": "page.token-calculator.size",
+      "kind": "usize",
+      "value": 15795
+    },
+    {
+      "address": "page.vibe.title",
+      "kind": "string",
+      "value": "Vibe \u2014 invisible elves dashboard"
+    },
+    {
+      "address": "page.vibe.file",
+      "kind": "path",
+      "value": "superinstance-website/vibe.html"
+    },
+    {
+      "address": "page.vibe.size",
+      "kind": "usize",
+      "value": 22635
+    },
+    {
+      "address": "page.workspace.title",
+      "kind": "string",
+      "value": "Quilt Workspace \u2014 all the tools in one place"
+    },
+    {
+      "address": "page.workspace.file",
+      "kind": "path",
+      "value": "superinstance-website/workspace.html"
+    },
+    {
+      "address": "page.workspace.size",
+      "kind": "usize",
+      "value": 22616
+    },
+    {
+      "address": "stats.papers",
+      "kind": "usize",
+      "value": 22
+    },
+    {
+      "address": "stats.essays",
+      "kind": "usize",
+      "value": 10
+    },
+    {
+      "address": "stats.repos",
+      "kind": "usize",
+      "value": 40
+    },
+    {
+      "address": "stats.bridges",
+      "kind": "usize",
+      "value": 8
+    },
+    {
+      "address": "stats.pages",
+      "kind": "usize",
+      "value": 60
+    },
+    {
+      "address": "stats.vertices",
+      "kind": "usize",
+      "value": 140
+    },
+    {
+      "address": "stats.edges",
+      "kind": "usize",
+      "value": 53
+    },
+    {
+      "address": "stats.components",
+      "kind": "usize",
+      "value": 5
+    },
+    {
+      "address": "stats.beta_1",
+      "kind": "usize",
+      "value": -82
+    },
+    {
+      "address": "stats.unfilled_niches",
+      "kind": "usize",
+      "value": 0
+    },
+    {
+      "address": "stats.generated",
+      "kind": "f64",
+      "value": 1787276350.468178
+    }
+  ],
+  "edges": [
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-c",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-cpp",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-chapel",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-mojo",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-csharp",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-swift",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-julia",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-metal",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "repo.quilt",
+      "to": "repo.quilt-cobol",
+      "kind": "polyformalism"
+    },
+    {
+      "from": "bridge.vessel_to_quilt",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "exemplifies"
+    },
+    {
+      "from": "bridge.chart_room_to_quilt",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "exemplifies"
+    },
+    {
+      "from": "bridge.slackwater_tminus_to_quilt",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "exemplifies"
+    },
+    {
+      "from": "bridge.hermes_home_to_quilt",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "exemplifies"
+    },
+    {
+      "from": "bridge.spatial_registry_to_quilt",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "exemplifies"
+    },
+    {
+      "from": "bridge.grand_pattern_to_quilt",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "exemplifies"
+    },
+    {
+      "from": "bridge.spline_spectral_to_quilt",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "exemplifies"
+    },
+    {
+      "from": "paper.02-SuperInstance-Type-System",
+      "to": "paper.01-SuperInstance-Universal-Cell",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.02-Visualization-Architecture",
+      "to": "paper.02-SuperInstance-Type-System",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.03-Confidence-Cascade-Architecture",
+      "to": "paper.02-Visualization-Architecture",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.04-Pythagorean-Geometric-Tensors",
+      "to": "paper.03-Confidence-Cascade-Architecture",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.05-SMPbot-Architecture",
+      "to": "paper.04-Pythagorean-Geometric-Tensors",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.06-Tile-Algebra-Formalization",
+      "to": "paper.05-SMPbot-Architecture",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.07-Origin-Centric-Data-Systems",
+      "to": "paper.06-Tile-Algebra-Formalization",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.11-Cell-Model-Older-Than-Spreadsheets",
+      "to": "paper.07-Origin-Centric-Data-Systems",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.12-Polyformalism-Back-Pressure",
+      "to": "paper.11-Cell-Model-Older-Than-Spreadsheets",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.13-Quilt-Zip-Format",
+      "to": "paper.12-Polyformalism-Back-Pressure",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.14-Cellular-ML",
+      "to": "paper.13-Quilt-Zip-Format",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.15-Theater-as-Cell-Graph",
+      "to": "paper.14-Cellular-ML",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.16-Five-Laws-of-Cellular-Architecture",
+      "to": "paper.15-Theater-as-Cell-Graph",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.17-The-Quilt-Stack",
+      "to": "paper.16-Five-Laws-of-Cellular-Architecture",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.18-Three-Views",
+      "to": "paper.17-The-Quilt-Stack",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.19-Time-Travel-DAW",
+      "to": "paper.18-Three-Views",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.20-Quilt-for-Education",
+      "to": "paper.19-Time-Travel-DAW",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.21-Essence-of-Quilt",
+      "to": "paper.20-Quilt-for-Education",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.22-Media-Theory-of-Quilt",
+      "to": "paper.21-Essence-of-Quilt",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.23-Penrose-Address",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "cites"
+    },
+    {
+      "from": "paper.24-Grand-Pattern",
+      "to": "paper.23-Penrose-Address",
+      "kind": "cites"
+    },
+    {
+      "from": "essay.50-the-medium",
+      "to": "paper.22-Media-Theory-of-Quilt",
+      "kind": "thematic"
+    },
+    {
+      "from": "page.three-view-studio",
+      "to": "paper.paper.18-Three-Views",
+      "kind": "renders"
+    },
+    {
+      "from": "page.cell-rewind",
+      "to": "paper.paper.19-Time-Travel-DAW",
+      "kind": "renders"
+    },
+    {
+      "from": "page.classroom",
+      "to": "paper.paper.20-Quilt-for-Education",
+      "kind": "renders"
+    },
+    {
+      "from": "page.student",
+      "to": "paper.paper.20-Quilt-for-Education",
+      "kind": "renders"
+    },
+    {
+      "from": "page.quilt-overlay",
+      "to": "paper.paper.21-Essence-of-Quilt",
+      "kind": "renders"
+    },
+    {
+      "from": "page.media-theory",
+      "to": "paper.paper.22-Media-Theory-of-Quilt",
+      "kind": "renders"
+    },
+    {
+      "from": "page.penrose-quilt",
+      "to": "paper.paper.23-Penrose-Address",
+      "kind": "renders"
+    },
+    {
+      "from": "page.grand-pattern",
+      "to": "paper.paper.24-Grand-Pattern",
+      "kind": "renders"
+    },
+    {
+      "from": "page.spline-spectral-quilt",
+      "to": "paper.paper.24-Grand-Pattern",
+      "kind": "renders"
+    },
+    {
+      "from": "page.openmaic-bridge",
+      "to": "paper.paper.19-Time-Travel-DAW",
+      "kind": "renders"
+    },
+    {
+      "from": "page.self-host",
+      "to": "paper.paper.20-Quilt-for-Education",
+      "kind": "renders"
+    },
+    {
+      "from": "page.limit-hit",
+      "to": "paper.paper.20-Quilt-for-Education",
+      "kind": "renders"
+    },
+    {
+      "from": "page.rooms-quilt",
+      "to": "paper.paper.20-Quilt-for-Education",
+      "kind": "renders"
+    },
+    {
+      "from": "page.cell-bridges",
+      "to": "paper.paper.18-Three-Views",
+      "kind": "renders"
+    },
+    {
+      "from": "page.ai-sheet",
+      "to": "paper.paper.18-Three-Views",
+      "kind": "renders"
+    }
+  ],
+  "stats": {
+    "total_cells": 383,
+    "total_rooms": 5,
+    "total_edges": 53,
+    "beta_1": -82,
+    "papers": 22,
+    "essays": 10,
+    "repos": 40,
+    "bridges": 8,
+    "pages": 60
+  }
+}

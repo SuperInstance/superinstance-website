@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<!--
+  meta-quilt.html — The Quilt ecosystem as a Quilt sheet.
+
+  THE STEP-BACK OPERATOR applied to the work itself. Each paper, essay,
+  repo, bridge, and page is a cell. The edges are citations, polyformalism
+  ports, thematic connections, renderings. β₁ = E - V + C measures the
+  unfilled niches — the places where the work could grow.
+
+  This is the monitor engineer's view: not the hands, the attention.
+  The user steps back and sees the topology of the work. The holes glow.
+  The relation across the hooks becomes visible.
+
+  Author: Mavis
+  Date: 2026-08-21
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Meta-Quilt — the step-back view of the ecosystem</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #161b22; --border: #30363d;
+    --fg: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --err: #f85149;
+    --purple: #a371f7; --orange: #f0883e;
+    --paper: #58a6ff; --essay: #a371f7; --repo: #3fb950;
+    --bridge: #f0883e; --page: #d29922; --hole: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    line-height: 1.5;
+    overflow: hidden;
+  }
+  header {
+    padding: 1rem; background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 1.3rem; }
+  .subtitle { color: var(--muted); font-size: 0.8rem; }
+  .toolbar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-left: auto; }
+  button {
+    background: #21262d; color: var(--fg); border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.8rem; font-family: inherit;
+  }
+  button:hover { background: #30363d; border-color: var(--accent); }
+  button.active { background: #1f6feb; border-color: #1f6feb; color: white; }
+
+  .container { display: grid; grid-template-columns: 1fr 340px; height: calc(100vh - 70px); }
+  .canvas-area { position: relative; overflow: hidden; background: radial-gradient(ellipse at center, #0d1117 0%, #050a0f 100%); }
+  .right-pane { background: #0d1117; border-left: 1px solid var(--border); padding: 1rem; overflow-y: auto; }
+
+  /* The cell graph canvas */
+  .graph-canvas {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden; cursor: grab;
+  }
+  .graph-canvas:active { cursor: grabbing; }
+  .graph-canvas svg { position: absolute; top: 0; left: 0; pointer-events: none; }
+  .graph-canvas svg .edge { stroke: var(--muted); stroke-width: 0.5; opacity: 0.4; pointer-events: auto; cursor: pointer; }
+  .graph-canvas svg .edge:hover { stroke: var(--accent); opacity: 1; }
+  .graph-canvas svg .edge.polyformalism { stroke: var(--purple); }
+  .graph-canvas svg .edge.thematic { stroke: var(--ok); }
+  .graph-canvas svg .edge.renders { stroke: var(--orange); }
+  .graph-canvas svg .edge.cites { stroke: var(--muted); }
+  .graph-canvas svg .edge.exemplifies { stroke: var(--warn); }
+
+  .cell {
+    position: absolute; border-radius: 50%;
+    cursor: pointer; transition: transform 0.1s, box-shadow 0.1s;
+    transform: translate(-50%, -50%);
+  }
+  .cell:hover { transform: translate(-50%, -50%) scale(1.3); }
+  .cell .dot {
+    width: 100%; height: 100%; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.4);
+  }
+  .cell .label {
+    position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem; color: rgba(255,255,255,0.7);
+    pointer-events: none; white-space: nowrap;
+    margin-top: 4px;
+  }
+  .cell .label.hidden { display: none; }
+
+  /* Legend / control panel */
+  .legend { font-size: 0.8rem; margin: 0.5rem 0; }
+  .legend-row {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin: 0.3rem 0; color: var(--muted);
+  }
+  .legend-swatch {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.4);
+  }
+  .stat {
+    display: flex; justify-content: space-between; padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border); font-size: 0.85rem;
+  }
+  .stat .label { color: var(--muted); }
+  .stat .val { color: var(--fg); font-family: ui-monospace, monospace; }
+  .stat .val.warn { color: var(--warn); }
+  .stat .val.err { color: var(--err); }
+
+  .hole-banner {
+    background: rgba(248, 81, 73, 0.1); border: 1px solid var(--err);
+    border-radius: 4px; padding: 0.7rem; margin: 0.7rem 0;
+    color: var(--err); font-size: 0.85rem;
+  }
+  .hole-banner strong { color: var(--err); }
+
+  .theorem-box {
+    background: var(--panel); border: 1px solid var(--purple);
+    border-radius: 4px; padding: 0.7rem; margin: 0.7rem 0;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  .theorem-box code {
+    color: var(--purple); font-family: ui-monospace, monospace;
+  }
+
+  /* Selected cell info */
+  .selected-info {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0.7rem; margin-bottom: 0.7rem;
+  }
+  .selected-info .kind { font-size: 0.75rem; color: var(--muted); }
+  .selected-info .title { color: var(--accent); font-size: 0.9rem; margin: 0.3rem 0; }
+  .selected-info .file { font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--muted); }
+  .selected-info .stat-mini { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🌀 Meta-Quilt</h1>
+    <div class="subtitle">the step-back view — the work as a cell graph</div>
+  </div>
+  <div class="toolbar">
+    <button class="active" data-filter="all">all</button>
+    <button data-filter="paper">📜 papers</button>
+    <button data-filter="essay">✍️ essays</button>
+    <button data-filter="repo">📦 repos</button>
+    <button data-filter="bridge">🌉 bridges</button>
+    <button data-filter="page">🌐 pages</button>
+    <button data-filter="holes" id="holesBtn">🕳 holes only</button>
+    <button data-action="reset">⌂ reset</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="canvas-area">
+    <div class="graph-canvas" id="canvas"></div>
+  </div>
+  <div class="right-pane">
+    <h3 style="margin: 0 0 0.5rem; font-size: 0.95rem;">🔭 β₁ of the work</h3>
+    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.7rem;">
+      <div class="stat"><span class="label">V (vertices)</span><span class="val" id="statV">0</span></div>
+      <div class="stat"><span class="label">E (edges)</span><span class="val" id="statE">0</span></div>
+      <div class="stat"><span class="label">C (components)</span><span class="val" id="statC">0</span></div>
+      <div class="stat"><span class="label">β₁ = E − V + C</span><span class="val warn" id="statB1">0</span></div>
+      <div class="stat"><span class="label">density</span><span class="val" id="statDensity">0.00%</span></div>
+    </div>
+
+    <div class="hole-banner">
+      <strong>🕳 Negative β₁</strong> means the meta-graph is a <em>forest</em>, not a mesh.
+      The papers, essays, repos, bridges, and pages form 5 mostly-disconnected components.
+      The unfilled niches are the missing cross-references between them.
+    </div>
+
+    <div class="theorem-box">
+      <strong>The step-back operator:</strong> the pattern lives in the relation across all events,
+      not in any individual one. <code>β₁ = E − V + C</code> measures the holes in the network.
+      Negative β₁ is itself a finding — it means the work is structured as a forest
+      (a tree of knowledge), and the next step is to add the cross-references that would
+      form cycles and reveal the deeper patterns.
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🎯 Selected cell</h3>
+    <div class="selected-info" id="selectedInfo">
+      <div class="kind">Click a cell to inspect.</div>
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🎨 Legend</h3>
+    <div class="legend">
+      <div class="legend-row">
+        <div class="legend-swatch" style="background: var(--paper)"></div>
+        <span>📜 Papers (white papers)</span>
+      </div>
+      <div class="legend-row">
+        <div class="legend-swatch" style="background: var(--essay)"></div>
+        <span>✍️ Essays</span>
+      </div>
+      <div class="legend-row">
+        <div class="legend-swatch" style="background: var(--repo)"></div>
+        <span>📦 Repos</span>
+      </div>
+      <div class="legend-row">
+        <div class="legend-swatch" style="background: var(--bridge)"></div>
+        <span>🌉 Bridges</span>
+      </div>
+      <div class="legend-row">
+        <div class="legend-swatch" style="background: var(--page)"></div>
+        <span>🌐 Pages</span>
+      </div>
+      <div class="legend-row">
+        <div class="legend-swatch" style="background: var(--hole)"></div>
+        <span>🕳 Holes (unfilled niches)</span>
+      </div>
+      <div class="legend-row" style="margin-top: 0.5rem;">
+        <span style="font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--muted);">edges:</span>
+      </div>
+      <div class="legend-row">
+        <div style="width: 12px; height: 2px; background: var(--muted)"></div>
+        <span>cites</span>
+      </div>
+      <div class="legend-row">
+        <div style="width: 12px; height: 2px; background: var(--purple)"></div>
+        <span>polyformalism port</span>
+      </div>
+      <div class="legend-row">
+        <div style="width: 12px; height: 2px; background: var(--ok)"></div>
+        <span>thematic</span>
+      </div>
+      <div class="legend-row">
+        <div style="width: 12px; height: 2px; background: var(--orange)"></div>
+        <span>renders</span>
+      </div>
+      <div class="legend-row">
+        <div style="width: 12px; height: 2px; background: var(--warn)"></div>
+        <span>exemplifies</span>
+      </div>
+    </div>
+
+    <h3 style="margin: 1rem 0 0.5rem; font-size: 0.95rem;">🌊 The view</h3>
+    <p style="font-size: 0.85rem; color: var(--muted);">
+      <strong>Scroll</strong> to zoom in/out. <strong>Drag</strong> to pan.
+      <strong>Click</strong> a cell to inspect. The size of each dot encodes
+      the file size of the artifact. The unfilled niches (red) are the places
+      where the work could grow.
+    </p>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// Load the meta-cell-graph
+// ============================================================================
+const KIND_COLORS = {
+  paper: '#58a6ff',
+  essay: '#a371f7',
+  repo: '#3fb950',
+  bridge: '#f0883e',
+  page: '#d29922',
+  hole: '#f85149',
+};
+
+const state = {
+  cells: [],     // { kind, id, label, file, size, x, y, r }
+  edges: [],     // { fromKind, fromId, toKind, toId, kind }
+  selected: null,
+  filter: 'all',
+  showHolesOnly: false,
+  zoom: 1,
+  pan: { x: 0, y: 0 },
+};
+
+async function loadSheet() {
+  try {
+    const resp = await fetch('./bridges/quilt-ecosystem-quilt.qzt');
+    const sheet = await resp.json();
+    buildFromSheet(sheet);
+  } catch (e) {
+    console.error('Failed to load sheet:', e);
+  }
+}
+
+function buildFromSheet(sheet) {
+  // Group cells by kind
+  const cellsByKind = {};
+  for (const c of sheet.cells) {
+    const m = c.address.match(/^(\w+)\.([^.]+)\.(\w+)$/);
+    if (!m) continue;
+    const kind = m[1];
+    const id = m[2];
+    const field = m[3];
+    if (!cellsByKind[id]) cellsByKind[id] = { kind, id, fields: {} };
+    cellsByKind[id].fields[field] = c.value;
+  }
+
+  // Build cells array
+  const cellsList = Object.values(cellsByKind);
+  // Place each kind in its own cluster (pentagon-like)
+  const kindOrder = ['paper', 'essay', 'repo', 'bridge', 'page'];
+  const W = window.innerWidth - 340;
+  const H = window.innerHeight - 70;
+  const cx = W / 2;
+  const cy = H / 2;
+  const ringR = Math.min(W, H) * 0.32;
+
+  for (let i = 0; i < kindOrder.length; i++) {
+    const kind = kindOrder[i];
+    const kindCells = cellsList.filter(c => c.kind === kind);
+    const angle = (i / kindOrder.length) * Math.PI * 2 - Math.PI / 2;
+    const clusterX = cx + Math.cos(angle) * ringR;
+    const clusterY = cy + Math.sin(angle) * ringR;
+    // Spread each kind in a sub-cluster
+    const subR = Math.min(W, H) * 0.12;
+    for (let j = 0; j < kindCells.length; j++) {
+      const cell = kindCells[j];
+      const subAngle = (j / kindCells.length) * Math.PI * 2;
+      const x = clusterX + Math.cos(subAngle) * subR * (0.4 + Math.random() * 0.6);
+      const y = clusterY + Math.sin(subAngle) * subR * (0.4 + Math.random() * 0.6);
+      // Size from file size (log scale)
+      const size = cell.fields.size || 5000;
+      const r = Math.max(4, Math.min(20, Math.log2(size / 100) * 1.5));
+      state.cells.push({
+        kind, id: cell.id,
+        label: cell.fields.title || cell.id,
+        file: cell.fields.file || '',
+        size: size,
+        x, y, r,
+      });
+    }
+  }
+
+  // Build edges
+  for (const e of sheet.edges || []) {
+    const m1 = e.from.match(/^(\w+)\.(.+)$/);
+    const m2 = e.to.match(/^(\w+)\.(.+)$/);
+    if (!m1 || !m2) continue;
+    state.edges.push({
+      fromKind: m1[1], fromId: m2[1],
+      toKind: m2[1], toId: m2[2],
+      kind: e.kind,
+    });
+  }
+
+  // Compute stats
+  document.getElementById('statV').textContent = state.cells.length;
+  document.getElementById('statE').textContent = state.edges.length;
+  // Detect connected components
+  const components = countComponents();
+  document.getElementById('statC').textContent = components;
+  const b1 = state.edges.length - state.cells.length + components;
+  const b1El = document.getElementById('statB1');
+  b1El.textContent = b1;
+  b1El.className = b1 < 0 ? 'val err' : 'val warn';
+  // Density
+  const maxEdges = state.cells.length * (state.cells.length - 1) / 2;
+  const density = maxEdges > 0 ? (state.edges.length / maxEdges * 100).toFixed(2) : 0;
+  document.getElementById('statDensity').textContent = density + '%';
+
+  render();
+}
+
+function countComponents() {
+  // Build adjacency
+  const adj = new Map();
+  for (const c of state.cells) {
+    adj.set(`${c.kind}.${c.id}`, new Set());
+  }
+  for (const e of state.edges) {
+    const a = `${e.fromKind}.${e.fromId}`;
+    const b = `${e.toKind}.${e.toId}`;
+    if (adj.has(a) && adj.has(b)) {
+      adj.get(a).add(b);
+      adj.get(b).add(a);
+    }
+  }
+  // BFS
+  const visited = new Set();
+  let components = 0;
+  for (const node of adj.keys()) {
+    if (visited.has(node)) continue;
+    components++;
+    const queue = [node];
+    while (queue.length > 0) {
+      const n = queue.shift();
+      if (visited.has(n)) continue;
+      visited.add(n);
+      for (const nb of adj.get(n)) queue.push(nb);
+    }
+  }
+  return components;
+}
+
+// ============================================================================
+// Render
+// ============================================================================
+function render() {
+  const canvas = document.getElementById('canvas');
+  canvas.innerHTML = '';
+  const W = canvas.clientWidth;
+  const H = canvas.clientHeight;
+
+  // Build SVG for edges
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.style.left = '0';
+  svg.style.top = '0';
+
+  // Apply pan/zoom
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('transform', `translate(${state.pan.x}, ${state.pan.y}) scale(${state.zoom})`);
+  svg.appendChild(g);
+
+  // Draw edges first (so they're behind)
+  for (const e of state.edges) {
+    const from = state.cells.find(c => `${c.kind}.${c.id}` === `${e.fromKind}.${e.fromId}`);
+    const to = state.cells.find(c => `${c.kind}.${c.id}` === `${e.toKind}.${e.toId}`);
+    if (!from || !to) continue;
+    if (!visible(from) || !visible(to)) continue;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', from.x);
+    line.setAttribute('y1', from.y);
+    line.setAttribute('x2', to.x);
+    line.setAttribute('y2', to.y);
+    line.setAttribute('class', `edge ${e.kind}`);
+    g.appendChild(line);
+  }
+  canvas.appendChild(svg);
+
+  // Draw cells
+  for (const c of state.cells) {
+    if (!visible(c)) continue;
+    const div = document.createElement('div');
+    div.className = 'cell';
+    div.style.left = (c.x * state.zoom + state.pan.x) + 'px';
+    div.style.top = (c.y * state.zoom + state.pan.y) + 'px';
+    div.style.width = (c.r * 2 * state.zoom) + 'px';
+    div.style.height = (c.r * 2 * state.zoom) + 'px';
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.style.background = KIND_COLORS[c.kind];
+    if (state.showHolesOnly) {
+      // Check if this cell has any edges
+      const hasEdge = state.edges.some(e =>
+        (`${e.fromKind}.${e.fromId}` === `${c.kind}.${c.id}`) ||
+        (`${e.toKind}.${e.toId}` === `${c.kind}.${c.id}`));
+      if (!hasEdge) {
+        dot.style.background = KIND_COLORS.hole;
+        div.classList.add('hole');
+      } else {
+        div.style.display = 'none';
+        continue;
+      }
+    }
+    div.appendChild(dot);
+    if (state.zoom > 0.7) {
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = c.label.length > 30 ? c.label.slice(0, 28) + '...' : c.label;
+      div.appendChild(label);
+    }
+    div.onclick = () => selectCell(c);
+    canvas.appendChild(div);
+  }
+}
+
+function visible(c) {
+  if (state.showHolesOnly) return true; // holes filter handled in render
+  if (state.filter === 'all') return true;
+  return c.kind === state.filter;
+}
+
+function selectCell(c) {
+  state.selected = c;
+  const info = document.getElementById('selectedInfo');
+  // Count edges for this cell
+  const myEdges = state.edges.filter(e =>
+    (`${e.fromKind}.${e.fromId}` === `${c.kind}.${c.id}`) ||
+    (`${e.toKind}.${e.toId}` === `${c.kind}.${c.id}`)
+  );
+  info.innerHTML = `
+    <div class="kind">${c.kind} · ${myEdges.length} edge${myEdges.length !== 1 ? 's' : ''}</div>
+    <div class="title">${c.label}</div>
+    <div class="file">${c.file}</div>
+    <div class="stat-mini">size: ${(c.size / 1024).toFixed(1)} KB · radius: ${c.r.toFixed(1)}px</div>
+  `;
+}
+
+// ============================================================================
+// Interactions
+// ============================================================================
+document.querySelectorAll('button[data-filter]').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('button[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.filter = btn.dataset.filter;
+    if (btn.dataset.filter === 'holes') {
+      state.showHolesOnly = true;
+    } else {
+      state.showHolesOnly = false;
+    }
+    render();
+  };
+});
+
+document.querySelector('button[data-action="reset"]').onclick = () => {
+  state.zoom = 1;
+  state.pan = { x: 0, y: 0 };
+  render();
+};
+
+document.querySelector('button[data-action="reset"]').textContent = '⌂ reset';
+
+// Pan
+let isPanning = false;
+let lastPan = { x: 0, y: 0 };
+const canvas = document.getElementById('canvas');
+canvas.addEventListener('mousedown', (e) => {
+  if (e.target === canvas || e.target.tagName === 'svg' || e.target.tagName === 'g' || e.target.tagName === 'line') {
+    isPanning = true;
+    lastPan = { x: e.clientX, y: e.clientY };
+  }
+});
+window.addEventListener('mousemove', (e) => {
+  if (!isPanning) return;
+  const dx = e.clientX - lastPan.x;
+  const dy = e.clientY - lastPan.y;
+  state.pan.x += dx;
+  state.pan.y += dy;
+  lastPan = { x: e.clientX, y: e.clientY };
+  render();
+});
+window.addEventListener('mouseup', () => { isPanning = false; });
+
+// Zoom
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const oldZoom = state.zoom;
+  state.zoom *= e.deltaY > 0 ? 0.9 : 1.1;
+  state.zoom = Math.max(0.2, Math.min(4, state.zoom));
+  // Zoom to mouse position
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  state.pan.x = mx - (mx - state.pan.x) * (state.zoom / oldZoom);
+  state.pan.y = my - (my - state.pan.y) * (state.zoom / oldZoom);
+  render();
+});
+
+window.addEventListener('resize', render);
+
+loadSheet();
+</script>
+</body>
+</html>
