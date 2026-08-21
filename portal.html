@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Quilt</title>
+  <style>
+    :root {
+      --bg: #0a1929;
+      --text: #c0d6e4;
+      --accent: #d4a857;
+      --border: #2a445d;
+      --card-bg: #122535;
+      --btn-bg: #1a3a50;
+      --btn-hover: #2a5270;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    a:hover {
+      color: #e0b867;
+      text-decoration: underline;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      letter-spacing: -0.05em;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      max-width: 800px;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      width: 100%;
+      max-width: 600px;
+    }
+    .btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: background 0.3s, transform 0.2s;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: var(--btn-hover);
+      transform: translateY(-2px);
+    }
+    .ascii {
+      font-size: 0.7rem;
+      line-height: 1;
+      white-space: pre;
+      color: var(--accent);
+      margin-top: 2rem;
+      opacity: 0.7;
+      text-align: center;
+      max-width: 800px;
+    }
+    .stat-bar {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      text-align: center;
+      letter-spacing: 0.02em;
+      overflow: hidden;
+      position: relative;
+    }
+    .stat-bar span {
+      display: inline-block;
+      margin: 0 0.5rem;
+      opacity: 0.8;
+    }
+    .stat-bar .count {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .section {
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title {
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      letter-spacing: 0.03em;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.8rem;
+      color: var(--accent);
+    }
+    .card p {
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      opacity: 0.85;
+    }
+    .card a {
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.9rem;
+      opacity: 0.7;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>The Quilt</h1>
+      <p>The cellular runtime for the post-application age. Build cells. Grow agents. Make bridges. The work is the work. The watch is the act of looking.</p>
+      <div class="buttons">
+        <a href="/quilt-studio.html" class="btn">Studio</a>
+        <a href="/echogram.html" class="btn">Echogram</a>
+        <a href="/qspace.html" class="btn">Q-Space</a>
+        <a href="/lighthouse-ui.html" class="btn">Lighthouse</a>
+      </div>
+      <pre class="ascii">
+  ________   _________   _____   _________
+ /_  __/ /  / ____/   | / ___/  / ____/   |
+  / / / /  / / __/ /| | / /__   / __/ / /| |
+ / / / /__/ /_/ / ___ |/ __/  / /___/ ___ |
+/_/  \___/\____/_/  |_/_/    /_____/_/  |_|
+
+  The watch is the act of looking.
+      Iron sharpens iron.
+      Cells federate.
+      The room is a place.
+      The cell is a place.
+      The place is a cell.
+      The room IS the cell.
+      The work is the work.
+      The watch is the act of looking.
+      </pre>
+    </section>
+
+    <section class="stat-bar">
+      <span>41+ repos</span>
+      <span>160+ essays</span>
+      <span>20 papers</span>
+      <span>6 specs</span>
+      <span>95+ pages</span>
+      <span>3 runtimes</span>
+      <span>67 bridges</span>
+      <span>1 schema</span>
+      <span>1 kernel</span>
+      <span>1 lighthouse</span>
+      <span class="count" id="artifact-count">195</span>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">WORKING TOOLS</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Quilt Studio</h3>
+          <p>Build and run cells. The foundation of the runtime. The canvas of the watch.</p>
+          <a href="/quilt-studio.html">Open Studio</a>
+        </div>
+        <div class="card">
+          <h3>Mood Tracker</h3>
+          <p>A real-time emotional state visualization. Self-reflective, persistent.</p>
+          <a href="/mood-tracker.html">Open App</a>
+        </div>
+        <div class="card">
+          <h3>Plant Care</h3>
+          <p>Living plant monitoring. The plant speaks. You listen.</p>
+          <a href="/plant-care.html">Open App</a>
+        </div>
+        <div class="card">
+          <h3>Fish Tank</h3>
+          <p>A real-time simulation of aquatic behavior. Fluid, responsive, alive.</p>
+          <a href="/fish-tank.html">Open Visualization</a>
+        </div>
+        <div class="card">
+          <h3>Family Calendar</h3>
+          <p>Synchronized events across families. No meetings. Just presence.</p>
+          <a href="/family-calendar.html">Open App</a>
+        </div>
+        <div class="card">
+          <h3>Pomodoro Quilt</h3>
+          <p>Time is a cell. The rhythm is the process.</p>
+          <a href="/pomodoro-quilt.html">Open App</a>
+        </div>
+        <div class="card">
+          <h3>Echo Recorder</h3>
+          <p>Web Audio API-powered sound capture. Echoes are data.</p>
+          <a href="/echo-recorder.html">Open Recorder</a>
+        </div>
+        <div class="card">
+          <h3>Tap Tavern</h3>
+          <p>A chat interface built on the lattice. Words are bridges.</p>
+          <a href="/tap-tavern.html">Open Chat</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">VISUALIZATIONS</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Echogram</h3>
+          <p>12 boats. 40+ signals. The water remembers. Real-time tracking.</p>
+          <a href="/echogram.html">View Echogram</a>
+        </div>
+        <div class="card">
+          <h3>Hodge Decomposition</h3>
+          <p>Visualizing flow, gradient, and harmonic fields. The shape of data.</p>
+          <a href="/hodge-decomp.html">View Visualization</a>
+        </div>
+        <div class="card">
+          <h3>Q-Space</h3>
+          <p>Agent growth in real-time. The mind of the cell.</p>
+          <a href="/qspace.html">Enter Q-Space</a>
+        </div>
+        <div class="card">
+          <h3>Signal Viewer</h3>
+          <p>Raw waveforms, filtered. The signal is the watch.</p>
+          <a href="/signal-viewer.html">View Signals</a>
+        </div>
+        <div class="card">
+          <h3>Cell Graph</h3>
+          <p>Live graph of cell interactions. The network is the body.</p>
+          <a href="/quilt-studio.html#cell-graph">View Graph</a>
+        </div>
+        <div class="card">
+          <h3>Federation</h3>
+          <p>Tracing connections across agents. Who speaks to whom?</p>
+          <a href="/federation.html">Explore</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">DEEP DOCS</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>CAVE</h3>
+          <p>The artifact of the first watch. The beginning of the network.</p>
+          <a href="/docs/cave.html">Read CAVE</a>
+        </div>
+        <div class="card">
+          <h3>SHADOWS</h3>
+          <p>On the limits of observation. What the eye cannot see.</p>
+          <a href="/docs/shadows.html">Read SHADOWS</a>
+        </div>
+        <div class="card">
+          <h3>BREEDING</h3>
+          <p>How cells evolve. Not by design, but by survival.</p>
+          <a href="/docs/breeding.html">Read BREEDING</a>
+        </div>
+        <div class="card">
+          <h3>FEDERATION</h3>
+          <p>How agents come together. The rhythm of coordination.</p>
+          <a href="/docs/federation.html">Read FEDERATION</a>
+        </div>
+        <div class="card">
+          <h3>WATCH</h3>
+          <p>The act of looking is the work. The core ritual.</p>
+          <a href="/docs/watch.html">Read WATCH</a>
+        </div>
+        <div class="card">
+          <h3>INDEX</h3>
+          <p>The map of the entire system. The spine of the quilt.</p>
+          <a href="/docs/index.html">Read INDEX</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">CANON</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>SYNERGY-8</h3>
+          <p>Cellular coordination in high-entropy systems. The art of alignment.</p>
+          <a href="/papers/synergy-8.pdf">Read Paper</a>
+        </div>
+        <div class="card">
+          <h3>SYNERGY-7</h3>
+          <p>On the emergence of narrative from sparse signals.</p>
+          <a href="/papers/synergy-7.pdf">Read Paper</a>
+        </div>
+        <div class="card">
+          <h3>SYNERGY-6</h3>
+          <p>Hardware-agnostic runtime for distributed cells.</p>
+          <a href="/papers/synergy-6.pdf">Read Paper</a>
+        </div>
+        <div class="card">
+          <h3>SYNERGY-5</h3>
+          <p>Temporal sovereignty: time as a cellular property.</p>
+          <a href="/papers/synergy-5.pdf">Read Paper</a>
+        </div>
+        <div class="card">
+          <h3>SYNERGY-4</h3>
+          <p>On the ethics of observation in self-organizing systems.</p>
+          <a href="/papers/synergy-4.pdf">Read Paper</a>
+        </div>
+        <div class="card">
+          <h3>SYNERGY-3</h3>
+          <p>Cellular memory and persistence across restarts.</p>
+          <a href="/papers/synergy-3.pdf">Read Paper</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">ESSAYS</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>On the Weight of the Index</h3>
+          <p>How a map becomes a cell.</p>
+          <a href="/essays/index-weight.html">Read Essay</a>
+        </div>
+        <div class="card">
+          <h3>The Quiet Death of the App</h3>
+          <p>Why applications cannot outlive their creators.</p>
+          <a href="/essays/app-death.html">Read Essay</a>
+        </div>
+        <div class="card">
+          <h3>What the Watch Sees</h3>
+          <p>Observation as labor. The watch is not passive.</p>
+          <a href="/essays/watch-sees.html">Read Essay</a>
+        </div>
+        <div class="card">
+          <h3>Cells Are Not Objects</h3>
+          <p>On the failure of object-oriented thinking in runtime design.</p>
+          <a href="/essays/cells-not-objects.html">Read Essay</a>
+        </div>
+        <div class="card">
+          <h3>Iron Sharpens Iron</h3>
+          <p>How mutual critique builds resilience.</p>
+          <a href="/essays/iron-sharpens.html">Read Essay</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">CITATIONS</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>SYNERGY-2..8</h3>
+          <p>The coordination chain. The living lineage of the project.</p>
+          <a href="https://github.com/lucineer/synergy/issues/2">View Issue</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Built by the watch. The act of looking is alive.
+    </footer>
+  </div>
+
+  <script>
+    // Live counter for artifacts
+    const artifacts = [
+      { name: 'repos', count: 41 },
+      { name: 'essays', count: 160 },
+      { name: 'papers', count: 20 },
+      { name: 'specs', count: 6 },
+      { name: 'pages', count: 95 },
+      { name: 'runtimes', count: 3 },
+      { name: 'bridges', count: 67 },
+      { name: 'schema', count: 1 },
+      { name: 'kernel', count: 1 },
+      { name: 'lighthouse', count: 1 }
+    ];
+
+    const total = artifacts.reduce((sum, item) => sum + item.count, 0);
+    document.getElementById('artifact-count').textContent = total;
+  </script>
+</body>
+</html>
