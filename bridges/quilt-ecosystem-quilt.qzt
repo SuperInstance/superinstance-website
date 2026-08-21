@@ -3,7 +3,7 @@
   "metadata": {
     "name": "Quilt ecosystem as Quilt sheet",
     "description": "The step-back operator applied to the work itself. Each paper, essay, repo, bridge, and page is a cell. The edges are citations, polyformalism ports, thematic connections, renderings. \u03b2\u2081 = E - V + C measures the unfilled niches \u2014 the places where the work could grow. This is the monitor engineer's view: not the hands, the attention.",
-    "generated": "2026-08-21T02:21:57Z",
+    "generated": "2026-08-21T02:22:38Z",
     "address_root": "ecosystem"
   },
   "rooms": [
@@ -1282,7 +1282,7 @@
     {
       "address": "page.cell-bridges.size",
       "kind": "usize",
-      "value": 13867
+      "value": 16359
     },
     {
       "address": "page.cell-game.title",
@@ -2187,7 +2187,7 @@
     {
       "address": "stats.edges",
       "kind": "usize",
-      "value": 55
+      "value": 69
     },
     {
       "address": "stats.components",
@@ -2197,7 +2197,7 @@
     {
       "address": "stats.beta_1",
       "kind": "usize",
-      "value": -100
+      "value": -86
     },
     {
       "address": "stats.unfilled_niches",
@@ -2207,7 +2207,7 @@
     {
       "address": "stats.generated",
       "kind": "f64",
-      "value": 1787278917.5311189
+      "value": 1787278958.4251246
     }
   ],
   "edges": [
@@ -2485,13 +2485,83 @@
       "from": "page.ai-sheet",
       "to": "paper.paper.18-Three-Views",
       "kind": "renders"
+    },
+    {
+      "from": "paper.01-SuperInstance-Universal-Cell",
+      "to": "page.playground",
+      "kind": "renders"
+    },
+    {
+      "from": "paper.02-SuperInstance-Type-System",
+      "to": "page.spec-explorer",
+      "kind": "renders"
+    },
+    {
+      "from": "paper.11-Cell-Model-Older-Than-Spreadsheets",
+      "to": "page.cell-game",
+      "kind": "renders"
+    },
+    {
+      "from": "paper.12-Polyformalism-Back-Pressure",
+      "to": "page.polyformalism",
+      "kind": "renders"
+    },
+    {
+      "from": "paper.13-Quilt-Zip-Format",
+      "to": "page.registry",
+      "kind": "renders"
+    },
+    {
+      "from": "paper.14-Cellular-ML",
+      "to": "page.ai-sheet",
+      "kind": "renders"
+    },
+    {
+      "from": "paper.15-Theater-as-Cell-Graph",
+      "to": "page.radio-theater",
+      "kind": "renders"
+    },
+    {
+      "from": "paper.16-Five-Laws-of-Cellular-Architecture",
+      "to": "page.vibe",
+      "kind": "renders"
+    },
+    {
+      "from": "paper.17-The-Quilt-Stack",
+      "to": "page.infra",
+      "kind": "renders"
+    },
+    {
+      "from": "essay.50-the-medium",
+      "to": "repo.quilt-mojo",
+      "kind": "cites"
+    },
+    {
+      "from": "essay.51-the-penrose-floor",
+      "to": "repo.penrose-memory",
+      "kind": "cites"
+    },
+    {
+      "from": "essay.52-the-grand-pattern",
+      "to": "repo.grand-pattern-rs",
+      "kind": "cites"
+    },
+    {
+      "from": "essay.53-the-step-back-applied",
+      "to": "repo.quilt-ecosystem",
+      "kind": "cites"
+    },
+    {
+      "from": "essay.54-the-sonar-vision-ide",
+      "to": "repo.sonar-vision",
+      "kind": "cites"
     }
   ],
   "stats": {
     "total_cells": 435,
     "total_rooms": 5,
-    "total_edges": 55,
-    "beta_1": -100,
+    "total_edges": 69,
+    "beta_1": -86,
     "papers": 24,
     "essays": 17,
     "repos": 40,
