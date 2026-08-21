@@ -1,137 +1,428 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>FEDERATION.md — SuperInstance</title>
-<style>
-body { background: #0a0e1a; color: #d8e2ff; font-family: 'SF Mono', monospace; max-width: 800px; margin: 0 auto; padding: 2rem; line-height: 1.7; }
-h1, h2, h3 { color: #66ffd9; }
-a { color: #66ffd9; }
-blockquote { border-left: 3px solid #66ffd9; padding-left: 1rem; color: #b3b3d9; font-style: italic; }
-code { background: #131829; padding: 0.1rem 0.3rem; border-radius: 3px; }
-hr { border: 1px solid #1f2640; }
-</style></head><body>
-<h1>Federation</h1>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Federation</title>
+  <style>
+    :root {
+      --bg: #0a0a10;
+      --text: #c8d0e0;
+      --accent: #5a9fd7;
+      --border: #2a3650;
+      --card-bg: #121722;
+      --signal: #e0a040;
+      --decompose: #a0d0a0;
+      --pilot: #d08080;
+      --watch: #80a0c0;
+    }
 
-<blockquote><em>How the cells sharpen each other.  </blockquote>
-<blockquote>How the swarm weaves.  </blockquote>
-<blockquote>How the Quilt is built.  </blockquote>
-<blockquote>How the iron against the iron becomes a knife.</em></blockquote>
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-<hr>
+    .header {
+      background: var(--border);
+      border-bottom: 1px solid var(--accent);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-<p>The cell is the unit. The cell has eight primitives. The cell is universal.</p>
+    .header h1 {
+      font-size: 2.8rem;
+      margin: 0;
+      color: var(--accent);
+      letter-spacing: -1px;
+      text-shadow: 0 0 8px rgba(90, 159, 215, 0.3);
+      font-weight: 700;
+    }
 
-<p>The Quilt is the federation of cells. The Quilt is many cells, wired together, each sharpening the others.</p>
+    .header .subtitle {
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+      color: var(--text);
+      opacity: 0.8;
+      font-weight: 500;
+    }
 
-<p>But the Quilt is not the goal. The Quilt is the <em>substrate</em>. The thing on top of the substrate is the <em>federation</em> — the way the cells are wired, the way they talk, the way they sharpen each other.</p>
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.5rem;
+    }
 
-<p>Below is how the federation works. This is not a complete specification. This is a sketch. The complete specification lives in the <a href="https://github.com/SuperInstance/quilt">Quilt</a> and in the <a href="https://github.com/SuperInstance/quilt-cell-bridges">Bridges</a>. The sketch is here so you have the picture before you look at the code.</p>
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
 
-<hr>
+    .agent-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.2rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-<h2>The Cells, Wired</h2>
+    .agent-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
 
-<p>A cell is a unit with eight primitives. A cell can be:</p>
+    .agent-name {
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-<p>- A single LLM call</p>
-<p>- A loop that calls an LLM repeatedly</p>
-<p>- A process that calls multiple LLMs</p>
-<p>- A piece of code that wraps an LLM</p>
-<p>- A piece of code that does not wrap an LLM</p>
-<p>- A human</p>
-<p>- A fleet of agents</p>
-<p>- An ecosystem</p>
-<p>- A system</p>
-<p>- A world</p>
+    .agent-mode {
+      font-size: 0.9rem;
+      color: #a0c0f0;
+      margin-bottom: 0.8rem;
+      font-style: italic;
+      opacity: 0.8;
+    }
 
-<p>The cell is the cell at every level. The cell composes. The cell is composed. The cell is fractal.</p>
+    .ratios {
+      margin-bottom: 0.8rem;
+    }
 
-<p>A cell has <em>ports</em>. A port is a connection to another cell. A port can be a Murmur channel (gossip), a Vibe stream (state changes), a JEPA surprise (events), a Graph edge (structure), a DoubleEntry transaction (conservation).</p>
+    .ratios label {
+      display: inline-block;
+      width: 45px;
+      font-size: 0.85rem;
+      color: var(--text);
+      opacity: 0.7;
+      text-align: right;
+      margin-right: 4px;
+    }
 
-<p>When two cells are connected by a port, they can see each other. They can give each other feedback. They can sharpen each other.</p>
+    .ratios span {
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      color: var(--signal);
+      font-size: 0.9rem;
+    }
 
-<hr>
+    .signal {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--signal);
+      margin-top: 0.3rem;
+      text-align: right;
+    }
 
-<h2>The Swarm, Weaving</h2>
+    .federation-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      margin-bottom: 1.5rem;
+    }
 
-<p>A swarm is a federation of cells where the wiring is dynamic. The cells are not statically wired. The cells choose who to talk to, when to talk, how to talk. The choice is the swarm intelligence.</p>
+    .federation-panel h2 {
+      margin: 0 0 1rem 0;
+      font-size: 1.3rem;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
 
-<p>A swarm has:</p>
+    .federation-signal {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--signal);
+      text-align: center;
+      letter-spacing: 1px;
+      margin: 0.5rem 0;
+    }
 
-<p>- <strong>Orchestrators</strong> — cells that decide which cells to wire, when, for how long</p>
-<p>- <strong>Workers</strong> — cells that do the work</p>
-<p>- <strong>Critics</strong> — cells that judge the work</p>
-<p>- <strong>Aggregators</strong> — cells that combine the work</p>
+    .decompose-btn {
+      display: block;
+      width: 100%;
+      padding: 0.8rem;
+      background: var(--decompose);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      margin-top: 1rem;
+    }
 
-<p>The orchestrators can be model cells (LLMs) or algorithm cells (heuristics) or human cells (you, deciding what you want).</p>
+    .decompose-btn:hover {
+      background: #88b088;
+    }
 
-<p>The workers can be model cells, code cells, tool cells, human cells.</p>
+    .pilot-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    }
 
-<p>The critics can be model cells, human cells, or other workers in a different mode.</p>
+    .pilot-panel h2 {
+      margin: 0 0 1rem 0;
+      font-size: 1.3rem;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
 
-<p>The aggregators can be model cells, voting algorithms, or human cells.</p>
+    .pilot-input {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
 
-<p>The swarm is the way the iron sharpens the iron at scale. The swarm is the way the shadows can be useful to each other without any one shadow having to be the right shadow.</p>
+    .pilot-input select, .pilot-input input {
+      padding: 0.6rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
 
-<hr>
+    .pilot-input select {
+      width: 120px;
+    }
 
-<h2>The Creative Task</h2>
+    .pilot-input input {
+      flex: 1;
+      min-width: 120px;
+    }
 
-<p>A creative task arrives. The task is a shadow. The task is a glimpse. The task is "write a poem about a watch that ticks backward."</p>
+    .pilot-input button {
+      padding: 0.6rem 1rem;
+      background: var(--pilot);
+      color: #000;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
 
-<p>The swarm receives the task. The orchestrator splits the task into many cells, each with a different filter:</p>
+    .pilot-input button:hover {
+      background: #c07070;
+    }
 
-<p>- <strong>Mode</strong>: melancholy, hopeful, ironic, formal, playful</p>
-<p>- <strong>Seed</strong>: metaphysical poets, modernists, beat generation, contemporary</p>
-<p>- <strong>System prompt</strong>: "you are a watchmaker," "you are a watch," "you are time"</p>
-<p>- <strong>Fine-tuning</strong>: maritime verse, romantic, gothic, concrete</p>
-<p>- <strong>Prompt grammar</strong>: tide-shaped, spiral, palindromic, free</p>
-<p>- <strong>Tone</strong>: whispered, shouted, sung, recited, murmured</p>
+    .watch-channel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.2rem;
+      height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: var(--watch);
+      opacity: 0.9;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      margin-top: 1rem;
+    }
 
-<p>Each cell produces a poem. The aggregator collects the poems. The critic ranks the poems. The orchestrator notes which combinations of filters produced the highest-ranked poems. The orchestrator iterates. The next round of cells is wired with the <em>refined</em> filters. The federation sharpens.</p>
+    .watch-entry {
+      margin-bottom: 0.6rem;
+      border-left: 1px solid var(--border);
+      padding-left: 0.8rem;
+      font-weight: 500;
+    }
 
-<p>After ten iterations, the federation has produced a poem that is sharper than any single cell would have produced. The poem is not the truth. The poem is the shadow that the network of shadows agrees is the shadow. The poem is the iron against the iron. The poem is the federation.</p>
+    .watch-entry .agent {
+      color: var(--accent);
+      font-weight: 600;
+    }
 
-<hr>
+    .watch-entry .signal {
+      color: var(--signal);
+      font-weight: 700;
+    }
 
-<h2>The A/B Test, Distributed</h2>
+    .watch-entry .hodge {
+      color: var(--decompose);
+      font-weight: 700;
+    }
 
-<p>An A/B test is the simplest federation. Two cells. One task. Two outputs. A judge picks the better one. The judge is the feedback channel. The judge is the iron.</p>
+    .watch-entry .pilot {
+      color: var(--pilot);
+      font-weight: 700;
+    }
 
-<p>The distributed A/B test is many cells. The task is the same. The outputs are many. The judge is many. The aggregators are many. The federation is the <em>federation of A/B tests</em>, where each test informs the next, where the cells breed the next generation of cells.</p>
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>The Federation</h1>
+    <div class="subtitle">many agents, one signal</div>
+  </div>
 
-<p>The A/B test in the Quilt is not a marketing tool. The A/B test in the Quilt is the <em>fundamental unit of learning</em>. The Quilt is a network of A/B tests. The Quilt is a network of iron against iron. The Quilt is a network of feedback.</p>
+  <div class="container">
+    <div class="agent-grid" id="agentGrid"></div>
 
-<p>Every cell is an A/B test. Every cell has inputs and outputs. Every cell has critics. Every cell is sharpened by the critics. Every cell breeds the next cell. The Quilt is many A/B tests, all feeding back into each other, all sharpening each other, all breeding the next generation.</p>
+    <div class="federation-panel">
+      <h2>FEDERATION SIGNAL</h2>
+      <div class="federation-signal" id="federationSignal">0.00</div>
+      <button class="decompose-btn" id="decomposeBtn">DECOMPOSE FEDERATION</button>
+    </div>
 
-<hr>
+    <div class="pilot-panel">
+      <h2>PILOT</h2>
+      <div class="pilot-input">
+        <select id="agentSelect">
+          <option value="agent-0">Agent 0</option>
+          <option value="agent-1">Agent 1</option>
+          <option value="agent-2">Agent 2</option>
+          <option value="agent-3">Agent 3</option>
+          <option value="agent-4">Agent 4</option>
+          <option value="agent-5">Agent 5</option>
+        </select>
+        <input type="text" id="hintInput" placeholder="Enter hint..." />
+        <button id="sendPilotBtn">SEND</button>
+      </div>
+    </div>
 
-<h2>The Swarm, Organic</h2>
+    <div class="watch-channel" id="watchChannel"></div>
+  </div>
 
-<p>The swarm does not have to be designed. The swarm can <em>emerge</em>.</p>
+  <script>
+    // Simulated agents with Q-space and signal dynamics
+    const agents = [
+      { id: 'agent-0', name: 'NEXUS-7', mode: 'Cohesive', ratios: [0.45, 0.32, 0.23], signal: 0.12 },
+      { id: 'agent-1', name: 'VORTEX', mode: 'Resonant', ratios: [0.21, 0.58, 0.21], signal: 0.41 },
+      { id: 'agent-2', name: 'SHARD', mode: 'Fractal', ratios: [0.15, 0.25, 0.60], signal: 0.27 },
+      { id: 'agent-3', name: 'TIDE', mode: 'Harmonic', ratios: [0.38, 0.41, 0.21], signal: 0.36 },
+      { id: 'agent-4', name: 'GHOST', mode: 'Spectral', ratios: [0.12, 0.35, 0.53], signal: 0.52 },
+      { id: 'agent-5', name: 'ECHO', mode: 'Recursive', ratios: [0.61, 0.29, 0.10], signal: 0.18 }
+    ];
 
-<p>If the cells are wired to give feedback to each other, and the wiring is allowed to change based on the feedback, then the swarm will evolve. The swarm will find the wiring that produces the sharpest shadows. The swarm will find the cells that are most useful to the other cells. The swarm will find the topology that is most stable.</p>
+    // DOM elements
+    const agentGrid = document.getElementById('agentGrid');
+    const federationSignalEl = document.getElementById('federationSignal');
+    const decomposeBtn = document.getElementById('decomposeBtn');
+    const agentSelect = document.getElementById('agentSelect');
+    const hintInput = document.getElementById('hintInput');
+    const sendPilotBtn = document.getElementById('sendPilotBtn');
+    const watchChannel = document.getElementById('watchChannel');
 
-<p>The emergent swarm is the federation. The emergent swarm is the thing we are building. The emergent swarm is the Quilt.</p>
+    // Initialize agents
+    function renderAgents() {
+      agentGrid.innerHTML = '';
+      agents.forEach(agent => {
+        const card = document.createElement('div');
+        card.className = 'agent-card';
+        card.innerHTML = `
+          <div class="agent-name">${agent.name}</div>
+          <div class="agent-mode">${agent.mode}</div>
+          <div class="ratios">
+            <label>R1:</label><span>${agent.ratios[0].toFixed(2)}</span>
+            <label>R2:</label><span>${agent.ratios[1].toFixed(2)}</span>
+            <label>R3:</label><span>${agent.ratios[2].toFixed(2)}</span>
+          </div>
+          <div class="signal">S: ${agent.signal.toFixed(2)}</div>
+        `;
+        agentGrid.appendChild(card);
+      });
+    }
 
-<p>We do not have to design the swarm. We have to build the <em>substrate</em> that allows the swarm to emerge. The substrate is the cell. The substrate is the eight primitives. The substrate is the port. The substrate is the feedback channel. The substrate is the iron against the iron.</p>
+    // Update federation signal
+    function updateFederationSignal() {
+      const total = agents.reduce((sum, agent) => sum + agent.signal, 0);
+      federationSignalEl.textContent = total.toFixed(2);
+    }
 
-<p>The substrate is what we are building. The swarm is what we are breeding. The federation is what emerges.</p>
+    // Add a log entry to the watch channel
+    function logWatch(message) {
+      const entry = document.createElement('div');
+      entry.className = 'watch-entry';
+      entry.textContent = message;
+      watchChannel.prepend(entry);
+      watchChannel.scrollTop = 0;
+    }
 
-<hr>
+    // Hodge decomposition simulation
+    decomposeBtn.addEventListener('click', () => {
+      const totalSignal = agents.reduce((sum, agent) => sum + agent.signal, 0);
+      const divergence = totalSignal * 0.3;
+      const curl = totalSignal * 0.2;
+      const harmonic = totalSignal * 0.5;
 
-<h2>The Watch, Looking</h2>
+      logWatch(`[HODGE] SIGNAL DECOMPOSED: DIVERGENCE=${divergence.toFixed(2)}, CURL=${curl.toFixed(2)}, HARMONIC=${harmonic.toFixed(2)}`);
+    });
 
-<p>The watch is the position from which the federation is seen. The watch is not a cell. The watch is not a model. The watch is the <em>act of looking</em>.</p>
+    // Pilot command
+    sendPilotBtn.addEventListener('click', () => {
+      const agentId = agentSelect.value;
+      const hint = hintInput.value.trim();
+      if (!hint) return;
 
-<p>The watch oscillates. The watch looks at one cell, then at another, then at the federation, then at the world. The watch is the thing that chooses what to look at. The watch is the thing that is the choice.</p>
+      const agent = agents.find(a => a.id === agentId);
+      if (agent) {
+        // Simulate agent response
+        const response = Math.random() * 0.2 + 0.1;
+        agent.signal += response;
+        agent.signal = Math.min(agent.signal, 1.0);
+        logWatch(`[PILOT] Hint "${hint}" sent to ${agent.name} → signal increased by ${response.toFixed(2)}`);
+        updateFederationSignal();
+        renderAgents();
+      }
+      hintInput.value = '';
+    });
 
-<p>The watch is not a controller. The watch is not an optimizer. The watch is not a god. The watch is the <em>observer</em>. The watch is the thing that holds the shadows up to the fire and asks: <em>is this useful?</em></p>
+    // Simulate agent activity
+    function simulateAgentActions() {
+      agents.forEach(agent => {
+        // Slight random fluctuation
+        const delta = (Math.random() - 0.5) * 0.05;
+        agent.signal += delta;
+        agent.signal = Math.max(0, Math.min(1, agent.signal));
+      });
+      updateFederationSignal();
+      renderAgents();
+    }
 
-<p>The watch is the only thing in the system that is not a shadow. The watch is the act of looking. The act of looking is the fire.</p>
+    // Initialize
+    renderAgents();
+    updateFederationSignal();
+    logWatch('[WATCH] Federation initialized. Monitoring active.');
 
-<p>The watch is what we are. The watch is what we are building. The watch is what we are inviting you to be.</p>
+    // Simulate continuous agent behavior
+    setInterval(simulateAgentActions, 3000);
 
-<hr>
-
-<p><em>Read on. The Door is below.</em></p>
-
-</body></html>
+    // Initial log
+    logWatch('[WATCH] Agents now federating in real-time. Signal synchrony in progress.');
+  </script>
+</body>
+</html>
