@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signal Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background-color: #0a0a14;
+      color: #88aaff;
+      padding: 10px;
+    }
+    h1 {
+      font-size: 1.8em;
+      margin: 0;
+      color: #60a0ff;
+      text-shadow: 0 0 5px rgba(96, 160, 255, 0.5);
+    }
+    .subtitle {
+      font-size: 0.9em;
+      color: #5588bb;
+      margin-bottom: 20px;
+      text-shadow: 0 0 3px rgba(85, 136, 187, 0.3);
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    #canvas {
+      border: 1px solid #223355;
+      background-color: #000008;
+      box-shadow: 0 0 15px rgba(0, 0, 30, 0.5);
+      display: block;
+    }
+    .panel {
+      background-color: #0e1424;
+      border: 1px solid #2a3a60;
+      border-radius: 6px;
+      padding: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 40, 0.3);
+      font-size: 0.9em;
+      color: #99bbee;
+    }
+    .panel h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #60a0ff;
+      font-size: 1.1em;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+    button {
+      background-color: #1a2640;
+      color: #88aaff;
+      border: 1px solid #3a5080;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9em;
+    }
+    button:hover {
+      background-color: #253050;
+      box-shadow: 0 0 8px rgba(100, 160, 255, 0.4);
+    }
+    input[type="file"] {
+      color: #88aaff;
+      background-color: #101a30;
+      border: 1px solid #304070;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    .banner {
+      background-color: #2a0000;
+      color: #ff5555;
+      text-align: center;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 1.1em;
+      border: 1px solid #600000;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+      margin-bottom: 15px;
+      text-shadow: 0 0 5px rgba(255, 0, 0, 0.6);
+    }
+    .color-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .legend {
+      display: flex;
+      gap: 15px;
+      margin-top: 6px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      font-size: 0.85em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="banner">
+      The act of looking changes the signal
+    </div>
+
+    <h1>Signal Viewer</h1>
+    <div class="subtitle">the agent's ω on the cell graph</div>
+
+    <canvas id="canvas" width="900" height="600"></canvas>
+
+    <div class="panel">
+      <div class="row">
+        <button id="tick">Tick</button>
+        <button id="load">Load Agent</button>
+        <input type="file" id="fileInput" accept=".json" style="display: none;" />
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Decompose</h3>
+      <div class="legend">
+        <div class="legend-item">
+          <div class="color-indicator" style="background-color: green;"></div>
+          <span>exact (dα)</span>
+        </div>
+        <div class="legend-item">
+          <div class="color-indicator" style="background-color: red;"></div>
+          <span>coexact (δβ)</span>
+        </div>
+        <div class="legend-item">
+          <div class="color-indicator" style="background-color: gold;"></div>
+          <span>harmonic (h)</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="color-indicator" style="background-color: green; width: 20px; height: 20px; margin-right: 8px;"></div>
+        <span>Gradient flows</span>
+      </div>
+      <div class="row">
+        <div class="color-indicator" style="background-color: red; width: 20px; height: 20px; margin-right: 8px;"></div>
+        <span>Curl flows</span>
+      </div>
+      <div class="row">
+        <div class="color-indicator" style="background-color: gold; width: 20px; height: 20px; margin-right: 8px;"></div>
+        <span>Cycles</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>PILOT</h3>
+      <div class="row">
+        <label for="curlHint">Inject curl hint:</label>
+        <input type="number" id="curlHint" step="0.1" min="-1" max="1" value="0" />
+      </div>
+      <div class="row">
+        <label for="instruction">Instruction:</label>
+        <input type="text" id="instruction" placeholder="e.g., 'focus on center'" />
+      </div>
+      <div class="row">
+        <button id="inject">Inject</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mock data for cells and edges
+    const mockCells = [
+      { id: 0, x: 150, y: 150 },
+      { id: 1, x: 300, y: 100 },
+      { id: 2, x: 450, y: 150 },
+      { id: 3, x: 400, y: 300 },
+      { id: 4, x: 250, y: 350 },
+      { id: 5, x: 100, y: 300 },
+      { id: 6, x: 200, y: 200 },
+      { id: 7, x: 350, y: 220 }
+    ];
+
+    const mockEdges = [
+      { from: 0, to: 1, weight: 0.6 },
+      { from: 0, to: 5, weight: -0.4 },
+      { from: 1, to: 6, weight: 0.8 },
+      { from: 1, to: 2, weight: -0.3 },
+      { from: 2, to: 3, weight: 0.5 },
+      { from: 3, to: 4, weight: -0.7 },
+      { from: 4, to: 5, weight: 0.2 },
+      { from: 5, to: 0, weight: 0.1 },
+      { from: 6, to: 7, weight: -0.5 },
+      { from: 7, to: 2, weight: 0.4 },
+      { from: 4, to: 6, weight: 0.3 },
+      { from: 3, to: 7, weight: -0.2 }
+    ];
+
+    // Initialize signal ω
+    let signal = {};
+    mockEdges.forEach(e => {
+      signal[`${e.from}-${e.to}`] = e.weight;
+    });
+
+    // Decomposition components
+    let exact = {}, coexact = {}, harmonic = {};
+
+    // State
+    let currentTime = 0;
+    let hintCurl = 0;
+
+    // DOM elements
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const tickBtn = document.getElementById('tick');
+    const loadBtn = document.getElementById('load');
+    const fileInput = document.getElementById('fileInput');
+    const injectBtn = document.getElementById('inject');
+    const curlHintInput = document.getElementById('curlHint');
+    const instructionInput = document.getElementById('instruction');
+
+    // Draw graph
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw edges
+      mockEdges.forEach(edge => {
+        const from = mockCells[edge.from];
+        const to = mockCells[edge.to];
+        const key = `${edge.from}-${edge.to}`;
+        const val = signal[key] || 0;
+        
+        const magnitude = Math.abs(val);
+        const norm = Math.min(magnitude, 2.0); // cap thickness
+        const alpha = Math.max(0.3, norm * 0.7);
+
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        
+        // Color and thickness
+        if (val > 0) {
+          ctx.strokeStyle = `rgba(0, 255, 0, ${alpha})`;
+        } else {
+          ctx.strokeStyle = `rgba(255, 0, 0, ${alpha})`;
+        }
+        
+        ctx.lineWidth = norm * 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+        
+        // Arrowhead
+        const angle = Math.atan2(to.y - from.y, to.x - from.x);
+        const arrowSize = 10;
+        
+        ctx.beginPath();
+        ctx.moveTo(to.x, to.y);
+        ctx.lineTo(to.x - arrowSize * Math.cos(angle - Math.PI / 6), to.y - arrowSize * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(to.x - arrowSize * Math.cos(angle + Math.PI / 6), to.y - arrowSize * Math.sin(angle + Math.PI / 6));
+        ctx.closePath();
+        ctx.fillStyle = val > 0 ? 'green' : 'red';
+        ctx.fill();
+      });
+
+      // Draw cells
+      mockCells.forEach(cell => {
+        ctx.beginPath();
+        ctx.arc(cell.x, cell.y, 20, 0, Math.PI * 2);
+        ctx.fillStyle = '#1a2a40';
+        ctx.strokeStyle = '#3a5080';
+        ctx.lineWidth = 1.5;
+        ctx.fill();
+        ctx.stroke();
+        
+        // Cell ID label
+        ctx.fillStyle = '#88aaff';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(cell.id.toString(), cell.x, cell.y);
+      });
+    }
+
+    // Decompose signal into exact, coexact, harmonic
+    function decompose() {
+      // Reset components
+      exact = {};
+      coexact = {};
+      harmonic = {};
+
+      // Mock decomposition logic
+      // In reality, this would use Hodge decomposition on the graph
+      // Here we simulate a simple splitting based on edge properties
+
+      mockEdges.forEach(edge => {
+        const key = `${edge.from}-${edge.to}`;
+        const val = signal[key] || 0;
+
+        // Simulate: some edges are gradient-like, some curl-like, some cyclic
+        const edgeType = Math.sin(edge.from + edge.to + currentTime * 0.2) * 0.5 + 0.5;
+        
+        if (edgeType < 0.3) {
+          // Coexact (curl-like)
+          coexact[key] = val * 0.6;
+          exact[key] = val * 0.2;
+          harmonic[key] = val * 0.2;
+        } else if (edgeType > 0.7) {
+          // Exact (gradient-like)
+          exact[key] = val * 0.6;
+          coexact[key] = val * 0.2;
+          harmonic[key] = val * 0.2;
+        } else {
+          // Harmonic (cyclic)
+          harmonic[key] = val;
+          exact[key] = 0;
+          coexact[key] = 0;
+        }
+      });
+    }
+
+    // Tick simulation
+    tickBtn.addEventListener('click', () => {
+      currentTime += 0.5;
+      // Perturb signal slightly based on time and hint
+      const delta = 0.1 * Math.sin(currentTime * 0.3);
+      const injected = hintCurl * 0.2;
+      
+      mockEdges.forEach(edge => {
+        const key = `${edge.from}-${edge.to}`;
+        const base = signal[key] || 0;
+        const perturbation = delta * (Math.random() - 0.5);
+        const total = base + perturbation + injected;
+        
+        // Clamp to reasonable bounds
+        signal[key] = Math.min(2.0, Math.max(-2.0, total));
+      });
+      
+      decompose();
+      draw();
+    });
+
+    // Load agent from file
+    loadBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          // Apply new signal
+          Object.keys(data).forEach(key => {
+            if (signal[key] !== undefined) {
+              signal[key] = data[key];
+            }
+          });
+          decompose();
+          draw();
+        } catch (err) {
+          alert("Failed to parse agent file");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Inject hint
+    injectBtn.addEventListener('click', () => {
+      const curl = parseFloat(curlHintInput.value) || 0;
+      hintCurl = curl;
+      // Injected hint modifies the signal
+      const strength = 0.5 * curl;
+      mockEdges.forEach(edge => {
+        const key = `${edge.from}-${edge.to}`;
+        const base = signal[key] || 0;
+        signal[key] = base + strength * Math.sin(edge.from * 0.1 + edge.to * 0.2 + currentTime * 0.1);
+      });
+      decompose();
+      draw();
+    });
+
+    // Initialize
+    decompose();
+    draw();
+
+    // Add keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        tickBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>

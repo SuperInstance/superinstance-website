@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agent Growth</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --text: #a0b4d0;
+      --accent: #4a80c4;
+      --border: #2a3448;
+      --panel: #121620;
+      --btn: #2d3c56;
+      --btn-hover: #3a4b67;
+      --warn: #c05050;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .banner {
+      background: var(--warn);
+      color: white;
+      padding: 12px 20px;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      font-size: 1.2em;
+      letter-spacing: 1px;
+      border: 1px solid var(--border);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .panel h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.1em;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    .control-panel {
+      grid-column: span 3;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .control-panel button {
+      background: var(--btn);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9em;
+      transition: background 0.2s;
+    }
+
+    .control-panel button:hover {
+      background: var(--btn-hover);
+    }
+
+    .control-panel input {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9em;
+    }
+
+    .chart-container {
+      height: 200px;
+      position: relative;
+    }
+
+    .watch-view {
+      background: #08080d;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.85em;
+      line-height: 1.4;
+      height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      color: #7098b3;
+    }
+
+    .watch-line {
+      margin: 0;
+      padding: 2px 0;
+      border-left: 1px solid #304060;
+      padding-left: 8px;
+    }
+
+    .watch-time {
+      color: #4a80c4;
+      font-weight: bold;
+    }
+
+    .watch-msg {
+      color: #a0b4d0;
+    }
+
+    .hint-input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .status {
+      font-size: 0.9em;
+      color: #88a0c0;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="banner">5th proof: the watch is the agent</div>
+
+    <h1>Agent Growth</h1>
+    <p class="subtitle" style="color: #6a85a0; margin-bottom: 20px;">the trajectory of the signal</p>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Signal over time</h3>
+        <div class="chart-container">
+          <canvas id="signalChart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Hodge ratios over time</h3>
+        <div class="chart-container">
+          <canvas id="hodgeChart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Dominant mode over time</h3>
+        <div class="chart-container">
+          <canvas id="modeChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-panel">
+      <div>
+        <label for="agentFile">Load agent:</label>
+        <input type="file" id="agentFile" accept=".json" />
+      </div>
+
+      <div>
+        <label for="hintInput">PILOT:</label>
+        <input type="text" id="hintInput" class="hint-input" placeholder="Enter hint (curl, instruction)" />
+        <button id="injectHint">Inject</button>
+      </div>
+
+      <div>
+        <button id="tickButton">Tick</button>
+        <button id="decomposeButton">Decompose</button>
+        <span id="status" class="status">Ready</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Watch</h3>
+      <div class="watch-view" id="watchView">
+        <div class="watch-line"><span class="watch-time">00:00:00</span> <span class="watch-msg">Watch initialized. Waiting for signal.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mock agent data
+    const mockData = {
+      ticks: 100,
+      omega: Array.from({ length: 100 }, (_, i) => {
+        const t = i / 10;
+        return 0.5 + 0.5 * Math.sin(t * 1.2) + 0.3 * Math.random();
+      }),
+      hodge: {
+        exploration: Array.from({ length: 100 }, (_, i) => {
+          const t = i / 10;
+          return 0.3 + 0.4 * Math.sin(t * 1.5) + 0.1 * Math.random();
+        }),
+        exploitation: Array.from({ length: 100 }, (_, i) => {
+          const t = i / 10;
+          return 0.2 + 0.5 * Math.cos(t * 1.4) + 0.1 * Math.random();
+        }),
+        prior: Array.from({ length: 100 }, (_, i) => {
+          const t = i / 10;
+          return 0.1 + 0.6 * Math.sin(t * 1.3) + 0.1 * Math.random();
+        })
+      },
+      modes: Array.from({ length: 100 }, (_, i) => {
+        const r = Math.random();
+        if (r < 0.3) return 'exploration';
+        if (r < 0.6) return 'exploitation';
+        return 'prior';
+      })
+    };
+
+    // State
+    let state = {
+      tick: 0,
+      omega: [],
+      hodge: { exploration: [], exploitation: [], prior: [] },
+      modes: [],
+      watch: []
+    };
+
+    // Watch channel
+    function watch(msg) {
+      const now = new Date().toISOString().substr(11, 8);
+      const line = `<span class="watch-time">${now}</span> <span class="watch-msg">${msg}</span>`;
+      const view = document.getElementById('watchView');
+      const entry = document.createElement('div');
+      entry.className = 'watch-line';
+      entry.innerHTML = line;
+      view.insertBefore(entry, view.firstChild);
+      if (view.children.length > 20) {
+        view.removeChild(view.lastChild);
+      }
+    }
+
+    // Initialize charts
+    const signalCtx = document.getElementById('signalChart').getContext('2d');
+    const hodgeCtx = document.getElementById('hodgeChart').getContext('2d');
+    const modeCtx = document.getElementById('modeChart').getContext('2d');
+
+    let signalChart = new Chart(signalCtx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'ω magnitude',
+          data: [],
+          borderColor: '#4a80c4',
+          backgroundColor: 'rgba(74, 128, 196, 0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#a0b4d0'
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#7098b3' },
+            grid: { color: 'rgba(42, 52, 72, 0.2)' }
+          },
+          y: {
+            ticks: { color: '#7098b3' },
+            grid: { color: 'rgba(42, 52, 72, 0.2)' },
+            min: 0,
+            max: 1.2
+          }
+        }
+      }
+    });
+
+    let hodgeChart = new Chart(hodgeCtx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Exploration',
+            data: [],
+            borderColor: '#4a80c4',
+            backgroundColor: 'rgba(74, 128, 196, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Exploitation',
+            data: [],
+            borderColor: '#804a4a',
+            backgroundColor: 'rgba(128, 74, 74, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Prior',
+            data: [],
+            borderColor: '#4a4a80',
+            backgroundColor: 'rgba(74, 74, 128, 0.1)',
+            tension: 0.4,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#a0b4d0'
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#7098b3' },
+            grid: { color: 'rgba(42, 52, 72, 0.2)' }
+          },
+          y: {
+            ticks: { color: '#7098b3' },
+            grid: { color: 'rgba(42, 52, 72, 0.2)' },
+            min: 0,
+            max: 1
+          }
+        }
+      }
+    });
+
+    let modeChart = new Chart(modeCtx, {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Exploration',
+            data: [],
+            backgroundColor: '#4a80c4'
+          },
+          {
+            label: 'Exploitation',
+            data: [],
+            backgroundColor: '#804a4a'
+          },
+          {
+            label: 'Prior',
+            data: [],
+            backgroundColor: '#4a4a80'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'x',
+        plugins: {
+          legend: {
+            labels: {
+              color: '#a0b4d0'
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#7098b3' },
+            grid: { color: 'rgba(42, 52, 72, 0.2)' }
+          },
+          y: {
+            ticks: { color: '#7098b3' },
+            grid: { color: 'rgba(42, 52, 72, 0.2)' }
+          }
+        }
+      }
+    });
+
+    // Initialize with mock data
+    function loadMockData() {
+      const data = mockData;
+      state.tick = 0;
+      state.omega = data.omega.slice(0, 1);
+      state.hodge.exploration = data.hodge.exploration.slice(0, 1);
+      state.hodge.exploitation = data.hodge.exploitation.slice(0, 1);
+      state.hodge.prior = data.hodge.prior.slice(0, 1);
+      state.modes = data.modes.slice(0, 1);
+      state.watch = [];
+
+      // Update charts
+      updateCharts();
+      watch('Mock agent loaded. Signal initialized.');
+    }
+
+    function updateCharts() {
+      const labels = Array.from({ length: state.tick + 1 }, (_, i) => i);
+      const omega = state.omega;
+      const exploration = state.hodge.exploration;
+      const exploitation = state.hodge.exploitation;
+      const prior = state.hodge.prior;
+      const modes = state.modes;
+
+      // Signal chart
+      signalChart.data.labels = labels;
+      signalChart.data.datasets[0].data = omega;
+      signalChart.update();
+
+      // Hodge chart
+      hodgeChart.data.labels = labels;
+      hodgeChart.data.datasets[0].data = exploration;
+      hodgeChart.data.datasets[1].data = exploitation;
+      hodgeChart.data.datasets[2].data = prior;
+      hodgeChart.update();
+
+      // Mode chart (stacked)
+      modeChart.data.labels = labels;
+      modeChart.data.datasets[0].data = modes.map(m => m === 'exploration' ? 1 : 0);
+      modeChart.data.datasets[1].data = modes.map(m => m === 'exploitation' ? 1 : 0);
+      modeChart.data.datasets[2].data = modes.map(m => m === 'prior' ? 1 : 0);
+      modeChart.update();
+    }
+
+    // Tick simulation
+    document.getElementById('tickButton').addEventListener('click', () => {
+      if (state.tick >= mockData.ticks - 1) {
+        watch('Simulation complete. No more ticks.');
+        return;
+      }
+
+      state.tick++;
+      const tick = state.tick;
+
+      // Simulate new values
+      const omega = 0.5 + 0.5 * Math.sin(tick / 5) + 0.3 * Math.random();
+      const exploration = 0.3 + 0.4 * Math.sin(tick / 4) + 0.1 * Math.random();
+      const exploitation = 0.2 + 0.5 * Math.cos(tick / 4.5) + 0.1 * Math.random();
+      const prior = 0.1 + 0.6 * Math.sin(tick / 4.2) + 0.1 * Math.random();
+
+      // Update state
+      state.omega.push(omega);
+      state.hodge.exploration.push(exploration);
+      state.hodge.exploitation.push(exploitation);
+      state.hodge.prior.push(prior);
+
+      // Determine dominant mode
+      const total = exploration + exploitation + prior;
+      const e = exploration / total;
+      const x = exploitation / total;
+      const p = prior / total;
+      let mode = 'prior';
+      if (e > x && e > p) mode = 'exploration';
+      if (x > e && x > p) mode = 'exploitation';
+      state.modes.push(mode);
+
+      // Update view
+      updateCharts();
+      watch(`Tick ${tick}: ω=${omega.toFixed(3)}, mode=${mode}`);
+    });
+
+    // Decompose
+    document.getElementById('decomposeButton').addEventListener('click', () => {
+      watch('Hodge decomposition computed. Components updated.');
+      // In real system, this would run decomposition algorithm
+      // For now, just generate some noise
+      state.hodge.exploration = state.hodge.exploration.map(v => v * 0.95 + 0.05 * Math.random());
+      state.hodge.exploitation = state.hodge.exploitation.map(v => v * 0.95 + 0.05 * Math.random());
+      state.hodge.prior = state.hodge.prior.map(v => v * 0.95 + 0.05 * Math.random());
+      updateCharts();
+    });
+
+    // Inject hint
+    document.getElementById('injectHint').addEventListener('click', () => {
+      const hintInput = document.getElementById('hintInput');
+      const hint = hintInput.value.trim();
+      if (hint) {
+        watch(`PILOT: ${hint}`);
+        hintInput.value = '';
+      } else {
+        watch('PILOT: empty hint ignored.');
+      }
+    });
+
+    // Load agent
+    document.getElementById('agentFile').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          state.tick = 0;
+          state.omega = data.omega || [];
+          state.hodge.exploration = data.hodge?.exploration || [];
+          state.hodge.exploitation = data.hodge?.exploitation || [];
+          state.hodge.prior = data.hodge?.prior || [];
+          state.modes = data.modes || [];
+          state.watch = [];
+
+          updateCharts();
+          watch(`Agent loaded from ${file.name}. ${state.omega.length} ticks.`);
+
+        } catch (err) {
+          watch(`Error loading agent: ${err.message}`);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Initialize
+    window.onload = () => {
+      loadMockData();
+      document.getElementById('status').textContent = 'Ready';
+    };
+  </script>
+</body>
+</html>

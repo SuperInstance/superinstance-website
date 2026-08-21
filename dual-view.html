@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dual View</title>
+  <style>
+    :root {
+      --bg: #0a0a12;
+      --text: #d0d0f0;
+      --border: #2a2a40;
+      --accent: #5a9aff;
+      --hover: #3a5aff;
+      --cell-bg: #1a1a2a;
+      --cell-border: #3a3a50;
+      --graph-bg: #12121f;
+      --line: #4a6aff;
+      --button: #2a2a40;
+      --button-hover: #3a3a50;
+      --alert: #ff5555;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: var(--border);
+      padding: 1rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--accent);
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 10;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      font-weight: normal;
+      margin-top: 0.2rem;
+      opacity: 0.7;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 1rem;
+      gap: 1.5rem;
+      overflow: hidden;
+    }
+
+    .panel {
+      flex: 1;
+      background-color: var(--graph-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .cns-view {
+      background-color: var(--cell-bg);
+      border: 1px solid var(--cell-border);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      overflow-y: auto;
+      max-height: 400px;
+    }
+
+    .cell-box {
+      background-color: var(--cell-bg);
+      border: 1px solid var(--cell-border);
+      padding: 0.4rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .cell-box:hover {
+      background-color: var(--cell-bg);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .cell-header {
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .field {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.2rem;
+      background-color: rgba(0,0,0,0.1);
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .field-label {
+      color: #aaa;
+      width: 35%;
+    }
+
+    .field-value {
+      width: 65%;
+      text-align: right;
+      color: #ccc;
+    }
+
+    .fascia-view {
+      position: relative;
+      flex: 1;
+      background-color: var(--graph-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .graph {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: var(--graph-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .node {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      border: 1px solid var(--text);
+      box-shadow: 0 0 8px rgba(90, 154, 255, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.6rem;
+      font-weight: bold;
+      color: #fff;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .node:hover {
+      box-shadow: 0 0 16px rgba(90, 154, 255, 0.8);
+      transform: scale(1.15);
+    }
+
+    .edge {
+      position: absolute;
+      background-color: var(--line);
+      height: 1px;
+      transform-origin: 0 0;
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      background-color: var(--button);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--button-hover);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .panel-footer {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .subscribe-panel, .transfer-panel {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 0.8rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      margin-top: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    .form-group input, .form-group select {
+      padding: 0.3rem;
+      background-color: var(--graph-bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .impossibility-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--alert);
+      color: #fff;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+      z-index: 5;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      opacity: 0.95;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.9; }
+      50% { opacity: 0.7; }
+      100% { opacity: 0.9; }
+    }
+
+    .toggle-on {
+      background-color: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .toggle-on:hover {
+      background-color: #66aaff;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    DUAL VIEW
+    <div class="subtitle">CNS and Fascia at once</div>
+  </div>
+
+  <div class="container">
+    <div class="panel">
+      <div class="cns-view" id="cnsView"></div>
+    </div>
+    <div class="panel">
+      <div class="fascia-view" id="fasciaView">
+        <div class="graph" id="graph"></div>
+        <div class="impossibility-banner">
+          subscribing changes the surprise
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="switchViewBtn" class="btn">Switch View</button>
+    <button id="tickBtn" class="btn">Tick</button>
+    <button id="resetBtn" class="btn">Reset</button>
+  </div>
+
+  <div class="subscribe-panel">
+    <div class="form-group">
+      <label for="subscribeCell">Subscribe to Cell:</label>
+      <select id="subscribeCell">
+        <option value="0">Cell 0</option>
+        <option value="1">Cell 1</option>
+        <option value="2">Cell 2</option>
+        <option value="3">Cell 3</option>
+      </select>
+    </div>
+    <button id="subscribeBtn" class="btn">Subscribe</button>
+  </div>
+
+  <div class="transfer-panel">
+    <div class="form-group">
+      <label for="fromCell">From Cell:</label>
+      <select id="fromCell">
+        <option value="0">Cell 0</option>
+        <option value="1">Cell 1</option>
+        <option value="2">Cell 2</option>
+        <option value="3">Cell 3</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="toCell">To Cell:</label>
+      <select id="toCell">
+        <option value="0">Cell 0</option>
+        <option value="1">Cell 1</option>
+        <option value="2">Cell 2</option>
+        <option value="3">Cell 3</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="gammaAmount">Gamma Amount:</label>
+      <input type="number" id="gammaAmount" value="0.1" min="0" max="1" step="0.01" />
+    </div>
+    <button id="transferBtn" class="btn">Transfer</button>
+  </div>
+
+  <script>
+    // Mock data for 4 cells with 8 primitive fields each
+    const initialCells = [
+      { id: 0, fields: { a: 0.3, b: 0.7, c: 0.1, d: 0.9, e: 0.4, f: 0.6, g: 0.2, h: 0.8 } },
+      { id: 1, fields: { a: 0.6, b: 0.2, c: 0.8, d: 0.3, e: 0.5, f: 0.9, g: 0.7, h: 0.1 } },
+      { id: 2, fields: { a: 0.1, b: 0.5, c: 0.6, d: 0.4, e: 0.3, f: 0.2, g: 0.9, h: 0.7 } },
+      { id: 3, fields: { a: 0.8, b: 0.4, c: 0.2, d: 0.5, e: 0.7, f: 0.1, g: 0.6, h: 0.3 } }
+    ];
+
+    let cells = JSON.parse(JSON.stringify(initialCells));
+    let connections = [
+      { from: 0, to: 1, strength: 0.4 },
+      { from: 1, to: 2, strength: 0.3 },
+      { from: 2, to: 3, strength: 0.5 },
+      { from: 3, to: 0, strength: 0.2 },
+      { from: 0, to: 2, strength: 0.35 },
+      { from: 1, to: 3, strength: 0.45 }
+    ];
+
+    const cnsView = document.getElementById('cnsView');
+    const fasciaView = document.getElementById('fasciaView');
+    const graph = document.getElementById('graph');
+    const switchViewBtn = document.getElementById('switchViewBtn');
+    const tickBtn = document.getElementById('tickBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    const transferBtn = document.getElementById('transferBtn');
+    const subscribeCell = document.getElementById('subscribeCell');
+    const fromCell = document.getElementById('fromCell');
+    const toCell = document.getElementById('toCell');
+    const gammaAmount = document.getElementById('gammaAmount');
+
+    let viewMode = 'both'; // both, cns, fascia
+    let syncTick = 0;
+
+    function renderCNSView() {
+      cnsView.innerHTML = '';
+      cells.forEach(cell => {
+        const cellBox = document.createElement('div');
+        cellBox.className = 'cell-box';
+        cellBox.id = `cell-${cell.id}`;
+
+        const header = document.createElement('div');
+        header.className = 'cell-header';
+        header.textContent = `Cell ${cell.id}`;
+
+        const fields = document.createElement('div');
+        fields.style.display = 'flex';
+        fields.style.flexDirection = 'column';
+        fields.style.gap = '0.1rem';
+
+        Object.keys(cell.fields).forEach(key => {
+          const field = document.createElement('div');
+          field.className = 'field';
+          const label = document.createElement('div');
+          label.className = 'field-label';
+          label.textContent = key.toUpperCase();
+          const value = document.createElement('div');
+          value.className = 'field-value';
+          value.textContent = cell.fields[key].toFixed(2);
+          field.appendChild(label);
+          field.appendChild(value);
+          fields.appendChild(field);
+        });
+
+        cellBox.appendChild(header);
+        cellBox.appendChild(fields);
+        cnsView.appendChild(cellBox);
+      });
+    }
+
+    function renderFasciaView() {
+      graph.innerHTML = '';
+      
+      const width = graph.clientWidth;
+      const height = graph.clientHeight;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const radius = Math.min(width, height) * 0.35;
+
+      // Position nodes in a circle
+      cells.forEach((cell, index) => {
+        const angle = (index * Math.PI * 2) / cells.length;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+
+        const node = document.createElement('div');
+        node.className = 'node';
+        node.textContent = cell.id;
+        node.style.left = `${x - 10}px`;
+        node.style.top = `${y - 10}px`;
+        node.dataset.id = cell.id;
+        node.addEventListener('click', () => {
+          const selectedCell = cells.find(c => c.id === cell.id);
+          if (selectedCell) {
+            alert(`Selected cell: ${cell.id}\nFields: ${JSON.stringify(selectedCell.fields, null, 2)}`);
+          }
+        });
+        graph.appendChild(node);
+
+        // Draw outgoing edges
+        connections.forEach(conn => {
+          if (conn.from === cell.id) {
+            const target = cells.find(c => c.id === conn.to);
+            if (target) {
+              const targetAngle = (cells.indexOf(target) * Math.PI * 2) / cells.length;
+              const targetX = centerX + Math.cos(targetAngle) * radius;
+              const targetY = centerY + Math.sin(targetAngle) * radius;
+
+              const edge = document.createElement('div');
+              edge.className = 'edge';
+              const length = Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2));
+              const angleRad = Math.atan2(targetY - y, targetX - x);
+              edge.style.width = `${length}px`;
+              edge.style.left = `${x}px`;
+              edge.style.top = `${y}px`;
+              edge.style.transform = `rotate(${angleRad}rad)`;
+              edge.style.opacity = conn.strength;
+
+              // Add arrowhead at end
+              const arrow = document.createElement('div');
+              arrow.style.position = 'absolute';
+              arrow.style.right = '0';
+              arrow.style.top = '50%';
+              arrow.style.transform = 'translateY(-50%) rotate(45deg)';
+              arrow.style.width = '6px';
+              arrow.style.height = '6px';
+              arrow.style.borderRight = '1px solid var(--line)';
+              arrow.style.borderBottom = '1px solid var(--line)';
+              arrow.style.backgroundColor = 'transparent';
+              edge.appendChild(arrow);
+
+              graph.appendChild(edge);
+            }
+          }
+        });
+      });
+    }
+
+    function updateFasciaView() {
+      // Update edges based on connections and cell states
+      const edges = document.querySelectorAll('.edge');
+      edges.forEach(edge => {
+        const fromId = parseInt(edge.parentElement.querySelector('.node').dataset.id);
+        const toId = edges.indexOf(edge) % cells.length; // Simplified for demo
+        const strength = connections.find(c => c.from === fromId && c.to === toId)?.strength || 0.1;
+        edge.style.opacity = strength;
+      });
+    }
+
+    function tick() {
+      syncTick++;
+      
+      // Update cell fields with small randomness
+      cells.forEach(cell => {
+        Object.keys(cell.fields).forEach(key => {
+          // Add small change based on tick
+          const delta = (Math.random() - 0.5) * 0.02;
+          cell.fields[key] = Math.max(0, Math.min(1, cell.fields[key] + delta));
+        });
+      });
+
+      // Update connections (simulated flow)
+      connections.forEach(conn => {
+        const fromCell = cells[conn.from];
+        const toCell = cells[conn.to];
+        const flow = Math.random() * 0.1 * (fromCell.fields.a + fromCell.fields.b) * conn.strength;
+        const gammaChange = flow * 0.5;
+        toCell.fields.c = Math.max(0, Math.min(1, toCell.fields.c + gammaChange));
+      });
+
+      renderCNSView();
+      updateFasciaView();
+    }
+
+    function reset() {
+      cells = JSON.parse(JSON.stringify(initialCells));
+      connections = [
+        { from: 0, to: 1, strength: 0.4 },
+        { from: 1, to: 2, strength: 0.3 },
+        { from: 2, to: 3, strength: 0.5 },
+        { from: 3, to: 0, strength: 0.2 },
+        { from: 0, to: 2, strength: 0.35 },
+        { from: 1, to: 3, strength: 0.45 }
+      ];
+      syncTick = 0;
+      renderCNSView();
+      updateFasciaView();
+    }
+
+    function switchView() {
+      if (viewMode === 'both') {
+        viewMode = 'cns';
+        cnsView.style.display = 'block';
+        fasciaView.style.display = 'none';
+        switchViewBtn.textContent = 'Show Fascia';
+      } else if (viewMode === 'cns') {
+        viewMode = 'fascia';
+        cnsView.style.display = 'none';
+        fasciaView.style.display = 'block';
+        switchViewBtn.textContent = 'Show CNS';
+      } else {
+        viewMode = 'both';
+        cnsView.style.display = 'block';
+        fasciaView.style.display = 'block';
+        switchViewBtn.textContent = 'Switch View';
+      }
+    }
+
+    function subscribe() {
+      const cellId = parseInt(subscribeCell.value);
+      const cell = cells.find(c => c.id === cellId);
+      if (cell) {
+        // Simulate subscription changing the surprise
+        alert(`Subscribed to Cell ${cellId} — this changes the surprise`);
+        // Modify connection strengths
+        connections.forEach(conn => {
+          if (conn.from === cellId) {
+            conn.strength = Math.max(0.1, conn.strength * 1.2);
+          }
+        });
+        updateFasciaView();
+      }
+    }
+
+    function transfer() {
+      const fromId = parseInt(fromCell.value);
+      const toId = parseInt(toCell.value);
+      const amount = parseFloat(gammaAmount.value);
+
+      if (fromId === toId) return;
+
+      const fromCell = cells.find(c => c.id === fromId);
+      const toCell = cells.find(c => c.id === toId);
+
+      if (!fromCell || !toCell) return;
+
+      // Simulate gamma transfer
+      const transferAmount = Math.min(fromCell.fields.a * amount, 0.5);
+      fromCell.fields.a -= transferAmount;
+      toCell.fields.a += transferAmount;
+
+      // Update connections
+      connections.forEach(conn => {
+        if (conn.from === fromId && conn.to === toId) {
+          conn.strength += 0.05 * amount;
+          conn.strength = Math.min(1, conn.strength);
+        }
+      });
+
+      renderCNSView();
+      updateFasciaView();
+    }
+
+    // Initialize
+    renderCNSView();
+    renderFasciaView();
+
+    // Event listeners
+    switchViewBtn.addEventListener('click', switchView);
+    tickBtn.addEventListener('click', tick);
+    resetBtn.addEventListener('click', reset);
+    subscribeBtn.addEventListener('click', subscribe);
+    transferBtn.addEventListener('click', transfer);
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      renderFasciaView();
+    });
+
+    // Auto-tick every 2 seconds (for demo)
+    setInterval(tick, 2000);
+  </script>
+</body>
+</html>
