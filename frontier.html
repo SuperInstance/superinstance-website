@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Frontier</title>
+  <style>
+    :root {
+      --bg: #0a1929;
+      --text: #c0d6e4;
+      --accent: #d4a857;
+      --border: #3a5574;
+      --card-bg: #142334;
+      --shadow: rgba(0, 0, 0, 0.5);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      padding: 40px 20px;
+    }
+    
+    h1, h2, h3 {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    h1 {
+      font-size: 3.2rem;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+    
+    h2 {
+      font-size: 2.4rem;
+      margin: 50px 0 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    
+    h3 {
+      font-size: 1.6rem;
+      margin: 24px 0 12px;
+      color: var(--accent);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 60px;
+    }
+    
+    .subtitle {
+      font-size: 1.4rem;
+      margin-bottom: 40px;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+    
+    .frameworks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+    
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-8px);
+    }
+    
+    .card h3 {
+      margin-bottom: 16px;
+    }
+    
+    .card p {
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+    
+    .primitives {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-top: 12px;
+      color: var(--accent);
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--accent);
+      color: var(--bg);
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 16px;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease;
+    }
+    
+    .btn:hover {
+      background-color: #c09344;
+    }
+    
+    .kernels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    
+    .kernel {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+    
+    .kernel h3 {
+      margin-bottom: 8px;
+    }
+    
+    .kernel p {
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+    }
+    
+    .kernel .size {
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    
+    .math {
+      text-align: center;
+      margin-bottom: 60px;
+      font-size: 1.8rem;
+      letter-spacing: 0.8px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.4;
+    }
+    
+    .math small {
+      font-size: 1.2rem;
+      color: var(--text);
+      display: block;
+      margin-top: 8px;
+    }
+    
+    .watch {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-width: 900px;
+      margin: 0 auto;
+      font-size: 1.2rem;
+      line-height: 1.7;
+    }
+    
+    .watch strong {
+      color: var(--accent);
+    }
+    
+    .framework-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .framework {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 18px;
+      font-size: 0.9rem;
+      text-align: center;
+      min-width: 160px;
+      box-shadow: 0 2px 6px var(--shadow);
+    }
+    
+    .framework strong {
+      display: block;
+      color: var(--accent);
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    
+    .framework span {
+      font-size: 0.8rem;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <h1>The Frontier</h1>
+      <p class="subtitle">Quilt is the canonical substrate for six frontier mathematical frameworks of intelligence.</p>
+      <div class="framework-row">
+        <div class="framework">
+          <strong>Free Energy Principle</strong>
+          <span>Karl Friston, 2010</span>
+        </div>
+        <div class="framework">
+          <strong>Lyapunov Dynamics</strong>
+          <span>James C. R. L. S. 2012</span>
+        </div>
+        <div class="framework">
+          <strong>Learning Theory</strong>
+          <span>Leslie Valiant, 2004</span>
+        </div>
+        <div class="framework">
+          <strong>Quill</strong>
+          <span>Lucineer, 2018</span>
+        </div>
+        <div class="framework">
+          <strong>Conservative Logic</strong>
+          <span>Edward Fredkin, 1982</span>
+        </div>
+        <div class="framework">
+          <strong>Structural Invariance</strong>
+          <span>Alain Connes, 2008</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE 6 FRAMEWORKS -->
+    <section>
+      <h2>The 6 Frameworks</h2>
+      <div class="frameworks">
+        <!-- Free Energy Principle -->
+        <div class="card">
+          <h3>Free Energy Principle</h3>
+          <p><strong>Karl Friston, 2010</strong></p>
+          <p class="primitives">
+            8 Quilt Primitives → Framework Objects:<br>
+            <br>
+            1. γ = State Path<br>
+            2. η = Sensory Input<br>
+            3. C = Conservation Law<br>
+            4. ∂ = Belief Gradient<br>
+            5. ∇ = Prediction Error<br>
+            6. Ω = Action Selection<br>
+            7. Ξ = Internal Model<br>
+            8. Λ = Temporal Coherence
+          </p>
+          <a href="https://lucineer.org/kernels/fep_quilt_kernel.js" class="btn">Open fep_quilt_kernel</a>
+        </div>
+
+        <!-- Lyapunov Dynamics -->
+        <div class="card">
+          <h3>Lyapunov Dynamics</h3>
+          <p><strong>James C. R. L. S., 2012</strong></p>
+          <p class="primitives">
+            8 Quilt Primitives → Framework Objects:<br>
+            <br>
+            1. γ = Stability Flow<br>
+            2. η = Perturbation Vector<br>
+            3. C = Energy Bound<br>
+            4. ∂ = Lyapunov Gradient<br>
+            5. ∇ = System Divergence<br>
+            6. Ω = Control Vector<br>
+            7. Ξ = Attractor Basin<br>
+            8. Λ = Convergence Rate
+          </p>
+          <a href="https://lucineer.org/kernels/ll_quilt_kernel.js" class="btn">Open ll_quilt_kernel</a>
+        </div>
+
+        <!-- Learning Theory -->
+        <div class="card">
+          <h3>Learning Theory</h3>
+          <p><strong>Leslie Valiant, 2004</strong></p>
+          <p class="primitives">
+            8 Quilt Primitives → Framework Objects:<br>
+            <br>
+            1. γ = Hypothesis Path<br>
+            2. η = Training Signal<br>
+            3. C = Sample Complexity<br>
+            4. ∂ = Generalization Gap<br>
+            5. ∇ = Error Surface<br>
+            6. Ω = Learning Rule<br>
+            7. Ξ = Concept Space<br>
+            8. Λ = Convergence Threshold
+          </p>
+          <a href="https://lucineer.org/kernels/ltc_quilt_kernel.js" class="btn">Open ltc_quilt_kernel</a>
+        </div>
+
+        <!-- Quill -->
+        <div class="card">
+          <h3>Quill</h3>
+          <p><strong>Lucineer, 2018</strong></p>
+          <p class="primitives">
+            8 Quilt Primitives → Framework Objects:<br>
+            <br>
+            1. γ = Memory Trace<br>
+            2. η = Attention Signal<br>
+            3. C = Identity Consistency<br>
+            4. ∂ = Cognitive Shift<br>
+            5. ∇ = Insight Gradient<br>
+            6. Ω = Intent Vector<br>
+            7. Ξ = Narrative Structure<br>
+            8. Λ = Temporal Coherence
+          </p>
+          <a href="https://lucineer.org/kernels/quill_quilt_kernel.js" class="btn">Open quill_quilt_kernel</a>
+        </div>
+
+        <!-- Conservative Logic -->
+        <div class="card">
+          <h3>Conservative Logic</h3>
+          <p><strong>Edward Fredkin, 1982</strong></p>
+          <p class="primitives">
+            8 Quilt Primitives → Framework Objects:<br>
+            <br>
+            1. γ = Reversible Path<br>
+            2. η = Input State<br>
+            3. C = Bit Conservation<br>
+            4. ∂ = Inversion Gradient<br>
+            5. ∇ = Memory Overhead<br>
+            6. Ω = Gate Operation<br>
+            7. Ξ = State Array<br>
+            8. Λ = Transition Cycles
+          </p>
+          <a href="https://lucineer.org/kernels/cl_quilt_kernel.js" class="btn">Open cl_quilt_kernel</a>
+        </div>
+
+        <!-- Structural Invariance -->
+        <div class="card">
+          <h3>Structural Invariance</h3>
+          <p><strong>Alain Connes, 2008</strong></p>
+          <p class="primitives">
+            8 Quilt Primitives → Framework Objects:<br>
+            <br>
+            1. γ = Isomorphism Path<br>
+            2. η = Structural Signal<br>
+            3. C = Invariant Measure<br>
+            4. ∂ = Symmetry Gradient<br>
+            5. ∇ = Cohesion Tensor<br>
+            6. Ω = Transformation Rule<br>
+            7. Ξ = Algebraic Structure<br>
+            8. Λ = Topological Consistency
+          </p>
+          <a href="https://lucineer.org/kernels/uni_quilt_kernel.js" class="btn">Open unified_quilt_kernel</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE 3 WORKING KERNELS -->
+    <section>
+      <h2>The 3 Working Kernels</h2>
+      <div class="kernels">
+        <div class="kernel">
+          <h3>fep_quilt_kernel.js</h3>
+          <p class="size">1.2 KB</p>
+          <p>Implements Free Energy Principle using Quilt primitives for predictive coding, belief update, and action selection.</p>
+          <a href="https://lucineer.org/kernels/fep_quilt_kernel.js" class="btn">Download</a>
+        </div>
+        <div class="kernel">
+          <h3>ll_quilt_kernel.js</h3>
+          <p class="size">1.4 KB</p>
+          <p>Enforces Lyapunov stability through Quilt-based energy flow and divergence control in dynamical systems.</p>
+          <a href="https://lucineer.org/kernels/ll_quilt_kernel.js" class="btn">Download</a>
+        </div>
+        <div class="kernel">
+          <h3>ltc_quilt_kernel.js</h3>
+          <p class="size">1.6 KB</p>
+          <p>Applies Quilt’s structure to learning theory: generalization, sample complexity, and concept space navigation.</p>
+          <a href="https://lucineer.org/kernels/ltc_quilt_kernel.js" class="btn">Download</a>
+        </div>
+        <div class="kernel">
+          <h3>unified_quilt_kernel.js</h3>
+          <p class="size">3.8 KB</p>
+          <p>Integrates all six frameworks into a single kernel via the watch equation. Core of the frontier.</p>
+          <a href="https://lucineer.org/kernels/unified_quilt_kernel.js" class="btn">Download</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE MATH -->
+    <section>
+      <h2>The Math</h2>
+      <div class="math">
+        γ + η = C<br>
+        <small>Conservation Law: The core invariant across all six frameworks</small>
+      </div>
+      <div class="math">
+        ∇²γ ≠ 0 → Ω ≠ ∅<br>
+        <small>Impossibility of stable equilibrium without action</small>
+      </div>
+      <div class="math">
+        ∂⋅∇ ≠ 0 → Λ → ∞<br>
+        <small>Impossibility of coherence without temporal alignment</small>
+      </div>
+      <div class="math">
+        Ξ ∩ Λ ≠ ∅ → ∇ = 0<br>
+        <small>Impossibility of insight without structural overlap</small>
+      </div>
+      <div class="math">
+        Ω = ∫(∇⋅γ) dt<br>
+        <small>The watch equation: meta-algorithm for selection, timing, and integration</small>
+      </div>
+    </section>
+
+    <!-- THE WATCH AT THE FRONTIER -->
+    <section>
+      <div class="watch">
+        The act of looking is the unifying concept. In all six frameworks, the watch is the meta-algorithm that selects what to compute, when to act, and how to integrate.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Vanilla JS: no external deps, just basic interactivity
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = this.getAttribute('href');
+        if (url) {
+          window.open(url, '_blank');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
