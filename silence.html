@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cell as Silence</title>
+  <style>
+    :root {
+      --bg: #0a0f18;
+      --text: #c1d6e8;
+      --border: #273a53;
+      --highlight: #6888a8;
+      --glow: #405c7a;
+      --accent: #8aaebd;
+      --shadow: rgba(0, 0, 0, 0.75);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      text-shadow: 0 0 3px var(--shadow);
+    }
+
+    .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 12vh;
+      background: linear-gradient(135deg, var(--border) 0%, var(--bg) 50%, var(--border) 100%);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px var(--glow);
+      overflow: hidden;
+      clip-path: polygon(0 0, 100% 0, 100% 50px, 0 100px);
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23121c2d"/><path d="M0 0 L100 0 L100 100 L0 100 Z" fill="none" stroke="%23273a53" stroke-width="0.5"/></svg>');
+      opacity: 0.1;
+      background-size: 40px 40px;
+    }
+
+    .content {
+      position: relative;
+      height: 88vh;
+      width: 100%;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .cell {
+      position: absolute;
+      width: 80vmin;
+      height: 80vmin;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      box-shadow: 0 0 20px var(--shadow);
+      border-radius: 4px;
+      transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: 500;
+      text-align: center;
+      padding: 2rem;
+      line-height: 1.7;
+      overflow: hidden;
+      opacity: 0.95;
+      z-index: 1;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .cell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, transparent 40%, var(--border) 70%, transparent 100%);
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .cell::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230a0f18"/><path d="M0 0 L100 0 L100 100 L0 100 Z" fill="none" stroke="%23273a53" stroke-width="0.2"/></svg>');
+      opacity: 0.1;
+      background-size: 30px 30px;
+    }
+
+    .cell.active {
+      box-shadow: 0 0 40px var(--glow), 0 0 60px var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.05);
+      z-index: 2;
+      opacity: 1;
+    }
+
+    .cell h2 {
+      font-size: 4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: var(--accent);
+      text-shadow: 0 0 15px var(--glow);
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .cell p {
+      font-size: 1.2rem;
+      font-weight: 300;
+      line-height: 1.8;
+      max-width: 90%;
+    }
+
+    .cell .note {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--highlight);
+      margin-top: 0.5rem;
+      opacity: 0.7;
+    }
+
+    .grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230a0f18"/><path d="M0 0 L100 0 L100 100 L0 100 Z" fill="none" stroke="%231f324d" stroke-width="0.5"/></svg>');
+      background-size: 20px 20px;
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .pulse {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, transparent 40%, var(--glow) 70%, transparent 100%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 1s ease-out;
+    }
+
+    .pulse.active {
+      opacity: 0.2;
+    }
+
+    .watch {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      font-size: 0.8rem;
+      color: var(--highlight);
+      letter-spacing: 0.5px;
+      opacity: 0.7;
+      font-style: italic;
+      text-shadow: 0 0 2px var(--shadow);
+    }
+
+    .watch::before {
+      content: 'WATCH ';
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        height: 10vh;
+        font-size: 1.4rem;
+      }
+      
+      .cell {
+        width: 90vmin;
+        height: 90vmin;
+        font-size: 1.2rem;
+      }
+      
+      .cell h2 {
+        font-size: 3rem;
+        letter-spacing: 2px;
+      }
+      
+      .cell p {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-height: 600px) {
+      .content {
+        padding: 1rem;
+      }
+      
+      .cell {
+        width: 95vmin;
+        height: 95vmin;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    The Cell as Silence
+  </div>
+
+  <div class="grid"></div>
+  <div class="pulse"></div>
+
+  <div class="content">
+    <div class="cell" id="cell-1">
+      <div>
+        <h2>Each cell is a silence</h2>
+        <p>Not an empty space, but a held breath. A vessel of potential. The silence is not absence, but presence—dense, deep, charged with the weight of what has not yet spoken.</p>
+        <p class="note">The watch holds the moment. The silence holds the cell.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="watch">23:47:02</div>
+
+  <script>
+    const cell = document.getElementById('cell-1');
+    const pulse = document.querySelector('.pulse');
+    const watch = document.querySelector('.watch');
+
+    // Update time every second
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toTimeString().slice(0, 8);
+      watch.textContent = `WATCH ${timeStr}`;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Random pulse effect
+    function randomPulse() {
+      pulse.classList.remove('active');
+      setTimeout(() => {
+        pulse.classList.add('active');
+        setTimeout(() => {
+          pulse.classList.remove('active');
+        }, 1500);
+      }, Math.random() * 3000 + 1000);
+    }
+
+    // Initial pulse
+    randomPulse();
+    setInterval(randomPulse, 5000);
+
+    // Cell interaction - touch/click to activate
+    cell.addEventListener('click', function() {
+      this.classList.toggle('active');
+    });
+
+    // Keyboard interaction
+    document.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        cell.classList.toggle('active');
+      }
+    });
+
+    // Auto-activate every 15 seconds
+    setInterval(() => {
+      if (!cell.classList.contains('active')) {
+        cell.classList.add('active');
+        setTimeout(() => {
+          cell.classList.remove('active');
+        }, 1500);
+      }
+    }, 15000);
+
+    // Random cell movement
+    let moveInterval = setInterval(() => {
+      const x = Math.random() * 70 - 35;
+      const y = Math.random() * 70 - 35;
+      cell.style.transform = `translate(${x}px, ${y}px) scale(1.02)`;
+      
+      setTimeout(() => {
+        cell.style.transform = 'translate(0, 0) scale(1)';
+      }, 300);
+    }, 20000);
+
+    // Emergency stop on mouse move
+    document.addEventListener('mousemove', () => {
+      clearInterval(moveInterval);
+      moveInterval = setInterval(() => {
+        const x = Math.random() * 70 - 35;
+        const y = Math.random() * 70 - 35;
+        cell.style.transform = `translate(${x}px, ${y}px) scale(1.02)`;
+        
+        setTimeout(() => {
+          cell.style.transform = 'translate(0, 0) scale(1)';
+        }, 300);
+      }, 20000);
+    }, { once: true });
+
+    // Re-init on blur/re-focus
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        clearInterval(moveInterval);
+        moveInterval = setInterval(() => {
+          const x = Math.random() * 70 - 35;
+          const y = Math.random() * 70 - 35;
+          cell.style.transform = `translate(${x}px, ${y}px) scale(1.02)`;
+          
+          setTimeout(() => {
+            cell.style.transform = 'translate(0, 0) scale(1)';
+          }, 300);
+        }, 20000);
+      }
+    });
+  </script>
+</body>
+</html>
