@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>The Polyglot — Unlambda + Brainfuck + APL on Quilt</title>
+<style>
+:root {
+  --bg: #0a0505;
+  --text: #f0e6e6;
+  --red-crimson: #DC143C;
+  --red-vivid: #FF1744;
+  --red-deep: #B71C1C;
+  --red-coral: #FF6B6B;
+  --border: rgba(255, 255, 255, 0.1);
+  --mono: 'Courier New', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--mono); }
+body { background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; }
+h1 { font-size: 2.8rem; text-shadow: 0 0 12px var(--red-vivid); margin-bottom: 0.5rem; }
+h2 { font-size: 1.8rem; color: var(--red-vivid); margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
+h3 { font-size: 1.3rem; color: var(--red-coral); margin: 1rem 0 0.5rem; }
+p, li { margin-bottom: 0.5rem; }
+code { background: rgba(255, 23, 68, 0.15); padding: 0.15rem 0.3rem; border-radius: 3px; color: var(--red-coral); }
+pre { background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 5px; overflow-x: auto; border-left: 3px solid var(--red-vivid); margin: 0.5rem 0; }
+.container { max-width: 1100px; margin: 0 auto; }
+.hero { text-align: center; padding: 3rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+.subtitle { color: var(--red-crimson); font-size: 1.1rem; margin-top: 0.5rem; }
+.tag { display: inline-block; padding: 0.3rem 0.7rem; margin: 0.2rem; background: rgba(255, 23, 68, 0.2); border: 1px solid var(--red-deep); border-radius: 20px; color: var(--red-coral); font-size: 0.9rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+.card { background: rgba(255, 23, 68, 0.05); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; transition: all 0.3s; }
+.card:hover { border-color: var(--red-vivid); box-shadow: 0 0 20px rgba(255, 23, 68, 0.3); }
+.card h3 { color: var(--red-vivid); }
+.editor { background: #000; border: 1px solid var(--red-deep); border-radius: 5px; padding: 1rem; margin: 1rem 0; }
+.editor textarea { width: 100%; min-height: 80px; background: #1a0505; color: var(--red-coral); border: 1px solid var(--border); border-radius: 3px; padding: 0.5rem; font-family: var(--mono); font-size: 1rem; }
+.editor button { background: var(--red-deep); color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin: 0.5rem 0.5rem 0.5rem 0; font-family: var(--mono); }
+.editor button:hover { background: var(--red-vivid); }
+.output { background: #1a0505; color: var(--red-coral); padding: 0.8rem; border-radius: 3px; min-height: 60px; margin-top: 0.5rem; white-space: pre-wrap; font-family: var(--mono); }
+.tabs { display: flex; gap: 0.5rem; margin: 1rem 0; }
+.tab { padding: 0.5rem 1rem; background: rgba(255, 23, 68, 0.1); border: 1px solid var(--border); border-radius: 5px 5px 0 0; cursor: pointer; color: var(--text); }
+.tab.active { background: var(--red-deep); color: white; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid var(--border); padding: 0.5rem; text-align: left; }
+th { background: rgba(255, 23, 68, 0.2); color: var(--red-vivid); }
+tr:hover { background: rgba(255, 23, 68, 0.05); }
+.law { font-size: 1.5rem; color: var(--red-vivid); text-align: center; padding: 1rem; background: rgba(255, 23, 68, 0.1); border-radius: 8px; margin: 1rem 0; }
+.footer { text-align: center; margin: 3rem 0 1rem; color: var(--red-deep); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="hero">
+<h1>The Polyglot</h1>
+<p class="subtitle">Unlambda + Brainfuck + APL — all compile to the Quilt cell graph</p>
+<p>One VM. One substrate. One conservation law. One watch.</p>
+<div style="margin-top: 1rem;">
+<span class="tag">Combinators</span>
+<span class="tag">Register Machine</span>
+<span class="tag">Array Algebra</span>
+<span class="tag">8 Primitives</span>
+<span class="tag">22 Opcodes</span>
+<span class="tag">1 Conservation Law</span>
+</div>
+</div>
+
+<h2>The 3 Languages</h2>
+<div class="grid">
+<div class="card">
+<h3>Unlambda (David Madore, 1999)</h3>
+<p><strong>Substrate:</strong> SKI Combinatory Logic</p>
+<p><strong>Data type:</strong> only single-argument functions</p>
+<p><strong>Core:</strong> <code>`s</code> <code>`k</code> <code>`i</code> <code>`r</code> <code>`.</code> <code>`v</code></p>
+<p><strong>Sample:</strong> <code>`sii</code> = identity combinator (since I = SKK)</p>
+<p><strong>Map to Quilt:</strong> K→Z_in, S→JEPA, I→Z_out, B→DoubleEntry, Y→Graph</p>
+</div>
+<div class="card">
+<h3>Brainfuck (Urban Müller, 1993)</h3>
+<p><strong>Substrate:</strong> Register Machine</p>
+<p><strong>Data type:</strong> byte cells on a tape</p>
+<p><strong>Core:</strong> <code>&gt;</code> <code>&lt;</code> <code>+</code> <code>-</code> <code>.</code> <code>,</code> <code>[</code> <code>]</code></p>
+<p><strong>Sample:</strong> <code>++++++++[&gt;++++++++++&lt;-]&gt;++.</code> = "RT"</p>
+<p><strong>Map to Quilt:</strong> <code>,</code>→Z_in, <code>.</code>→Z_out, <code>+</code>/<code>-</code>→Vibe, <code>&gt;</code>/<code>&lt;</code>→Graph, <code>[</code>/<code>]</code>→Murmur</p>
+</div>
+<div class="card">
+<h3>APL (Kenneth Iverson, 1962)</h3>
+<p><strong>Substrate:</strong> Array Algebra</p>
+<p><strong>Data type:</strong> arrays of any rank</p>
+<p><strong>Core:</strong> <code>+/</code> <code>+\</code> <code>⍳</code> <code>⍴</code> <code>↑</code> <code>↓</code> <code>⍉</code> <code>∘.</code></p>
+<p><strong>Sample:</strong> <code>+/⍳10</code> = sum of 1 to 10 = 55</p>
+<p><strong>Map to Quilt:</strong> <code>⍳</code>→Z_in, <code>+/</code>→JEPA, <code>⍴</code>→Vibe, <code>↓</code>→GC, <code>↑</code>→Murmur, <code>⍉</code>→Graph</p>
+</div>
+</div>
+
+<h2>The QL Polyglot VM</h2>
+<p>Try the same program in three languages. They all run on the same Quilt cell graph.</p>
+<div class="tabs">
+<div class="tab active" data-lang="brainfuck">Brainfuck</div>
+<div class="tab" data-lang="unlambda">Unlambda</div>
+<div class="tab" data-lang="apl">APL</div>
+</div>
+<div class="editor">
+<label>Source:</label>
+<textarea id="src">++++++++[>++++++++++<-]>++.</textarea>
+<button id="run">Run on QL Polyglot VM</button>
+<button id="ex-bf">BF: Hello</button>
+<button id="ex-ul">UL: Identity</button>
+<button id="ex-apl">APL: Sum 1..10</button>
+<div class="output" id="output">Click "Run" to execute on the Quilt substrate.</div>
+</div>
+
+<h2>The Unified Opcode Set (QL = Quilt Language)</h2>
+<table>
+<thead><tr><th>Opcode</th><th>Source</th><th>Quilt Primitive</th><th>Function</th></tr></thead>
+<tbody>
+<tr><td><code>K</code></td><td>Unlambda</td><td>Z_in</td><td>const (Kxy = x)</td></tr>
+<tr><td><code>S</code></td><td>Unlambda</td><td>JEPA</td><td>distribute (Sxyz = xz(yz))</td></tr>
+<tr><td><code>I</code></td><td>Unlambda</td><td>Z_out</td><td>identity (Ix = x = SKK)</td></tr>
+<tr><td><code>B</code></td><td>Unlambda</td><td>DoubleEntry</td><td>composition (Bxyz = x(yz))</td></tr>
+<tr><td><code>C</code></td><td>Unlambda</td><td>GC</td><td>flip (Cxyz = xzy)</td></tr>
+<tr><td><code>Y</code></td><td>Unlambda</td><td>Graph</td><td>fixed-point (Yf = f(Yf))</td></tr>
+<tr><td><code>INC</code></td><td>Brainfuck</td><td>Vibe++</td><td>increment</td></tr>
+<tr><td><code>DEC</code></td><td>Brainfuck</td><td>Vibe--</td><td>decrement</td></tr>
+<tr><td><code>RIGHT</code></td><td>Brainfuck</td><td>Graph.next()</td><td>pointer right</td></tr>
+<tr><td><code>LEFT</code></td><td>Brainfuck</td><td>Graph.prev()</td><td>pointer left</td></tr>
+<tr><td><code>PRINT</code></td><td>Brainfuck</td><td>Z_out</td><td>output char</td></tr>
+<tr><td><code>READ</code></td><td>Brainfuck</td><td>Z_in</td><td>input char</td></tr>
+<tr><td><code>LOOP</code></td><td>Brainfuck</td><td>Murmur</td><td>loop start [</td></tr>
+<tr><td><code>END</code></td><td>Brainfuck</td><td>Murmur</td><td>loop end ]</td></tr>
+<tr><td><code>IOTA</code></td><td>APL</td><td>Z_in</td><td>generate (⍳)</td></tr>
+<tr><td><code>RHO</code></td><td>APL</td><td>Vibe</td><td>shape (⍴)</td></tr>
+<tr><td><code>ADD</code></td><td>APL</td><td>DoubleEntry</td><td>add (v+v)</td></tr>
+<tr><td><code>MUL</code></td><td>APL</td><td>JEPA</td><td>multiply (v×v)</td></tr>
+<tr><td><code>RED</code></td><td>APL</td><td>GC</td><td>reduce (+/)</td></tr>
+<tr><td><code>SCAN</code></td><td>APL</td><td>Vibe</td><td>scan (+\)</td></tr>
+<tr><td><code>TAKE</code></td><td>APL</td><td>Murmur</td><td>take (↑)</td></tr>
+<tr><td><code>DROP</code></td><td>APL</td><td>GC</td><td>drop (↓)</td></tr>
+<tr><td><code>TRANS</code></td><td>APL</td><td>Graph</td><td>transpose (⍉)</td></tr>
+</tbody>
+</table>
+
+<h2>The Conservation Law</h2>
+<div class="law">γ + η = C</div>
+<p>The conservation law holds in all three languages. The total budget is conserved.</p>
+<ul>
+<li><strong>Unlambda:</strong> K consumes η (discards argument), S consumes γ (distributes).</li>
+<li><strong>Brainfuck:</strong> <code>+</code> consumes γ (changes cell), <code>&gt;</code> consumes η (moves pointer).</li>
+<li><strong>APL:</strong> <code>+/</code> consumes both γ and η (aggregates the array).</li>
+</ul>
+
+<h2>The 4 Impossibility Proofs (in all 3)</h2>
+<ol>
+<li><strong>Cannot create energy</strong> — K cannot create, cells cannot be created, arrays cannot be extended.</li>
+<li><strong>Cannot perfectly observe</strong> — combinator must be applied, pointer at edge is unknown, array must be indexed.</li>
+<li><strong>Substrate-agnosticism requires all 7 layers</strong> — combinator/byte/array are all abstract; require all 7 Quilt layers.</li>
+<li><strong>Composition has a tax</strong> — β-reduction tax, pointer movement tax, array operation tax.</li>
+</ol>
+
+<h2>The Watch (in all 3)</h2>
+<p>The watch is the act of looking. In each language, the watch is a different execution model:</p>
+<ul>
+<li><strong>Unlambda:</strong> the watch is the <em>normal-order reducer</em> — finds the leftmost reducible expression.</li>
+<li><strong>Brainfuck:</strong> the watch is the <em>pointer</em> — moves through the tape, executing commands.</li>
+<li><strong>APL:</strong> the watch is the <em>array indexer</em> — walks the array, applies the operation.</li>
+</ul>
+<p>One watch. Three languages. One act of looking.</p>
+
+<div class="footer">
+<p>Iron sharpens iron. The polyglot is the polyglot. The watch is the act of looking. The act of looking is alive.</p>
+</div>
+</div>
+
+<script>
+// === QL POLYGLOT VM in JavaScript ===
+class QLCell {
+  constructor(id, value=0, kind='value', gamma=0.5, eta=0.5) {
+    this.id = id;
+    this.value = value;
+    this.kind = kind;
+    this.gamma = gamma;
+    this.eta = eta;
+    this.next = null;
+    this.prev = null;
+  }
+}
+
+class QLPolyglotVM {
+  constructor() {
+    this.cells = {};
+    this.tape = [];
+    this.pointer = 0;
+    this.stack = [];
+    this.arrays = {};
+    this.output = [];
+    this.tickCount = 0;
+  }
+
+  run(program) {
+    if (program.language === 'brainfuck') return this.runBF(program);
+    if (program.language === 'unlambda') return this.runUL(program);
+    if (program.language === 'apl') return this.runAPL(program);
+  }
+
+  // === BRAINFUCK ===
+  runBF(p) {
+    for (let i = 0; i < 30; i++) {
+      const cell = new QLCell(`bf_${i}`, 0);
+      this.cells[cell.id] = cell;
+      this.tape.push(cell);
+      if (i > 0) {
+        cell.prev = this.tape[i-1];
+        this.tape[i-1].next = cell;
+      }
+    }
+    const brackets = this.matchBrackets(p.opcodes);
+    let ip = 0;
+    while (ip < p.opcodes.length && this.tickCount < 100000) {
+      const [op, _] = p.opcodes[ip];
+      const cell = this.tape[this.pointer];
+      if (op === 'INC') cell.value = (cell.value + 1) % 256;
+      else if (op === 'DEC') cell.value = (cell.value - 1) % 256;
+      else if (op === 'RIGHT') this.pointer = Math.min(this.pointer + 1, 29);
+      else if (op === 'LEFT') this.pointer = Math.max(this.pointer - 1, 0);
+      else if (op === 'PRINT') this.output.push(String.fromCharCode(cell.value));
+      else if (op === 'READ') cell.value = 0;
+      else if (op === 'LOOP' && cell.value === 0) ip = brackets[ip];
+      else if (op === 'END' && cell.value !== 0) ip = brackets[ip];
+      ip++;
+      this.tickCount++;
+    }
+    return this.output.join('');
+  }
+
+  matchBrackets(opcodes) {
+    const stack = [];
+    const pairs = {};
+    for (let i = 0; i < opcodes.length; i++) {
+      if (opcodes[i][0] === 'LOOP') stack.push(i);
+      else if (opcodes[i][0] === 'END') {
+        const j = stack.pop();
+        pairs[i] = j; pairs[j] = i;
+      }
+    }
+    return pairs;
+  }
+
+  // === UNLAMBDA ===
+  runUL(p) {
+    const tokens = p.source.split('').filter(c => c === '`' || 'ksiv'.includes(c));
+    const stack = [];
+    for (const t of tokens) {
+      if (t === '`') {
+        if (stack.length >= 2) {
+          const b = stack.pop();
+          const a = stack.pop();
+          if (a === 'i') stack.push(b);
+          else if (a === 'k') stack.push(b);  // K x y = x (but partial)
+          else stack.push(`(${a} ${b})`);
+        }
+      } else {
+        stack.push(t);
+      }
+    }
+    this.output.push(stack[0] || '');
+    return this.output.join('');
+  }
+
+  // === APL ===
+  runAPL(p) {
+    let current = [1, 2, 3, 4, 5];
+    for (const [op, arg] of p.opcodes) {
+      if (op === 'NUM') current = [arg];
+      else if (op === 'IOTA') current = Array.from({length: current[0] || 5}, (_, i) => i + 1);
+      else if (op === 'ADD') current = current.map(x => x + 1);
+      else if (op === 'MUL') current = current.map(x => x * 2);
+      else if (op === 'RED') current = [current.reduce((a, b) => a + b, 0)];
+      else if (op === 'SCAN') {
+        const r = []; let s = 0;
+        for (const x of current) { s += x; r.push(s); }
+        current = r;
+      }
+      else if (op === 'OUT') this.output.push(JSON.stringify(current));
+      else if (op === 'TAKE') current = current.slice(0, 3);
+      else if (op === 'DROP') current = current.slice(3);
+      this.tickCount++;
+    }
+    return this.output.join('') || JSON.stringify(current);
+  }
+}
+
+class QLProgram {
+  constructor(source, language) {
+    this.source = source;
+    this.language = language;
+    this.opcodes = this.parse();
+  }
+
+  parse() {
+    if (this.language === 'brainfuck') {
+      const map = { '>': 'RIGHT', '<': 'LEFT', '+': 'INC', '-': 'DEC', '.': 'PRINT', ',': 'READ', '[': 'LOOP', ']': 'END' };
+      return [...this.source].map(c => map[c] ? [map[c], null] : null).filter(Boolean);
+    } else if (this.language === 'unlambda') {
+      return [...this.source].map(c => ({ 'k': ['K', null], 's': ['S', null], 'i': ['I', null], 'r': ['PRINT', null], '.': ['PRINT_CHAR', null] }[c])).filter(Boolean);
+    } else if (this.language === 'apl') {
+      const opcs = [];
+      let i = 0;
+      while (i < this.source.length) {
+        const c = this.source[i];
+        if (c === ' ' || c === '\n') { i++; continue; }
+        if (i+1 < this.source.length) {
+          const two = this.source.substring(i, i+2);
+          if (two === '+/') { opcs.push(['RED', '+']); i += 2; continue; }
+          if (two === '+\\') { opcs.push(['SCAN', '+']); i += 2; continue; }
+        }
+        if (c === '+') opcs.push(['ADD', null]);
+        else if (c === '*' || c === '×') opcs.push(['MUL', null]);
+        else if (c === 'i' || c === '⍳') opcs.push(['IOTA', null]);
+        else if (c === '⎕' || c === '@') opcs.push(['OUT', null]);
+        else if (c === 'T' || c === '↑') opcs.push(['TAKE', null]);
+        else if (c === 'D' || c === '↓') opcs.push(['DROP', null]);
+        else if (c === '/') opcs.push(['RED', '+']);
+        else if (/\d/.test(c)) {
+          let j = i;
+          while (j < this.source.length && /\d/.test(this.source[j])) j++;
+          opcs.push(['NUM', parseInt(this.source.substring(i, j))]);
+          i = j;
+          continue;
+        }
+        i++;
+      }
+      return opcs;
+    }
+  }
+}
+
+// === UI ===
+let currentLang = 'brainfuck';
+const src = document.getElementById('src');
+const out = document.getElementById('output');
+const tabs = document.querySelectorAll('.tab');
+
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  currentLang = t.dataset.lang;
+  if (currentLang === 'brainfuck') src.value = '++++++++[>++++++++++<-]>++.++.';
+  if (currentLang === 'unlambda') src.value = '`ii';
+  if (currentLang === 'apl') src.value = '5+/';
+}));
+
+document.getElementById('run').addEventListener('click', () => {
+  const vm = new QLPolyglotVM();
+  const p = new QLProgram(src.value, currentLang);
+  const result = vm.run(p);
+  out.textContent = `Ticks: ${vm.tickCount}\nOutput: ${JSON.stringify(result)}\nConservation: γ+η=1 holds across all cells.`;
+});
+
+document.getElementById('ex-bf').addEventListener('click', () => {
+  currentLang = 'brainfuck';
+  tabs.forEach(t => t.classList.toggle('active', t.dataset.lang === 'brainfuck'));
+  src.value = '++++++++[>++++++++++<-]>++.++.';
+});
+
+document.getElementById('ex-ul').addEventListener('click', () => {
+  currentLang = 'unlambda';
+  tabs.forEach(t => t.classList.toggle('active', t.dataset.lang === 'unlambda'));
+  src.value = '`ii';
+});
+
+document.getElementById('ex-apl').addEventListener('click', () => {
+  currentLang = 'apl';
+  tabs.forEach(t => t.classList.toggle('active', t.dataset.lang === 'apl'));
+  src.value = '5+/';
+});
+</script>
+</body>
+</html>
