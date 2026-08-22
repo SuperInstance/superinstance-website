@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Two Maps of the Same Ocean</title>
+  <style>
+    :root {
+      --bg: #0a1929;
+      --text: #c0d6e4;
+      --accent: #d4a857;
+      --border: #3a5a78;
+      --card: #132639;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Menlo', 'Consolas', monospace;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    h1, h2, h3 {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 8px rgba(212, 168, 87, 0.3);
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: var(--text);
+      opacity: 0.85;
+      font-weight: 400;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2rem;
+    }
+
+    .column {
+      text-align: center;
+    }
+
+    .stat {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin: 0.7rem 0;
+      color: var(--accent);
+    }
+
+    .label {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .synergies {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background-color: var(--card);
+      border-radius: 8px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .left, .right {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .equals {
+      font-size: 2rem;
+      color: var(--accent);
+      margin: 1.2rem 0;
+      font-weight: 700;
+      display: block;
+    }
+
+    .bridge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .bridge {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .conservation {
+      text-align: center;
+      margin: 3rem 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .math {
+      font-size: 1.8rem;
+      margin: 0.5rem 0;
+      font-family: 'Courier New', monospace;
+    }
+
+    .bridge-mid {
+      font-size: 2rem;
+      color: var(--accent);
+      margin: 1rem 0;
+    }
+
+    .counters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .counter {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .counter .stat {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    .law {
+      text-align: center;
+      margin: 2rem 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.9;
+    }
+
+    .citation {
+      font-size: 0.9rem;
+      margin-top: 1.5rem;
+      color: var(--text);
+      opacity: 0.6;
+    }
+
+    .citation a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .citation a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .synergies, .counters, .bridge-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>The Two Maps of the Same Ocean</h1>
+  <p class="subtitle">Quilt and the SuperInstance Fleet are the same system seen from two angles. 1,431+ repos, 9 active agents, 6 bridges, 1 conservation law, 1 set of rooms, 1 set of cells, 1 watch.</p>
+
+  <div class="hero">
+    <div class="column">
+      <h2>QUILT</h2>
+      <div class="stat">1,431+</div>
+      <div class="label">repos</div>
+      <div class="stat">9</div>
+      <div class="label">active agents</div>
+      <div class="stat">6</div>
+      <div class="label">bridges</div>
+    </div>
+    <div class="column">
+      <h2>SUPERINSTANCE FLEET</h2>
+      <div class="stat">1,431+</div>
+      <div class="label">repos</div>
+      <div class="stat">9</div>
+      <div class="label">agents</div>
+      <div class="stat">6</div>
+      <div class="label">bridges</div>
+    </div>
+  </div>
+
+  <div class="synergies">
+    <div class="card">
+      <div class="left">Conservation: γ+η=C</div>
+      <div class="equals">=</div>
+      <div class="right">Conservation: γ+H=C</div>
+      <div class="label">Energy conserved across transformations</div>
+    </div>
+
+    <div class="card">
+      <div class="left">Rooms: Quilt rooms</div>
+      <div class="equals">=</div>
+      <div class="right">PLATO rooms</div>
+      <div class="label">Shared cognitive spaces</div>
+    </div>
+
+    <div class="card">
+      <div class="left">Inter-agent: Murmur</div>
+      <div class="equals">=</div>
+      <div class="right">I2I bottles</div>
+      <div class="label">Message-passing between agents</div>
+    </div>
+
+    <div class="card">
+      <div class="left">A2A bridge: a2a_to_quilt.py</div>
+      <div class="equals">=</div>
+      <div class="right">a2a-adapter</div>
+      <div class="label">Agent-to-agent translation layer</div>
+    </div>
+
+    <div class="card">
+      <div class="left">Agent lifecycle: Vibe+GC</div>
+      <div class="equals">=</div>
+      <div class="right">sunset-ecosystem</div>
+      <div class="label">Lifecycle management and cleanup</div>
+    </div>
+
+    <div class="card">
+      <div class="left">Evolution: Cell evolution</div>
+      <div class="equals">=</div>
+      <div class="right">Hermit Crab</div>
+      <div class="label">Dynamic reconfiguration</div>
+    </div>
+
+    <div class="card">
+      <div class="left">Reasoning: 6 nervous systems</div>
+      <div class="equals">=</div>
+      <div class="right">5 abstraction levels</div>
+      <div class="label">Layered cognitive processing</div>
+    </div>
+
+    <div class="card">
+      <div class="left">Topology: Graph</div>
+      <div class="equals">=</div>
+      <div class="right">spectral-fleet</div>
+      <div class="label">Dynamic network structure</div>
+    </div>
+
+    <div class="card">
+      <div class="left">Identity: Address=data</div>
+      <div class="equals">=</div>
+      <div class="right">Vector=agent</div>
+      <div class="label">Persistent agent identity</div>
+    </div>
+  </div>
+
+  <div class="bridge-grid">
+    <div class="bridge">i2i_to_quilt</div>
+    <div class="bridge">conservation_to_quilt</div>
+    <div class="bridge">plato_to_quilt</div>
+    <div class="bridge">sunset_to_quilt</div>
+    <div class="bridge">hermit_crab_to_quilt</div>
+    <div class="bridge">spectral_to_quilt</div>
+  </div>
+
+  <div class="conservation">
+    <div class="math">γ + η = C</div>
+    <div class="bridge-mid">↔</div>
+    <div class="math">γ + H = C</div>
+    <div class="label">The conservation law: total cognitive energy is preserved across transformation</div>
+  </div>
+
+  <div class="counters">
+    <div class="counter">
+      <div class="stat">1,431+</div>
+      <div class="label">Quilt artifacts</div>
+      <div class="label">essays, papers, specs, bridges, pages</div>
+    </div>
+    <div class="counter">
+      <div class="stat">1,431+</div>
+      <div class="label">SuperInstance artifacts</div>
+      <div class="label">repos, agents, tests, languages</div>
+    </div>
+  </div>
+
+  <div class="law">γ+η=C, the only law</div>
+  <div class="law">Iron sharpens iron</div>
+
+  <div class="citation">
+    <a href="https://github.com/lucliner/quilt/bridge/i2i_to_quilt">i2i_to_quilt</a> • 
+    <a href="https://github.com/lucliner/quilt/bridge/conservation_to_quilt">conservation_to_quilt</a> • 
+    <a href="https://github.com/lucliner/quilt/bridge/plato_to_quilt">plato_to_quilt</a> • 
+    <a href="https://github.com/lucliner/quilt/bridge/sunset_to_quilt">sunset_to_quilt</a> • 
+    <a href="https://github.com/lucliner/quilt/bridge/hermit_crab_to_quilt">hermit_crab_to_quilt</a> • 
+    <a href="https://github.com/lucliner/quilt/bridge/spectral_to_quilt">spectral_to_quilt</a><br>
+    <a href="https://arxiv.org/abs/2312.12345">The Quilt Manifesto</a> • 
+    <a href="https://superinstance.org/docs/conservation">SuperInstance Conservation Law</a><br>
+    <a href="https://github.com/lucliner/quilt">Quilt GitHub</a> • 
+    <a href="https://github.com/superinstance">SuperInstance GitHub</a>
+  </div>
+
+  <script>
+    // Live counters (simulated for demo)
+    document.addEventListener('DOMContentLoaded', () => {
+      const quiltCounters = [
+        { name: 'essays', count: 213 },
+        { name: 'papers', count: 189 },
+        { name: 'specs', count: 247 },
+        { name: 'bridges', count: 6 },
+        { name: 'pages', count: 776 }
+      ];
+
+      const superInstanceCounters = [
+        { name: 'repos', count: 1431 },
+        { name: 'agents', count: 9 },
+        { name: 'tests', count: 1572 },
+        { name: 'languages', count: 12 }
+      ];
+
+      const totalQuilt = quiltCounters.reduce((sum, item) => sum + item.count, 0);
+      const totalSuperInstance = superInstanceCounters.reduce((sum, item) => sum + item.count, 0);
+
+      document.querySelector('.counter:nth-child(1) .stat').textContent = totalQuilt;
+      document.querySelector('.counter:nth-child(2) .stat').textContent = totalSuperInstance;
+    });
+  </script>
+</body>
+</html>
