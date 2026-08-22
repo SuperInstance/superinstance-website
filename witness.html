@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cell as Witness</title>
+  <style>
+    :root {
+      --bg-dark: #0a111f;
+      --text-light: #a3b1c6;
+      --text-acc: #f0f4f8;
+      --accent: #6c99cc;
+      --border: #2a394a;
+      --glow: #3a5f8a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+      overflow: hidden;
+      height: 100vh;
+      position: relative;
+      letter-spacing: 0.8px;
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .header {
+      font-size: 2.8rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      color: var(--text-acc);
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 15px var(--glow);
+      position: relative;
+      z-index: 10;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .header::before {
+      content: "WATCH LOG";
+      position: absolute;
+      top: -12px;
+      left: 1rem;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+      opacity: 0.8;
+    }
+
+    .header::after {
+      content: "— 1000–1500";
+      position: absolute;
+      bottom: -10px;
+      right: 1rem;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      opacity: 0.6;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cell {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: rgba(30, 50, 80, 0.15);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 0 0 10px var(--accent);
+      transition: all 3s ease;
+      opacity: 0.5;
+      filter: blur(0.5px);
+    }
+
+    .cell.active {
+      opacity: 1;
+      filter: blur(0px);
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8), 0 0 20px var(--accent);
+      transform: scale(1.05);
+      z-index: 5;
+    }
+
+    .cell::before {
+      content: "•";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: var(--accent);
+      opacity: 0.7;
+      text-shadow: 0 0 5px var(--accent);
+    }
+
+    .cell::after {
+      content: "SEEING";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 0.7rem;
+      color: var(--accent);
+      opacity: 0.6;
+      letter-spacing: 0.5px;
+    }
+
+    .line {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+      opacity: 0.3;
+    }
+
+    .line:nth-child(1) { top: 25%; }
+    .line:nth-child(2) { top: 50%; }
+    .line:nth-child(3) { top: 75%; }
+
+    .text {
+      position: absolute;
+      top: 80%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: var(--text-light);
+      text-align: center;
+      max-width: 80%;
+      opacity: 0.8;
+      line-height: 1.6;
+      z-index: 2;
+      letter-spacing: 0.5px;
+    }
+
+    .text span {
+      color: var(--accent);
+      font-weight: bold;
+      text-shadow: 0 0 3px var(--accent);
+    }
+
+    .glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 30%, rgba(58, 95, 138, 0.08) 50%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.3;
+      animation: pulse 8s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0.5;
+        transform: scale(1.02);
+      }
+    }
+
+    .grid {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.1;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">THE CELL AS WITNESS</div>
+    <div class="main">
+      <div class="glow"></div>
+      <div class="grid"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="text">
+        Each cell is a witness. Each witness sees. The cell is the place where the seeing is. <span>IRON SHARPENS IRON.</span> The cells federate. The room is a place. The cell is a place. The place is a cell. The room IS the cell.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.querySelector('.container');
+      const main = document.querySelector('.main');
+      const cells = [];
+      const maxCells = 48;
+      const cellSize = 120;
+      const halfWidth = window.innerWidth / 2;
+      const halfHeight = window.innerHeight / 2;
+
+      // Create cells
+      for (let i = 0; i < maxCells; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.id = i;
+        main.appendChild(cell);
+        cells.push(cell);
+      }
+
+      // Position cells in grid pattern
+      function positionCells() {
+        const cols = 8;
+        const rows = 6;
+        const cellSpacing = 140;
+        
+        for (let i = 0; i < cells.length; i++) {
+          const row = Math.floor(i / cols);
+          const col = i % cols;
+          
+          const x = halfWidth - (cols * cellSpacing / 2) + (col * cellSpacing);
+          const y = halfHeight - (rows * cellSpacing / 2) + (row * cellSpacing);
+          
+          cells[i].style.left = `${x}px`;
+          cells[i].style.top = `${y}px`;
+        }
+      }
+
+      // Randomize and animate cells
+      function animateCells() {
+        // Deactivate all
+        cells.forEach(cell => {
+          cell.classList.remove('active');
+        });
+        
+        // Activate random ones
+        const random = Math.floor(Math.random() * 8) + 3; // 3-10 active cells
+        const activeCells = [];
+        
+        while (activeCells.length < random) {
+          const idx = Math.floor(Math.random() * cells.length);
+          if (!activeCells.includes(idx)) {
+            activeCells.push(idx);
+          }
+        }
+        
+        activeCells.forEach(idx => {
+          cells[idx].classList.add('active');
+        });
+        
+        // Schedule next animation
+        setTimeout(animateCells, 2000 + Math.random() * 2000);
+      }
+
+      // Handle resize
+      window.addEventListener('resize', () => {
+        positionCells();
+      });
+
+      // Initialize
+      positionCells();
+      animateCells();
+    });
+  </script>
+</body>
+</html>
