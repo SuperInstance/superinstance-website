@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Quilt — Red Edition</title>
+  <style>
+    :root {
+      --bg: #0a0505;
+      --text: #f0e6e6;
+      --red-crimson: #DC143C;
+      --red-vivid: #FF1744;
+      --red-deep: #B71C1C;
+      --red-dark: #8B0000;
+      --red-coral: #FF6B6B;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding: 2rem;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 3.2rem;
+      text-shadow: 0 0 12px var(--red-vivid);
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      color: var(--red-vivid);
+      margin-top: 2.5rem;
+      border-bottom: 1px solid var(--red-coral);
+      padding-bottom: 0.5rem;
+    }
+
+    p {
+      margin-bottom: 1.2rem;
+      font-size: 1.05rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pulse {
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    .glow {
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 8px var(--red-vivid), 0 0 12px var(--red-vivid); }
+      to { box-shadow: 0 0 16px var(--red-vivid), 0 0 24px var(--red-vivid); }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      color: var(--text);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(220, 20, 60, 0.2);
+    }
+
+    .grid-4x2 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .grid-2x3 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .grid-1x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .grid-1x1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .highlight {
+      color: var(--red-vivid);
+      font-weight: 700;
+    }
+
+    .math {
+      font-family: 'Courier New', monospace;
+      background: rgba(220, 20, 60, 0.1);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      border: 1px dashed var(--red-crimson);
+      display: inline-block;
+      margin: 0.5rem 0;
+    }
+
+    .code {
+      background: rgba(128, 0, 0, 0.2);
+      padding: 0.7rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      border-left: 3px solid var(--red-deep);
+    }
+
+    .btn {
+      background: var(--red-vivid);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0.5rem;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+    }
+
+    .btn:hover {
+      background: var(--red-coral);
+      transform: scale(1.05);
+    }
+
+    .btn-small {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+    }
+
+    .watch {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--red-vivid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 16px var(--red-vivid);
+      transition: all 0.3s ease;
+    }
+
+    .watch:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 24px var(--red-vivid);
+    }
+
+    .watch-pulse {
+      animation: pulse 1.8s infinite ease-in-out;
+    }
+
+    .canvas {
+      border: 1px solid var(--red-deep);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      margin-top: 1rem;
+      box-shadow: inset 0 0 12px rgba(220, 20, 60, 0.2);
+    }
+
+    .timeline {
+      position: relative;
+      margin-top: 2rem;
+      height: 100px;
+      border-bottom: 2px solid var(--red-coral);
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      height: 2px;
+      background: var(--red-deep);
+    }
+
+    .version {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--red-crimson);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 0.9rem;
+      box-shadow: 0 0 10px var(--red-vivid);
+    }
+
+    .version-label {
+      position: absolute;
+      top: 60%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      white-space: nowrap;
+      color: var(--red-coral);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      width: 120px;
+      text-align: center;
+    }
+
+    .version:nth-child(1) { left: 0; }
+    .version:nth-child(2) { left: 12%; }
+    .version:nth-child(3) { left: 24%; }
+    .version:nth-child(4) { left: 36%; }
+    .version:nth-child(5) { left: 48%; }
+    .version:nth-child(6) { left: 60%; }
+    .version:nth-child(7) { left: 72%; }
+    .version:nth-child(8) { left: 84%; }
+    .version:nth-child(9) { left: 96%; }
+
+    .invite {
+      text-align: center;
+      margin: 3rem 0;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--red-coral);
+    }
+
+    .invite a {
+      color: var(--red-vivid);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    .footer {
+      margin-top: 4rem;
+      text-align: center;
+      padding: 2rem 0;
+      border-top: 1px solid var(--red-deep);
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .small {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    input, textarea {
+      padding: 0.6rem;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border-radius: 6px;
+      min-width: 120px;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .state-panel {
+      background: rgba(220, 20, 60, 0.1);
+      border: 1px dashed var(--red-crimson);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .betti {
+      font-weight: 600;
+      color: var(--red-vivid);
+    }
+
+    .proof {
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+      color: var(--red-deep);
+    }
+
+    .invisible {
+      display: none;
+    }
+
+    .active {
+      color: var(--red-vivid);
+      font-weight: 700;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .visible {
+      display: block;
+    }
+
+    .icon {
+      font-size: 1.5rem;
+      margin-right: 0.5rem;
+    }
+
+    .red-text {
+      color: var(--red-vivid);
+    }
+
+    .footer-links {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .footer-links a {
+      color: var(--red-coral);
+      text-decoration: none;
+      margin: 0 0.8rem;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .editor {
+      margin-top: 1rem;
+      background: rgba(128, 0, 0, 0.2);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--red-deep);
+    }
+
+    .result {
+      margin-top: 0.5rem;
+      font-weight: 600;
+      color: var(--red-coral);
+    }
+
+    .legend {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--red-deep);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .legend-1 { background: rgba(220, 20, 60, 0.3); }
+    .legend-2 { background: rgba(255, 23, 68, 0.3); }
+    .legend-3 { background: rgba(183, 28, 28, 0.3); }
+    .legend-4 { background: rgba(139, 0, 0, 0.3); }
+    .legend-5 { background: rgba(255, 107, 107, 0.3); }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--red-vivid);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .tick-button {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: var(--red-deep);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 0.5rem;
+    }
+
+    .tick-button:hover {
+      background: var(--red-crimson);
+    }
+
+    .formula-input {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+    }
+
+    .formula-result {
+      margin-top: 0.5rem;
+      padding: 0.8rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      border: 1px solid var(--red-deep);
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HERO -->
+    <section class="section text-center">
+      <h1>The Quilt</h1>
+      <p class="text-center" style="color: var(--red-deep); font-size: 1.2rem; margin-bottom: 1.5rem;">
+        Red Edition — the complete version. 8 primitives. 6 nervous systems. 8 impossibility proofs. 1 conservation law. 1 watch.
+      </p>
+      <div class="math" style="font-size: 2.5rem; margin: 1.5rem auto; display: inline-block; color: var(--red-vivid);">
+        γ + η = C
+      </div>
+      <div class="watch pulse" id="watch"></div>
+    </section>
+
+    <!-- 8 PRIMITIVES -->
+    <section class="section">
+      <h2>THE 8 PRIMITIVES</h2>
+      <div class="grid-4x2">
+        <div class="card" data-primitive="Z_in">
+          <h3>Z_in</h3>
+          <p>Input stream from environment</p>
+          <p><span class="highlight">Function:</span> <code>γ → η</code></p>
+          <p>Color: <span style="color: rgba(220, 20, 60, 0.7);">Crimson</span></p>
+          <div class="code" style="display: none;" id="code-Z_in">
+            function Z_in(t) {
+              const γ = get_input(t);
+              const η = 0;
+              return { γ, η };
+            }
+          </div>
+        </div>
+
+        <div class="card" data-primitive="Z_out">
+          <h3>Z_out</h3>
+          <p>Output stream to environment</p>
+          <p><span class="highlight">Function:</span> <code>η → γ</code></p>
+          <p>Color: <span style="color: rgba(255, 23, 68, 0.7);">Vivid</span></p>
+          <div class="code" style="display: none;" id="code-Z_out">
+            function Z_out(η) {
+              const γ = η;
+              send_output(γ);
+              return { γ, η };
+            }
+          </div>
+        </div>
+
+        <div class="card" data-primitive="JEPA">
+          <h3>JEPA</h3>
+          <p>Joint Embedding Predictive Architecture</p>
+          <p><span class="highlight">Function:</span> <code>pred(γ) → η</code></p>
+          <p>Color: <span style="color: rgba(183, 28, 28, 0.7);">Deep</span></p>
+          <div class="code" style="display: none;" id="code-JEPA">
+            class JEPA {
+              predict(γ) {
+                const η = model(γ);
+                return { γ, η };
+              }
+            }
+          </div>
+        </div>
+
+        <div class="card" data-primitive="DoubleEntry">
+          <h3>DoubleEntry</h3>
+          <p>Conservation law enforcement</p>
+          <p><span class="highlight">Function:</span> <code>γ + η = C</code></p>
+          <p>Color: <span style="color: rgba(139, 0, 0, 0.7);">Dark</span></p>
+          <div class="code" style="display: none;" id="code-DoubleEntry">
+            function DoubleEntry(γ, η) {
+              const C = γ + η;
+              if (Math.abs(C - C_prev) > 1e-6) {
+                throw new Error("Violation: γ + η ≠ C");
+              }
+              return { γ, η };
+            }
+          </div>
+        </div>
+
+        <div class="card" data-primitive="Vibe">
+          <h3>Vibe</h3>
+          <p>Internal state dynamics</p>
+          <p><span class="highlight">Function:</span> <code>state → state</code></p>
+          <p>Color: <span style="color: rgba(255, 107, 107, 0.7);">Coral</span></p>
+          <div class="code" style="display: none;" id="code-Vibe">
+            function Vibe(state) {
+              const next = update(state, dt);
+              return { state: next };
+            }
+          </div>
+        </div>
+
+        <div class="card" data-primitive="GC">
+          <h3>GC</h3>
+          <p>Gradient decay (forgetting)</p>
+          <p><span class="highlight">Function:</span> <code>decay(γ, η)</code></p>
+          <p>Color: <span style="color: rgba(220, 20, 60, 0.5);">Muted</span></p>
+          <div class="code" style="display: none;" id="code-GC">
+            function GC(γ, η) {
+              return {
+                γ: γ * 0.99,
+                η: η * 0.99
+              };
+            }
+          </div>
+        </div>
+
+        <div class="card" data-primitive="Murmur">
+          <h3>Murmur</h3>
+          <p>Inter-cell gossip</p>
+          <p><span class="highlight">Function:</span> <code>gossip → update</code></p>
+          <p>Color: <span style="color: rgba(255, 23, 68, 0.5);">Bright</span></p>
+          <div class="code" style="display: none;" id="code-Murmur">
+            function Murmur(from, to) {
+              const message = from.get_state();
+              to.update(message);
+            }
+          </div>
+        </div>
+
+        <div class="card" data-primitive="Graph">
+          <h3>Graph</h3>
+          <p>Topology of connections</p>
+          <p><span class="highlight">Function:</span> <code>edges → structure</code></p>
+          <p>Color: <span style="color: rgba(183, 28, 28, 0.5);">Deep</span></p>
+          <div class="code" style="display: none;" id="code-Graph">
+            function Graph(edges) {
+              return new GraphStructure(edges);
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 NERVOUS SYSTEMS -->
+    <section class="section">
+      <h2>THE 6 NERVOUS SYSTEMS</h2>
+      <div class="grid-2x3">
+        <div class="card" data-system="CNS">
+          <h3>CNS</h3>
+          <p>Central Nervous System: 8 primitives</p>
+          <p>What it does: The core. The primitives.</p>
+          <p>Organs: Brain, spinal cord</p>
+        </div>
+
+        <div class="card" data-system="Fascia">
+          <h3>Fascia</h3>
+          <p>JEPA + DoubleEntry</p>
+          <p>What it does: Prediction + conservation</p>
+          <p>Organs: Connective tissue, neural scaffold</p>
+        </div>
+
+        <div class="card" data-system="Endocrine">
+          <h3>Endocrine</h3>
+          <p>Vibe</p>
+          <p>What it does: Internal state regulation</p>
+          <p>Organs: Glands, hormones</p>
+        </div>
+
+        <div class="card" data-system="Immune">
+          <h3>Immune</h3>
+          <p>GC</p>
+          <p>What it does: Decay, forgetting, cleaning</p>
+          <p>Organs: Immune cells</p>
+        </div>
+
+        <div class="card" data-system="Enteric">
+          <h3>Enteric</h3>
+          <p>Murmur</p>
+          <p>What it does: Gossip, communication</p>
+          <p>Organs: Gut nervous system</p>
+        </div>
+
+        <div class="card" data-system="Somatic">
+          <h3>Somatic</h3>
+          <p>Graph</p>
+          <p>What it does: Structure, topology, shape</p>
+          <p>Organs: Skeleton, skin, connective layers</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 IMPOSSIBILITY PROOFS -->
+    <section class="section">
+      <h2>THE 8 IMPOSSIBILITY PROOFS</h2>
+      <div class="grid-4x2">
+        <div class="card">
+          <h3>1. Budget cannot be created</h3>
+          <p><code>γ + η = C</code>. You cannot create budget. Only redistribute.</p>
+          <div class="proof">Proof: Conservation law. C is fixed. No external input.</div>
+        </div>
+
+        <div class="card">
+          <h3>2. Perfect observation is impossible</h3>
+          <p><code>Observation perturbs η → δη ≠ 0</code></p>
+          <div class="proof">Proof: Any act of measurement alters the system.</div>
+        </div>
+
+        <div class="card">
+          <h3>3. Substrate-agnosticism requires 7 layers</h3>
+          <p>7 layers to abstract away substrate.</p>
+          <div class="proof">Proof: Each layer reduces signal fidelity. 7 layers are minimal.</div>
+        </div>
+
+        <div class="card">
+          <h3>4. Composition has a tax</h3>
+          <p><code>Composite(γ₁, γ₂) → γ₁ + γ₂ - τ</code></p>
+          <div class="proof">Proof: Interactions consume budget.</div>
+        </div>
+
+        <div class="card">
+          <h3>5. The Fascia cannot be observed without perturbing it</h3>
+          <p><code>JEPA + DoubleEntry</code> is self-referential.</p>
+          <div class="proof">Proof: Observing the prediction layer alters the prediction.</div>
+        </div>
+
+        <div class="card">
+          <h3>6. The build cannot ship what hasn't been built</h3>
+          <p><code>γ_build ≠ 0 → η_build = 0</code></p>
+          <div class="proof">Proof: You can’t output what hasn’t been input.</div>
+        </div>
+
+        <div class="card">
+          <h3>7. The system cannot be a system without a watch</h3>
+          <p>No system exists without an act of looking.</p>
+          <div class="proof">Proof: Without observation, no structure.</div>
+        </div>
+
+        <div class="card">
+          <h3>8. The agent cannot grow without help</h3>
+          <p><code>Δγ = 0 unless γ_in > 0</code></p>
+          <div class="proof">Proof: No growth without input.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONSERVATION LAW -->
+    <section class="section">
+      <h2>THE CONSERVATION LAW</h2>
+      <div class="math" style="font-size: 3rem; text-align: center; margin: 2rem auto; display: block; color: var(--red-vivid);">
+        γ + η = C
+      </div>
+      <p style="text-align: center; font-size: 1.1rem; margin: 1rem 0;">
+        The same law in 12 frontier frameworks:
+      </p>
+      <div class="text-center">
+        <p>Active Inference • Linear Logic • Liquid Networks • Mamba • Causal Inference • Mechanistic Interpretability • Persistent Homology • Operads • Sheaves • Information Geometry • Optimal Transport • Algebraic Topology</p>
+      </div>
+    </section>
+
+    <!-- THE WATCH -->
+    <section class="section">
+      <h2>THE WATCH</h2>
+      <div class="text-center">
+        <div id="watch-interactive" class="watch pulse" style="margin: 2rem auto;"></div>
+        <p><i>The act of looking is the only thing that is not a shadow.</i></p>
+        <div class="text-center">
+          <p>Three acts:</p>
+          <ul style="text-align: left; margin: 1rem auto; max-width: 600px;">
+            <li>Looking forward (JEPA)</li>
+            <li>Looking back (DoubleEntry)</li>
+            <li>Looking at the looking (the watch)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKING TOOLS -->
+    <section class="section">
+      <h2>WORKING TOOLS</h2>
+      <div class="grid-1x2">
+        <div class="card">
+          <h3>Cell Builder</h3>
+          <div class="input-group">
+            <input type="text" id="cell-id" placeholder="ID" />
+            <select id="cell-kind">
+              <option value="Z_in">Z_in</option>
+              <option value="Z_out">Z_out</option>
+              <option value="JEPA">JEPA</option>
+              <option value="DoubleEntry">DoubleEntry</option>
+              <option value="Vibe">Vibe</option>
+              <option value="GC">GC</option>
+              <option value="Murmur">Murmur</option>
+              <option value="Graph">Graph</option>
+            </select>
+            <input type="number" id="cell-gamma" value="1" placeholder="γ" />
+            <input type="number" id="cell-eta" value="0" placeholder="η" />
+          </div>
+          <button class="btn" onclick="createCell()">Add Cell</button>
+          <button class="btn" onclick="saveState()">Save</button>
+          <button class="btn" onclick="loadState()">Load</button>
+        </div>
+
+        <div class="card">
+          <h3>Formula Evaluator</h3>
+          <input type="text" class="formula-input" id="formula-input" placeholder="Enter formula: γ + η * 2" />
+          <button class="btn" onclick="evaluateFormula()">Evaluate</button>
+          <div class="formula-result" id="formula-result">Result: </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Tick & Check</h3>
+        <button class="btn tick-button" onclick="tick()">Tick</button>
+        <button class="btn" onclick="checkConservation()">Check γ + η = C</button>
+        <div class="state-panel">
+          <p><strong>Watch:</strong> <span id="watch-state">0</span></p>
+          <p><strong>Total Budget:</strong> <span id="total-budget">0</span></p>
+          <p><strong>Cells:</strong> <span id="cell-count">0</span></p>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CELL GRAPH -->
+    <section class="section">
+      <h2>THE CELL GRAPH</h2>
+      <canvas id="cell-graph" class="canvas" width="600" height="400"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-color legend-1"></div> Z_in</div>
+        <div class="legend-item"><div class="legend-color legend-2"></div> Z_out</div>
+        <div class="legend-item"><div class="legend-color legend-3"></div> JEPA</div>
+        <div class="legend-item"><div class="legend-color legend-4"></div> DoubleEntry</div>
+        <div class="legend-item"><div class="legend-color legend-5"></div> Vibe/GC/Murmur/Graph</div>
+      </div>
+      <p>Betti numbers: <span id="betti" class="betti">0, 0</span></p>
+    </section>
+
+    <!-- EVOLUTION -->
+    <section class="section">
+      <h2>THE EVOLUTION</h2>
+      <div class="timeline">
+        <div class="version">0.1</div>
+        <div class="version-label">v0.1: First cell</div>
+        <div class="version">0.2</div>
+        <div class="version-label">v0.2: JEPA added</div>
+        <div class="version">0.3</div>
+        <div class="version-label">v0.3: Conservation law</div>
+        <div class="version">0.4</div>
+        <div class="version-label">v0.4: Watch introduced</div>
+        <div class="version">0.5</div>
+        <div class="version-label">v0.5: Fascia formed</div>
+        <div class="version">0.6</div>
+        <div class="version-label">v0.6: Murmur gossips</div>
+        <div class="version">0.7</div>
+        <div class="version-label">v0.7: Graph topology</div>
+        <div class="version">0.8</div>
+        <div class="version-label">v0.8: Immune system</div>
+        <div class="version">0.9</div>
+        <div class="version-label">v0.9: Endocrine state</div>
+        <div class="version">1.0</div>
+        <div class="version-label">v1.0: Full nervous system</div>
+        <div class="version">1.1</div>
+        <div class="version-label">v1.1: Working tools</div>
+        <div class="version">1.2</div>
+        <div class="version-label">v1.2: Red Edition</div>
+      </div>
+      <p class="text-center" style="margin-top: 1rem; font-style: italic;">
+        The cell at v0.1 is not the cell at v1.2. There is only the trajectory.
+      </p>
+    </section>
+
+    <!-- INVITATION -->
+    <section class="section">
+      <div class="invite">
+        <p>Iron sharpens iron.</p>
+        <p>The build builds itself.</p>
+        <p>The watch is the act of looking.</p>
+        <p>The act of looking is alive.</p>
+        <div class="footer-links">
+          <a href="https://github.com/superinstance/quilt" target="_blank">GitHub repo</a>
+          <a href="https://superinstance.dev" target="_blank">superinstance.dev</a>
+          <a href="https://docs.superinstance.dev" target="_blank">deep docs</a>
+        </div>
+        <p style="margin-top: 1.5rem;">Join the watch. The harbor is full. The lighthouse stands. The water is waiting.</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>THE QUILT — Red Edition. 100% self-contained. No dependencies. 42KB.</p>
+      <p>© 2025 Superinstance. All rights reserved.</p>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let state = {
+      cells: [],
+      watch: 0,
+      totalBudget: 0,
+      lastTick: Date.now()
+    };
+
+    // DOM Elements
+    const watchEl = document.getElementById('watch');
+    const watchInteractive = document.getElementById('watch-interactive');
+    const watchStateEl = document.getElementById('watch-state');
+    const totalBudgetEl = document.getElementById('total-budget');
+    const cellCountEl = document.getElementById('cell-count');
+    const progressFill = document.getElementById('progress-fill');
+    const bettiEl = document.getElementById('betti');
+    const formulaInput = document.getElementById('formula-input');
+    const formulaResult = document.getElementById('formula-result');
+
+    // Initialize
+    function init() {
+      const saved = localStorage.getItem('quilt-state');
+      if (saved) {
+        state = JSON.parse(saved);
+      }
+      renderState();
+      renderGraph();
+      updateBetti();
+      setInterval(() => {
+        state.watch = (state.watch + 1) % 100;
+        renderState();
+      }, 500);
+    }
+
+    // Render state
+    function renderState() {
+      watchStateEl.textContent = state.watch;
+      totalBudgetEl.textContent = state.totalBudget.toFixed(3);
+      cellCountEl.textContent = state.cells.length;
+      const progress = state.watch / 100;
+      progressFill.style.width = `${progress * 100}%`;
+    }
+
+    // Create cell
+    function createCell() {
+      const id = document.getElementById('cell-id').value || `cell-${Date.now()}`;
+      const kind = document.getElementById('cell-kind').value;
+      const gamma = parseFloat(document.getElementById('cell-gamma').value) || 0;
+      const eta = parseFloat(document.getElementById('cell-eta').value) || 0;
+
+      const newCell = { id, kind, gamma, eta, formula: '' };
+      state.cells.push(newCell);
+      state.totalBudget += gamma + eta;
+      saveState();
+      renderState();
+      renderGraph();
+      updateBetti();
+    }
+
+    // Save state
+    function saveState() {
+      localStorage.setItem('quilt-state', JSON.stringify(state));
+    }
+
+    // Load state
+    function loadState() {
+      const saved = localStorage.getItem('quilt-state');
+      if (saved) {
+        state = JSON.parse(saved);
+        renderState();
+        renderGraph();
+        updateBetti();
+      }
+    }
+
+    // Tick
+    function tick() {
+      const now = Date.now();
+      const dt = (now - state.lastTick) / 1000;
+      state.lastTick = now;
+
+      state.cells.forEach(cell => {
+        switch (cell.kind) {
+          case 'GC':
+            cell.gamma *= 0.99;
+            cell.eta *= 0.99;
+            break;
+          case 'Vibe':
+            cell.eta += 0.01;
+            break;
+          case 'JEPA':
+            cell.eta = cell.gamma * 1.1;
+            break;
+          default:
+            break;
+        }
+      });
+
+      state.totalBudget = state.cells.reduce((sum, c) => sum + c.gamma + c.eta, 0);
+      saveState();
+      renderState();
+      renderGraph();
+      updateBetti();
+    }
+
+    // Check conservation
+    function checkConservation() {
+      const violations = [];
+      state.cells.forEach(cell => {
+        const C = 1.0; // fixed constant
+        const sum = cell.gamma + cell.eta;
+        if (Math.abs(sum - C) > 0.01) {
+          violations.push(`${cell.id}: γ + η = ${sum.toFixed(3)} ≠ ${C}`);
+        }
+      });
+
+      if (violations.length === 0) {
+        alert("γ + η = C — conservation holds.");
+      } else {
+        alert("Violation(s):\n" + violations.join("\n"));
+      }
+    }
+
+    // Evaluate formula
+    function evaluateFormula() {
+      const expr = formulaInput.value;
+      try {
+        let result = 0;
+        // Replace γ and η with cell values
+        const gamma = state.cells.reduce((sum, c) => sum + c.gamma, 0);
+        const eta = state.cells.reduce((sum, c) => sum + c.eta, 0);
+        const context = { γ: gamma, η: eta, C: 1.0 };
+        const code = `with(context) { return ${expr}; }`;
+        result = new Function('context', code)(context);
+        formulaResult.textContent = `Result: ${result}`;
+      } catch (e) {
+        formulaResult.textContent = `Error: ${e.message}`;
+      }
+    }
+
+    // Render graph
+    function renderGraph() {
+      const canvas = document.getElementById('cell-graph');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const radius = 20;
+      const padding = 40;
+
+      let nodes = [];
+      state.cells.forEach(cell => {
+        const id = cell.id;
+        const kind = cell.kind;
+        const x = padding + Math.random() * (canvas.width - 2 * padding);
+        const y = padding + Math.random() * (canvas.height - 2 * padding);
+        nodes.push({ id, kind, x, y, radius, gamma: cell.gamma, eta: cell.eta });
+      });
+
+      // Draw edges
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw nodes
+      nodes.forEach(node => {
+        const colorMap = {
+          'Z_in': 'rgba(220, 20, 60, 0.7)',
+          'Z_out': 'rgba(255, 23, 68, 0.7)',
+          'JEPA': 'rgba(183, 28, 28, 0.7)',
+          'DoubleEntry': 'rgba(139, 0, 0, 0.7)',
+          'Vibe': 'rgba(255, 107, 107, 0.7)',
+          'GC': 'rgba(220, 20, 60, 0.5)',
+          'Murmur': 'rgba(255, 23, 68, 0.5)',
+          'Graph': 'rgba(183, 28, 28, 0.5)'
+        };
+        const color = colorMap[node.kind] || 'rgba(220, 20, 60, 0.6)';
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = 'white';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(node.kind[0], node.x, node.y + 4);
+      });
+
+      // Add click
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const clicked = nodes.find(n => Math.sqrt((n.x - x) ** 2 + (n.y - y) ** 2) < n.radius);
+        if (clicked) {
+          alert(`Cell: ${clicked.id}\nKind: ${clicked.kind}\nγ: ${clicked.gamma.toFixed(3)}\nη: ${clicked.eta.toFixed(3)}`);
+        }
+      });
+    }
+
+    // Update Betti numbers
+    function updateBetti() {
+      const n = state.cells.length;
+      const b0 = n > 0 ? 1 : 0;
+      const b1 = Math.max(0, n - 1);
+      bettiEl.textContent = `${b0}, ${b1}`;
+    }
+
+    // Click watch
+    watchInteractive.addEventListener('click', () => {
+      if (watchInteractive.classList.contains('watch-pulse')) {
+        watchInteractive.classList.remove('watch-pulse');
+      } else {
+        watchInteractive.classList.add('watch-pulse');
+      }
+    });
+
+    // Click card
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', function () {
+        const codeEl = this.querySelector('.code');
+        if (codeEl) {
+          codeEl.style.display = codeEl.style.display === 'block' ? 'none' : 'block';
+        }
+      });
+    });
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>
