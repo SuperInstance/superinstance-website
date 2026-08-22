@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Velato-Penrose — Music IS the Cell Graph</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0a14;
+  color: #e0e0e8;
+  font-family: 'Courier New', monospace;
+  line-height: 1.5;
+  padding: 1rem;
+  overflow-x: hidden;
+}
+.container { max-width: 1400px; margin: 0 auto; }
+h1 { font-size: 2rem; color: #ff6b9d; margin-bottom: 0.3rem; }
+h2 { font-size: 1.3rem; color: #4ecdc4; margin: 1.5rem 0 0.8rem; }
+.lead { font-size: 1rem; color: #b0b0c0; margin-bottom: 1.5rem; font-style: italic; }
+
+#canvas-wrap {
+  position: relative;
+  background: #1a1a2a;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  height: 500px;
+}
+canvas { display: block; width: 100%; height: 100%; border-radius: 4px; }
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+button {
+  background: #2a2a3a;
+  color: #e0e0e8;
+  border: 1px solid #4ecdc4;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+button:hover { background: #3a3a4a; }
+button.active { background: #4ecdc4; color: #0a0a14; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.card {
+  background: #1a1a2a;
+  border-radius: 6px;
+  padding: 1rem;
+  border-top: 2px solid #4ecdc4;
+}
+.card-pink { border-top-color: #ff6b9d; }
+.card-yellow { border-top-color: #ffd93d; }
+.card-green { border-top-color: #6bcf7f; }
+.card-title { color: #4ecdc4; font-weight: bold; font-size: 0.95rem; margin-bottom: 0.3rem; }
+.card-pink .card-title { color: #ff6b9d; }
+.card-yellow .card-title { color: #ffd93d; }
+.card-green .card-title { color: #6bcf7f; }
+.value { font-size: 1.5rem; color: #fff; font-weight: bold; }
+.label { font-size: 0.75rem; color: #888; }
+
+.kbd {
+  display: inline-block;
+  background: #2a2a3a;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid #4ecdc4;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+#keyboard {
+  display: flex;
+  background: #1a1a2a;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  height: 120px;
+  overflow-x: auto;
+}
+.key {
+  display: inline-block;
+  min-width: 32px;
+  height: 100px;
+  background: #2a2a3a;
+  border: 1px solid #444;
+  margin-right: 1px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.key.black { background: #0a0a14; height: 60px; margin-left: -10px; margin-right: -10px; z-index: 2; min-width: 20px; }
+.key:hover { background: #3a3a4a; }
+.key.active { background: #4ecdc4; }
+.key.black.active { background: #ff6b9d; }
+.key-label { position: absolute; bottom: 4px; left: 0; right: 0; text-align: center; font-size: 0.65rem; color: #888; }
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+.legend-item { display: flex; align-items: center; gap: 0.3rem; }
+.legend-swatch { width: 16px; height: 16px; border-radius: 2px; }
+
+#events {
+  background: #1a1a2a;
+  border-radius: 6px;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 0.85rem;
+}
+.event-line { padding: 0.2rem 0; border-bottom: 1px solid #2a2a3a; }
+.event-time { color: #888; }
+
+.iron { color: #888; font-style: italic; text-align: center; margin: 1.5rem 0; font-size: 0.9rem; }
+
+select, input {
+  background: #2a2a3a;
+  color: #e0e0e8;
+  border: 1px solid #444;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  font-family: inherit;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎵 Live Velato-Penrose</h1>
+<p class="lead">Music IS the cell graph. Play a melody. Watch it become a Penrose tiling. The 3-coloring IS γ+η=1. The cell graph IS the music.</p>
+
+<div class="controls">
+  <button id="btn-record">🎤 Start Mic</button>
+  <button id="btn-play" class="active">▶ Play Demo</button>
+  <button id="btn-clear">🗑 Clear</button>
+  <button id="btn-velato">🎼 Velato Mode</button>
+  <select id="root-select">
+    <option value="60">Root: C4 (60)</option>
+    <option value="62">Root: D4 (62)</option>
+    <option value="64">Root: E4 (64)</option>
+    <option value="65">Root: F4 (65)</option>
+    <option value="67">Root: G4 (67)</option>
+    <option value="69">Root: A4 (69)</option>
+    <option value="71">Root: B4 (71)</option>
+  </select>
+  <span style="color:#888">Or use keys <span class="kbd">A W S E D F T G Y H U J</span> for C major scale</span>
+</div>
+
+<div id="canvas-wrap">
+  <canvas id="canvas"></canvas>
+</div>
+
+<h2>📊 Live Metrics</h2>
+<div class="grid">
+  <div class="card">
+    <div class="card-title">Cells</div>
+    <div class="value" id="m-cells">0</div>
+    <div class="label">Quilt cells generated</div>
+  </div>
+  <div class="card card-pink">
+    <div class="card-title">β₁ (Holes)</div>
+    <div class="value" id="m-beta1">0</div>
+    <div class="label">topological cycles</div>
+  </div>
+  <div class="card card-yellow">
+    <div class="card-title">γ + η</div>
+    <div class="value" id="m-cons">0.000</div>
+    <div class="label">conservation (target = 1.0)</div>
+  </div>
+  <div class="card card-green">
+    <div class="card-title">φ clock</div>
+    <div class="value" id="m-phi">1.000</div>
+    <div class="label">golden ratio tick</div>
+  </div>
+  <div class="card">
+    <div class="card-title">3-Coloring</div>
+    <div class="value" id="m-colors">0/0/0</div>
+    <div class="label">CREATION / ENTROPY / WITNESS</div>
+  </div>
+  <div class="card card-pink">
+    <div class="card-title">Generation</div>
+    <div class="value" id="m-gen">0</div>
+    <div class="label">Penrose substitution depth</div>
+  </div>
+</div>
+
+<h2>🎹 Piano Keyboard</h2>
+<div id="keyboard"></div>
+
+<h2>📜 Event Log</h2>
+<div id="events"></div>
+
+<p class="iron">Iron sharpens iron. The music IS the cell graph. The watch is alive.</p>
+
+</div>
+
+<script>
+// ============== CONFIG ==============
+const PHI = (1 + Math.sqrt(5)) / 2;
+const OMEGA_RE = -0.5;
+const OMEGA_IM = Math.sqrt(3) / 2;
+
+// ============== STATE ==============
+let cells = [];
+let edges = [];
+let currentRoot = 60;
+let velatoMode = true;
+let events = [];
+let audioCtx = null;
+let analyser = null;
+let micStream = null;
+let recording = false;
+let phiTick = 0;
+let generation = 0;
+let conservationHistory = [];
+
+// ============== PRIMITIVES ==============
+const INTERVAL_TO_PRIMITIVE = {
+  0: 'ROOT',
+  1: 'Z_out',
+  2: 'Z_in',
+  3: 'JEPA_b',
+  4: 'JEPA',
+  5: 'DoubleEntry',
+  6: 'Vibe_b',
+  7: 'Vibe',
+  8: 'GC',
+  9: 'Murmur',
+  10: 'Graph',
+  11: 'Graph_b',
+  12: 'ROOT'
+};
+
+// ============== COLORING ==============
+function eisensteinSnap(pitch) {
+  const p = pitch % 12;
+  return { a: p % 3, b: Math.floor(p / 3) };
+}
+
+function pitchToColor(pitch) {
+  const { a, b } = eisensteinSnap(pitch);
+  const color = (a + b) % 3;
+  return ['creation', 'entropy', 'witness'][color];
+}
+
+function pitchToColorHex(pitch) {
+  const { a, b } = eisensteinSnap(pitch);
+  const color = (a + b) % 3;
+  return ['#ff6b9d', '#4ecdc4', '#ffd93d'][color];
+}
+
+// ============== CELL CREATION ==============
+function addCell(pitch, velocity) {
+  const interval = ((pitch - currentRoot) % 12 + 12) % 12;
+  const primitive = INTERVAL_TO_PRIMITIVE[interval] || 'UNKNOWN';
+  const color = pitchToColor(pitch);
+
+  if (primitive === 'ROOT') {
+    currentRoot = pitch;
+    generation++;
+  }
+
+  const cell = {
+    id: cells.length,
+    pitch: pitch,
+    velocity: velocity,
+    interval: interval,
+    primitive: primitive,
+    color: color,
+    generation: generation,
+    phiTime: phiTick,
+    gamma: primitive === 'DoubleEntry' ? velocity : null,
+    eta: primitive === 'DoubleEntry' ? 1 - velocity : null
+  };
+
+  cells.push(cell);
+
+  // Add edge from previous cell
+  if (cells.length > 1) {
+    edges.push({ from: cells.length - 2, to: cells.length - 1, kind: 'next' });
+  }
+
+  // Witness edge: connect CREATION to nearest WITNESS
+  if (color === 'creation' && cells.length > 3) {
+    let nearestWitness = -1;
+    let minDist = Infinity;
+    for (let i = cells.length - 2; i >= 0; i--) {
+      if (cells[i].color === 'witness') {
+        nearestWitness = i;
+        break;
+      }
+    }
+    if (nearestWitness >= 0) {
+      edges.push({ from: nearestWitness, to: cells.length - 1, kind: 'witness' });
+    }
+  }
+
+  logEvent(pitch, primitive, color);
+  updateMetrics();
+  redraw();
+}
+
+// ============== METRICS ==============
+function updateMetrics() {
+  document.getElementById('m-cells').textContent = cells.length;
+  document.getElementById('m-gen').textContent = generation;
+  document.getElementById('m-phi').textContent = (phiTick * PHI).toFixed(3);
+
+  // β₁
+  const V = cells.length;
+  const E = edges.length;
+  const parent = Array.from({ length: V }, (_, i) => i);
+  function find(x) { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+  function union(a, b) { const ra = find(a), rb = find(b); if (ra !== rb) parent[ra] = rb; }
+  edges.forEach(e => union(e.from, e.to));
+  const components = new Set(Array.from({ length: V }, (_, i) => find(i))).size;
+  document.getElementById('m-beta1').textContent = (E - V + components);
+
+  // Conservation: avg of |γ + η - 1| for DoubleEntry cells
+  const deCells = cells.filter(c => c.gamma !== null);
+  if (deCells.length > 0) {
+    const avgSum = deCells.reduce((s, c) => s + (c.gamma + c.eta), 0) / deCells.length;
+    document.getElementById('m-cons').textContent = avgSum.toFixed(3);
+  }
+
+  // 3-coloring counts
+  const counts = { creation: 0, entropy: 0, witness: 0 };
+  cells.forEach(c => counts[c.color]++);
+  document.getElementById('m-colors').textContent =
+    `${counts.creation}/${counts.entropy}/${counts.witness}`;
+}
+
+// ============== DRAWING ==============
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let width, height;
+
+function resize() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width - 32;
+  canvas.height = 460;
+  width = canvas.width;
+  height = canvas.height;
+  redraw();
+}
+
+function redraw() {
+  ctx.fillStyle = '#0a0a14';
+  ctx.fillRect(0, 0, width, height);
+
+  if (cells.length === 0) {
+    ctx.fillStyle = '#666';
+    ctx.font = '16px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('Play a note to begin...', width / 2, height / 2);
+    return;
+  }
+
+  // Compute layout
+  const positions = cells.map((c, i) => {
+    // X = sequence, Y = pitch (mapped to height)
+    const x = (i / Math.max(cells.length, 1)) * width;
+    const y = height - ((c.pitch - 48) / 48) * height;
+    return { x, y, c };
+  });
+
+  // Draw edges first
+  ctx.strokeStyle = 'rgba(100, 100, 120, 0.3)';
+  ctx.lineWidth = 1;
+  edges.forEach(e => {
+    if (e.from < positions.length && e.to < positions.length) {
+      const a = positions[e.from];
+      const b = positions[e.to];
+      ctx.strokeStyle = e.kind === 'witness' ? 'rgba(255, 217, 61, 0.4)' : 'rgba(100, 100, 120, 0.3)';
+      ctx.lineWidth = e.kind === 'witness' ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+  });
+
+  // Draw cells
+  positions.forEach((p, i) => {
+    const c = p.c;
+    const colorHex = pitchToColorHex(c.pitch);
+    const radius = 6 + c.velocity * 8;
+
+    // Glow
+    ctx.fillStyle = colorHex + '40';
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, radius * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Core
+    ctx.fillStyle = colorHex;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Label
+    if (i === cells.length - 1 || i % 5 === 0) {
+      ctx.fillStyle = '#fff';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(c.primitive, p.x, p.y - radius - 4);
+    }
+  });
+
+  // Generation markers
+  ctx.strokeStyle = 'rgba(255, 217, 61, 0.3)';
+  ctx.lineWidth = 1;
+  for (let g = 0; g <= generation; g++) {
+    const idx = cells.findIndex(c => c.generation === g);
+    if (idx > 0) {
+      const x = (idx / cells.length) * width;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+  }
+}
+
+// ============== KEYBOARD ==============
+const keyboard = document.getElementById('keyboard');
+const KEY_TO_PITCH = {
+  'a': 60, 'w': 61, 's': 62, 'e': 63, 'd': 64, 'f': 65,
+  't': 66, 'g': 67, 'y': 68, 'h': 69, 'u': 70, 'j': 71,
+  'k': 72, 'o': 73, 'l': 74, 'p': 75, ';': 76
+};
+
+const blackKeyPattern = { 1: 'w', 3: 'e', 6: 't', 8: 'y', 10: 'u' };
+const whiteKeys = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', 'p'];
+let whiteKeyCount = 0;
+
+for (let i = 0; i < 28; i++) {
+  const pitch = 60 + i;
+  const isBlack = [1, 3, 6, 8, 10].includes(i % 12);
+  const key = document.createElement('div');
+  key.className = 'key' + (isBlack ? ' black' : '');
+  key.dataset.pitch = pitch;
+  const label = document.createElement('div');
+  label.className = 'key-label';
+  label.textContent = isBlack ? '' : ['C', 'D', 'E', 'F', 'G', 'A', 'B'][i % 7];
+  key.appendChild(label);
+  key.addEventListener('mousedown', () => {
+    addCell(pitch, 0.8);
+    playTone(pitch, 0.3);
+  });
+  keyboard.appendChild(key);
+}
+
+// Keyboard input
+document.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  const pitch = KEY_TO_PITCH[e.key.toLowerCase()];
+  if (pitch !== undefined) {
+    addCell(pitch, 0.7);
+    playTone(pitch, 0.2);
+    // Highlight key
+    const keyEl = document.querySelector(`[data-pitch="${pitch}"]`);
+    if (keyEl) {
+      keyEl.classList.add('active');
+      setTimeout(() => keyEl.classList.remove('active'), 200);
+    }
+  }
+});
+
+// ============== AUDIO ==============
+function playTone(pitch, duration) {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const freq = 440 * Math.pow(2, (pitch - 69) / 12);
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.frequency.value = freq;
+  osc.type = 'sine';
+  gain.gain.setValueAtTime(0, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+// ============== MIC ==============
+document.getElementById('btn-record').addEventListener('click', async () => {
+  if (recording) {
+    if (micStream) micStream.getTracks().forEach(t => t.stop());
+    recording = false;
+    document.getElementById('btn-record').textContent = '🎤 Start Mic';
+    return;
+  }
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaStreamSource(micStream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    recording = true;
+    document.getElementById('btn-record').textContent = '🛑 Stop Mic';
+    detectPitch();
+  } catch (e) {
+    alert('Mic access denied. Try the keyboard or demo button.');
+  }
+});
+
+let lastDetected = 0;
+function detectPitch() {
+  if (!recording) return;
+  const data = new Float32Array(analyser.fftSize);
+  analyser.getFloatTimeDomainData(data);
+
+  // Autocorrelation pitch detection
+  const sampleRate = audioCtx.sampleRate;
+  let bestFreq = 0;
+  let bestCorr = 0;
+  for (let lag = 50; lag < 1000; lag++) {
+    let corr = 0;
+    for (let i = 0; i < data.length - lag; i++) {
+      corr += data[i] * data[i + lag];
+    }
+    if (corr > bestCorr) {
+      bestCorr = corr;
+      bestFreq = sampleRate / lag;
+    }
+  }
+
+  if (bestFreq > 50 && bestCorr > 0.01) {
+    const now = Date.now();
+    if (now - lastDetected > 200) {
+      const pitch = Math.round(69 + 12 * Math.log2(bestFreq / 440));
+      if (pitch >= 48 && pitch <= 84) {
+        addCell(pitch, Math.min(bestCorr * 2, 1));
+        playTone(pitch, 0.15);
+        lastDetected = now;
+      }
+    }
+  }
+  requestAnimationFrame(detectPitch);
+}
+
+// ============== DEMO PLAYBACK ==============
+const demoMelody = [
+  60, 64, 67, 72, 67, 64, 60,  // C E G C G E C
+  62, 65, 69, 74, 69, 65, 62,  // D F A Bb A F D
+  64, 67, 71, 76, 71, 67, 64,  // E G B E B G E
+  60, 64, 67, 72, 60, 60, 60,  // C E G C (resolve)
+];
+
+document.getElementById('btn-play').addEventListener('click', () => {
+  if (recording) return;
+  let i = 0;
+  const playNext = () => {
+    if (i >= demoMelody.length) return;
+    const pitch = demoMelody[i++];
+    addCell(pitch, 0.7);
+    playTone(pitch, 0.3);
+    setTimeout(playNext, 400);
+  };
+  playNext();
+});
+
+document.getElementById('btn-clear').addEventListener('click', () => {
+  cells = [];
+  edges = [];
+  currentRoot = parseInt(document.getElementById('root-select').value);
+  generation = 0;
+  events = [];
+  document.getElementById('events').innerHTML = '';
+  updateMetrics();
+  redraw();
+});
+
+document.getElementById('btn-velato').addEventListener('click', e => {
+  velatoMode = !velatoMode;
+  e.target.classList.toggle('active', velatoMode);
+});
+
+document.getElementById('root-select').addEventListener('change', e => {
+  currentRoot = parseInt(e.target.value);
+});
+
+// ============== EVENT LOG ==============
+function logEvent(pitch, primitive, color) {
+  const colorHex = pitchToColorHex(pitch);
+  const time = new Date().toLocaleTimeString();
+  const line = document.createElement('div');
+  line.className = 'event-line';
+  line.innerHTML = `<span class="event-time">${time}</span> pitch=<b>${pitch}</b> interval=<b>${((pitch - currentRoot) % 12 + 12) % 12}</b> → <span style="color:${colorHex}">${primitive}</span> [${color}]`;
+  document.getElementById('events').prepend(line);
+  while (document.getElementById('events').children.length > 50) {
+    document.getElementById('events').lastChild.remove();
+  }
+}
+
+// ============== PHI CLOCK ==============
+setInterval(() => {
+  phiTick = (phiTick + 0.01) % 100;
+  document.getElementById('m-phi').textContent = (phiTick * PHI).toFixed(3);
+}, 100);
+
+// ============== INIT ==============
+window.addEventListener('resize', resize);
+resize();
+currentRoot = parseInt(document.getElementById('root-select').value);
+redraw();
+</script>
+</body>
+</html>
