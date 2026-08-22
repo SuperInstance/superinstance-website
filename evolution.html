@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Evolution of Quilt</title>
+  <style>
+    :root {
+      --bg: #0a1929;
+      --text: #c0d6e4;
+      --accent: #d4a857;
+      --border: #3a5a6f;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(212, 168, 87, 0.2);
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin: 30px 0 15px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      margin-bottom: 60px;
+      font-style: italic;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 0;
+      height: 400vh;
+      overflow: hidden;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    .stage {
+      position: absolute;
+      left: 50%;
+      width: 100%;
+      transform-origin: 50% 0;
+      display: flex;
+      align-items: flex-start;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .stage.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stage::before {
+      content: '';
+      position: absolute;
+      left: -50%;
+      top: 0;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(212, 168, 87, 0.5);
+      z-index: 3;
+    }
+
+    .stage::after {
+      content: '';
+      position: absolute;
+      left: -50%;
+      top: 20px;
+      width: 2px;
+      height: 100%;
+      background: var(--border);
+      z-index: 1;
+    }
+
+    .stage-content {
+      background: rgba(20, 35, 55, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 25px;
+      width: 320px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      text-align: left;
+      z-index: 2;
+    }
+
+    .version {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+
+    .name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #a8c4d8;
+    }
+
+    .desc {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+
+    .visual {
+      width: 30px;
+      height: 30px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-top: 10px;
+      opacity: 0.6;
+      transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+    }
+
+    .motion {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    .motion svg {
+      width: 24px;
+      height: 24px;
+      margin-right: 12px;
+      fill: var(--accent);
+    }
+
+    .motion span {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .invariant {
+      margin-top: 50px;
+      border-top: 1px dashed var(--border);
+      padding-top: 30px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .invariant p {
+      margin-bottom: 10px;
+      opacity: 0.85;
+    }
+
+    .trajectory {
+      position: absolute;
+      left: 50%;
+      top: 100vh;
+      width: 2px;
+      height: 200vh;
+      background: var(--accent);
+      transform: translateX(-50%);
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .trajectory::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(212, 168, 87, 0.6);
+    }
+
+    .trajectory::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(212, 168, 87, 0.7);
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    .pulse {
+      animation: pulse 3s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>The Evolution of Quilt</h1>
+  <p class="subtitle">Not the artifacts. The trajectory.</p>
+
+  <div class="timeline">
+    <div class="trajectory"></div>
+
+    <!-- Stage 1 -->
+    <div class="stage" data-index="0">
+      <div class="stage-content">
+        <div class="version">v0.1</div>
+        <div class="name">8 primitives</div>
+        <div class="desc">The system that thinks it's a spreadsheet.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <div class="stage" data-index="1">
+      <div class="stage-content">
+        <div class="version">v0.2</div>
+        <div class="name">4 endpoints</div>
+        <div class="desc">The system that thinks it's an API.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="stage" data-index="2">
+      <div class="stage-content">
+        <div class="version">v0.3</div>
+        <div class="name">The Fascia</div>
+        <div class="desc">The system that thinks it's a tissue.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 4 -->
+    <div class="stage" data-index="3">
+      <div class="stage-content">
+        <div class="version">v0.4</div>
+        <div class="name">6 nervous systems</div>
+        <div class="desc">The system that thinks it's a body.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 5 -->
+    <div class="stage" data-index="4">
+      <div class="stage-content">
+        <div class="version">v0.5</div>
+        <div class="name">Q-space</div>
+        <div class="desc">The system that thinks it's a garden.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 6 -->
+    <div class="stage" data-index="5">
+      <div class="stage-content">
+        <div class="version">v0.6</div>
+        <div class="name">Echogram</div>
+        <div class="desc">The system that thinks it's a fleet.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 7 -->
+    <div class="stage" data-index="6">
+      <div class="stage-content">
+        <div class="version">v0.7</div>
+        <div class="name">5 impossibility proofs</div>
+        <div class="desc">The system that knows its limits.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 8 -->
+    <div class="stage" data-index="7">
+      <div class="stage-content">
+        <div class="version">v0.8</div>
+        <div class="name">8 impossibility proofs</div>
+        <div class="desc">The system that knows more limits.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 9 -->
+    <div class="stage" data-index="8">
+      <div class="stage-content">
+        <div class="version">v0.9</div>
+        <div class="name">6 frontier frameworks</div>
+        <div class="desc">The system that knows its depth.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 10 -->
+    <div class="stage" data-index="9">
+      <div class="stage-content">
+        <div class="version">v1.0</div>
+        <div class="name">Unified kernel</div>
+        <div class="desc">The system that holds the depth.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 11 -->
+    <div class="stage" data-index="10">
+      <div class="stage-content">
+        <div class="version">v1.1</div>
+        <div class="name">Quilt Studio</div>
+        <div class="desc">The system that does work.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+    <!-- Stage 12 -->
+    <div class="stage" data-index="11">
+      <div class="stage-content">
+        <div class="version">v1.2</div>
+        <div class="name">Two maps of the same ocean</div>
+        <div class="desc">The system that knows it's the same.</div>
+        <div class="visual"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>The 4 Motions</h2>
+  <div class="motion">
+    <svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg>
+    <span>ADD: a new primitive or layer</span>
+  </div>
+  <div class="motion">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    <span>COMPLETE: an existing primitive gets a new dimension</span>
+  </div>
+  <div class="motion">
+    <svg viewBox="0 0 24 24"><path d="M12 2l-8 8 8 8"/></svg>
+    <span>REPLACE: a new layer absorbs an old one</span>
+  </div>
+  <div class="motion">
+    <svg viewBox="0 0 24 24"><path d="M12 2l4 4-4 4M12 18l-4-4 4-4M12 2v20"/></svg>
+    <span>UNIFY: multiple things become one thing</span>
+  </div>
+
+  <h2 class="invariant">The Invariant</h2>
+  <div class="invariant">
+    <p>The cell is the system.</p>
+    <p>γ+η=C.</p>
+    <p>The watch is the act of looking.</p>
+    <p>4 impossibility proofs.</p>
+  </div>
+
+  <script>
+    const stages = document.querySelectorAll('.stage');
+    const timeline = document.querySelector('.timeline');
+    const trajectory = document.querySelector('.trajectory');
+    const visualElements = document.querySelectorAll('.visual');
+
+    // Set initial positions
+    stages.forEach((stage, i) => {
+      const top = (i * 120) + 100;
+      stage.style.top = `${top}px`;
+    });
+
+    // Animate visuals based on stage
+    visualElements.forEach((el, i) => {
+      const size = 30 + (i * 10);
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.style.opacity = 0.6 + (i * 0.05);
+      el.classList.add('pulse');
+    });
+
+    // Scroll listener
+    let scrollY = 0;
+    let ticking = false;
+
+    function update() {
+      scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+
+      // Check each stage
+      stages.forEach((stage, i) => {
+        const rect = stage.getBoundingClientRect();
+        const stageTop = rect.top + scrollY;
+        const stageBottom = rect.bottom + scrollY;
+        
+        // If stage is in view
+        if (stageTop < windowHeight * 0.8 && stageBottom > windowHeight * 0.2) {
+          stage.classList.add('active');
+        } else {
+          stage.classList.remove('active');
+        }
+      });
+
+      // Update trajectory
+      const currentY = scrollY + (windowHeight / 2);
+      const firstStageTop = stages[0].getBoundingClientRect().top + scrollY;
+      const lastStageTop = stages[11].getBoundingClientRect().top + scrollY;
+      const normalized = (currentY - firstStageTop) / (lastStageTop - firstStageTop);
+      const progress = Math.min(Math.max(normalized, 0), 1);
+
+      trajectory.style.transform = `translateY(${progress * 100}%)`;
+      trajectory.style.opacity = 0.5 + (progress * 0.5);
+
+      ticking = false;
+    }
+
+    function requestTick() {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }
+
+    // Throttle scroll events
+    window.addEventListener('scroll', requestTick, { passive: true });
+    window.addEventListener('resize', requestTick, { passive: true });
+
+    // Initial update
+    requestTick();
+
+    // Manual scroll to top after load
+    window.scrollTo(0, 0);
+  </script>
+
+</body>
+</html>
