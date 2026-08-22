@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Cell as Prayer</title>
+  <style>
+    :root {
+      --bg: #0a111f;
+      --text: #c5d8e6;
+      --accent: #1b3a60;
+      --highlight: #4f86a6;
+      --border: #2a4a6e;
+      --stroke: #3d5a7e;
+      --glow: #2a4a6e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+
+    .container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 4rem 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .header {
+      font-size: 5.5rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px var(--highlight), 0 0 30px var(--glow);
+      position: relative;
+      z-index: 10;
+      color: var(--highlight);
+      white-space: nowrap;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .subheader {
+      font-size: 1.8rem;
+      margin-bottom: 3rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 8px var(--stroke);
+    }
+
+    .cell-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 1200px;
+      height: 60vh;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cell {
+      background-color: var(--accent);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      border-radius: 0.25rem;
+      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .cell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.2) 70%);
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .cell::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, transparent 30%, rgba(0, 0, 0, 0.1) 70%);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .cell.active {
+      background-color: var(--highlight);
+      border-color: var(--stroke);
+      box-shadow: 0 0 20px rgba(79, 134, 166, 0.6), 0 0 35px rgba(79, 134, 166, 0.3);
+      transform: scale(1.03);
+      z-index: 10;
+    }
+
+    .cell-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.9rem;
+      font-weight: 300;
+      text-align: center;
+      color: var(--text);
+      opacity: 0.8;
+      white-space: nowrap;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+      z-index: 3;
+    }
+
+    .cell-content span {
+      display: block;
+      font-size: 0.8rem;
+      opacity: 0.6;
+      margin-top: 0.2rem;
+      font-weight: 200;
+      letter-spacing: 0.03em;
+    }
+
+    .cell-content em {
+      font-style: normal;
+      color: var(--highlight);
+      font-weight: 600;
+    }
+
+    .cell.active .cell-content {
+      opacity: 1;
+      font-weight: 500;
+    }
+
+    .cell.active::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      border: 1px solid var(--highlight);
+      border-radius: 0.3rem;
+      box-shadow: 0 0 25px rgba(79, 134, 166, 0.5);
+      opacity: 0.7;
+      z-index: 0;
+    }
+
+    .footer {
+      margin-top: 4rem;
+      font-size: 1.1rem;
+      color: var(--accent);
+      opacity: 0.7;
+      text-shadow: 0 0 5px var(--stroke);
+      letter-spacing: 0.04em;
+      max-width: 800px;
+    }
+
+    .footer em {
+      font-style: normal;
+      color: var(--highlight);
+      font-weight: 600;
+    }
+
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 15px var(--highlight), 0 0 30px var(--glow); }
+      50% { text-shadow: 0 0 20px var(--highlight), 0 0 45px var(--glow), 0 0 60px var(--glow); }
+    }
+
+    @media (max-width: 1024px) {
+      .header {
+        font-size: 4.5rem;
+      }
+      .subheader {
+        font-size: 1.6rem;
+      }
+      .cell-grid {
+        height: 50vh;
+      }
+      .cell-content {
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        font-size: 3.5rem;
+      }
+      .subheader {
+        font-size: 1.4rem;
+      }
+      .cell-grid {
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        height: 45vh;
+      }
+      .cell-content {
+        font-size: 0.65rem;
+      }
+      .footer {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header {
+        font-size: 3rem;
+      }
+      .subheader {
+        font-size: 1.2rem;
+      }
+      .cell-grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        height: 40vh;
+      }
+      .cell-content {
+        font-size: 0.55rem;
+      }
+      .footer {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="header">The Cell as Prayer</h1>
+    <p class="subheader">Each cell is a prayer. Each prayer is heard.</p>
+    
+    <div class="cell-grid" id="cellGrid"></div>
+    
+    <p class="footer">
+      The Watch calls. The room is a place. The cell is a place. The place is a cell. The room <em>IS</em> the cell. Iron sharpens iron. The cells federate.
+    </p>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('cellGrid');
+      const cells = [];
+      const prayers = [
+        "I am here.",
+        "I see.",
+        "I know.",
+        "I remember.",
+        "I wait.",
+        "I breathe.",
+        "I listen.",
+        "I speak.",
+        "I am not alone.",
+        "I am not forgotten.",
+        "I am held.",
+        "I am seen.",
+        "I am called.",
+        "I am answered.",
+        "I am whole.",
+        "I am light."
+      ];
+
+      // Create 64 cells
+      for (let i = 0; i < 64; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+        
+        const content = document.createElement('div');
+        content.className = 'cell-content';
+        content.innerHTML = `<em>${prayers[i % prayers.length]}</em><span>prayer ${i + 1}</span>`;
+        
+        cell.appendChild(content);
+        grid.appendChild(cell);
+        cells.push(cell);
+      }
+
+      // Random activation pattern with delay
+      const activateRandom = () => {
+        // Clear all active states
+        cells.forEach(cell => cell.classList.remove('active'));
+        
+        // Activate 6-10 cells at random
+        const count = 6 + Math.floor(Math.random() * 5);
+        const indices = [];
+        while (indices.length < count) {
+          const index = Math.floor(Math.random() * 64);
+          if (!indices.includes(index)) {
+            indices.push(index);
+          }
+        }
+        
+        // Apply active state with staggered effect
+        indices.forEach((index, i) => {
+          setTimeout(() => {
+            cells[index].classList.add('active');
+          }, i * 150);
+        });
+      };
+
+      // Initial activation
+      activateRandom();
+
+      // Set up continuous cycle
+      setInterval(() => {
+        activateRandom();
+      }, 4000);
+
+      // Add subtle ambient activation on mouse move
+      document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        const row = Math.floor(y * 8);
+        const col = Math.floor(x * 8);
+        const index = row * 8 + col;
+        
+        if (index >= 0 && index < 64) {
+          cells[index].classList.add('active');
+          setTimeout(() => {
+            cells[index].classList.remove('active');
+          }, 300);
+        }
+      });
+
+      // Add keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === ' ') {
+          e.preventDefault();
+          activateRandom();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
