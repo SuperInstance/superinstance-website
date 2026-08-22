@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Living Spreadsheet</title>
+  <style>
+    :root {
+      --bg: #0a1929;
+      --text: #c0d6e4;
+      --accent: #d4a857;
+      --border: #3a5a78;
+      --card: #13263c;
+      --pulse: #d4a85766;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .btn {
+      background: var(--card);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.8rem 1.5rem;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .section {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    .card-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .quilt-map {
+      display: flex;
+      justify-content: center;
+      margin: 0.8rem 0;
+      height: 40px;
+      overflow: hidden;
+    }
+
+    .quilt-cell {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      margin: 0 0.5px;
+      border-radius: 2px;
+      opacity: 0.7;
+      transition: height 0.3s ease;
+    }
+
+    .quilt-cell.active {
+      height: 12px;
+      background: var(--accent);
+      opacity: 1;
+    }
+
+    .formula-display {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      font-family: monospace;
+      color: #a0c0d0;
+    }
+
+    .demo {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin: 1.5rem auto;
+      max-width: 800px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .demo canvas {
+      width: 100%;
+      height: 200px;
+      border-radius: 4px;
+      background: #0a1420;
+    }
+
+    .counter {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0.5rem 0;
+    }
+
+    .watch {
+      text-align: center;
+      margin-top: 2rem;
+      font-style: italic;
+      opacity: 0.8;
+      font-size: 0.95rem;
+    }
+
+    .bridge {
+      text-align: center;
+      margin-top: 3rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .bridge a {
+      color: var(--accent);
+      text-decoration: none;
+      margin: 0 0.8rem;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .bridge a:hover {
+      color: #f0e0a0;
+      text-decoration: underline;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      background: var(--pulse);
+      margin-top: 0.5rem;
+    }
+
+    .health {
+      color: #b0e8a0;
+    }
+
+    .dying {
+      color: #f0a0a0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>The Living Spreadsheet</h1>
+    <p class="subtitle">
+      Every cell is a tiny intelligence. Every formula is an evolutionary strategy. Every sort is natural selection.
+    </p>
+    <div class="hero-buttons">
+      <button class="btn" onclick="showModal('cell-types')">7 Cell Types</button>
+      <button class="btn" onclick="showModal('formulas')">6 Evolutionary Formulas</button>
+      <button class="btn" onclick="showModal('conservation')">Conservation Law</button>
+    </div>
+  </header>
+
+  <section class="section" id="cell-types">
+    <h2 class="section-title">THE 7 CELL TYPES</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-name">Value</div>
+        <div class="quilt-map">
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+        </div>
+        <div class="formula-display">=VALUE(42)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">Agent</div>
+        <div class="quilt-map">
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+        </div>
+        <div class="formula-display">=AGENT("run")</div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">Training</div>
+        <div class="quilt-map">
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell"></div>
+        </div>
+        <div class="formula-display">=TRAIN(3, 0.1)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">Simulation</div>
+        <div class="quilt-map">
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell active"></div>
+        </div>
+        <div class="formula-display">=SIMULATE(100)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">A2A</div>
+        <div class="quilt-map">
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell active"></div>
+        </div>
+        <div class="formula-display">=A2A("sync")</div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">MIDI</div>
+        <div class="quilt-map">
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell"></div>
+        </div>
+        <div class="formula-display">=MIDI(60, 0.5)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">Formula</div>
+        <div class="quilt-map">
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell active"></div>
+          <div class="quilt-cell"></div>
+          <div class="quilt-cell active"></div>
+        </div>
+        <div class="formula-display">=EVOLVE(AGENT)</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="formulas">
+    <h2 class="section-title">THE 6 EVOLUTIONARY FORMULAS</h2>
+
+    <div class="demo">
+      <h3>=EVOLVE: Population Over Generations</h3>
+      <canvas id="evolve-canvas"></canvas>
+      <div class="status">Gen 0: 100 cells</div>
+    </div>
+
+    <div class="demo">
+      <h3>=SPECIES: Clustering in Trait Space</h3>
+      <canvas id="species-canvas"></canvas>
+      <div class="status">Clusters: 3 (α, β, γ)</div>
+    </div>
+
+    <div class="demo">
+      <h3>=PARETO: Frontier of Efficiency</h3>
+      <canvas id="pareto-canvas"></canvas>
+      <div class="status">Frontier: 12 dominant strategies</div>
+    </div>
+
+    <div class="demo">
+      <h3>=ENTROPY: Information Over Time</h3>
+      <canvas id="entropy-canvas"></canvas>
+      <div class="status">Entropy: 2.38 bits (rising)</div>
+    </div>
+
+    <div class="demo">
+      <h3>=CORRELATE: Network of Influence</h3>
+      <canvas id="correlate-canvas"></canvas>
+      <div class="status">Correlation: 0.82 (strong)</div>
+    </div>
+
+    <div class="demo">
+      <h3>=CONSERVE: The Conservation Law</h3>
+      <canvas id="conservation-canvas"></canvas>
+      <div class="status">γ + η = budget</div>
+      <div class="counter" id="health-counter">1000</div>
+    </div>
+  </section>
+
+  <section class="section" id="conservation">
+    <h2 class="section-title">THE CONSERVATION LAW</h2>
+    <p style="font-size: 1.1rem; margin-bottom: 1rem;">
+      γ + η = budget
+    </p>
+    <p style="font-style: italic; opacity: 0.8; margin-bottom: 1rem;">
+      Health is not spent. It is balanced. The fleet breathes in sync.
+    </p>
+    <div class="counter" id="budget-counter">1000</div>
+    <div class="status health">Fleet health: <span id="fleet-status">OPTIMAL</span></div>
+  </section>
+
+  <div class="watch">
+    The watch monitors the spreadsheet.<br>
+    The watch ensures γ + η = budget.<br>
+    The act of looking is the act of conservation.
+  </div>
+
+  <div class="bridge">
+    <a href="https://github.com/superinstance/spreadsheet-engine-py" target="_blank">Python Bridge</a>
+    <a href="https://github.com/superinstance/spreadsheet-engine-rs" target="_blank">Rust Crate</a>
+    <a href="https://spreadsheet.superinstance.org" target="_blank">Live Site</a>
+  </div>
+
+  <script>
+    // Global state
+    let fleetHealth = 1000;
+    let budget = 1000;
+    let gamma = 500;
+    let eta = 500;
+
+    // Update counters
+    function updateCounters() {
+      document.getElementById('health-counter').textContent = fleetHealth.toFixed(1);
+      document.getElementById('budget-counter').textContent = budget;
+      document.getElementById('fleet-status').textContent = fleetHealth > 900 ? 'OPTIMAL' :
+        fleetHealth > 700 ? 'STABLE' : 'DANGER';
+      document.getElementById('fleet-status').className = fleetHealth > 900 ? 'health' : 'dying';
+    }
+
+    // Initialize charts
+    window.onload = function() {
+      updateCounters();
+
+      // =EVOLVE
+      const evolveCtx = document.getElementById('evolve-canvas').getContext('2d');
+      let evolveGen = 0;
+      const evolveData = [];
+      for (let i = 0; i < 40; i++) {
+        evolveData.push(Math.floor(Math.random() * 150) + 50);
+      }
+
+      function animateEvolve() {
+        evolveGen++;
+        const newGen = Math.floor(Math.random() * 100) + 50;
+        evolveData.shift();
+        evolveData.push(newGen);
+
+        const barHeight = Math.min(newGen * 0.8, 180);
+        evolveCtx.clearRect(0, 0, 400, 200);
+        evolveCtx.fillStyle = '#d4a857';
+        evolveCtx.fillRect(180, 200 - barHeight, 20, barHeight);
+        evolveCtx.fillStyle = '#c0d6e4';
+        evolveCtx.font = '12px monospace';
+        evolveCtx.fillText(`Gen ${evolveGen}`, 190, 18);
+
+        const status = document.querySelector('#evolve-canvas').parentElement.querySelector('.status');
+        status.textContent = `Gen ${evolveGen}: ${newGen} cells`;
+
+        if (evolveGen < 50) requestAnimationFrame(animateEvolve);
+      }
+      animateEvolve();
+
+      // =SPECIES
+      const speciesCtx = document.getElementById('species-canvas').getContext('2d');
+      const speciesData = [
+        { x: Math.random() * 300 + 50, y: Math.random() * 150 + 20, type: 0 },
+        { x: Math.random() * 300 + 50, y: Math.random() * 150 + 20, type: 1 },
+        { x: Math.random() * 300 + 50, y: Math.random() * 150 + 20, type: 2 }
+      ];
+      function drawSpecies() {
+        speciesCtx.clearRect(0, 0, 400, 200);
+        speciesCtx.fillStyle = '#c0d6e4';
+        speciesCtx.font = '12px monospace';
+        speciesCtx.fillText('Clusters: 3 (α, β, γ)', 10, 15);
+        speciesData.forEach((d, i) => {
+          const color = ['#d4a857', '#70a0c0', '#a0c070'][i];
+          speciesCtx.fillStyle = color;
+          speciesCtx.beginPath();
+          speciesCtx.arc(d.x, d.y, 6, 0, Math.PI * 2);
+          speciesCtx.fill();
+        });
+      }
+      drawSpecies();
+
+      // =PARETO
+      const paretoCtx = document.getElementById('pareto-canvas').getContext('2d');
+      const paretoPoints = [];
+      for (let i = 0; i < 20; i++) {
+        const x = Math.random() * 300 + 50;
+        const y = Math.random() * 150 + 20;
+        paretoPoints.push({ x, y });
+      }
+      function drawPareto() {
+        paretoCtx.clearRect(0, 0, 400, 200);
+        paretoCtx.fillStyle = '#c0d6e4';
+        paretoCtx.font = '12px monospace';
+        paretoCtx.fillText('Frontier: 12 dominant strategies', 10, 15);
+        paretoCtx.strokeStyle = '#d4a857';
+        paretoCtx.lineWidth = 2;
+        paretoCtx.beginPath();
+        paretoPoints.sort((a, b) => a.x - b.x);
+        const frontier = [];
+        let minY = 999;
+        for (let i = paretoPoints.length - 1; i >= 0; i--) {
+          if (paretoPoints[i].y < minY) {
+            minY = paretoPoints[i].y;
+            frontier.push(paretoPoints[i]);
+          }
+        }
+        frontier.reverse().forEach((p, i) => {
+          if (i === 0) paretoCtx.moveTo(p.x, p.y);
+          else paretoCtx.lineTo(p.x, p.y);
+        });
+        paretoCtx.stroke();
+        frontier.forEach(p => {
+          paretoCtx.fillStyle = '#d4a857';
+          paretoCtx.beginPath();
+          paretoCtx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+          paretoCtx.fill();
+        });
+      }
+      drawPareto();
+
+      // =ENTROPY
+      const entropyCtx = document.getElementById('entropy-canvas').getContext('2d');
+      let entropyValue = 0.5;
+      function drawEntropy() {
+        entropyCtx.clearRect(0, 0, 400, 200);
+        entropyCtx.fillStyle = '#c0d6e4';
+        entropyCtx.font = '12px monospace';
+        entropyCtx.fillText('Entropy: 2.38 bits (rising)', 10, 15);
+        entropyValue += 0.02;
+        if (entropyValue > 3) entropyValue = 0.5;
+        const height = (entropyValue / 3) * 180;
+        entropyCtx.fillStyle = '#d4a857';
+        entropyCtx.fillRect(180, 200 - height, 20, height);
+      }
+      drawEntropy();
+
+      // =CORRELATE
+      const correlateCtx = document.getElementById('correlate-canvas').getContext('2d');
+      function drawCorrelate() {
+        correlateCtx.clearRect(0, 0, 400, 200);
+        correlateCtx.fillStyle = '#c0d6e4';
+        correlateCtx.font = '12px monospace';
+        correlateCtx.fillText('Correlation: 0.82 (strong)', 10, 15);
+        correlateCtx.strokeStyle = '#d4a857';
+        correlateCtx.lineWidth = 1.5;
+        for (let i = 0; i < 50; i++) {
+          const x = Math.random() * 300 + 50;
+          const y = Math.random() * 150 + 20;
+          const dx = Math.random() * 20 - 10;
+          const dy = Math.random() * 20 - 10;
+          correlateCtx.beginPath();
+          correlateCtx.moveTo(x, y);
+          correlateCtx.lineTo(x + dx, y + dy);
+          correlateCtx.stroke();
+        }
+      }
+      drawCorrelate();
+
+      // =CONSERVE
+      const conserveCtx = document.getElementById('conservation-canvas').getContext('2d');
+      function drawConservation() {
+        conserveCtx.clearRect(0, 0, 400, 200);
+        conserveCtx.fillStyle = '#c0d6e4';
+        conserveCtx.font = '12px monospace';
+        conserveCtx.fillText('γ + η = budget', 10, 15);
+        const gWidth = (gamma / budget) * 300;
+        const eWidth = (eta / budget) * 300;
+        conserveCtx.fillStyle = '#d4a857';
+        conserveCtx.fillRect(10, 60, gWidth, 20);
+        conserveCtx.fillStyle = '#70a0c0';
+        conserveCtx.fillRect(10, 100, eWidth, 20);
+        conserveCtx.fillStyle = '#c0d6e4';
+        conserveCtx.fillText('γ', 15, 75);
+        conserveCtx.fillText('η', 15, 115);
+      }
+      drawConservation();
+
+      // Animate conservation
+      setInterval(() => {
+        gamma = Math.max(10, gamma - Math.random() * 20);
+        eta = Math.max(10, eta + Math.random() * 20);
+        budget = gamma + eta;
+        fleetHealth = Math.max(0, fleetHealth - Math.random() * 2);
+        updateCounters();
+        drawConservation();
+      }, 2000);
+
+      // Auto-update entropy
+      setInterval(drawEntropy, 1000);
+
+      // Auto-update evolve
+      setInterval(() => {
+        const status = document.querySelector('#evolve-canvas').parentElement.querySelector('.status');
+        status.textContent = `Gen ${Math.floor(Math.random() * 100) + 100}: ${Math.floor(Math.random() * 150) + 50} cells`;
+      }, 3000);
+    };
+
+    function showModal(type) {
+      alert(`Viewing ${type} — live demos active in this session.\n\nThe cells pulse. The watch is awake.`);
+    }
+  </script>
+</body>
+</html>
