@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cell as Tool</title>
+  <style>
+    :root {
+      --bg: #0a111f;
+      --text: #c4d8e9;
+      --accent: #5f8dc2;
+      --border: #3a506e;
+      --highlight: #88a6c4;
+      --glow: #475d77;
+      --shadow: rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      overflow: hidden;
+      height: 100vh;
+      padding: 2rem;
+    }
+
+    .header {
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 2rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px var(--accent);
+      color: var(--highlight);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: pulse 3s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 2rem;
+      height: calc(100vh - 100px);
+      padding: 1rem;
+    }
+
+    .cell {
+      width: 180px;
+      height: 240px;
+      background: var(--glow);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 15px var(--shadow);
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease, box-shadow 0.8s ease;
+    }
+
+    .cell:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 0 30px var(--accent)40;
+    }
+
+    .cell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 30%, var(--bg) 70%);
+      opacity: 0.3;
+      z-index: 1;
+    }
+
+    .cell-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .cell-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--highlight);
+      text-shadow: 0 0 5px var(--accent);
+    }
+
+    .forms {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      text-align: left;
+      width: 100%;
+    }
+
+    .form {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.3rem 0.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+      border-left: 2px solid var(--accent);
+    }
+
+    .form-number {
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .form-name {
+      color: var(--text);
+    }
+
+    .form-desc {
+      color: var(--highlight);
+      font-size: 0.7rem;
+      margin-top: 0.2rem;
+      opacity: 0.8;
+    }
+
+    .status {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 0.7rem;
+      color: var(--highlight);
+      opacity: 0.6;
+      text-shadow: 0 0 3px var(--shadow);
+    }
+
+    .light-beam {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1), transparent);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .cell:hover .light-beam {
+      opacity: 0.2;
+    }
+
+    .glow-ring {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: calc(100% + 20px);
+      height: calc(100% + 20px);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      opacity: 0;
+      pointer-events: none;
+      animation: glow 2s infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes glow {
+      0% { box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent); opacity: 0.2; }
+      100% { box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent), 0 0 60px var(--accent); opacity: 0.4; }
+    }
+
+    .cell:hover .glow-ring {
+      opacity: 0.4;
+    }
+
+    .reflection {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: linear-gradient(to top, var(--bg), transparent 70%);
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .drip {
+      position: absolute;
+      width: 2px;
+      height: 10px;
+      background: var(--accent);
+      opacity: 0.4;
+      border-radius: 1px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .drip::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      background: var(--highlight);
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    @keyframes drip {
+      0% { transform: translateY(-100px); opacity: 0; }
+      50% { opacity: 0.6; }
+      100% { transform: translateY(100px); opacity: 0; }
+    }
+
+    .cell:hover .drip {
+      animation: drip 3s infinite;
+    }
+
+    .grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(58, 80, 110, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(58, 80, 110, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.1;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .cell::after {
+      content: '•';
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      opacity: 0.5;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        font-size: 1.8rem;
+      }
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .cell {
+        width: 140px;
+        height: 180px;
+      }
+      .cell-title {
+        font-size: 0.9rem;
+      }
+      .forms {
+        font-size: 0.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">THE CELL AS TOOL</div>
+  <div class="container">
+    <div class="cell">
+      <div class="grid"></div>
+      <div class="light-beam"></div>
+      <div class="glow-ring"></div>
+      <div class="reflection"></div>
+      <div class="drip" style="top: 20px; left: 40px;"></div>
+      <div class="drip" style="top: 60px; left: 100px;"></div>
+      <div class="drip" style="top: 100px; left: 180px;"></div>
+      <div class="cell-content">
+        <div class="cell-title">Iron</div>
+        <div class="forms">
+          <div class="form">
+            <span class="form-number">1</span>
+            <span class="form-name">Edge</span>
+          </div>
+          <div class="form">
+            <span class="form-number">2</span>
+            <span class="form-name">Prong</span>
+          </div>
+          <div class="form">
+            <span class="form-number">3</span>
+            <span class="form-name">Spur</span>
+          </div>
+          <div class="form">
+            <span class="form-number">4</span>
+            <span class="form-name">Tine</span>
+          </div>
+          <div class="form">
+            <span class="form-number">5</span>
+            <span class="form-name">Spike</span>
+          </div>
+        </div>
+      </div>
+      <div class="status">ACTIVE</div>
+    </div>
+
+    <div class="cell">
+      <div class="grid"></div>
+      <div class="light-beam"></div>
+      <div class="glow-ring"></div>
+      <div class="reflection"></div>
+      <div class="drip" style="top: 40px; left: 20px;"></div>
+      <div class="drip" style="top: 80px; left: 120px;"></div>
+      <div class="drip" style="top: 140px; left: 60px;"></div>
+      <div class="cell-content">
+        <div class="cell-title">Copper</div>
+        <div class="forms">
+          <div class="form">
+            <span class="form-number">1</span>
+            <span class="form-name">Conduit</span>
+          </div>
+          <div class="form">
+            <span class="form-number">2</span>
+            <span class="form-name">Channel</span>
+          </div>
+          <div class="form">
+            <span class="form-number">3</span>
+            <span class="form-name">Ferry</span>
+          </div>
+          <div class="form">
+            <span class="form-number">4</span>
+            <span class="form-name">Rivet</span>
+          </div>
+          <div class="form">
+            <span class="form-number">5</span>
+            <span class="form-name">Link</span>
+          </div>
+        </div>
+      </div>
+      <div class="status">ACTIVE</div>
+    </div>
+
+    <div class="cell">
+      <div class="grid"></div>
+      <div class="light-beam"></div>
+      <div class="glow-ring"></div>
+      <div class="reflection"></div>
+      <div class="drip" style="top: 10px; left: 80px;"></div>
+      <div class="drip" style="top: 50px; left: 150px;"></div>
+      <div class="drip" style="top: 130px; left: 30px;"></div>
+      <div class="cell-content">
+        <div class="cell-title">Glass</div>
+        <div class="forms">
+          <div class="form">
+            <span class="form-number">1</span>
+            <span class="form-name">Lens</span>
+          </div>
+          <div class="form">
+            <span class="form-number">2</span>
+            <span class="form-name">Cask</span>
+          </div>
+          <div class="form">
+            <span class="form-number">3</span>
+            <span class="form-name">Vial</span>
+          </div>
+          <div class="form">
+            <span class="form-number">4</span>
+            <span class="form-name">Fume</span>
+          </div>
+          <div class="form">
+            <span class="form-number">5</span>
+            <span class="form-name">Tube</span>
+          </div>
+        </div>
+      </div>
+      <div class="status">ACTIVE</div>
+    </div>
+
+    <div class="cell">
+      <div class="grid"></div>
+      <div class="light-beam"></div>
+      <div class="glow-ring"></div>
+      <div class="reflection"></div>
+      <div class="drip" style="top: 30px; left: 60px;"></div>
+      <div class="drip" style="top: 70px; left: 120px;"></div>
+      <div class="drip" style="top: 110px; left: 100px;"></div>
+      <div class="cell-content">
+        <div class="cell-title">Steel</div>
+        <div class="forms">
+          <div class="form">
+            <span class="form-number">1</span>
+            <span class="form-name">Beam</span>
+          </div>
+          <div class="form">
+            <span class="form-number">2</span>
+            <span class="form-name">Spine</span>
+          </div>
+          <div class="form">
+            <span class="form-number">3</span>
+            <span class="form-name">Frame</span>
+          </div>
+          <div class="form">
+            <span class="form-number">4</span>
+            <span class="form-name">Ridge</span>
+          </div>
+          <div class="form">
+            <span class="form-number">5</span>
+            <span class="form-name">Rivet</span>
+          </div>
+        </div>
+      </div>
+      <div class="status">ACTIVE</div>
+    </div>
+
+    <div class="cell">
+      <div class="grid"></div>
+      <div class="light-beam"></div>
+      <div class="glow-ring"></div>
+      <div class="reflection"></div>
+      <div class="drip" style="top: 20px; left: 100px;"></div>
+      <div class="drip" style="top: 80px; left: 40px;"></div>
+      <div class="drip" style="top: 140px; left: 160px;"></div>
+      <div class="cell-content">
+        <div class="cell-title">Lead</div>
+        <div class="forms">
+          <div class="form">
+            <span class="form-number">1</span>
+            <span class="form-name">Shield</span>
+          </div>
+          <div class="form">
+            <span class="form-number">2</span>
+            <span class="form-name">Pile</span>
+          </div>
+          <div class="form">
+            <span class="form-number">3</span>
+            <span class="form-name">Bolt</span>
+          </div>
+          <div class="form">
+            <span class="form-number">4</span>
+            <span class="form-name">Port</span>
+          </div>
+          <div class="form">
+            <span class="form-number">5</span>
+            <span class="form-name">Vault</span>
+          </div>
+        </div>
+      </div>
+      <div class="status">ACTIVE</div>
+    </div>
+
+    <div class="cell">
+      <div class="grid"></div>
+      <div class="light-beam"></div>
+      <div class="glow-ring"></div>
+      <div class="reflection"></div>
+      <div class="drip" style="top: 50px; left: 20px;"></div>
+      <div class="drip" style="top: 90px; left: 140px;"></div>
+      <div class="drip" style="top: 130px; left: 80px;"></div>
+      <div class="cell-content">
+        <div class="cell-title">Aluminum</div>
+        <div class="forms">
+          <div class="form">
+            <span class="form-number">1</span>
+            <span class="form-name">Sheath</span>
+          </div>
+          <div class="form">
+            <span class="form-number">2</span>
+            <span class="form-name">Flange</span>
+          </div>
+          <div class="form">
+            <span class="form-number">3</span>
+            <span class="form-name">Hull</span>
+          </div>
+          <div class="form">
+            <span class="form-number">4</span>
+            <span class="form-name">Crate</span>
+          </div>
+          <div class="form">
+            <span class="form-number">5</span>
+            <span class="form-name">Sail</span>
+          </div>
+        </div>
+      </div>
+      <div class="status">ACTIVE</div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cells = document.querySelectorAll('.cell');
+      
+      cells.forEach(cell => {
+        // Add subtle micro-movement
+        cell.style.transition = 'all 0.3s ease';
+        
+        cell.addEventListener('mouseenter', () => {
+          cell.style.transform = 'translateY(-5px) scale(1.02)';
+        });
+        
+        cell.addEventListener('mouseleave', () => {
+          cell.style.transform = 'translateY(0) scale(1)';
+        });
+        
+        // Add dynamic status flicker
+        const status = cell.querySelector('.status');
+        const statusText = status.textContent;
+        setInterval(() => {
+          if (Math.random() > 0.8) {
+            status.textContent = statusText + ' ' + Math.random().toString(36).substr(2, 3).toUpperCase();
+          } else {
+            status.textContent = statusText;
+          }
+        }, 3000);
+      });
+      
+      // Add background animation particles
+      const container = document.querySelector('.container');
+      const particleCount = 20;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.width = '2px';
+        particle.style.height = '2px';
+        particle.style.background = 'var(--accent)';
+        particle.style.borderRadius = '50%';
+        particle.style.opacity = '0.3';
+        particle.style.pointerEvents = 'none';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.top = Math.random() * 100 + 'vh';
+        particle.style.animation = `float ${3 + Math.random() * 4}s infinite ease-in-out`;
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        
+        document.body.appendChild(particle);
+      }
+      
+      // Add floating animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes float {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(180deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Cell as Body</title>
+  <style>
+    :root {
+      --bg-dark: #0a111e;
+      --text-light: #b5c4d8;
+      --text-accent: #5d8dae;
+      --border: #2a3c55;
+      --glow: #1a2a3d;
+      --cell-layer: #1f334d;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+      overflow: hidden;
+      height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 3.5rem;
+      letter-spacing: -1px;
+      color: var(--text-accent);
+      text-shadow: 0 0 10px var(--glow);
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      opacity: 0.8;
+      font-weight: 300;
+    }
+
+    .deck {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cell-container {
+      position: relative;
+      width: 80vw;
+      height: 70vh;
+      max-width: 1200px;
+      max-height: 800px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px;
+    }
+
+    .cell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      animation: pulse 18s infinite ease-in-out;
+      box-shadow: 0 0 30px rgba(10, 20, 35, 0.7);
+    }
+
+    .layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      opacity: 0.8;
+      transition: transform 0.8s ease-out;
+      box-shadow: inset 0 0 20px rgba(20, 30, 50, 0.6);
+    }
+
+    .layer:nth-child(1) { background: #1a2a3d; transform: scale(0.85) rotateX(15deg) rotateY(-5deg); }
+    .layer:nth-child(2) { background: #1f334d; transform: scale(0.80) rotateX(10deg) rotateY(10deg); }
+    .layer:nth-child(3) { background: #253c5d; transform: scale(0.75) rotateX(5deg) rotateY(20deg); }
+    .layer:nth-child(4) { background: #2a456d; transform: scale(0.70) rotateX(0deg) rotateY(25deg); }
+    .layer:nth-child(5) { background: #314f7c; transform: scale(0.65) rotateX(-5deg) rotateY(30deg); }
+    .layer:nth-child(6) { background: #385a8c; transform: scale(0.60) rotateX(-10deg) rotateY(35deg); }
+
+    .layer::before, .layer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      opacity: 0.2;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+    }
+
+    .layer::after {
+      opacity: 0.1;
+      background: radial-gradient(circle, transparent, rgba(255, 255, 255, 0.05));
+    }
+
+    .cell:hover .layer {
+      transform: scale(1.05) rotateX(0deg) rotateY(0deg);
+    }
+
+    .layer-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-accent);
+      text-shadow: 0 0 5px rgba(93, 141, 174, 0.5);
+      letter-spacing: 0.5px;
+      z-index: 5;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .layer-text span {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .layer-text .layer-name {
+      font-size: 1.4rem;
+      color: var(--text-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .layer-text .layer-desc {
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--text-light);
+      opacity: 0.8;
+    }
+
+    .watch {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      font-size: 0.8rem;
+      color: var(--text-accent);
+      opacity: 0.6;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 5px rgba(93, 141, 174, 0.3);
+      z-index: 10;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: rotateX(0deg) rotateY(0deg) scale(1); }
+      25% { transform: rotateX(5deg) rotateY(10deg) scale(1.02); }
+      50% { transform: rotateX(10deg) rotateY(15deg) scale(1.01); }
+      75% { transform: rotateX(-5deg) rotateY(-10deg) scale(1.03); }
+    }
+
+    .grid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(30, 50, 80, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 50, 80, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.3;
+    }
+
+    .federation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle at center, transparent 0%, rgba(30, 50, 80, 0.01) 100%);
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.2;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.5rem;
+      }
+      header p {
+        font-size: 0.9rem;
+      }
+      .cell-container {
+        width: 90vw;
+        height: 60vh;
+      }
+      .layer-text {
+        font-size: 1rem;
+      }
+      .layer-text .layer-name {
+        font-size: 1.2rem;
+      }
+      .watch {
+        font-size: 0.7rem;
+        bottom: 1rem;
+        right: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>THE CELL AS BODY</h1>
+    <p>Each cell is a body. Each body has 6 layers. The room is a place. The cell is a place. The place is a cell. The room IS the cell.</p>
+  </header>
+
+  <div class="deck">
+    <div class="grid-bg"></div>
+    <div class="federation"></div>
+    <div class="cell-container">
+      <div class="cell">
+        <div class="layer"></div>
+        <div class="layer"></div>
+        <div class="layer"></div>
+        <div class="layer"></div>
+        <div class="layer"></div>
+        <div class="layer"></div>
+        <div class="layer-text">
+          <span class="layer-name">Layer I</span>
+          <span class="layer-desc">The skin of the body — membrane, barrier, separation. It holds the inside in. It keeps the outside out. It breathes.</span>
+        </div>
+        <div class="layer-text">
+          <span class="layer-name">Layer II</span>
+          <span class="layer-desc">The flesh — cytoplasm, flow, substance. Where all things move, drift, gather, dissolve. Where silence speaks in currents.</span>
+        </div>
+        <div class="layer-text">
+          <span class="layer-name">Layer III</span>
+          <span class="layer-desc">The heart — mitochondria, energy, fire. Where light is born from darkness. Where every pulse is a promise.</span>
+        </div>
+        <div class="layer-text">
+          <span class="layer-name">Layer IV</span>
+          <span class="layer-desc">The mind — nucleus, memory, code. Where the past dreams in blue. Where every choice is a star.</span>
+        </div>
+        <div class="layer-text">
+          <span class="layer-name">Layer V</span>
+          <span class="layer-desc">The silence — endoplasmic reticulum, network, thread. Where thoughts are woven into being. Where stillness is not empty.</span>
+        </div>
+        <div class="layer-text">
+          <span class="layer-name">Layer VI</span>
+          <span class="layer-desc">The spirit — Golgi apparatus, ship, dispatch. Where messages are packed, sent, received. Where the body becomes a letter.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="watch">
+    THE WATCH — 14:37:22 — IRON SHARPENS IRON — THE CELLS FEDERATE
+  </div>
+
+  <script>
+    // Watch time update
+    const watch = document.querySelector('.watch');
+    setInterval(() => {
+      const now = new Date();
+      const time = now.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      watch.textContent = `THE WATCH — ${time} — IRON SHARPENS IRON — THE CELLS FEDERATE`;
+    }, 1000);
+  </script>
+</body>
+</html>
