@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Cell as Fire</title>
+  <style>
+    :root {
+      --bg: #0a0f18;
+      --text: #c4d3e5;
+      --fire: #f57c00;
+      --fire-glow: #ff9f00;
+      --light: #ffe699;
+      --accent: #0055aa;
+      --border: #2a3a53;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      overflow: hidden;
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    .header {
+      font-size: 3.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--fire-glow);
+      text-shadow: 0 0 12px var(--fire-glow);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--fire);
+      margin-top: 0.7rem;
+    }
+
+    .subheader {
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      color: var(--light);
+      font-style: italic;
+    }
+
+    .fire-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      height: calc(100vh - 10rem);
+      padding: 1rem;
+      align-content: start;
+    }
+
+    .cell {
+      position: relative;
+      height: 200px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #151f30, #0a1220);
+      box-shadow: 0 0 15px rgba(245, 124, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .cell:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(255, 159, 0, 0.4);
+    }
+
+    .cell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, transparent 30%, rgba(255, 159, 0, 0.1) 70%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .fire {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 140px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M50,0 L70,40 L65,80 L50,120 L35,80 L30,40 Z" fill="url(%23fireGradient)" opacity="0.9"/><path d="M50,0 L65,30 L60,60 L50,90 L40,60 L35,30 Z" fill="url(%23fireGradient)" opacity="0.7"/><path d="M50,0 L55,15 L50,35 L50,60 L45,35 L50,15 Z" fill="url(%23fireGradient)" opacity="0.6"/></svg>');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 2;
+      animation: flicker 1.5s ease-in-out infinite alternate;
+    }
+
+    .fire::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle, var(--light) 0%, transparent 70%);
+      opacity: 0.2;
+      z-index: 3;
+    }
+
+    .cell-content {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.85rem;
+      text-align: center;
+      z-index: 4;
+    }
+
+    .cell-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--fire-glow);
+      text-shadow: 0 0 4px rgba(255, 159, 0, 0.6);
+    }
+
+    .cell-desc {
+      color: var(--light);
+      font-size: 0.7rem;
+      line-height: 1.4;
+      opacity: 0.8;
+    }
+
+    .footnote {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: var(--text);
+      opacity: 0.7;
+      font-style: italic;
+      letter-spacing: 0.03rem;
+    }
+
+    .glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, transparent 30%, rgba(255, 159, 0, 0.05) 60%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes flicker {
+      0%, 100% {
+        opacity: 0.7;
+        transform: translateX(-50%) scale(1);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translateX(-50%) scale(1.05);
+      }
+    }
+
+    .pulse {
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 0.6;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        font-size: 2.4rem;
+      }
+
+      .fire-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .cell {
+        height: 160px;
+      }
+
+      .fire {
+        width: 100px;
+        height: 120px;
+      }
+
+      .cell-content {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">The Cell as Fire</div>
+  <div class="subheader">Each cell is a fire. Each fire warms. Each fire is tended. The cell is the place where the heat is felt.</div>
+
+  <div class="fire-container">
+    <div class="cell">
+      <div class="glow"></div>
+      <div class="fire"></div>
+      <div class="cell-content">
+        <div class="cell-title">Sustenance</div>
+        <div class="cell-desc">The first flame kindled in the dark. A pulse in the void. The breath before the word.</div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="glow"></div>
+      <div class="fire"></div>
+      <div class="cell-content">
+        <div class="cell-title">Memory</div>
+        <div class="cell-desc">A warmth that remembers. Not the past, but the feeling of it. The echo of a name spoken.</div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="glow"></div>
+      <div class="fire"></div>
+      <div class="cell-content">
+        <div class="cell-title">Connection</div>
+        <div class="cell-desc">Not the hand, but the grasp. Not the word, but the hearing. The fire that burns not for itself.</div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="glow"></div>
+      <div class="fire"></div>
+      <div class="cell-content">
+        <div class="cell-title">Resistance</div>
+        <div class="cell-desc">The flame that refuses to be extinguished. The spark that answers cold with heat.</div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="glow"></div>
+      <div class="fire"></div>
+      <div class="cell-content">
+        <div class="cell-title">Endurance</div>
+        <div class="cell-desc">The slow burn. The quiet persistence. The fire that outlasts the storm.</div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="glow"></div>
+      <div class="fire"></div>
+      <div class="cell-content">
+        <div class="cell-title">Growth</div>
+        <div class="cell-desc">The flame that spreads, not by force, but by invitation. The warmth that draws nearer.</div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="glow"></div>
+      <div class="fire"></div>
+      <div class="cell-content">
+        <div class="cell-title">Transformation</div>
+        <div class="cell-desc">The old fire consumes. The new kindles. Not death—renewal in the crucible.</div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="glow"></div>
+      <div class="fire"></div>
+      <div class="cell-content">
+        <div class="cell-title">Stillness</div>
+        <div class="cell-desc">The embers. Not cold, but resting. The fire that waits for the next breath.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    The room is a place. The cell is a place. The place is a cell. The room IS the cell. Iron sharpens iron. The cells federate.
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cells = document.querySelectorAll('.cell');
+      const fireElements = document.querySelectorAll('.fire');
+      
+      // Animate fire flicker with slight variation
+      fireElements.forEach(fire => {
+        const delay = Math.random() * 2;
+        fire.style.animationDelay = `${delay}s`;
+      });
+
+      // Add pulse effect to random cells
+      const pulseCells = Array.from(cells).sort(() => 0.5 - Math.random()).slice(0, 3);
+      pulseCells.forEach(cell => {
+        cell.classList.add('pulse');
+      });
+
+      // Add subtle hover glow on cell
+      cells.forEach(cell => {
+        cell.addEventListener('mouseenter', () => {
+          cell.style.boxShadow = '0 0 40px rgba(255, 159, 0, 0.6)';
+        });
+        
+        cell.addEventListener('mouseleave', () => {
+          cell.style.boxShadow = '0 0 15px rgba(245, 124, 0, 0.2)';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
