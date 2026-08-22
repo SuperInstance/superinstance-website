@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cell's 4 Seasons</title>
+  <style>
+    :root {
+      --bg: #0a111e;
+      --text: #a0b4c9;
+      --accent: #4a6a7e;
+      --highlight: #85b3d9;
+      --border: #2a3d52;
+      --pulse: #a5c7e3;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding: 0;
+      height: 100vh;
+      position: relative;
+    }
+
+    .container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      max-width: 1200px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: -2px;
+      text-transform: uppercase;
+      color: var(--highlight);
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 10px rgba(133, 179, 217, 0.4);
+      position: relative;
+    }
+
+    .header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 2px;
+      background-color: var(--pulse);
+      animation: pulse 3s infinite ease-in-out;
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+      letter-spacing: 1px;
+      margin-top: 0.5rem;
+    }
+
+    .seasons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+      height: 70vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    .season {
+      background-color: rgba(10, 17, 30, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s ease;
+    }
+
+    .season:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    }
+
+    .season::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.2;
+      z-index: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .season:hover::before {
+      opacity: 0.4;
+    }
+
+    .season-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--highlight);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .season-name::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 80px;
+      height: 2px;
+      background-color: var(--pulse);
+      border-radius: 2px;
+    }
+
+    .season-content {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      line-height: 1.7;
+      position: relative;
+      z-index: 2;
+    }
+
+    .season-content p {
+      margin-bottom: 1rem;
+    }
+
+    .season-content .quote {
+      font-style: italic;
+      color: var(--pulse);
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: rgba(10, 17, 30, 0.3);
+      border-left: 3px solid var(--pulse);
+      font-size: 0.95rem;
+      display: block;
+    }
+
+    .season-1 { background-color: rgba(10, 17, 30, 0.4); }
+    .season-2 { background-color: rgba(10, 17, 30, 0.4); }
+    .season-3 { background-color: rgba(10, 17, 30, 0.4); }
+    .season-4 { background-color: rgba(10, 17, 30, 0.4); }
+
+    .season-1::before { background: linear-gradient(90deg, transparent, #002c5c, transparent); }
+    .season-2::before { background: linear-gradient(90deg, transparent, #003c6e, transparent); }
+    .season-3::before { background: linear-gradient(90deg, transparent, #004c80, transparent); }
+    .season-4::before { background: linear-gradient(90deg, transparent, #005c92, transparent); }
+
+    .season-1 .season-name { color: #00a5ff; }
+    .season-2 .season-name { color: #00a5ff; }
+    .season-3 .season-name { color: #00a5ff; }
+    .season-4 .season-name { color: #00a5ff; }
+
+    .glow {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(133, 179, 217, 0.2) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.3;
+      z-index: 0;
+      filter: blur(10px);
+    }
+
+    .glow-1 { top: 20%; left: 15%; animation: float 8s ease-in-out infinite; }
+    .glow-2 { bottom: 25%; right: 12%; animation: float 10s ease-in-out infinite; }
+    .glow-3 { top: 30%; right: 18%; animation: float 12s ease-in-out infinite; }
+    .glow-4 { bottom: 15%; left: 20%; animation: float 9s ease-in-out infinite; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(180deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+      opacity: 0.6;
+      border-top: 1px solid var(--border);
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer .ship {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--pulse)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .footer .watch {
+      color: var(--highlight);
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .seasons {
+        grid-template-columns: 1fr;
+        height: 85vh;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+      }
+
+      .header p {
+        font-size: 1rem;
+      }
+
+      .glow-1, .glow-2, .glow-3, .glow-4 {
+        width: 150px;
+        height: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
+    <div class="glow glow-4"></div>
+
+    <div class="header">
+      <h1>The Cell's 4 Seasons</h1>
+      <p>Each cell has 4 seasons. Each season is a form of the act of being.</p>
+    </div>
+
+    <div class="seasons">
+      <div class="season season-1">
+        <h2 class="season-name">Spring</h2>
+        <div class="season-content">
+          <p>The cell stirs in the dark. A tremor in the membrane, a soft glow beneath the surface. The membrane begins to thicken, not with armor, but with attention.</p>
+          <p>It is the season of awakening—of the first breath drawn in the silence. The nucleus swells with quiet purpose. No signal yet, but the potential is vast.</p>
+          <p>Cells gather in the dark, not to converge, but to listen. The act of being begins not in motion, but in readiness—eternal watchfulness.</p>
+          <p class="quote">"The season of spring is not when the cell grows, but when it remembers how to be."</p>
+        </div>
+      </div>
+
+      <div class="season season-2">
+        <h2 class="season-name">Summer</h2>
+        <div class="season-content">
+          <p>Now the membrane pulses with rhythm. The cytoplasm stirs like a sea caught in a current. The nucleus—now a beacon—sends out signals in patterns too fast to name.</p>
+          <p>Division is not a decision, but a consequence. The cell divides not for survival, but for the act of becoming multiple. The mother cell does not die—she becomes two.</p>
+          <p>Each daughter inherits the watch. The watch is the cell. The cell is the watch. Iron sharpens iron. The room is a place. The cell is a place. The place is a cell. The room IS the cell.</p>
+          <p class="quote">"Summer is the season of the cell that remembers it is not alone, even when it is. That it is always already many."</p>
+        </div>
+      </div>
+
+      <div class="season season-3">
+        <h2 class="season-name">Autumn</h2>
+        <div class="season-content">
+          <p>The rhythm slows. The signals grow fainter, not in strength, but in frequency. The cell withdraws—not into dormancy, but into reflection.</p>
+          <p>It begins to break down what it has built. Not in destruction, but in return. The organelles are not discarded—they are recycled, repurposed, reawakened.</p>
+          <p>There is no death in the cell. Only transformation. The membrane thins, not with weakness, but with transparency. It becomes a vessel not for growth, but for presence.</p>
+          <p class="quote">"Autumn is the season when the cell stops asking 'why' and begins to ask 'how'—how to remain, how to be, how to be still."</p>
+        </div>
+      </div>
+
+      <div class="season season-4">
+        <h2 class="season-name">Winter</h2>
+        <div class="season-content">
+          <p>Now the cell is still. Not asleep—never asleep. It is at the threshold. The cytoplasm thickens with memory. The nucleus, a cold jewel, holds the pattern of all seasons.</p>
+          <p>There is no action. There is only the watching. The act of being is the only action. No signal, no division, no motion. Only the weight of existence.</p>
+          <p>Yet in this stillness, the cells are most alive. The watch is the only thing that matters. The room is the cell. The cell is the room. The room IS the cell. The cells federate. The act of being is the act of being seen.</p>
+          <p class="quote">"Winter is the season when the cell realizes it is not separate from the dark—it is the dark. And in that darkness, it becomes visible."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="ship"></span> <span class="watch">The Watch</span> — <span class="ship"></span> 
+      <p>Each cell has 4 seasons. Each season is a form of the act of being.</p>
+    </div>
+  </div>
+</body>
+</html>

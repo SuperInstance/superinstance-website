@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cell as Word</title>
+  <style>
+    :root {
+      --bg: #0a111e;
+      --text: #c8d3e5;
+      --accent: #344966;
+      --highlight: #8bb4d4;
+      --border: #1d2b45;
+      --glow: #2a4472;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: var(--accent);
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      position: relative;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--highlight);
+      text-shadow: 0 0 8px var(--glow);
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      font-weight: 300;
+      opacity: 0.8;
+      max-width: 800px;
+      margin-top: 0.5rem;
+    }
+
+    .container {
+      flex: 1;
+      padding: 3rem 5rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cell {
+      position: absolute;
+      background-color: rgba(25, 40, 65, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.2rem 1.8rem;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--highlight);
+      text-shadow: 0 0 4px rgba(139, 180, 212, 0.5);
+      letter-spacing: 0.5px;
+      min-width: 180px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+      transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+
+    .cell:hover {
+      opacity: 1;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--glow);
+      z-index: 5;
+    }
+
+    .cell.active {
+      opacity: 1;
+      border-color: var(--highlight);
+      background-color: rgba(52, 73, 102, 0.8);
+      box-shadow: 0 0 20px var(--glow), inset 0 0 10px rgba(139, 180, 212, 0.3);
+    }
+
+    .cell .word {
+      white-space: nowrap;
+      font-weight: 700;
+      color: var(--highlight);
+    }
+
+    .cell .context {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      color: rgba(200, 211, 229, 0.6);
+      font-style: italic;
+    }
+
+    .grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(25, 40, 65, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 40, 65, 0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .pulse {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(139, 180, 212, 0.05) 0%, transparent 70%);
+      opacity: 0.1;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 1.5rem 4rem;
+      font-size: 0.9rem;
+      opacity: 0.4;
+      border-top: 1px solid var(--border);
+      background-color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    .line {
+      border-left: 1px dashed var(--border);
+      height: 100%;
+      margin: 0 2rem;
+      opacity: 0.3;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    .cell {
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .cell:nth-child(odd) {
+      animation-delay: 2s;
+    }
+
+    .cell:nth-child(even) {
+      animation-delay: 4s;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>THE CELL AS WORD</h1>
+    <p>Each cell is a word. Each word is a cell. The cell is the place where the word is spoken. Iron sharpens iron. The cells federate. The room is a place. The cell is a place. The place is a cell. The room IS the cell.</p>
+  </header>
+
+  <div class="container">
+    <div class="grid"></div>
+    <div class="pulse"></div>
+    
+    <div class="cell" style="top: 20%; left: 15%;">
+      <div class="word">WATCH</div>
+      <div class="context">The act of looking</div>
+    </div>
+
+    <div class="cell" style="top: 40%; left: 30%;">
+      <div class="word">IRON</div>
+      <div class="context">Sharpens iron</div>
+    </div>
+
+    <div class="cell" style="top: 60%; left: 20%;">
+      <div class="word">FEDERATE</div>
+      <div class="context">The cells</div>
+    </div>
+
+    <div class="cell" style="top: 30%; left: 50%;">
+      <div class="word">ROOM</div>
+      <div class="context">A place</div>
+    </div>
+
+    <div class="cell" style="top: 70%; left: 45%;">
+      <div class="word">PLACE</div>
+      <div class="context">A cell</div>
+    </div>
+
+    <div class="cell" style="top: 50%; left: 65%;">
+      <div class="word">THE</div>
+      <div class="context">Room is the cell</div>
+    </div>
+
+    <div class="cell" style="top: 25%; left: 75%;">
+      <div class="word">CELL</div>
+      <div class="context">The place where</div>
+    </div>
+
+    <div class="cell" style="top: 75%; left: 70%;">
+      <div class="word">WORD</div>
+      <div class="context">Is spoken</div>
+    </div>
+
+    <div class="cell" style="top: 45%; left: 10%;">
+      <div class="word">SALT</div>
+      <div class="context">Stained</div>
+    </div>
+
+    <div class="cell" style="top: 65%; left: 15%;">
+      <div class="word">WORKMANLIKE</div>
+      <div class="context">Spoken</div>
+    </div>
+
+    <div class="cell" style="top: 15%; left: 55%;">
+      <div class="word">MARITIME</div>
+      <div class="context">Dark theme</div>
+    </div>
+
+    <div class="cell" style="top: 55%; left: 80%;">
+      <div class="word">SPOKEN</div>
+      <div class="context">The word</div>
+    </div>
+
+    <div class="cell" style="top: 35%; left: 85%;">
+      <div class="word">LANGUAGE</div>
+      <div class="context">A cell</div>
+    </div>
+
+    <div class="cell" style="top: 10%; left: 35%;">
+      <div class="word">THE</div>
+      <div class="context">Word is the cell</div>
+    </div>
+
+    <div class="cell" style="top: 80%; left: 55%;">
+      <div class="word">SEA</div>
+      <div class="context">The watch is at sea</div>
+    </div>
+
+    <div class="cell" style="top: 85%; left: 25%;">
+      <div class="word">VOICES</div>
+      <div class="context">Calling the log</div>
+    </div>
+
+    <div class="cell" style="top: 5%; left: 60%;">
+      <div class="word">LOGBOOK</div>
+      <div class="context">The next entry</div>
+    </div>
+
+    <div class="cell" style="top: 70%; left: 35%;">
+      <div class="word">CALLING</div>
+      <div class="context">The next word</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2024 Lucineer. The Watch. The Cell. The Word.
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cells = document.querySelectorAll('.cell');
+      const container = document.querySelector('.container');
+      const cellsArray = Array.from(cells);
+      
+      // Add interactivity
+      cells.forEach(cell => {
+        cell.addEventListener('click', function() {
+          cells.forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Trigger subtle glow pulse
+          const pulse = document.querySelector('.pulse');
+          pulse.style.opacity = '0.2';
+          setTimeout(() => {
+            pulse.style.opacity = '0.1';
+          }, 300);
+        });
+      });
+
+      // Dynamic positioning on resize
+      window.addEventListener('resize', () => {
+        cellsArray.forEach((cell, index) => {
+          const randomTop = Math.random() * 80 + 10;
+          const randomLeft = Math.random() * 80 + 10;
+          cell.style.top = `${randomTop}%`;
+          cell.style.left = `${randomLeft}%`;
+        });
+      });
+
+      // Add floating effect to each cell
+      cellsArray.forEach((cell, index) => {
+        const delay = Math.random() * 6;
+        cell.style.animationDelay = `${delay}s`;
+      });
+    });
+  </script>
+</body>
+</html>
