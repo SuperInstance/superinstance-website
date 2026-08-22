@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cell as Ocean</title>
+  <style>
+    :root {
+      --bg: #0a111e;
+      --text: #c8d4e5;
+      --accent: #2d4d7a;
+      --deep: #060c1c;
+      --mid: #122442;
+      --surface: #1e3c6a;
+      --light: #3d5c8d;
+      --glow: #64a1d3;
+      --pulse: #81b9e7;
+      --edge: #003366;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      height: 100vh;
+      width: 100%;
+      position: relative;
+      line-height: 1.6;
+      letter-spacing: 0.8px;
+    }
+
+    .ocean {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .header {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: var(--glow);
+      text-shadow: 0 0 8px var(--pulse), 0 0 16px var(--pulse);
+      z-index: 10;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--edge);
+      background: rgba(10, 17, 30, 0.6);
+    }
+
+    .subheader {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      font-size: 0.9rem;
+      color: var(--light);
+      text-shadow: 0 0 4px rgba(55, 92, 141, 0.6);
+      z-index: 9;
+      padding: 5px 0;
+    }
+
+    .layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0.8;
+      transition: opacity 2s ease-in-out;
+    }
+
+    .cell {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+      z-index: 1;
+      box-shadow: 0 0 12px inset var(--edge);
+      transition: transform 2s cubic-bezier(0.165, 0.84, 0.44, 1);
+      clip-path: circle(50% at 50% 50%);
+    }
+
+    .cell::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0.3;
+      z-index: -1;
+      animation: pulse 8s infinite alternate;
+    }
+
+    .cell::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0.1;
+      z-index: -2;
+      box-shadow: 0 0 30px var(--glow);
+    }
+
+    .depth-1 { background-color: #003366; }
+    .depth-2 { background-color: #004c8c; }
+    .depth-3 { background-color: #0066b3; }
+    .depth-4 { background-color: #0080d9; }
+    .depth-5 { background-color: #33a6ff; }
+    .depth-6 { background-color: #66c2ff; }
+    .depth-7 { background-color: #99d9ff; }
+
+    .label {
+      font-size: 0.6rem;
+      font-weight: normal;
+      letter-spacing: 1px;
+      color: var(--text);
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .flow {
+      font-size: 0.5rem;
+      color: var(--pulse);
+      text-shadow: 0 0 3px var(--pulse);
+      letter-spacing: 1px;
+      margin-top: 4px;
+      font-weight: bold;
+    }
+
+    .watch {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 0.7rem;
+      color: var(--light);
+      text-shadow: 0 0 4px rgba(45, 77, 118, 0.7);
+      letter-spacing: 0.5px;
+      z-index: 10;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--pulse);
+      margin-bottom: 10px;
+      text-shadow: 0 0 8px var(--pulse);
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--light);
+      margin-bottom: 20px;
+      text-shadow: 0 0 4px rgba(55, 92, 141, 0.5);
+      letter-spacing: 1px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.6rem;
+      color: var(--mid);
+      letter-spacing: 1px;
+      text-shadow: 0 0 3px rgba(20, 35, 66, 0.5);
+      opacity: 0.7;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.1; transform: scale(1); }
+      100% { opacity: 0.4; transform: scale(1.05); }
+    }
+
+    .cell-anim {
+      animation: rise 12s ease-out infinite;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+      }
+    }
+
+    .icon {
+      font-size: 1.2rem;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="ocean">
+    <div class="header">THE CELL AS OCEAN</div>
+    <div class="subheader">Watch: 1000-1500 | Iron sharpens iron | The cells federate</div>
+
+    <div class="layer" style="top: 10%; z-index: 1;">
+      <div class="cell depth-7" id="cell-7">
+        <div class="label">CELL 7</div>
+        <div class="flow">BUDGET: 7.8</div>
+      </div>
+    </div>
+
+    <div class="layer" style="top: 20%; z-index: 2;">
+      <div class="cell depth-6" id="cell-6">
+        <div class="label">CELL 6</div>
+        <div class="flow">BUDGET: 6.2</div>
+      </div>
+    </div>
+
+    <div class="layer" style="top: 35%; z-index: 3;">
+      <div class="cell depth-5" id="cell-5">
+        <div class="label">CELL 5</div>
+        <div class="flow">BUDGET: 5.1</div>
+      </div>
+    </div>
+
+    <div class="layer" style="top: 50%; z-index: 4;">
+      <div class="cell depth-4" id="cell-4">
+        <div class="label">CELL 4</div>
+        <div class="flow">BUDGET: 4.3</div>
+      </div>
+    </div>
+
+    <div class="layer" style="top: 65%; z-index: 5;">
+      <div class="cell depth-3" id="cell-3">
+        <div class="label">CELL 3</div>
+        <div class="flow">BUDGET: 3.7</div>
+      </div>
+    </div>
+
+    <div class="layer" style="top: 80%; z-index: 6;">
+      <div class="cell depth-2" id="cell-2">
+        <div class="label">CELL 2</div>
+        <div class="flow">BUDGET: 2.5</div>
+      </div>
+    </div>
+
+    <div class="layer" style="top: 90%; z-index: 7;">
+      <div class="cell depth-1" id="cell-1">
+        <div class="label">CELL 1</div>
+        <div class="flow">BUDGET: 1.0</div>
+      </div>
+    </div>
+
+    <div class="title">The Room is a Place. The Cell is a Place. The Place is a Cell.</div>
+    <div class="subtitle">The room IS the cell. Watch the swell.</div>
+
+    <div class="watch">
+      <span class="icon">⚓</span> Watch: 1357 | Depth: 7 | Flow: 7.8
+    </div>
+
+    <div class="footer">
+      Lucineer canon | Maritime tone | Salt-stained | Workmanlike | Spare
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cells = document.querySelectorAll('.cell');
+      const watch = document.querySelector('.watch');
+      
+      // Animate cells rising
+      cells.forEach((cell, index) => {
+        cell.style.animationDelay = `${index * 0.5}s`;
+        cell.classList.add('cell-anim');
+        
+        // Update flow values randomly every few seconds
+        setInterval(() => {
+          const newFlow = (Math.random() * 3 + 1).toFixed(1);
+          const flowElement = cell.querySelector('.flow');
+          flowElement.textContent = `BUDGET: ${newFlow}`;
+        }, 8000 + (index * 1500));
+      });
+      
+      // Update watch time
+      setInterval(() => {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const time = `${hours}${minutes}`;
+        
+        // Simulate watch reading
+        const depth = Math.floor(Math.random() * 7) + 1;
+        const budget = (Math.random() * 3 + 4).toFixed(1);
+        
+        watch.innerHTML = `<span class="icon">⚓</span> Watch: ${time} | Depth: ${depth} | Flow: ${budget}`;
+      }, 1000);
+      
+      // Add subtle ripple effect to the ocean surface
+      const ocean = document.querySelector('.ocean');
+      ocean.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        // Create ripple effect on ocean layer
+        const ripple = document.createElement('div');
+        ripple.style.position = 'absolute';
+        ripple.style.width = '200px';
+        ripple.style.height = '200px';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(100, 161, 211, 0.1)';
+        ripple.style.transform = 'translate(-50%, -50%)';
+        ripple.style.left = `${x * 100}%`;
+        ripple.style.top = `${y * 100}%`;
+        ripple.style.pointerEvents = 'none';
+        ripple.style.boxShadow = '0 0 20px rgba(100, 161, 211, 0.2)';
+        ripple.style.opacity = '0.3';
+        ripple.style.zIndex = '0';
+        ripple.style.transition = 'opacity 3s ease-out';
+        
+        ocean.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 3000);
+      });
+    });
+  </script>
+</body>
+</html>
