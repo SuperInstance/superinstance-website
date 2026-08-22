@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Cell as Library</title>
+  <style>
+    :root {
+      --bg: #0a192f;
+      --text: #e0e0e0;
+      --accent: #0077b6;
+      --highlight: #00b4d8;
+      --border: #1e3a5f;
+      --shelf: #2a476e;
+      --book: #1e3a5f;
+      --shadow: rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 2.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--highlight);
+      text-shadow: 0 0 10px var(--highlight);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      position: relative;
+    }
+
+    .header::before {
+      content: "||";
+      position: absolute;
+      left: -1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .header::after {
+      content: "||";
+      position: absolute;
+      right: -1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .library {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 1rem 0;
+      margin: 0;
+      gap: 1.5rem;
+    }
+
+    .shelf {
+      display: flex;
+      flex-direction: row;
+      gap: 0.8rem;
+      align-items: flex-end;
+      height: 120px;
+      position: relative;
+      background-color: var(--shelf);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 0;
+      box-shadow: 0 4px 8px var(--shadow);
+    }
+
+    .shelf::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .book {
+      width: 60px;
+      height: 100px;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: perspective(1000px) rotateX(10deg);
+      box-shadow: 0 6px 15px var(--shadow);
+      border-radius: 4px;
+      background-color: var(--book);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .book:hover {
+      transform: perspective(1000px) rotateX(0deg) scale(1.05);
+    }
+
+    .book::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .spine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--book);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 0;
+      transform: rotateY(90deg) translateZ(10px);
+      transform-origin: left center;
+      font-size: 0.65rem;
+      font-weight: bold;
+      text-align: center;
+      color: var(--text);
+      text-shadow: 0 0 3px rgba(0,0,0,0.8);
+      letter-spacing: 0.5px;
+      border-right: 1px solid var(--border);
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .spine .id {
+      font-size: 0.6rem;
+      margin-bottom: 0.2rem;
+      color: var(--accent);
+      letter-spacing: 0.8px;
+    }
+
+    .spine .vibe {
+      font-size: 0.5rem;
+      font-weight: normal;
+      text-transform: uppercase;
+      color: var(--highlight);
+      margin-bottom: 0.1rem;
+    }
+
+    .spine .budget {
+      font-size: 0.4rem;
+      font-weight: normal;
+      color: var(--text);
+    }
+
+    .book .page-count {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.4rem;
+      background: var(--border);
+      color: var(--text);
+      text-align: center;
+      z-index: 10;
+      opacity: 0.9;
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.5);
+    }
+
+    .book .page-count span {
+      font-weight: bold;
+      color: var(--highlight);
+    }
+
+    .book .page-count::before {
+      content: "●";
+      margin-right: 4px;
+      font-size: 0.5rem;
+      color: var(--highlight);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text);
+      opacity: 0.6;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        font-size: 1.8rem;
+      }
+      .shelf {
+        height: 80px;
+      }
+      .book {
+        width: 45px;
+        height: 75px;
+      }
+      .spine {
+        font-size: 0.5rem;
+      }
+      .page-count {
+        font-size: 0.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">The Cell as Library</div>
+  
+  <div class="library" id="library"></div>
+  
+  <div class="footer">
+    The room is a place. The cell is a place. The place is a cell. The room IS the cell. Iron sharpens iron. The cells federate.
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const library = document.getElementById('library');
+      const colors = [
+        '#0077b6', '#00b4d8', '#90e0ef', '#00b4d8', '#0077b6', 
+        '#0047AB', '#003366', '#006699', '#0099CC', '#003333',
+        '#008080', '#006633', '#008000', '#009966', '#00CC99'
+      ];
+      const vibes = [
+        'resonant', 'tuned', 'calm', 'fugue', 'harmonic', 
+        'static', 'fractured', 'echo', 'pulse', 'distant',
+        'fracture', 'lull', 'mist', 'hush', 'echo'
+      ];
+
+      // Generate 100 cells as books
+      for (let i = 0; i < 100; i++) {
+        const book = document.createElement('div');
+        book.className = 'book';
+        
+        // Random color and vibe for each book
+        const colorIndex = Math.floor(Math.random() * colors.length);
+        const vibeIndex = Math.floor(Math.random() * vibes.length);
+        const budget = Math.floor(Math.random() * 1000) + 100;
+        
+        // Apply color as background
+        book.style.backgroundColor = colors[colorIndex];
+        book.style.borderColor = colors[colorIndex];
+        
+        // Create spine
+        const spine = document.createElement('div');
+        spine.className = 'spine';
+        
+        const id = `CELL-${i.toString().padStart(3, '0')}`;
+        const vibe = vibes[vibeIndex];
+        const budgetText = budget.toLocaleString();
+        
+        spine.innerHTML = `
+          <div class="id">${id}</div>
+          <div class="vibe">${vibe}</div>
+          <div class="budget">${budgetText}</div>
+        `;
+        
+        // Add spine to book
+        book.appendChild(spine);
+        
+        // Add page count
+        const pageCount = document.createElement('div');
+        pageCount.className = 'page-count';
+        pageCount.innerHTML = `<span>${budgetText}</span>`;
+        book.appendChild(pageCount);
+        
+        // Add to library
+        library.appendChild(book);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,251 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fleet — all 37 Quilt repos at a glance</title>
-<style>
-:root{
-  --bg:#0a0a14;--panel:#14141f;--pe:#1a1a26;--b:#252535;--bs:#353548;
-  --t:#f0f0f5;--td:#a0a0b0;--tf:#6a6a7a;
-  --a1:#7c3aed;--a2:#3b82f6;--a3:#10b981;--a4:#f59e0b;--err:#ff6b6b;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;font-size:14px;overflow-x:hidden}
-.m{font-family:'JetBrains Mono','SF Mono',monospace}
-.wrap{max-width:1400px;margin:0 auto;padding:18px 22px}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-h1{font-size:1.4rem;font-weight:800}
-h1 .accent{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-h2{font-size:1rem;margin:14px 0 9px;color:var(--a3)}
-p{color:var(--td);margin-bottom:11px;font-size:.85rem}
-.nav{background:rgba(124,58,237,.05);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:14px;font-size:.78rem}
-.nav a{color:var(--a2);text-decoration:none;margin-right:11px}
-.nav a:hover{text-decoration:underline}
-.nav a.cur{color:var(--a3);font-weight:700}
-.coffee-top{background:linear-gradient(135deg,#FFDD00 0%,#fbbf24 100%);color:#422006;padding:6px 12px;border-radius:5px;font-weight:700;font-size:.74rem;text-decoration:none}
-.coffee-top:hover{filter:brightness(1.1);color:#422006}
-.intro{background:rgba(124,58,237,.08);border:1px solid var(--a1);border-radius:8px;padding:13px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
-.intro code{background:var(--bg);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;color:var(--a4)}
-.summary{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(124,58,237,.1) 100%);border:1px solid var(--a3);border-radius:8px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
-.summary .stat{text-align:center}
-.summary .v{font-size:1.6rem;font-weight:800;font-family:'JetBrains Mono',monospace}
-.summary .v.good{color:var(--a3)}
-.summary .v.warn{color:var(--a4)}
-.summary .v.err{color:var(--err)}
-.summary .l{font-size:.65rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
-.repos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:11px;margin-bottom:14px}
-.repo{background:var(--panel);border:1px solid var(--b);border-radius:9px;padding:13px;transition:.2s}
-.repo:hover{border-color:var(--a2);transform:translateY(-2px)}
-.repo .head{display:flex;align-items:center;gap:7px;margin-bottom:7px}
-.repo .icon{font-size:1.4rem}
-.repo .name{font-size:.95rem;font-weight:800;color:var(--a3);font-family:'JetBrains Mono',monospace}
-.repo .tier{font-size:.6rem;padding:2px 5px;border-radius:3px;background:var(--b);color:var(--td);text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-left:auto;letter-spacing:.04em}
-.repo .desc{font-size:.74rem;color:var(--td);margin-bottom:7px;line-height:1.4}
-.repo .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:9px}
-.repo .stat{text-align:center;background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:5px}
-.repo .stat .v{font-size:.85rem;font-weight:700;font-family:'JetBrains Mono',monospace}
-.repo .stat .v.tests{color:var(--a3)}
-.repo .stat .v.size{color:var(--a2)}
-.repo .stat .v.deps{color:var(--a4)}
-.repo .stat .l{font-size:.55rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;margin-top:1px}
-.repo .links{display:flex;gap:5px;font-size:.7rem}
-.repo .links a{color:var(--a2);text-decoration:none;padding:3px 7px;background:var(--pe);border:1px solid var(--b);border-radius:3px}
-.repo .links a:hover{border-color:var(--a2)}
-.filter{background:var(--panel);border:1px solid var(--b);border-radius:8px;padding:11px;margin-bottom:14px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
-.filter .lbl{color:var(--td);font-size:.74rem;font-weight:600;margin-right:5px}
-.filter .chip{background:var(--pe);border:1px solid var(--b);color:var(--td);padding:3px 9px;border-radius:11px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace}
-.filter .chip:hover{border-color:var(--a2);color:var(--t)}
-.filter .chip.on{background:rgba(124,58,237,.15);border-color:var(--a1);color:var(--t);font-weight:700}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Fleet</title>
+  <style>
+    :root {
+      --bg: #0a111f;
+      --text: #a0b8d8;
+      --accent: #4a75a8;
+      --ship: #f0f0f0;
+      --glow: #5e9cd9;
+      --grid: #152238;
+      --shadow: rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .header {
+      background: linear-gradient(to right, var(--bg), var(--grid));
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      text-shadow: 0 0 8px var(--glow);
+    }
+
+    .header h1 {
+      font-size: 4rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--ship);
+      text-transform: uppercase;
+      text-shadow: 0 0 12px var(--glow);
+    }
+
+    .header .subtitle {
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .fleet {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      padding: 2rem;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(30, 50, 90, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(30, 50, 90, 0.1) 0%, transparent 20%);
+    }
+
+    .grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(20, 30, 50, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20, 30, 50, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.3;
+    }
+
+    .ship {
+      position: absolute;
+      width: 24px;
+      height: 40px;
+      background: var(--ship);
+      border-radius: 4px;
+      box-shadow: 
+        0 0 6px var(--glow),
+        0 0 12px var(--glow),
+        inset 0 0 8px rgba(255, 255, 255, 0.3);
+      clip-path: polygon(0 0, 100% 0, 100% 60%, 70% 60%, 70% 100%, 30% 100%, 30% 60%, 0 60%);
+      transition: transform 8s ease-out, opacity 4s ease;
+      filter: drop-shadow(0 0 8px var(--glow));
+    }
+
+    .ship::before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--glow);
+    }
+
+    .ship::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -12px;
+      width: 20px;
+      height: 6px;
+      background: var(--glow);
+      border-radius: 3px;
+      transform: translateY(-50%);
+      opacity: 0.7;
+      box-shadow: 0 0 10px var(--glow);
+      animation: flame 1.5s infinite ease-in-out;
+    }
+
+    @keyframes flame {
+      0%, 100% { height: 6px; opacity: 0.7; }
+      50% { height: 12px; opacity: 1; }
+    }
+
+    .ship.pulse {
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 6px var(--glow), 0 0 12px var(--glow); }
+      50% { transform: scale(1.1); box-shadow: 0 0 10px var(--glow), 0 0 20px var(--glow); }
+    }
+
+    .ship.active {
+      box-shadow: 
+        0 0 8px var(--glow),
+        0 0 16px var(--glow),
+        0 0 24px var(--glow),
+        0 0 32px var(--glow);
+      filter: drop-shadow(0 0 16px var(--glow));
+    }
+
+    .ship-label {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: var(--accent);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+    }
+
+    .ship:hover .ship-label {
+      opacity: 1;
+    }
+
+    .watch {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(10, 20, 35, 0.7);
+      padding: 0.7rem 1.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--accent);
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 10px var(--shadow);
+    }
+
+    .watch .time {
+      font-weight: bold;
+      color: var(--ship);
+      text-shadow: 0 0 6px var(--glow);
+    }
+
+    .ship.active .ship-label {
+      color: var(--ship);
+      text-shadow: 0 0 6px var(--glow);
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-
-<div class="top">
-  <div>
-    <h1>🚢 <span class="accent">Fleet</span> <span style="color:var(--td);font-size:.82rem;font-weight:400">— all 37 Quilt repos</span></h1>
-    <p style="margin-top:3px">A single page showing every Quilt repo: tier, language, dependencies, test counts, links. Click a card to open the repo.</p>
+  <div class="header">
+    <h1>THE FLEET</h1>
+    <div class="subtitle">A visual showing the federation of agents. Each agent is a ship. Each ship is a cell. The fleet sails the watch.</div>
   </div>
-  <a class="coffee-top" href="https://www.buymeacoffee.com/CaseyDiGennaro" target="_blank">☕ Buy Casey a Coffee</a>
-</div>
 
-<div class="nav">
-  <a href="index.html">Home</a>
-  <a href="workspace.html">Workspace</a>
-  <a href="playground.html">Playground</a>
-  <a href="benchmark.html">Benchmark</a>
-  <a href="regex.html">Regex</a>
-  <a href="diff.html">Diff</a>
-  <a href="lint.html">Lint</a>
-  <a href="ai-sheet.html">AI sheet</a>
-  <a href="pincher.html">Pincher</a>
-  <a href="vibe.html">Vibe</a>
-  <a href="polyformalism.html">Polyformalism</a>
-  <a href="fleet.html" class="cur">Fleet</a>
-</div>
+  <div class="fleet">
+    <div class="grid"></div>
+    <div class="watch">
+      <span class="time" id="watch-time">00:00:00</span>
+    </div>
+  </div>
 
-<div class="intro">
-  <p>All 35 Quilt repos, live. <strong>12-language polyformalism</strong> added — same model expressed in TypeScript, Tutor, Pydantic-AI, Mojo, Julia, Chapel, COBOL, C, C++, C#, Metal, Swift. <a href="polyformalism.html" style="color:var(--a3)">See the comparison →</a></p>
-</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fleet = document.querySelector('.fleet');
+      const timeDisplay = document.getElementById('watch-time');
+      const shipCount = 24;
+      
+      // Generate ships
+      const ships = [];
+      for (let i = 0; i < shipCount; i++) {
+        const ship = document.createElement('div');
+        ship.className = 'ship';
+        
+        // Random position
+        const x = Math.random() * (window.innerWidth - 50);
+        const y = Math.random() * (window.innerHeight - 100) + 50;
+        
+        ship.style.left = `${x}px`;
+        ship.style.top = `${y}px`;
+        
+        // Add label
+        const label = document.createElement('div');
+        label.className = 'ship-label';
+        label.textContent = `CELL-${i.toString().padStart(3, '0')}`;
+        ship.appendChild(label);
+        
+        // Add to DOM and ships array
+        fleet.appendChild(ship);
+        ships.push({
+          element: ship,
+          x,
+          y,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          pulse: Math.random() > 0.5,
+          active: Math.random() > 0.7,
+          lastPulse: Date.now(),
+          lastActive: Date.now()
+        });
+      }
 
-<div class="summary">
-  <div class="stat"><div class="v good" id="s-repos">35</div><div class="l">repos</div></div>
-  <div class="stat"><div class="v good" id="s-tests">253+</div><div class="l">tests</div></div>
-  <div class="stat"><div class="v good" id="s-llms">3</div><div class="l">LLM APIs</div></div>
-  <div class="stat"><div class="v good" id="s-tools">21+</div><div class="l">web tools</div></div>
-  <div class="stat"><div class="v good" id="s-platforms">5</div><div class="l">platforms</div></div>
-</div>
+      // Update time
+      function updateTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+      }
 
-<div class="filter">
-  <span class="lbl">Tier:</span>
-  <span class="chip on" data-tier="all">all</span>
-  <span class="chip" data-tier="core">core</span>
-  <span class="chip" data-tier="compiled">compiled</span>
-  <span class="chip" data-tier="ai">ai</span>
-  <span class="chip" data-tier="mesh">mesh</span>
-  <span class="chip" data-tier="cells">cells</span>
-  <span class="chip" data-tier="edge">edge</span>
-  <span class="chip" data-tier="hardware">hardware</span>
-  <span class="chip" data-tier="infra">infra</span>
-  <span class="chip" data-tier="polyformalism">polyformalism</span>
-  <span class="chip" data-tier="orchestrator">orchestrator</span>
-  <span style="margin-left:11px" class="lbl">Lang:</span>
-  <span class="chip on" data-lang="all">all</span>
-  <span class="chip" data-lang="ts">TypeScript</span>
-  <span class="chip" data-lang="rs">Rust</span>
-  <span class="chip" data-lang="py">Python</span>
-</div>
+      // Animation loop
+      function animate() {
+        const now = Date.now();
+        
+        ships.forEach(ship => {
+          // Movement with slight drift
+          ship.x += ship.vx;
+          ship.y += ship.vy;
+          
+          // Bounce off edges
+          if (ship.x < 0 || ship.x > window.innerWidth - 24) {
+            ship.vx *= -1;
+            ship.x = Math.max(0, Math.min(window.innerWidth - 24, ship.x));
+          }
+          if (ship.y < 0 || ship.y > window.innerHeight - 40) {
+            ship.vy *= -1;
+            ship.y = Math.max(0, Math.min(window.innerHeight - 40, ship.y));
+          }
+          
+          // Update position
+          ship.element.style.left = `${ship.x}px`;
+          ship.element.style.top = `${ship.y}px`;
+          
+          // Pulse effect
+          if (ship.pulse && now - ship.lastPulse > 1000 + Math.random() * 3000) {
+            ship.element.classList.add('pulse');
+            ship.lastPulse = now;
+            setTimeout(() => {
+              ship.element.classList.remove('pulse');
+            }, 1000);
+          }
+          
+          // Active state
+          if (now - ship.lastActive > 5000 + Math.random() * 8000) {
+            ship.active = Math.random() > 0.85;
+            ship.lastActive = now;
+            
+            if (ship.active) {
+              ship.element.classList.add('active');
+            } else {
+              ship.element.classList.remove('active');
+            }
+          }
+        });
+        
+        // Update time
+        updateTime();
+        
+        requestAnimationFrame(animate);
+      }
 
-<div class="repos" id="repos"></div>
+      // Start animation
+      animate();
 
-</div>
-
-<script>
-// ─────────────────────────────────────────────────────────────────
-//  Repo data
-// ─────────────────────────────────────────────────────────────────
-
-const REPOS = [
-  // Core
-  { name: 'quilt', icon: '⬢', tier: 'core', lang: 'ts', desc: 'The core engine. 9 cell kinds, per-context memoization.', tests: 21, size: '42KB', deps: 0, version: '0.6.0' },
-  { name: 'quilt-rust', icon: '🦀', tier: 'core', lang: 'rs', desc: 'Rust port. Sync core, async cells via drive_async().', tests: 18, size: '88KB', deps: 0, version: '0.2.0' },
-  { name: 'quilt-live', icon: '🎒', tier: 'compiled', lang: 'ts', desc: 'Single HTML file with the whole engine. 70KB offline.', tests: 146, size: '70KB', deps: 0, version: '1.0' },
-  { name: 'quilt-esp32', icon: '🔌', tier: 'hardware', lang: 'rs', desc: 'no_std Rust for ESP32. Embedded cells.', tests: 12, size: '12KB', deps: 0, version: '0.1.0' },
-  // AI
-  { name: 'quilt-ai', icon: '🧠', tier: 'ai', lang: 'ts', desc: 'AI cell kinds. 4 providers, 8 cell kinds, AIEngine.', tests: 12, size: '14KB', deps: 3, version: '0.1.0' },
-  { name: 'quilt-evolve', icon: '🧬', tier: 'ai', lang: 'ts', desc: 'Self-evolving cells. 4 components, 5 scopes, RLAIF.', tests: 15, size: '13KB', deps: 4, version: '0.1.0' },
-  { name: 'quilt-rag', icon: '🔍', tier: 'ai', lang: 'ts', desc: 'Production RAG as cells. 5 stores, 5 embedders, 4 evaluators.', tests: 17, size: '18KB', deps: 5, version: '0.1.0' },
-  // Mesh
-  { name: 'quilt-mesh', icon: '🕸️', tier: 'mesh', lang: 'ts', desc: 'Multi-cell mesh. Distributed graph computation.', tests: 9, size: '11KB', deps: 2, version: '0.1.0' },
-  { name: 'quilt-agent', icon: '🤖', tier: 'mesh', lang: 'ts', desc: 'Agent substrate. 5 SDK primitives, 28 tests.', tests: 28, size: '24KB', deps: 3, version: '0.4.0' },
-  { name: 'quilt-fleet', icon: '🚢', tier: 'mesh', lang: 'ts', desc: 'Multi-instance federation. Discovery, health, quorum, migration.', tests: 13, size: '21KB', deps: 4, version: '0.1.0' },
-  // Cells
-  { name: 'quilt-time', icon: '⏰', tier: 'cells', lang: 'ts', desc: 'Time cells. Cron, intervals, debouncing.', tests: 8, size: '8KB', deps: 1, version: '0.1.0' },
-  { name: 'quilt-vault', icon: '🔐', tier: 'cells', lang: 'ts', desc: 'Encrypted secret cells. AES-GCM, key rotation.', tests: 11, size: '10KB', deps: 2, version: '0.1.0' },
-  { name: 'quilt-vision', icon: '👁️', tier: 'cells', lang: 'ts', desc: 'Vision cells. Object detection, OCR, image transforms.', tests: 9, size: '15KB', deps: 4, version: '0.1.0' },
-  { name: 'quilt-zk', icon: '🌀', tier: 'cells', lang: 'ts', desc: 'Zero-knowledge cells. Proof generation + verification.', tests: 7, size: '13KB', deps: 5, version: '0.1.0' },
-  { name: 'quilt-flow', icon: '🌊', tier: 'cells', lang: 'ts', desc: 'Flow control cells. Pipelines, branching, retry.', tests: 10, size: '9KB', deps: 1, version: '0.1.0' },
-  // Edge
-  { name: 'quilt-cloudflare', icon: '☁️', tier: 'edge', lang: 'ts', desc: 'Cloudflare Workers. D1, Vectorize, KV, R2, AI.', tests: 14, size: '18KB', deps: 6, version: '0.1.0' },
-  { name: 'quilt-codespace', icon: '💻', tier: 'edge', lang: 'ts', desc: 'GitHub Codespaces. Local-first, full feature set.', tests: 8, size: '12KB', deps: 2, version: '0.1.0' },
-  // Hardware
-  { name: 'quilt-jetson', icon: '🤖', tier: 'hardware', lang: 'rs', desc: 'NVIDIA Jetson. CUDA, ROS2, vision, sensor fusion.', tests: 6, size: '32KB', deps: 8, version: '0.1.0' },
-  // Infra
-  { name: 'quilt-elf', icon: '🧝', tier: 'infra', lang: 'ts', desc: 'Invisible elves. Daily-limit-aware background workers.', tests: 28, size: '22KB', deps: 3, version: '0.1.0' },
-  { name: 'quilt-pincher', icon: '🦀', tier: 'infra', lang: 'ts', desc: 'Reflex engine as Quilt cells. Cloud/workstation/ESP32.', tests: 12, size: '28KB', deps: 4, version: '0.1.0' },
-  { name: 'quilt-base', icon: '📦', tier: 'infra', lang: 'ts', desc: 'Minimal Alpine/Ubuntu/Distroless base images. Zero CVE, auto-rebuilding.', tests: 0, size: '20KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-swarm', icon: '🐳', tier: 'infra', lang: 'ts', desc: 'Quilt as control plane over Docker Swarm. Encrypted overlay networking.', tests: 28, size: '26KB', deps: 1, version: '0.1.0' },
-  { name: 'quilt-core-os', icon: '🛡️', tier: 'infra', lang: 'ts', desc: 'Immutable Ubuntu Core appliance. Atomic OS updates with instant rollback.', tests: 0, size: '21KB', deps: 2, version: '0.1.0' },
-  { name: 'quilt-k3s', icon: '🧪', tier: 'infra', lang: 'ts', desc: 'K3s-based chaos testing. 5 scenarios. Self-healing verification in under 30s.', tests: 34, size: '29KB', deps: 2, version: '0.1.0' },
-  { name: 'quilt-nomad', icon: '🏔️', tier: 'infra', lang: 'ts', desc: 'Quilt as control plane for HashiCorp Nomad. Cell→job, formula→task, api→http check.', tests: 14, size: '15KB', deps: 2, version: '0.1.0' },
-  // Polyformalism — 12 languages, one model
-  { name: 'quilt-tutor', icon: '📜', tier: 'polyformalism', lang: 'tutor', desc: 'PLATO Tutor (1970). The foundational polyformalism port. Multi-user cells, Fortran backend.', tests: 0, size: '15KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-pydantic-ai', icon: '🐍', tier: 'polyformalism', lang: 'py', desc: 'Pydantic-AI. Type-safe agents, modern descendant of Tutor. LINQ-style queries, decorators.', tests: 41, size: '12KB', deps: 1, version: '0.2.0' },
-  { name: 'quilt-mojo', icon: '🔥', tier: 'polyformalism', lang: 'mojo', desc: 'Mojo. Cells as types, SIMD-friendly formulas, compile-time reactivity.', tests: 0, size: '14KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-julia', icon: '🟣', tier: 'polyformalism', lang: 'jl', desc: 'Julia. Multiple dispatch = cell kinds. The reactive engine IS the type system.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-chapel', icon: '🏔️', tier: 'polyformalism', lang: 'chpl', desc: 'Chapel. Distributed cell evaluation across locales. Cells are inherently parallel.', tests: 0, size: '15KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-cobol', icon: '🏛️', tier: 'polyformalism', lang: 'cobol', desc: 'COBOL. The cell model is older than spreadsheets. Four divisions = layered cells.', tests: 0, size: '17KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-c', icon: '⚙️', tier: 'polyformalism', lang: 'c', desc: 'C. The mathematical core. Cells = structs, formulas = functions, no sugar.', tests: 0, size: '15KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-cpp', icon: '➕', tier: 'polyformalism', lang: 'cpp', desc: 'C++. Templates reveal the cell kind lattice. std::variant for any cell value.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-csharp', icon: '🎯', tier: 'polyformalism', lang: 'cs', desc: 'C#. Records, delegates, events, LINQ. All the pieces already exist.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-metal', icon: '🖥️', tier: 'polyformalism', lang: 'metal', desc: 'Metal. GPU-evaluated cells. Kernels = formulas, buffers = cell values.', tests: 0, size: '14KB', deps: 0, version: '0.1.0' },
-  { name: 'quilt-swift', icon: '🦅', tier: 'polyformalism', lang: 'swift', desc: 'Swift. @Published is exactly a ValueCell. Combine is exactly a reactive engine.', tests: 0, size: '16KB', deps: 0, version: '0.1.0' },
-  // Orchestrators — bootstrappers
-  { name: 'quilt-radio-orchestrator', icon: '🥚', tier: 'orchestrator', lang: 'py', desc: 'Fetalized-egg pattern. Bootstrap Quilt radio-theater sheets from a seed using z.ai + DeepSeek + Kimi.', tests: 0, size: '10KB', deps: 0, version: '0.1.0' },
-];
-
-// ─────────────────────────────────────────────────────────────────
-//  Render
-// ─────────────────────────────────────────────────────────────────
-
-let tierFilter = 'all';
-let langFilter = 'all';
-
-function render() {
-  const filtered = REPOS.filter((r) => {
-    if (tierFilter !== 'all' && r.tier !== tierFilter) return false;
-    if (langFilter !== 'all' && r.lang !== langFilter) return false;
-    return true;
-  });
-  const el = document.getElementById('repos');
-  if (filtered.length === 0) {
-    el.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--tf)">No repos match this filter.</div>';
-    return;
-  }
-  el.innerHTML = filtered.map((r) => {
-    const langLabel = r.lang === 'ts' ? 'TypeScript' : r.lang === 'rs' ? 'Rust' : r.lang;
-    return `<div class="repo">
-      <div class="head">
-        <div class="icon">${r.icon}</div>
-        <div class="name">${r.name}</div>
-        <div class="tier">${r.tier}</div>
-      </div>
-      <div class="desc">${r.desc}</div>
-      <div class="stats">
-        <div class="stat"><div class="v tests">${r.tests}</div><div class="l">tests</div></div>
-        <div class="stat"><div class="v size">${r.size}</div><div class="l">${langLabel}</div></div>
-        <div class="stat"><div class="v deps">${r.deps}</div><div class="l">deps</div></div>
-      </div>
-      <div class="links">
-        <a href="https://github.com/SuperInstance/${r.name}" target="_blank">GitHub</a>
-        <a href="https://github.com/SuperInstance/${r.name}/blob/main/README.md" target="_blank">README</a>
-        ${r.tier === 'core' ? '<a href="https://superinstance.dev/quilt.html">Demo</a>' : ''}
-        ${r.name === 'quilt-pincher' ? '<a href="https://superinstance.dev/pincher.html">Demo</a>' : ''}
-        ${r.name === 'quilt-elf' ? '<a href="https://superinstance.dev/vibe.html">Demo</a>' : ''}
-        ${r.tier === 'polyformalism' ? '<a href="https://superinstance.dev/polyformalism.html">All languages</a>' : ''}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function updateChips() {
-  document.querySelectorAll('[data-tier]').forEach((el) => {
-    el.classList.toggle('on', el.dataset.tier === tierFilter);
-  });
-  document.querySelectorAll('[data-lang]').forEach((el) => {
-    el.classList.toggle('on', el.dataset.lang === langFilter);
-  });
-}
-
-// Wire up
-document.querySelectorAll('[data-tier]').forEach((el) => {
-  el.addEventListener('click', () => {
-    tierFilter = el.dataset.tier;
-    updateChips();
-    render();
-  });
-});
-document.querySelectorAll('[data-lang]').forEach((el) => {
-  el.addEventListener('click', () => {
-    langFilter = el.dataset.lang;
-    updateChips();
-    render();
-  });
-});
-
-// Boot
-render();
-</script>
+      // Resize handling
+      window.addEventListener('resize', () => {
+        // Keep ships within bounds
+        ships.forEach(ship => {
+          ship.x = Math.max(0, Math.min(window.innerWidth - 24, ship.x));
+          ship.y = Math.max(0, Math.min(window.innerHeight - 40, ship.y));
+          ship.element.style.left = `${ship.x}px`;
+          ship.element.style.top = `${ship.y}px`;
+        });
+      });
+    });
+  </script>
 </body>
 </html>
