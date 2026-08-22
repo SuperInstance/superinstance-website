@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Penrose Memory — The Cut-and-Project Cell Palette</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a14; color: #e0e0e8; font-family: 'Courier New', monospace; padding: 1.5rem; line-height: 1.5; }
+.container { max-width: 1400px; margin: 0 auto; }
+h1 { color: #ff6b9d; font-size: 1.8rem; }
+h2 { color: #4ecdc4; font-size: 1.3rem; margin: 1.5rem 0 0.8rem; }
+.lead { color: #b0b0c0; font-style: italic; margin: 0.5rem 0 1.5rem; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+canvas { display: block; background: #1a1a2a; border-radius: 6px; }
+#cell-palette { width: 100%; height: 600px; }
+#internal-viz { width: 100%; height: 400px; }
+input, button, select {
+  background: #2a2a3a;
+  color: #e0e0e8;
+  border: 1px solid #4ecdc4;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+input { width: 100%; }
+.controls { margin: 1rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.metric { background: #1a1a2a; padding: 0.8rem; border-radius: 6px; border-top: 2px solid #4ecdc4; }
+.metric-pink { border-top-color: #ff6b9d; }
+.metric-yellow { border-top-color: #ffd93d; }
+.metric-title { font-size: 0.85rem; color: #888; }
+.metric-value { font-size: 1.5rem; color: #fff; font-weight: bold; margin-top: 0.3rem; }
+.cell { display: inline-block; padding: 0.3rem 0.6rem; margin: 0.2rem; background: #2a2a3a; border-radius: 3px; font-size: 0.85rem; border: 1px solid #444; }
+.cell-creation { border-color: #ff6b9d; }
+.cell-entropy { border-color: #4ecdc4; }
+.cell-witness { border-color: #ffd93d; }
+.event-log { background: #1a1a2a; border-radius: 6px; padding: 1rem; max-height: 300px; overflow-y: auto; font-size: 0.85rem; }
+.event-line { padding: 0.3rem 0; border-bottom: 1px solid #2a2a3a; }
+.iron { color: #888; font-style: italic; text-align: center; margin: 1.5rem 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🔯 Penrose Memory</h1>
+<p class="lead">The cut-and-project cell palette. Type a key, see it land in the aperiodic pattern. Each cell lives in the sum-zero lattice L, gets a φ-address, and 3-colors as CREATION / ENTROPY / WITNESS.</p>
+
+<div class="controls">
+  <input type="text" id="key-input" placeholder="Type a key, then press Enter" value="hello">
+  <button id="btn-add">Add Cell</button>
+  <button id="btn-clear">Clear</button>
+  <button id="btn-load">Load 100</button>
+  <select id="color-mode">
+    <option value="window">Color by Window Region (γ+η+μ)</option>
+    <option value="primitive">Color by Quilt Primitive</option>
+    <option value="generation">Color by Generation</option>
+  </select>
+</div>
+
+<div class="grid">
+  <div>
+    <h2>Physical Space (the aperiodic pattern)</h2>
+    <canvas id="cell-palette"></canvas>
+  </div>
+  <div>
+    <h2>Internal Space (the window W)</h2>
+    <canvas id="internal-viz"></canvas>
+    
+    <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 1rem;">
+      <div class="metric metric-pink">
+        <div class="metric-title">CREATION (γ)</div>
+        <div class="metric-value" id="m-creation">0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-title">ENTROPY (η)</div>
+        <div class="metric-value" id="m-entropy">0</div>
+      </div>
+      <div class="metric metric-yellow">
+        <div class="metric-title">WITNESS (μ)</div>
+        <div class="metric-value" id="m-witness">0</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Recent Cells</h2>
+<div id="event-log" class="event-log"></div>
+
+<p class="iron">Iron sharpens iron. Local omniscience. Global blindness. The watch is alive.</p>
+
+</div>
+
+<script>
+// === Constants ===
+const PHI = (1 + Math.sqrt(5)) / 2;
+const PHI_CONJUGATE = (Math.sqrt(5) - 1) / 2;
+
+// BLAKE2b replacement using SubtleCrypto
+async function blake2b(content) {
+  const enc = new TextEncoder().encode(content);
+  const hash = await crypto.subtle.digest('SHA-256', enc);
+  return new Uint8Array(hash);
+}
+
+function contentTo5D(content) {
+  // Simple hash to 5 signed 32-bit ints using JS string hash
+  const str = String(content);
+  const coords = [];
+  for (let i = 0; i < 5; i++) {
+    let h = 0;
+    for (let j = 0; j < str.length; j++) {
+      h = ((h << 5) - h + str.charCodeAt(j) + i * 7) | 0;
+    }
+    coords.push(h);
+  }
+  // Project to sum-zero lattice
+  const s = coords.reduce((a, b) => a + b, 0);
+  const adj = Math.floor(s / 5);
+  const result = coords.map(c => c - adj);
+  // Fix residual
+  const residual = -result.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < Math.abs(residual); i++) {
+    if (residual > 0) result[i] += 1;
+    else result[i] -= 1;
+  }
+  return result;
+}
+
+function addressTo3DInternal(coords) {
+  // 3D internal coordinate via 5-fold symmetric projection
+  const x = coords[0] * Math.cos(0) + coords[1] * Math.cos(2*Math.PI/3) + 
+            coords[2] * Math.cos(4*Math.PI/3) + coords[3] * Math.cos(0) + 
+            coords[4] * Math.cos(Math.PI);
+  const y = coords[0] * Math.sin(0) + coords[1] * Math.sin(2*Math.PI/3) + 
+            coords[2] * Math.sin(4*Math.PI/3) + coords[3] * Math.sin(Math.PI) + 
+            coords[4] * Math.sin(0);
+  const z = coords[0] * -0.5 + coords[1] * -0.5 + coords[2] * -0.5 + 
+            coords[3] * 1.0 + coords[4] * 1.0;
+  return [x, y, z];
+}
+
+function internalToColor(internal) {
+  const [x, y, z] = internal;
+  const r = Math.sqrt(x*x + y*y + z*z);
+  if (r < 0.3 * 2e9) return 'WITNESS';
+  if (x + y + z > 0) return 'CREATION';
+  return 'ENTROPY';
+}
+
+function addressTo2D(coords) {
+  // 2D physical projection via 5-fold symmetric projection
+  const x = coords[0] * Math.cos(0) + coords[1] * Math.cos(2*Math.PI/5) + 
+            coords[2] * Math.cos(4*Math.PI/5) + coords[3] * Math.cos(6*Math.PI/5) + 
+            coords[4] * Math.cos(8*Math.PI/5);
+  const y = coords[0] * Math.sin(0) + coords[1] * Math.sin(2*Math.PI/5) + 
+            coords[2] * Math.sin(4*Math.PI/5) + coords[3] * Math.sin(6*Math.PI/5) + 
+            coords[4] * Math.sin(8*Math.PI/5);
+  return [x, y];
+}
+
+// === State ===
+let cells = [];
+
+function addCell(key) {
+  const coords5d = contentTo5D(key);
+  const internal = addressTo3DInternal(coords5d);
+  const physical = addressTo2D(coords5d);
+  const color = internalToColor(internal);
+  // Normalize physical coordinates to a reasonable scale
+  const scale = 1e-8;
+  cells.push({
+    key,
+    coords5d,
+    internal,
+    physical: [physical[0] * scale, physical[1] * scale],
+    color,
+    primitive: ['Z_in', 'Z_out', 'JEPA', 'DoubleEntry', 'Vibe', 'GC', 'Murmur', 'Graph'][Math.abs(coords5d.reduce((a, b) => a + b, 0)) % 8],
+  });
+  redraw();
+  logEvent(key, coords5d, color);
+}
+
+function updateMetrics() {
+  const counts = {CREATION: 0, ENTROPY: 0, WITNESS: 0};
+  for (const c of cells) counts[c.color]++;
+  document.getElementById('m-creation').textContent = counts.CREATION;
+  document.getElementById('m-entropy').textContent = counts.ENTROPY;
+  document.getElementById('m-witness').textContent = counts.WITNESS;
+}
+
+function logEvent(key, coords, color) {
+  const log = document.getElementById('event-log');
+  const line = document.createElement('div');
+  line.className = 'event-line';
+  const colorClass = color.toLowerCase();
+  line.innerHTML = `<span class="cell cell-${colorClass}">${color}</span> key=${JSON.stringify(key).slice(0, 30)} → 5d=[${coords.join(', ')}]`;
+  log.prepend(line);
+  while (log.children.length > 50) log.lastChild.remove();
+}
+
+// === Drawing ===
+const physicalCanvas = document.getElementById('cell-palette');
+const pctx = physicalCanvas.getContext('2d');
+
+const internalCanvas = document.getElementById('internal-viz');
+const ictx = internalCanvas.getContext('2d');
+
+function resize() {
+  const r1 = physicalCanvas.parentElement.getBoundingClientRect();
+  physicalCanvas.width = r1.width;
+  physicalCanvas.height = 600;
+  const r2 = internalCanvas.parentElement.getBoundingClientRect();
+  internalCanvas.width = r2.width;
+  internalCanvas.height = 400;
+  redraw();
+}
+
+function redraw() {
+  updateMetrics();
+  
+  // Physical space
+  pctx.fillStyle = '#0a0a14';
+  pctx.fillRect(0, 0, physicalCanvas.width, physicalCanvas.height);
+  pctx.strokeStyle = '#333';
+  pctx.lineWidth = 1;
+  pctx.beginPath();
+  pctx.moveTo(physicalCanvas.width / 2, 0);
+  pctx.lineTo(physicalCanvas.width / 2, physicalCanvas.height);
+  pctx.moveTo(0, physicalCanvas.height / 2);
+  pctx.lineTo(physicalCanvas.width, physicalCanvas.height / 2);
+  pctx.stroke();
+  
+  // Compute bounds
+  let minX = -1, maxX = 1, minY = -1, maxY = 1;
+  for (const c of cells) {
+    minX = Math.min(minX, c.physical[0]);
+    maxX = Math.max(maxX, c.physical[0]);
+    minY = Math.min(minY, c.physical[1]);
+    maxY = Math.max(maxY, c.physical[1]);
+  }
+  const range = Math.max(maxX - minX, maxY - minY, 0.001);
+  const scaleX = (physicalCanvas.width - 40) / range;
+  const scaleY = (physicalCanvas.height - 40) / range;
+  const scale = Math.min(scaleX, scaleY);
+  
+  for (const c of cells) {
+    const px = (c.physical[0] - (minX + maxX) / 2) * scale + physicalCanvas.width / 2;
+    const py = (c.physical[1] - (minY + maxY) / 2) * scale + physicalCanvas.height / 2;
+    const colorHex = c.color === 'CREATION' ? '#ff6b9d' : c.color === 'ENTROPY' ? '#4ecdc4' : '#ffd93d';
+    pctx.fillStyle = colorHex;
+    pctx.strokeStyle = colorHex + '60';
+    pctx.lineWidth = 2;
+    pctx.beginPath();
+    pctx.arc(px, py, 5, 0, Math.PI * 2);
+    pctx.fill();
+  }
+  
+  // Internal space
+  ictx.fillStyle = '#0a0a14';
+  ictx.fillRect(0, 0, internalCanvas.width, internalCanvas.height);
+  // Draw window (ball of radius scaled)
+  ictx.strokeStyle = '#4ecdc4';
+  ictx.lineWidth = 2;
+  ictx.beginPath();
+  ictx.arc(internalCanvas.width / 2, internalCanvas.height / 2, 150, 0, Math.PI * 2);
+  ictx.stroke();
+  // 3 regions
+  ictx.fillStyle = 'rgba(255, 107, 157, 0.1)';
+  ictx.fillRect(internalCanvas.width / 2, internalCanvas.height / 2 - 150, 150, 150);
+  ictx.fillStyle = 'rgba(78, 205, 196, 0.1)';
+  ictx.fillRect(internalCanvas.width / 2 - 150, internalCanvas.height / 2 - 150, 150, 150);
+  ictx.fillStyle = 'rgba(255, 217, 61, 0.1)';
+  ictx.fillRect(internalCanvas.width / 2 - 150, internalCanvas.height / 2, 150, 150);
+  // Center witness region
+  ictx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+  ictx.beginPath();
+  ictx.arc(internalCanvas.width / 2, internalCanvas.height / 2, 30, 0, Math.PI * 2);
+  ictx.fill();
+  
+  // Plot internal points
+  for (const c of cells) {
+    const ix = c.internal[0] * 1e-9;
+    const iy = c.internal[1] * 1e-9;
+    const iz = c.internal[2] * 1e-9;
+    // Project to 2D
+    const px = internalCanvas.width / 2 + ix * 50;
+    const py = internalCanvas.height / 2 + iy * 50;
+    const colorHex = c.color === 'CREATION' ? '#ff6b9d' : c.color === 'ENTROPY' ? '#4ecdc4' : '#ffd93d';
+    ictx.fillStyle = colorHex;
+    ictx.beginPath();
+    ictx.arc(px, py, 3, 0, Math.PI * 2);
+    ictx.fill();
+  }
+  
+  // Labels
+  ictx.fillStyle = '#ff6b9d';
+  ictx.font = '11px monospace';
+  ictx.fillText('CREATION (γ)', internalCanvas.width / 2 + 30, internalCanvas.height / 2 - 130);
+  ictx.fillStyle = '#4ecdc4';
+  ictx.fillText('ENTROPY (η)', internalCanvas.width / 2 - 140, internalCanvas.height / 2 - 130);
+  ictx.fillStyle = '#ffd93d';
+  ictx.fillText('WITNESS (μ)', internalCanvas.width / 2 - 140, internalCanvas.height / 2 + 20);
+  ictx.fillStyle = '#fff';
+  ictx.fillText('W', internalCanvas.width / 2 - 5, internalCanvas.height / 2 + 5);
+}
+
+// === Event handlers ===
+document.getElementById('btn-add').addEventListener('click', () => {
+  const key = document.getElementById('key-input').value;
+  if (key) addCell(key);
+});
+
+document.getElementById('key-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const key = e.target.value;
+    if (key) addCell(key);
+  }
+});
+
+document.getElementById('btn-clear').addEventListener('click', () => {
+  cells = [];
+  document.getElementById('event-log').innerHTML = '';
+  redraw();
+});
+
+document.getElementById('btn-load').addEventListener('click', () => {
+  const samples = ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'Z_in', 'Z_out', 
+                   'JEPA', 'DoubleEntry', 'Vibe', 'GC', 'Murmur', 'Graph',
+                   'a', 'b', 'c', 'd', 'e', 'f', 'g',
+                   'The quick brown fox', 'jumps over', 'the lazy dog',
+                   'penrose', 'fibonacci', 'golden', 'ratio', 'phi',
+                   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                   'foo', 'bar', 'baz', 'qux', 'quux', 'corge', 'grault',
+                   'cell', 'graph', 'node', 'edge', 'vertex', 'tile',
+                   'CREATION', 'ENTROPY', 'WITNESS', 'CONSERVE',
+                   'φ', 'π', 'e', 'i', 'ω', 'α', 'β', 'γ',
+                   'hello', 'world', 'foo', 'bar',
+                   'T^4', 'L', 'W', 'γ', 'η', 'μ', 'φ', 'θ',
+                   'spectral', 'triple', 'connes', 'moscovici',
+                   'kähler', 'hodge', 'laplace', 'dirac',
+                   'aperiodic', 'order', 'lattice', 'substitution',
+                   'cut', 'project', 'window', 'phason',
+                   'algebra', 'hilbert', 'operator', 'index',
+                   'kan', 'extension', 'lan', 'ran',
+                   'sheaf', 'cohomology', 'grothendieck', 'topos',
+                   'category', 'functor', 'morphism', 'object',
+                   'operad', 'composition', 'pro', 'en',
+                   'hott', 'type', 'space', 'path',
+                   'witness', 'observe', 'state', 'collapse',
+                   'flux', 'flow', 'gradient', 'divergence',
+                   'GC', 'merge', 'decay', 'prune',
+                   'murmur', 'gossip', 'subscribe', 'publish'];
+  samples.forEach(s => addCell(s));
+});
+
+window.addEventListener('resize', resize);
+resize();
+addCell('hello');
+</script>
+</body>
+</html>
