@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tides</title>
+    <style>
+        :root {
+            --bg-dark: #0a192f;
+            --text: #e6f1ff;
+            --accent: #0077b6;
+            --highlight: #00b4d8;
+            --glow: #00b4d840;
+            --border: #0077b640;
+            --grid: #0077b610;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            letter-spacing: 0.02em;
+            line-height: 1.6;
+        }
+
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 2rem;
+            background: rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 8px var(--highlight);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            color: var(--highlight);
+            letter-spacing: 0.2em;
+        }
+
+        .header .timestamp {
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .tide-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .tide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 20%, rgba(0, 180, 216, 0.05) 40%, rgba(0, 180, 216, 0.1) 60%, transparent 80%);
+            background-size: 200% 200%;
+            background-position: center center;
+            animation: tide-flow 12s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 119, 182, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 119, 182, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.2;
+            z-index: -2;
+        }
+
+        .cell {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 1px solid var(--border);
+            background: rgba(0, 180, 216, 0.05);
+            border-radius: 4px;
+            box-shadow: 0 0 10px var(--glow);
+            transition: all 0.3s ease;
+            opacity: 0;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.8rem;
+            overflow: hidden;
+        }
+
+        .cell.active {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--highlight), 0 0 30px var(--highlight);
+        }
+
+        .cell .label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--highlight);
+            margin-bottom: 4px;
+        }
+
+        .cell .data {
+            font-size: 0.6rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .watch {
+            position: relative;
+            z-index: 10;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--highlight);
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+            margin-bottom: 2rem;
+            letter-spacing: 0.05em;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            background: rgba(0, 180, 216, 0.05);
+        }
+
+        .watch span {
+            color: var(--accent);
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            font-size: 0.6rem;
+            color: var(--accent);
+            opacity: 0.7;
+            text-align: left;
+            max-width: 300px;
+        }
+
+        .instructions p {
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes tide-flow {
+            0%, 100% {
+                background-position: center center;
+            }
+            50% {
+                background-position: center center;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        .pulse {
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .cell.active .label {
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .cell.active .data {
+            animation: pulse 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LUCINEER</h1>
+        <div class="timestamp" id="timestamp">00:00:00</div>
+    </div>
+
+    <div class="container">
+        <div class="tide-container">
+            <div class="grid"></div>
+            <div class="tide"></div>
+        </div>
+
+        <div class="watch" id="watch">THE WATCH</div>
+
+        <div class="instructions">
+            <p>IRON SHARPENS IRON</p>
+            <p>THE CELLS FEDERATE</p>
+            <p>THE ROOM IS A PLACE</p>
+            <p>THE CELL IS A PLACE</p>
+            <p>THE PLACE IS A CELL</p>
+            <p>THE ROOM IS THE CELL</p>
+            <p>THE ACT OF LOOKING IS THE TIDE</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const watch = document.getElementById('watch');
+            const timestamp = document.getElementById('timestamp');
+            const container = document.querySelector('.container');
+            const cells = [];
+            const cellData = [
+                { label: 'SECTOR 9', data: 'V57.E6.87' },
+                { label: 'VIGIL', data: '0x7A3F' },
+                { label: 'CURRENT', data: 'TIDE.001' },
+                { label: 'LOCKED', data: 'C-331' },
+                { label: 'PROBE', data: 'XN-7' },
+                { label: 'SIGNAL', data: 'PULSAR' },
+                { label: 'COMMS', data: 'ESTABLISHED' },
+                { label: 'STATUS', data: 'ACTIVE' },
+                { label: 'SIGHT', data: 'VIGILANT' },
+                { label: 'PORTAL', data: 'T0-9' },
+                { label: 'FLEET', data: 'PHASED' },
+                { label: 'GATE', data: 'OPEN' },
+                { label: 'LUCINE', data: 'INTEGRITY' },
+                { label: 'NODE', data: 'PRIMARY' },
+                { label: 'SIGNAL', data: 'COHERENT' }
+            ];
+
+            let currentCells = [];
+            let activeCellCount = 0;
+
+            // Update timestamp
+            function updateTimestamp() {
+                const now = new Date();
+                timestamp.textContent = now.toLocaleTimeString();
+            }
+
+            // Create cells
+            function createCells() {
+                const count = Math.floor(Math.random() * 8) + 5; // 5-12 cells
+                cells.length = 0;
+
+                for (let i = 0; i < count; i++) {
+                    const data = cellData[Math.floor(Math.random() * cellData.length)];
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.innerHTML = `
+                        <div class="label">${data.label}</div>
+                        <div class="data">${data.data}</div>
+                    `;
+                    
+                    // Position randomly with some offset from center
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 300 + 150;
+                    const x = Math.cos(angle) * distance;
+                    const y = Math.sin(angle) * distance;
+                    
+                    cell.style.left = `calc(50% + ${x}px)`;
+                    cell.style.top = `calc(50% + ${y}px)`;
+                    
+                    container.appendChild(cell);
+                    cells.push(cell);
+                }
+            }
+
+            // Animate cells with tide rhythm
+            function animateTides() {
+                const now = Date.now();
+                const tidePhase = (Math.sin(now / 3000) + 1) / 2; // 0 to 1
+
+                // Clear any previous active cells
+                currentCells.forEach(cell => {
+                    cell.classList.remove('active');
+                });
+                currentCells = [];
+
+                // Determine how many cells to activate based on tide phase
+                const totalCells = cells.length;
+                const activeCount = Math.floor(tidePhase * totalCells);
+                const indices = Array.from({length: totalCells}, (_, i) => i);
+                indices.sort(() => Math.random() - 0.5);
+
+                const activeIndices = indices.slice(0, activeCount);
+                
+                activeIndices.forEach(i => {
+                    const cell = cells[i];
+                    cell.classList.add('active');
+                    currentCells.push(cell);
+                });
+
+                // Update watch text based on tide phase
+                if (tidePhase > 0.7) {
+                    watch.textContent = 'THE TIDE IS RISING';
+                } else if (tidePhase < 0.3) {
+                    watch.textContent = 'THE TIDE IS EBBING';
+                } else {
+                    watch.textContent = 'THE WATCH';
+                }
+            }
+
+            // Initialize
+            createCells();
+            updateTimestamp();
+            setInterval(updateTimestamp, 1000);
+            setInterval(animateTides, 500);
+
+            // Handle resize
+            window.addEventListener('resize', () => {
+                // Recalculate positions
+                cells.forEach(cell => {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 300 + 150;
+                    const x = Math.cos(angle) * distance;
+                    const y = Math.sin(angle) * distance;
+                    
+                    cell.style.left = `calc(50% + ${x}px)`;
+                    cell.style.top = `calc(50% + ${y}px)`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
