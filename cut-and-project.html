@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cut-and-Project — The Corrected Version</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a14; color: #e0e0e8; font-family: 'Courier New', monospace; line-height: 1.6; padding: 2rem; }
+.container { max-width: 1200px; margin: 0 auto; }
+h1 { color: #ff6b9d; font-size: 2rem; margin-bottom: 0.5rem; }
+h2 { color: #4ecdc4; font-size: 1.4rem; margin: 1.5rem 0 0.8rem; border-bottom: 1px solid #2a2a3a; padding-bottom: 0.4rem; }
+.lead { color: #b0b0c0; font-size: 1rem; font-style: italic; margin-bottom: 1.5rem; }
+.correct { background: #1a2a1a; border-left: 3px solid #6bcf7f; padding: 0.8rem 1.2rem; margin: 0.8rem 0; border-radius: 4px; }
+.wrong { background: #2a1a1a; border-left: 3px solid #ff6b9d; padding: 0.8rem 1.2rem; margin: 0.8rem 0; border-radius: 4px; }
+.math { font-family: 'Courier New', monospace; color: #ffd93d; }
+canvas { display: block; background: #1a1a2a; border-radius: 6px; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th, td { border: 1px solid #2a2a3a; padding: 0.5rem; text-align: left; }
+th { background: #2a2a3a; color: #4ecdc4; }
+.iron { color: #888; font-style: italic; text-align: center; margin: 1.5rem 0; }
+.correction { color: #6bcf7f; }
+.danger { color: #ff6b9d; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Cut-and-Project — The Corrected Version</h1>
+<p class="lead">The mathematical foundation for Quilt's Penrose work. Three corrections sharpen the philosophy: the gauge redundancy of the 5D address, the fragility of exact coordinates, and the invisibility of the phason shift.</p>
+
+<h2>1. The 5D Address Lives in L, not Z^5</h2>
+
+<div class="wrong">
+<strong class="danger">✗ Naive claim:</strong> The 5D address is in <span class="math">Z^5</span>.
+The projection <span class="math">π: Z^5 → E</span> is injective.
+</div>
+
+<div class="correct">
+<strong class="correction">✓ Corrected:</strong> The 5D address is in the <strong>sum-zero lattice</strong>
+<span class="math">L = {n ∈ Z^5 : n_0 + n_1 + n_2 + n_3 + n_4 = 0}</span>.
+The five projected basis vectors <span class="math">a_i = π(e_i)</span> satisfy <span class="math">a_0 + ... + a_4 = 0</span>,
+so the diagonal <span class="math">(1,1,1,1,1)</span> is in the kernel of <span class="math">π</span>.
+On Z^5, π is NOT injective. On L, π IS injective.
+</div>
+
+<canvas id="gauge-canvas" width="800" height="300"></canvas>
+<p>Two 5D addresses that differ by the diagonal describe the same physical vertex. This is a <strong>gauge redundancy</strong> in the higher-dimensional description.</p>
+
+<h2>2. Exact Coordinates Are Fragile</h2>
+
+<div class="wrong">
+<strong class="danger">✗ Naive claim:</strong> If you know your exact physical coordinate, you can recover your full 5D address.
+</div>
+
+<div class="correct">
+<strong class="correction">✓ Corrected:</strong> π(L) is dense in physical space. Finite-precision measurement CANNOT recover the 5D address. The selected vertices (those whose internal coordinate lands in W) form a Delone set — uniformly discrete, not dense. So local knowledge of a vertex is robust; exact 5D recovery is fragile.
+</div>
+
+<table>
+<tr><th>Knowledge type</th><th>What it tells you</th><th>Robustness</th></tr>
+<tr><td>Finite local patch</td><td>A region in the window, not a point</td><td>Robust to measurement error</td></tr>
+<tr><td>Exact physical coordinate</td><td>The full 5D address (in L)</td><td>Fragile — discontinuous in r</td></tr>
+<tr><td>Internal coordinate</td><td>Local vertex configuration</td><td>Robust to phason shift (γ)</td></tr>
+<tr><td>Phason shift γ</td><td>Global tiling</td><td>Invisible from local data</td></tr>
+</table>
+
+<h2>3. Information Encodes on the Window, not the Lattice</h2>
+
+<div class="wrong">
+<strong class="danger">✗ Naive claim:</strong> Encode with <span class="math">f: Z^5 → Σ</span> (color each lattice point).
+</div>
+
+<div class="correct">
+<strong class="correction">✓ Corrected:</strong> Encode with <span class="math">f: W → Σ</span> (decorate the window).
+Each vertex r = π_∥(n) receives the symbol f(π_⊥(n)).
+The message lives in the 3D internal space and is projected into the 2D tiling.
+</div>
+
+<p>The window W is partitioned into finitely many regions, each corresponding to a distinct local vertex configuration. A function f: W → Σ assigns a symbol to each region. The tiling is a sample of f across the aperiodic pattern.</p>
+
+<canvas id="window-canvas" width="800" height="400"></canvas>
+
+<h2>4. The Quilt Connection</h2>
+
+<p>The 4-torus T^4 with <span class="math">θ = (√5−1)/2</span> is the <strong>algebraic version</strong> of the sum-zero lattice L. The C*-algebra of the tiling space is Morita equivalent to the irrational rotation algebra T^4_θ. This is Connes' deep result.</p>
+
+<p>The 8 Quilt primitives are the <strong>generators of A</strong>. The conservation law <span class="math">γ + η = 1</span> is encoded on the <strong>window</strong>, not the lattice. The 3-coloring of Penrose tiles is the partition of W into CREATION (γ), ENTROPY (η), and WITNESS (μ) regions.</p>
+
+<table>
+<tr><th>Penrose picture</th><th>Quilt picture</th><th>Math</th></tr>
+<tr><td>Sum-zero lattice L</td><td>The 8 Quilt primitives</td><td>Generators of A</td></tr>
+<tr><td>Physical plane E</td><td>The cell address</td><td>π_∥(n)</td></tr>
+<tr><td>Internal space E_⊥</td><td>The cell's local context</td><td>π_⊥(n)</td></tr>
+<tr><td>Window W</td><td>The conservation law</td><td>γ + η = 1</td></tr>
+<tr><td>Phason shift γ</td><td>Universal context</td><td>Invisible locally</td></tr>
+<tr><td>Encoding f: W → Σ</td><td>The 3-coloring</td><td>CREATION/ENTROPY/WITNESS</td></tr>
+<tr><td>Local vertex configuration</td><td>Cell's neighborhood</td><td>Graph primitive</td></tr>
+</table>
+
+<h2>5. Local Omniscience, Global Blindness</h2>
+
+<p>The deep asymmetry:</p>
+<ul style="margin-left: 2rem; color: #b0b0c0;">
+<li><strong>Universal truth</strong> is the lattice L, the window W, AND the phason shift γ.</li>
+<li><strong>Local omniscience</strong>: if you know the exact 5D address and the window, you know the local configuration.</li>
+<li><strong>Global blindness</strong>: you cannot know γ from local observation. Finite patches appear in all generic phason shifts.</li>
+</ul>
+
+<p>This is the mathematical form of the philosophical asymmetry. Each cell in the Quilt knows its own address. Each cell knows its local neighborhood. The cells do NOT know the global phason shift. The cells communicate via Murmur. The gossip eventually reaches consensus. The global truth is the fixed point of the consensus — not derivable from any single cell.</p>
+
+<p class="iron">Iron sharpens iron. Local omniscience. Global blindness. The watch is alive.</p>
+
+<footer style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3a; color: #666; text-align: center;">
+<p>Spec — Cut-and-Project for Quilt · August 22, 2026</p>
+<p><a href="/shape.html" style="color: #4ecdc4;">SHAPE</a> · <a href="/spectral.html" style="color: #4ecdc4;">Spectral Triple</a> · <a href="/live-velato-penrose.html" style="color: #4ecdc4;">Live Demo</a></p>
+</footer>
+
+</div>
+
+<script>
+// Canvas 1: Gauge redundancy visualization
+const gaugeCanvas = document.getElementById('gauge-canvas');
+const gctx = gaugeCanvas.getContext('2d');
+gctx.fillStyle = '#0a0a14';
+gctx.fillRect(0, 0, 800, 300);
+
+// Draw 5 vertices in a pentagon
+const cx = 200, cy = 150, r = 80;
+const colors = ['#ff6b9d', '#4ecdc4', '#ffd93d', '#6bcf7f', '#a78bfa'];
+gctx.font = '14px monospace';
+gctx.textAlign = 'center';
+for (let i = 0; i < 5; i++) {
+  const angle = (i * 72 - 90) * Math.PI / 180;
+  const x = cx + r * Math.cos(angle);
+  const y = cy + r * Math.sin(angle);
+  gctx.fillStyle = colors[i];
+  gctx.beginPath();
+  gctx.arc(x, y, 12, 0, Math.PI * 2);
+  gctx.fill();
+  gctx.fillStyle = '#fff';
+  gctx.fillText(`a${i}`, x, y + 4);
+}
+
+// Draw the pentagon edges
+gctx.strokeStyle = '#666';
+gctx.lineWidth = 1;
+gctx.beginPath();
+for (let i = 0; i < 5; i++) {
+  const angle = (i * 72 - 90) * Math.PI / 180;
+  const x = cx + r * Math.cos(angle);
+  const y = cy + r * Math.sin(angle);
+  if (i === 0) gctx.moveTo(x, y);
+  else gctx.lineTo(x, y);
+}
+gctx.closePath();
+gctx.stroke();
+
+// Center: shows "sum = 0"
+gctx.fillStyle = '#fff';
+gctx.font = 'bold 16px monospace';
+gctx.fillText('a₀ + a₁ + a₂ + a₃ + a₄ = 0', cx, cy - 30);
+gctx.font = '12px monospace';
+gctx.fillText('(5-fold symmetry)', cx, cy + 30);
+
+// Label
+gctx.fillStyle = '#888';
+gctx.font = '12px monospace';
+gctx.textAlign = 'left';
+gctx.fillText('The 5 projected basis vectors in physical space.', 320, 70);
+gctx.fillText('Their sum is zero. So the diagonal (1,1,1,1,1)', 320, 90);
+gctx.fillText('projects to (0,0) — the gauge redundancy.', 320, 110);
+gctx.fillStyle = '#ff6b9d';
+gctx.fillText('→ Two 5D addresses differing by the diagonal', 320, 140);
+gctx.fillText('   describe the SAME physical vertex.', 320, 160);
+gctx.fillStyle = '#6bcf7f';
+gctx.fillText('→ Work in L = {n : Σn_i = 0}, not Z^5.', 320, 190);
+
+
+// Canvas 2: Window encoding
+const winCanvas = document.getElementById('window-canvas');
+const wctx = winCanvas.getContext('2d');
+wctx.fillStyle = '#0a0a14';
+wctx.fillRect(0, 0, 800, 400);
+
+// Draw 3D window as a circle with partition
+const wx = 400, wy = 200, wr = 140;
+wctx.strokeStyle = '#4ecdc4';
+wctx.lineWidth = 2;
+wctx.beginPath();
+wctx.arc(wx, wy, wr, 0, Math.PI * 2);
+wctx.stroke();
+
+// Partition into 7 regions (3-coloring + 1 center)
+wctx.fillStyle = 'rgba(255, 107, 157, 0.3)';  // CREATION
+wctx.beginPath();
+wctx.arc(wx, wy, wr, -Math.PI/2, Math.PI/6);
+wctx.lineTo(wx, wy);
+wctx.closePath();
+wctx.fill();
+
+wctx.fillStyle = 'rgba(78, 205, 196, 0.3)';  // ENTROPY
+wctx.beginPath();
+wctx.arc(wx, wy, Math.PI/6, 5*Math.PI/6);
+wctx.lineTo(wx, wy);
+wctx.closePath();
+wctx.fill();
+
+wctx.fillStyle = 'rgba(255, 217, 61, 0.3)';  // WITNESS
+wctx.beginPath();
+wctx.arc(wx, wy, 5*Math.PI/6, 3*Math.PI/2);
+wctx.lineTo(wx, wy);
+wctx.closePath();
+wctx.fill();
+
+wctx.fillStyle = 'rgba(255, 255, 255, 0.6)';  // Center
+wctx.beginPath();
+wctx.arc(wx, wy, wr * 0.2, 0, Math.PI * 2);
+wctx.fill();
+
+// Labels
+wctx.font = 'bold 14px monospace';
+wctx.textAlign = 'center';
+wctx.fillStyle = '#ff6b9d';
+wctx.fillText('γ (CREATION)', wx - wr*0.55, wy - wr*0.55);
+wctx.fillStyle = '#4ecdc4';
+wctx.fillText('η (ENTROPY)', wx + wr*0.55, wy - wr*0.55);
+wctx.fillStyle = '#ffd93d';
+wctx.fillText('μ (WITNESS)', wx, wy - wr*0.75);
+wctx.fillStyle = '#fff';
+wctx.fillText('center', wx, wy + 5);
+
+// Annotations
+wctx.fillStyle = '#888';
+wctx.font = '12px monospace';
+wctx.textAlign = 'left';
+wctx.fillText('Window W in 3D internal space, projected to 2D for display.', 50, 30);
+wctx.fillText('The function f: W → Σ assigns symbols to regions.', 50, 50);
+wctx.fillText('Each vertex r = π_∥(n) receives f(π_⊥(n)).', 50, 70);
+wctx.fillStyle = '#6bcf7f';
+wctx.fillText('γ + η + μ = 1 (the conservation law, encoded on the window).', 50, 360);
+</script>
+</body>
+</html>
