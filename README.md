@@ -18,11 +18,12 @@ The build pipeline is intentionally primitive — a shell script reads JSON data
 
 ```
 build-domains.sh
-    ├── reads ecosystem-data.json  (crate names, descriptions, dependencies)
-    ├── reads domains.json         (domain tags, cluster assignments)
-    ├── reads quality-report.json  (test counts, LOC, doc coverage)
-    └── writes dist/*.html         (final pages)
+    ├── reads domains.json         (domain names, taglines, themes)
+    ├── reads templates/base.html  (shared page skeleton)
+    └── writes dist/<domain>/      (per-domain landing pages)
 ```
+
+The stats and browse pages (`stats.html`, `browse.html`) load `quality-report.json` client-side at runtime; `ecosystem.html` polls the live fleet Workers APIs (fleet-vector-api, harness-api).
 
 This avoids heavy frameworks (Hugo, Jekyll, Next.js) and keeps the build fully inspectable. The total build complexity is $O(N)$ where $N$ = crate count.
 
@@ -31,10 +32,10 @@ This avoids heavy frameworks (Hugo, Jekyll, Next.js) and keeps the build fully i
 | Page | Purpose | Data Source | Size |
 |------|---------|-------------|------|
 | `index.html` | Thesis, overview, featured crates | Static | ~11 KB |
-| `ecosystem.html` | Interactive cluster map of all crates | `ecosystem-data.json` | ~9 KB |
+| `ecosystem.html` | Live fleet status via Workers APIs | fleet-vector-api / harness-api (runtime) | ~9 KB |
 | `browse.html` | Domain-tagged browsing with filters | `domains.json` | ~12 KB |
 | `stats.html` | Quality metrics, test counts, LOC | `quality-report.json` | ~13 KB |
-| `search.html` | Client-side crate search | JS + JSON | ~7 KB |
+| `search.html` | Vector search over the crate fleet | fleet-vector-api `/search` | ~7 KB |
 | `education.html` | Tutorials and learning paths | `tutorials/` | ~21 KB |
 | `status.html` | Deployment status, health checks | Runtime | ~13 KB |
 | `cluster-map.html` | Dependency graph visualization | SVG + JS | ~14 KB |
@@ -96,7 +97,7 @@ No server-side API. All data is embedded in static JSON files served alongside H
 
 | File | Format | Description |
 |------|--------|-------------|
-| `ecosystem-data.json` | JSON | Crate registry with dependencies |
+| `ecosystem-data.json` | JSON | Fleet inventory snapshot (repo/crate/quality counts, generated 2026-06-11) |
 | `domains.json` | JSON | Domain classifications and tags |
 | `quality-report.json` | JSON | Per-crate quality metrics |
 
