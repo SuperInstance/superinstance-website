@@ -33,7 +33,7 @@ This avoids heavy frameworks (Hugo, Jekyll, Next.js) and keeps the build fully i
 |------|---------|-------------|------|
 | `index.html` | Thesis, overview, featured crates | Static | ~11 KB |
 | `ecosystem.html` | Live fleet status via Workers APIs | fleet-vector-api / harness-api (runtime) | ~9 KB |
-| `browse.html` | Domain-tagged browsing with filters | `domains.json` | ~12 KB |
+| `browse.html` | Domain-tagged browsing with filters | `quality-report.json` *(corrected 2026-09-03, audit r11 — previously listed `domains.json`, but browse.html fetches only `quality-report.json`; `domains.json` feeds `build-domains.sh`)* | ~12 KB |
 | `stats.html` | Quality metrics, test counts, LOC | `quality-report.json` | ~13 KB |
 | `search.html` | Vector search over the crate fleet | fleet-vector-api `/search` | ~7 KB |
 | `education.html` | Tutorials and learning paths | `tutorials/` | ~21 KB |
@@ -85,6 +85,8 @@ wrangler pages deploy dist/ --project-name superinstance
 ```
 
 ### Adding a New Crate
+
+> **⚠️ Dated note (2026-09-03, audit r11):** these steps date from early scaffolding and no longer match the data reality. `ecosystem-data.json` is a *generated fleet inventory snapshot* (committed once, `"generated": "2026-06-11"` — 1,605 repos / 1,494 crates at snapshot time; no generator lives in this repo) consumed at runtime by `status.html`, and `quality-report.json` (291 KB) is consumed by `browse.html`/`stats.html`. Hand-editing the snapshot works mechanically but leaves it stale against the live fleet; `build-domains.sh` reads only `domains.json` + `templates/base.html`. Kept as-is for history — owner decision whether to replace with a regeneration step.
 
 1. Add entry to `ecosystem-data.json`
 2. Add domain tags to `domains.json`
