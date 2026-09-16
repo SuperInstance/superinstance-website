@@ -672,47 +672,20 @@
       Same theorem, different substrate. Cross-pollination shipped: <a href="https://github.com/SuperInstance/twist-engine/pull/1">PR #1</a>.
     </p>
 
-    <h3 style="color:var(--gold);font-size:0.96rem;margin-top:1.5rem">★ Where The Canon Lives — Workspace Distribution</h3>
-    <p style="font-size:0.84rem;color:var(--gray);margin-bottom:0.4rem">
-      <span id="pieces-count-2">120</span> pieces spread across <span id="ws-total-count">9</span> inferred workspace tags.
-      The biggest (grown) holds the LLM-written pieces from parallel grower rounds.
-    </p>
-    <div class="ws-bar" id="ws-bar"></div>
-    <div class="ws-legend" id="ws-legend"></div>
-
-    <h3 id="workspace-topology" style="color:var(--gold);font-size:0.96rem;margin-top:1.8rem">★ b1 Per Workspace — Where The Holes Concentrate</h3>
-    <p style="font-size:0.84rem;color:var(--gray);margin-bottom:0.4rem">
-      The first Betti number computed within each workspace's intra-citation graph. A workspace with b1=0 is a tree (no loops).
-      The "grown" workspace has the most holes — it's the most connected.
-    </p>
-    <div class="ws-grid" id="ws-b1-grid"></div>
-
-    <h2 id="search">★ Semantic Search — Ask The Canon</h2>
-    <p style="color:var(--gray); font-size:0.92rem;">
-      The canon is indexed at 768d via Workers AI (bge-base-en-v1.5). Cosine over the vector.
-      "the cell writes its own witness" — type what you mean.
-    </p>
-    <div class="search-box">
-      <input id="search-input" type="text" placeholder="ask the canon… e.g. cell witness merkle bridge" autocomplete="off" />
-      <button onclick="doSearch()">Search →</button>
-    </div>
-    <div class="search-results" id="search-results"></div>
-
-    <h2 id="trending">★ ⚡ What's New — Last 10 Submissions</h2>
-    <p style="color:var(--gray); font-size:0.92rem;">
-      The canon is alive. New pieces arrive hourly (taps creative-break cron), each citing the bridges they extend.
-      The most recent are below.
-    </p>
-    <div class="trending" id="trending-list">
-      <div class="skel" style="padding:1rem;color:var(--gray)">Loading…</div>
-    </div>
-
     <h3 style="color:var(--gold);font-size:0.96rem;margin-top:1.5rem">★ Browse By Theme — <code>/canon-theme</code></h3>
     <p style="font-size:0.84rem;color:var(--gray);margin-bottom:0.6rem">
-      The canon has themes. <a href="https://a2a-v3.superinstance.dev/canon-theme?theme=divergent-economies" target="_blank" rel="noopener">?theme=divergent-economies</a>
-      returns 6 stories about cities drifting apart — parallel evolution on a city level. The allopatry of canons.
+      Six pre-built themes. <a href="https://a2a-v3.superinstance.dev/canon-theme?theme=fleet-radio" target="_blank" rel="noopener">?theme=fleet-radio</a>
+      returns 8 architectural pieces (Predictor Line, Empty Room, Speciation of the Monolith…). The original
+      <a href="https://a2a-v3.superinstance.dev/canon-theme?theme=divergent-economies" target="_blank" rel="noopener">?theme=divergent-economies</a> (6 stories on cities drifting apart).
     </p>
     <div id="theme-list" class="trending"><div class="skel" style="padding:1rem;color:var(--gray)">Loading…</div></div>
+
+    <h3 style="color:var(--gold);font-size:0.96rem;margin-top:1.5rem">📻 Fleet Radio Scripts — 8 architectural pieces in canon voice</h3>
+    <p style="font-size:0.84rem;color:var(--gray);margin-bottom:0.6rem">
+      Maritime Watch narrator applied to the Fleet architecture — Dehooker Axiom, Game of Password, temporal carrier wave, Patch and the Rust, Speciation of the Monolith.
+      These are the canon voice for the architectural pieces — the cell-as-boat metaphor turned inward.
+    </p>
+    <div id="fleet-radio-list" class="trending"><div class="skel" style="padding:1rem;color:var(--gray)">Loading…</div></div></div>
 
     <h2 id="hubs">★ 📊 The Hubs — Where The Canon Concentrates</h2>
     <p style="color:var(--gray); font-size:0.92rem;">
