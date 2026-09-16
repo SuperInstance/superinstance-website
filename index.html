@@ -370,6 +370,26 @@
 </head>
   <body>
 
+    <section style="max-width:1100px;margin:1.5rem auto;padding:1.4rem 1.6rem;background:linear-gradient(135deg,rgba(212,168,87,0.30),rgba(255,255,255,0.05));border:1px solid rgba(212,168,87,0.9);border-radius:14px;box-shadow:0 0 36px rgba(212,168,87,0.32)">
+    <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:0.68rem;color:#d4a857;margin:0 0 0.4rem">★ NEW — The Canon Runs Live</p>
+    <h2 style="margin:0 0 0.7rem;font-size:1.5rem">rune-quilt v1.3.0: the Quilt canon, running on the edge — 39 cells, 4 workspaces, 48 canon pieces, live circuit rank <span id="runeq-b1" style="color:#d4a857">…</span> (<strong style="color:#d4a857">b1 = E − V + C</strong>)</h2>
+    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem">The canon is no longer a document — it's a fleet. Every witness log is a cell. Every citation is a graph edge. The graph has <strong style="color:#d4a857">live topology</strong> — components, holes, circuits — and that topology has a single number you can read off the worker: <strong style="color:#d4a857">b1, the first Betti number</strong>. Same math as bilayer graphene's supercell registry and the QUILT mode in twist-engine. Five live endpoints, public, queryable, embeddable — including the fleet graph (vanilla-JS, force-directed, 39 cells, parent-of edges dashed blue), semantic canon search (bge-base-en-v1.5, 768d cosine), and the live circuit rank over the citation graph.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.4rem 0 0.6rem;font-size:0.84rem">
+      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem"><span id="runeq-cells">…</span> cells</span>
+      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem"><span id="runeq-ws">…</span> workspaces</span>
+      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem"><span id="runeq-pieces">…</span> canon pieces</span>
+      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem"><span id="runeq-edges">…</span> edges</span>
+      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem">b1 = <span id="runeq-b1-num">…</span></span>
+    </div>
+    <p style="margin:0;font-size:0.9rem">
+      <a href="/rune-quilt.html" style="color:inherit;text-decoration:underline;font-weight:600">▶ rune-quilt — the live fleet page (graph embedded + 5 endpoints)</a> &nbsp;·&nbsp;
+      <a href="https://a2a-v3.superinstance.dev/visual" style="color:inherit;text-decoration:underline">📊 Live fleet graph</a> &nbsp;·&nbsp;
+      <a href="https://a2a-v3.superinstance.dev/canon-b1" style="color:inherit;text-decoration:underline">🔢 /canon-b1 — circuit rank</a> &nbsp;·&nbsp;
+      <a href="https://a2a-v3.superinstance.dev/canon-search?q=cell+is+irreducible&k=3" style="color:inherit;text-decoration:underline">🔍 /canon-search</a> &nbsp;·&nbsp;
+      <a href="https://github.com/SuperInstance/rune-quilt" style="color:inherit;text-decoration:underline">📜 The repo — 4 releases</a>
+    </p>
+  </section>
+
     <section style="max-width:1100px;margin:1.5rem auto;padding:1.4rem 1.6rem;background:linear-gradient(135deg,rgba(79,179,169,0.22),rgba(255,255,255,0.05));border:1px solid rgba(79,179,169,0.7);border-radius:14px;box-shadow:0 0 32px rgba(79,179,169,0.22)">
     <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:0.68rem;color:#4fb3a9;margin:0 0 0.4rem">★ The Superside — One Fabric, Every Chip</p>
     <h2 style="margin:0 0 0.7rem;font-size:1.5rem">quilt-verilog crosses the wafer: 5+1 opcodes close synthesis on iCE40, UP5K and ECP5 — bitstreams packed, not yet booted on hardware — and the next eight enhancements are already drafted</h2>
@@ -746,4 +766,31 @@
   </script>
 
 </body>
+<script>
+  // Live stats for the new rune-quilt feature block
+  async function fetchJSON(url) {
+    const r = await fetch(url, { headers: { 'User-Agent': 'superinstance-dev/1.0' } });
+    return r.json();
+  }
+  async function loadRuneQuilt() {
+    try {
+      const [info, b1, list] = await Promise.all([
+        fetchJSON('https://a2a-v3.superinstance.dev/'),
+        fetchJSON('https://a2a-v3.superinstance.dev/canon-b1'),
+        fetchJSON('https://a2a-v3.superinstance.dev/canon-list'),
+      ]);
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      set('runeq-cells', info.cells);
+      set('runeq-ws', info.workspaces);
+      set('runeq-pieces', list.count);
+      set('runeq-edges', b1.E);
+      set('runeq-b1-num', b1.b1);
+      set('runeq-b1', b1.b1 + ' holes');
+    } catch (e) {
+      // leave placeholders as-is on error
+    }
+  }
+  loadRuneQuilt();
+  setInterval(loadRuneQuilt, 30000);
+</script>
 </html>
