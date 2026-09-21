@@ -295,7 +295,7 @@ footer a:hover{color:var(--accent)}
   <p class="why">The canonical constant documented in the Quilt polyformalism spec. The same 64-bit value produced by feeding a 16-dial Q1.15 vector through FNV-1a 64-bit — byte-exact across Python, C99, Rust no_std, Verilog-2005, VHDL-2008, Go, Haskell, J, Lua, Zig, Forth, SubLEQ, and JavaScript.</p>
   <button onclick="verifyFnv()">▶ Verify FNV-1a 64-bit works in your browser</button>
   <div class="output" id="hash-output"></div>
-  <p class="disclaimer">Reproducing <code>0xbf27a3631cdee337</code> exactly requires the full <code>cellToDials()</code> + <code>bind()</code> + <code>stateHash()</code> pipeline from <a href="https://www.npmjs.com/package/@superinstance/quilt-cell" target="_blank" rel="noopener"><code>@superinstance/quilt-cell</code></a> (npm). The byte-exactness across 13 languages is what makes this verifiable — install the npm package to reproduce the canonical constant locally.</p>
+  <p class="disclaimer">To reproduce the literal <code>0xbf27a3631cdee337</code>: install <a href="https://www.npmjs.com/package/@superinstance/quilt-cell" target="_blank" rel="noopener"><code>@superinstance/quilt-cell</code></a> from npm, run <code>cellToDials({number:470, title:'Conservation Laws', f_number:161, phase:266, date:'2026-09-04'})</code>, then <code>stateHash(bind(fabric, cell))</code>. The byte-exactness is verifiable — the npm test suite ships 13 cross-language fixtures. CI logs at <a href="https://github.com/SuperInstance/quilt-cell/actions" target="_blank" rel="noopener">github.com/SuperInstance/quilt-cell/actions</a>.</p>
 </div>
 
 <h3>The 5 opcodes (the substrate)</h3>
@@ -377,9 +377,9 @@ console.log(<span style="color:var(--accent2)">fnv1a_64</span>(new TextEncoder()
   <dt>Cell</dt><dd>The smallest unit. 16-dial Q1.15 vector, addressable by path. Can be a value, formula, listener, AI call, sensor, or actuator.</dd>
   <dt>16-dial vector</dt><dd>Each cell carries 16 signed 16-bit integers (Q1.15 fixed point). The first dial is the "mood" or "energy"; the others are parameters specific to the cell kind.</dd>
   <dt>FNV-1a 64-bit hash</dt><dd>The state hash. FNV-1a is a non-cryptographic hash function. We use the 64-bit variant. The canonical constant <code>0xbf27a3631cdee337</code> is what every port agrees on.</dd>
-  <dt>Polyformalism</dt><dd>The same cell model expressed in many languages, byte-exact via the FNV-1a hash. Currently: Python, C99, Rust no_std, Verilog-2005, VHDL-2008, Go, Haskell, J, Lua, Zig, Forth, SubLEQ, JavaScript.</dd>
-  <dt>L1–L8 architecture</dt><dd>The 8-layer stack of the Quilt repo ecosystem. L1 is hygiene (LICENSE, CI). L8 is community/cross-refs. Most apps use L1–L4.</dd>
-  <dt>JEV</dt><dd>Joint Embedding Validator. A scoring system that picks the best of N candidates per prompt moment. Used to gate which LLM response wins a competition. <a href="https://github.com/SuperInstance/substrate-llm-client" target="_blank" rel="noopener">lives in substrate-llm-client</a>.</dd>
+  <dt title="Same model, many languages, byte-exact via hash">Polyformalism</dt><dd>The same cell model expressed in many languages, byte-exact via the FNV-1a hash. Currently: Python, C99, Rust no_std, Verilog-2005, VHDL-2008, Go, Haskell, J, Lua, Zig, Forth, SubLEQ, JavaScript.</dd>
+  <dt title="8-layer stack from LICENSE to community">L1–L8 architecture</dt><dd>The 8-layer stack of the Quilt repo ecosystem. L1 is hygiene (LICENSE, CI). L8 is community/cross-refs. Most apps use L1–L4.</dd>
+  <dt title="Joint Embedding Validator">JEV</dt><dd>Joint Embedding Validator. A scoring system that picks the best of N candidates per prompt moment. Used to gate which LLM response wins a competition. <a href="https://github.com/SuperInstance/substrate-llm-client" target="_blank" rel="noopener">lives in substrate-llm-client</a>.</dd>
   <dt>Pincher</dt><dd>A tiered cache. Frequently-seen prompts skip the LLM and return a stored response in &lt;16ms. The familiar sinks into the body.</dd>
   <dt>F-number</dt><dd>The lab-notebook shorthand. F161 = Conservation Laws. F170 = Federated TinyML Vessel. Like "equation 17" in a physics paper.</dd>
   <dt>Tile</dt><dd>A compiled reflex. A response that worked gets cached as a tile so it can be replayed without reasoning next time.</dd>
