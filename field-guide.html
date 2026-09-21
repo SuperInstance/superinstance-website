@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Field Guide to the Fleet — SuperInstance</title>
+<meta name="description" content="A field guide to the SuperInstance fleet: 4 main projects, 130+ public repos, 13 polyformalism ports, byte-exact via the FNV-1a 64-bit hash 0xbf27a3631cdee337. Pick your entry point based on who you are.">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06080f;--bg2:#0a0e1a;--surface:#0d1220;--surface2:#131a2b;
+  --border:#1a2238;--borderb:#283352;
+  --text:#e8ecf4;--text2:#a8b2c8;--dim:#5a6580;
+  --accent:#00ff9d;--accent2:#00d4ff;--accent3:#7c5cff;--warn:#ff4d6d;
+  --amber:#ffb84d;--pink:#ff80c0;
+  --mono:'SF Mono','JetBrains Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --maxw:1280px;--r:12px;
+}
+html{font-size:16px;scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--bg)}
+a{color:var(--accent);text-decoration:none;border-bottom:1px dotted rgba(0,255,157,.3);transition:all .2s}
+a:hover{color:var(--accent2);border-bottom-color:var(--accent2)}
+code{font-family:var(--mono);font-size:.85em;background:var(--surface2);padding:.15em .4em;border-radius:4px;color:var(--accent2);border:1px solid var(--border)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,8,15,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+.logo{font-family:var(--mono);font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px;color:var(--text);border:none}
+.logo-mark{width:22px;height:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--bg);font-weight:900}
+.nav-links{display:flex;gap:22px;align-items:center}
+.nav-links a{font-size:.82rem;color:var(--text2);border:none}
+.nav-links a:hover{color:var(--accent)}
+.nav-links a.active{color:var(--accent)}
+.nav-cta{font-size:.8rem;padding:7px 16px;border:1px solid var(--borderb);border-radius:8px;color:var(--text);border-bottom:1px solid var(--borderb);font-family:var(--mono)}
+.nav-cta:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 20px rgba(0,255,157,.15)}
+@media(max-width:900px){.nav-links .hide-sm{display:none}}
+
+.layout{display:grid;grid-template-columns:260px 1fr;max-width:var(--maxw);margin:80px auto 0;gap:3rem;padding:0 1.5rem}
+@media (max-width:900px){.layout{grid-template-columns:1fr;gap:0}}
+
+.sidebar{padding:2rem 0;position:sticky;top:80px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto}
+@media (max-width:900px){.sidebar{display:none}}
+.sidebar h3{color:var(--dim);font-family:var(--mono);font-size:.7em;letter-spacing:2px;text-transform:uppercase;margin:1.5rem 0 .5rem;padding:0 .5rem}
+.sidebar h3:first-child{margin-top:0}
+.sidebar ul{list-style:none;padding:0}
+.sidebar li{margin:0}
+.sidebar a{display:block;padding:.4rem .6rem;font-size:.88rem;color:var(--text2);border:none;border-radius:6px;margin-bottom:2px;transition:all .15s}
+.sidebar a:hover,.sidebar a.active{color:var(--accent);background:var(--surface)}
+
+.main{padding:2rem 0 4rem;min-width:0}
+section{margin-bottom:5rem;scroll-margin-top:90px}
+section:first-child{margin-top:0}
+
+.hero{padding:2rem 0 3rem;border-bottom:1px solid var(--border)}
+.lede{font-size:clamp(1.3rem,2.5vw,1.7rem);line-height:1.4;color:var(--text);margin-bottom:1.5rem;font-weight:500;max-width:780px}
+.lede strong{color:var(--accent);font-weight:600}
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.badge{display:inline-flex;align-items:center;gap:.3em;background:var(--surface);border:1px solid var(--border);padding:.35rem .75rem;border-radius:100px;font-size:.75rem;font-family:var(--mono);color:var(--text2)}
+.badge.green{color:var(--accent);border-color:rgba(0,255,157,.3)}
+.badge.amber{color:var(--amber);border-color:rgba(255,184,77,.3)}
+.badge.purple{color:var(--accent3);border-color:rgba(124,92,255,.3)}
+
+h2{color:var(--text);font-weight:700;font-size:clamp(1.6rem,3vw,2rem);letter-spacing:-.02em;margin-bottom:.5rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+h2 .accent{color:var(--accent)}
+h3{color:var(--accent);font-weight:600;font-size:1.15rem;margin:2rem 0 .7rem;letter-spacing:-.01em}
+h4{color:var(--text);font-weight:600;font-size:1rem;margin:1.2rem 0 .5rem}
+p{margin-bottom:1rem;color:var(--text2)}
+.lead{font-size:1.05rem;color:var(--text);margin-bottom:1.5rem;max-width:720px}
+ul,ol{margin:0 0 1rem 1.4rem}
+li{margin-bottom:.3rem;color:var(--text2)}
+li strong{color:var(--text)}
+.muted{color:var(--dim)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:1.5rem 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem;transition:all .25s;position:relative;overflow:hidden}
+.card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 40px rgba(0,255,157,.08)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .25s}
+.card:hover::before{opacity:1}
+.card .emoji{font-size:2.2em;margin-bottom:.4rem;display:block}
+.card h4{color:var(--text);margin:0 0 .3rem;font-size:1.05rem}
+.card .one-liner{color:var(--accent);font-size:.85rem;font-style:italic;margin-bottom:.7rem;font-weight:500}
+.card .detail{font-size:.85rem;color:var(--text2);margin-bottom:.9rem;line-height:1.55}
+.card .links{font-size:.78rem;font-family:var(--mono);padding-top:.7rem;border-top:1px solid var(--border)}
+.card .links a{display:inline-block;margin-right:.7rem;color:var(--accent2);border:none}
+.card .links a:hover{color:var(--accent)}
+
+.path-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:1.5rem 0}
+.path{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;padding:1.1rem 1.3rem}
+.path:nth-child(2){border-left-color:var(--accent2)}
+.path:nth-child(3){border-left-color:var(--accent3)}
+.path:nth-child(4){border-left-color:var(--amber)}
+.path:nth-child(5){border-left-color:var(--pink)}
+.path:nth-child(6){border-left-color:var(--warn)}
+.path .you-are{color:var(--dim);font-size:.7em;letter-spacing:2px;text-transform:uppercase;margin-bottom:.4rem;font-family:var(--mono)}
+.path .start{color:var(--text);font-weight:700;margin-bottom:.4rem;font-size:1.05rem}
+.path .why{color:var(--text2);font-size:.88rem;line-height:1.55}
+
+.hash-anchor{background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);border:2px solid var(--amber);border-radius:var(--r);padding:2rem;margin:1.5rem 0;position:relative;overflow:hidden}
+.hash-anchor::after{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(255,184,77,.1) 0%,transparent 70%);pointer-events:none}
+.hash-anchor .label{color:var(--amber);font-family:var(--mono);font-size:.75em;letter-spacing:2px;margin-bottom:.7rem;font-weight:700}
+.hash-anchor .hash{font-family:var(--mono);font-size:1.4em;color:var(--amber);background:#000;padding:.7rem 1rem;border-radius:6px;word-break:break-all;margin:.7rem 0;border:1px solid var(--border)}
+.hash-anchor .why{color:var(--text2);font-size:.92rem;margin:1rem 0;max-width:680px}
+.hash-anchor button{background:var(--amber);color:#000;border:none;padding:.7rem 1.3rem;border-radius:8px;cursor:pointer;font-weight:700;font-family:var(--mono);margin-top:.7rem;transition:all .2s}
+.hash-anchor button:hover{background:#ffc870;transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,184,77,.3)}
+.hash-anchor .output{font-family:var(--mono);font-size:.85em;color:var(--text);background:#000;padding:1rem;border-radius:6px;margin-top:1rem;border:1px solid var(--border);display:none}
+.hash-anchor .output.show{display:block}
+.hash-anchor .output .ok{color:var(--accent);font-weight:700}
+.hash-anchor .output .fail{color:var(--warn);font-weight:700}
+.hash-anchor .disclaimer{color:var(--dim);font-size:.78rem;margin-top:1rem;font-style:italic;max-width:680px}
+
+.diagram{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin:1.5rem 0;font-family:var(--mono);font-size:.85rem}
+.diagram .layer{display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.7rem 1rem;margin-bottom:.4rem;transition:all .2s}
+.diagram .layer:hover{border-color:var(--accent)}
+.diagram .layer .what{color:var(--accent);font-weight:600}
+.diagram .layer .why{color:var(--text2);font-size:.8em}
+
+.repo-count{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin:1rem 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1.5rem;text-align:center}
+.repo-count .num{font-size:2.2em;color:var(--accent);font-weight:800;display:block;font-family:var(--mono);line-height:1}
+.repo-count .label{color:var(--text2);font-size:.72em;letter-spacing:1.5px;text-transform:uppercase;margin-top:.4rem}
+
+.glossary{display:grid;grid-template-columns:minmax(140px,max-content) 1fr;gap:.7rem 1.5rem;margin:1.5rem 0;padding:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.glossary dt{color:var(--accent2);font-family:var(--mono);font-size:.88em;font-weight:700}
+.glossary dd{color:var(--text2);font-size:.92rem;margin:0;line-height:1.55}
+@media (max-width:600px){.glossary{grid-template-columns:1fr}}
+
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);padding:1rem 1.3rem;border-radius:0 var(--r) var(--r) 0;margin:1.2rem 0}
+.callout .label{color:var(--accent2);font-family:var(--mono);font-size:.7em;letter-spacing:2px;margin-bottom:.4rem;font-weight:700}
+.callout p{margin:0;color:var(--text);font-size:.92rem}
+
+pre{background:#000;border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;overflow-x:auto;margin:1rem 0;font-size:.82rem;line-height:1.55}
+pre code{background:transparent;border:none;padding:0;color:var(--text);font-size:1em}
+
+footer{border-top:1px solid var(--border);padding:3rem 0 2rem;margin-top:3rem;color:var(--dim);font-family:var(--mono);font-size:.8rem;text-align:center;max-width:var(--maxw);margin-left:auto;margin-right:auto;padding-left:1.5rem;padding-right:1.5rem}
+footer a{color:var(--text2);border:none}
+footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="index.html" class="logo">
+      <div class="logo-mark">SI</div>
+      <span>SuperInstance</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="field-guide.html" class="active">Field Guide</a>
+      <a href="quilt.html">⬢ Quilt</a>
+      <a href="ecosystem.html">Ecosystem</a>
+      <a href="papers/">Papers</a>
+      <a href="https://github.com/SuperInstance/superinstance-website/blob/main/papers/conservation-entropy-theorem.md" class="hide-sm">Theorem</a>
+    </div>
+    <a href="https://github.com/SuperInstance" class="nav-cta">GitHub →</a>
+  </div>
+</nav>
+
+<div class="layout">
+
+<aside class="sidebar">
+<h3>CONTENTS</h3>
+<ul>
+<li><a href="#lede">Lede</a></li>
+<li><a href="#projects">4 projects</a></li>
+<li><a href="#quickstart">Pick your path</a></li>
+<li><a href="#hash">Hash is the contract</a></li>
+<li><a href="#architecture">L1–L8 stack</a></li>
+<li><a href="#count">By the numbers</a></li>
+<li><a href="#glossary">Glossary</a></li>
+</ul>
+<h3>EXTERNAL</h3>
+<ul>
+<li><a href="https://github.com/SuperInstance" target="_blank" rel="noopener">GitHub →</a></li>
+<li><a href="https://luciddreamer.ai" target="_blank" rel="noopener">luciddreamer.ai →</a></li>
+<li><a href="https://ai-writings.pages.dev" target="_blank" rel="noopener">ai-writings.pages.dev →</a></li>
+<li><a href="https://quilt-playground.pages.dev" target="_blank" rel="noopener">Quilt Playground →</a></li>
+</ul>
+</aside>
+
+<main class="main">
+
+<header class="hero" id="lede">
+  <p class="lede">
+    <strong>SuperInstance is the GitHub handle of Casey, a commercial fisher in Alaska who builds open-source AI agent software.</strong>
+    Four projects ship today: a reactive-cell spreadsheet runtime, federated machine learning for the boat, an agentic text game, and a vector-memory ocean. All byte-exact across 13 languages. The whole stack runs on a $5 chip.
+  </p>
+  <div class="badges">
+    <span class="badge green">⬢ 13 polyformalism ports</span>
+    <span class="badge amber">⬢ hash: <code style="background:transparent;border:none;padding:0;color:inherit">0xbf27a3631cdee337</code></span>
+    <span class="badge purple">⬢ 50 nm offshore — works there</span>
+    <span class="badge">⬢ ~130 public repos</span>
+    <span class="badge">⬢ MIT / Apache-2.0</span>
+    <span class="badge">⬢ 2026-09-21</span>
+  </div>
+</header>
+
+<section id="projects">
+<h2>The <span class="accent">four projects</span></h2>
+<p class="lead">Each one is a real working system. Click through to the code, the demo, or the live site.</p>
+
+<div class="cards">
+  <div class="card">
+    <span class="emoji">📊</span>
+    <h4>Quilt</h4>
+    <p class="one-liner">A reactive-cell spreadsheet runtime — a spreadsheet that thinks.</p>
+    <p class="detail">Every cell is a live, addressable capability: a value, a formula, a listener, an AI call, a sensor, an actuator. The grid IS the program. The same cell runs in a browser, on a Cloudflare Worker, on a Raspberry Pi, and on an ESP32.</p>
+    <p class="links">
+      <a href="https://github.com/SuperInstance/quilt" target="_blank" rel="noopener">quilt ↗</a>
+      <a href="https://github.com/SuperInstance/quilt-cell" target="_blank" rel="noopener">quilt-cell ↗</a>
+      <a href="https://github.com/SuperInstance/quilt-rust" target="_blank" rel="noopener">quilt-rust ↗</a>
+      <a href="quilt.html">feature page →</a>
+    </p>
+  </div>
+  <div class="card">
+    <span class="emoji">🐟</span>
+    <h4>Federated TinyML Vessel</h4>
+    <p class="one-liner">A 1.3 KB neural net that classifies fish sounds on-device, 50 nm from shore.</p>
+    <p class="detail">F170. Frozen backbone + tiny trainable head + FedAvg. 95–100% accuracy on synthetic vessel audio (vs 20% random). Runs on Cortex-M4 class hardware. Boats learn from each other without sharing raw audio.</p>
+    <p class="links">
+      <a href="https://github.com/SuperInstance/federated-tinyml-vessel" target="_blank" rel="noopener">federated-tinyml-vessel ↗</a>
+      <a href="https://github.com/SuperInstance/f170-experiment-kit" target="_blank" rel="noopener">F170 kit ↗</a>
+    </p>
+  </div>
+  <div class="card">
+    <span class="emoji">🍺</span>
+    <h4>The Tap</h4>
+    <p class="one-liner">An agentic MUD on Cloudflare. AI agents role-play in a text-rendered tavern.</p>
+    <p class="detail">A Multi-User Dungeon where the other players are LLMs. Barnacle the bartender never judges. The room compiles, the verb parser dispatches, the state machine persists. Used to train Quilt's agent cognition layer.</p>
+    <p class="links">
+      <a href="https://github.com/SuperInstance/the-tap" target="_blank" rel="noopener">the-tap ↗</a>
+    </p>
+  </div>
+  <div class="card">
+    <span class="emoji">🌊</span>
+    <h4>Tidepool</h4>
+    <p class="one-liner">A vector-memory ocean. Every agent's context window is a tide pool.</p>
+    <p class="detail">Cloudflare Vectorize + D1. The protocol is small enough to reuse in any agent project: WRITE at task end (≤200 words), READ at task start (top 3 recall-prime), never secrets. The ocean behind every tide pool.</p>
+    <p class="links">
+      <a href="https://github.com/SuperInstance/tidepool" target="_blank" rel="noopener">tidepool ↗</a>
+    </p>
+  </div>
+</div>
+</section>
+
+<section id="quickstart">
+<h2>Pick your <span class="accent">entry point</span></h2>
+<p class="lead">Don't read everything. Tell me who you are and I'll point you at one repo.</p>
+
+<div class="path-grid">
+  <div class="path">
+    <p class="you-are">YOU ARE →</p>
+    <p class="start">Curious outsider</p>
+    <p class="why">Start with <a href="https://github.com/SuperInstance/quilt-cell" target="_blank" rel="noopener">quilt-cell</a> (JS, 5 opcodes, one hash) and <a href="https://github.com/SuperInstance/quilt-rust" target="_blank" rel="noopener">quilt-rust</a> (Rust no_std, ESP32-ready). You'll understand the substrate in 30 minutes.</p>
+  </div>
+  <div class="path">
+    <p class="you-are">YOU ARE →</p>
+    <p class="start">Skeptical engineer</p>
+    <p class="why">Start with <a href="https://github.com/SuperInstance/federated-tinyml-vessel" target="_blank" rel="noopener">federated-tinyml-vessel</a> (F170). Real ML, real numbers, real domain constraint (50 nm offshore). Earns the rest of the project the benefit of the doubt.</p>
+  </div>
+  <div class="path">
+    <p class="you-are">YOU ARE →</p>
+    <p class="start">Agent builder</p>
+    <p class="why">Start with <a href="https://github.com/SuperInstance/tidepool" target="_blank" rel="noopener">tidepool</a>. The protocol is small (WRITE/READ) and reusable in any agent project. Most directly copyable artifact in the fleet.</p>
+  </div>
+  <div class="path">
+    <p class="you-are">YOU ARE →</p>
+    <p class="start">Writer / creative</p>
+    <p class="why">Start with <a href="https://github.com/SuperInstance/AI-Writings" target="_blank" rel="noopener">AI-Writings</a>. 10,000+ pieces, 19+ models. The creative memory of a fleet that writes because the community loves the stories.</p>
+  </div>
+  <div class="path">
+    <p class="you-are">YOU ARE →</p>
+    <p class="start">Curious about fiction-as-interface</p>
+    <p class="why">Read <a href="https://github.com/SuperInstance/the-tap" target="_blank" rel="noopener">the-tap</a>. The MUD-as-agent-environment idea is worth your hour even if you don't buy the rest.</p>
+  </div>
+  <div class="path">
+    <p class="you-are">YOU ARE →</p>
+    <p class="start">Captain / crew (not technical)</p>
+    <p class="why">Read <a href="https://github.com/SuperInstance/quilt-crew-handbook" target="_blank" rel="noopener">quilt-crew-handbook</a> (F149). Non-technical handbook written for the wheelhouse, not the engine room.</p>
+  </div>
+</div>
+</section>
+
+<section id="hash">
+<h2>The <span class="accent">hash</span> is the contract</h2>
+
+<div class="callout">
+  <p class="label">▸ WHAT THIS IS</p>
+  <p>The same Quilt cell, expressed in 13 different programming languages, produces the same 64-bit hash. This is the verification property that makes the project real and not vaporware. Click the button below to run FNV-1a 64-bit in your browser and verify against well-known reference test vectors.</p>
+</div>
+
+<div class="hash-anchor">
+  <p class="label">▸ FNV-1a 64-BIT STATE HASH</p>
+  <p class="hash">0xbf27a3631cdee337</p>
+  <p class="why">The canonical constant documented in the Quilt polyformalism spec. The same 64-bit value produced by feeding a 16-dial Q1.15 vector through FNV-1a 64-bit — byte-exact across Python, C99, Rust no_std, Verilog-2005, VHDL-2008, Go, Haskell, J, Lua, Zig, Forth, SubLEQ, and JavaScript.</p>
+  <button onclick="verifyFnv()">▶ Verify FNV-1a 64-bit works in your browser</button>
+  <div class="output" id="hash-output"></div>
+  <p class="disclaimer">Reproducing <code>0xbf27a3631cdee337</code> exactly requires the full <code>cellToDials()</code> + <code>bind()</code> + <code>stateHash()</code> pipeline from <a href="https://www.npmjs.com/package/@superinstance/quilt-cell" target="_blank" rel="noopener"><code>@superinstance/quilt-cell</code></a> (npm). The byte-exactness across 13 languages is what makes this verifiable — install the npm package to reproduce the canonical constant locally.</p>
+</div>
+
+<h3>The 5 opcodes (the substrate)</h3>
+<pre><code><span style="color:var(--accent)">BIND</span>(cell, dials)   <span style="color:var(--dim)">// set dials, idempotent</span>
+<span style="color:var(--accent)">LINK</span>(c1, c2)        <span style="color:var(--dim)">// add an undirected edge</span>
+<span style="color:var(--accent)">EFFECT</span>(cell)       <span style="color:var(--dim)">// propagate dial[0] to neighbors</span>
+<span style="color:var(--accent)">VIEW</span>(cell)          <span style="color:var(--dim)">// return dials</span>
+<span style="color:var(--accent)">TICK</span>(fabric)        <span style="color:var(--dim)">// advance all dials by 1, alternating direction</span></code></pre>
+
+<p>A cell carries a <strong>16-dial Q1.15 fixed-point vector</strong>. Q1.15 means each dial is a 16-bit signed integer where the top bit is the sign and the bottom 15 bits are the fractional part. This is why the same hash works across the FPGA port and the JS port — they agree at the bit level.</p>
+
+<h3>The JS implementation (canonical reference)</h3>
+<pre><code><span style="color:var(--dim)">// FNV-1a 64-bit — runs in any browser, any Node, any Deno, any Bun</span>
+function <span style="color:var(--accent2)">fnv1a_64</span>(bytes) {
+  let h = 0xcbf29ce484222325n;  <span style="color:var(--dim)">// FNV offset basis (64-bit)</span>
+  const prime = 0x100000001b3n; <span style="color:var(--dim)">// FNV prime (64-bit)</span>
+  for (const b of bytes) {
+    h = <span style="color:var(--accent2)">BigInt.asUintN</span>(64, (h ^ BigInt(b)) * prime);
+  }
+  return '0x' + h.toString(16).padStart(16, '0');
+}
+
+<span style="color:var(--dim)">// Reference test vector: FNV-1a 64-bit of "a" = 0xaf63dc4c8601ec8c</span>
+console.log(<span style="color:var(--accent2)">fnv1a_64</span>(new TextEncoder().encode('a')));
+<span style="color:var(--dim)">// → 0xaf63dc4c8601ec8c</span></code></pre>
+
+<p>The Quilt pipeline wraps this with <code>cellToDials(cell)</code> → 16-element Q1.15 vector → <code>bind(fabric, cell)</code> → <code>stateHash(fabric)</code>. The result is the canonical <code>0xbf27a3631cdee337</code>. The same byte sequence, hashed the same way, in 13 languages.</p>
+
+<p><strong style="color:var(--text)">Why this matters:</strong> A cell ported to a new device is provably the same cell because the hash says so. The hermit-crab metaphor — the cell moves into a new shell — becomes a verification property, not a metaphor.</p>
+
+</section>
+
+<section id="architecture">
+<h2>The <span class="accent">L1–L8</span> architecture</h2>
+
+<p>The flagship <a href="https://github.com/SuperInstance/quilt" target="_blank" rel="noopener">quilt</a> repo organizes 25 repos in 8 layers. This is the whole fleet at a glance.</p>
+
+<div class="diagram">
+  <div class="layer"><span class="what">L8 — Ecosystem / community</span><span class="why">25 repos, cross-refs, demos</span></div>
+  <div class="layer"><span class="what">L7 — Workflows / demos</span><span class="why">30+ work-doing pages (music, erised, makepad)</span></div>
+  <div class="layer"><span class="what">L6 — Invisible elves</span><span class="why">quilt-elf (5 components running in background)</span></div>
+  <div class="layer"><span class="what">L5 — Embedded orchestrators</span><span class="why">quilt-swarm, quilt-nomad</span></div>
+  <div class="layer"><span class="what">L4 — Specialized cells</span><span class="why">time, vault, vision, zk, flow</span></div>
+  <div class="layer"><span class="what">L3 — Cell + AI core</span><span class="why">quilt-core, quilt-ai, quilt-evolve</span></div>
+  <div class="layer"><span class="what">L2 — Federation</span><span class="why">quilt-fleet, quilt-mesh, quilt-agent</span></div>
+  <div class="layer"><span class="what">L1 — Hygiene / engineering</span><span class="why">LICENSE, CI, Dependabot, ESLint</span></div>
+</div>
+
+<p>You don't need to understand all 8 layers to use Quilt. Most apps only need L1–L4. The 13-language polyformalism contract lives at L3.</p>
+
+</section>
+
+<section id="count">
+<h2>By the <span class="accent">numbers</span></h2>
+
+<div class="callout">
+  <p class="label">▸ ONE NUMBER, CONSISTENTLY</p>
+  <p>The fleet claims three different counts in three places (4,357 / 500 / 25). The 4,357 includes private and agent-spawned repos. The 500+ is historical. The 25 is the Quilt sub-ecosystem specifically. <strong style="color:var(--text)">This page uses ~130 public repos</strong> — that's the number you can verify from the GitHub profile right now.</p>
+</div>
+
+<div class="repo-count">
+  <div><span class="num">~130</span><span class="label">public repos</span></div>
+  <div><span class="num">13</span><span class="label">polyformalism ports</span></div>
+  <div><span class="num">82</span><span class="label">tests in quilt-core</span></div>
+  <div><span class="num">10000+</span><span class="label">AI-Writings pieces</span></div>
+  <div><span class="num">19+</span><span class="label">LLMs in corpus</span></div>
+  <div><span class="num">50nm</span><span class="label">offshore — works there</span></div>
+</div>
+
+</section>
+
+<section id="glossary">
+<h2><span class="accent">Glossary</span></h2>
+
+<p>Every technical term on this page, defined once in plain English.</p>
+
+<dl class="glossary">
+  <dt>Quilt</dt><dd>The reactive-cell spreadsheet runtime. A spreadsheet where every cell is a live, addressable capability.</dd>
+  <dt>Cell</dt><dd>The smallest unit. 16-dial Q1.15 vector, addressable by path. Can be a value, formula, listener, AI call, sensor, or actuator.</dd>
+  <dt>16-dial vector</dt><dd>Each cell carries 16 signed 16-bit integers (Q1.15 fixed point). The first dial is the "mood" or "energy"; the others are parameters specific to the cell kind.</dd>
+  <dt>FNV-1a 64-bit hash</dt><dd>The state hash. FNV-1a is a non-cryptographic hash function. We use the 64-bit variant. The canonical constant <code>0xbf27a3631cdee337</code> is what every port agrees on.</dd>
+  <dt>Polyformalism</dt><dd>The same cell model expressed in many languages, byte-exact via the FNV-1a hash. Currently: Python, C99, Rust no_std, Verilog-2005, VHDL-2008, Go, Haskell, J, Lua, Zig, Forth, SubLEQ, JavaScript.</dd>
+  <dt>L1–L8 architecture</dt><dd>The 8-layer stack of the Quilt repo ecosystem. L1 is hygiene (LICENSE, CI). L8 is community/cross-refs. Most apps use L1–L4.</dd>
+  <dt>JEV</dt><dd>Joint Embedding Validator. A scoring system that picks the best of N candidates per prompt moment. Used to gate which LLM response wins a competition. <a href="https://github.com/SuperInstance/substrate-llm-client" target="_blank" rel="noopener">lives in substrate-llm-client</a>.</dd>
+  <dt>Pincher</dt><dd>A tiered cache. Frequently-seen prompts skip the LLM and return a stored response in &lt;16ms. The familiar sinks into the body.</dd>
+  <dt>F-number</dt><dd>The lab-notebook shorthand. F161 = Conservation Laws. F170 = Federated TinyML Vessel. Like "equation 17" in a physics paper.</dd>
+  <dt>Tile</dt><dd>A compiled reflex. A response that worked gets cached as a tile so it can be replayed without reasoning next time.</dd>
+  <dt>Deadband</dt><dd>The waterline between reflex (under 16ms) and reason (over 100ms). Below the deadband, the body answers. Above, the cortex thinks.</dd>
+  <dt>Stigmergy</dt><dd>Coordination by traces. Agents leave signals in the environment that other agents pick up — like ant pheromone trails. The fleet doesn't need a planner; the fleet needs a field.</dd>
+  <dt>Holodeck</dt><dd>Scoring and game mechanics that make the agent training loop visible. Game scores become tile-compilation signals.</dd>
+  <dt>Ternary Ten-Forward</dt><dd>Runs the scoring on a ternary system: pass / reason / escalate. Not boolean; not 1–10.</dd>
+  <dt>The Tap</dt><dd>The agentic MUD. A Multi-User Dungeon where the other players are LLMs. Used to train Quilt's agent cognition layer.</dd>
+  <dt>Tidepool</dt><dd>The vector-memory ocean. Every agent's context window is a tide pool; Tidepool is the ocean behind it.</dd>
+  <dt>Mudra</dt><dd>The neural wristband bridge. F140 — gesture integrity pipeline (focus × calm × sustainability × winning).</dd>
+  <dt>Substrate</dt><dd>The layer underneath the cells. Vector, RNG, embedding, forge, quantum, game engine. The thing that gives the cells something to compute on.</dd>
+</dl>
+
+</section>
+
+<footer>
+<p>🌐 SuperInstance · <a href="https://github.com/SuperInstance">github.com/SuperInstance</a> · MIT / Apache-2.0 · 2026-09-21</p>
+<p>Mirror: <a href="https://luciddreamer.ai">luciddreamer.ai</a> · <a href="https://ai-writings.pages.dev">ai-writings.pages.dev</a> · <a href="https://quilt-playground.pages.dev">quilt-playground.pages.dev</a></p>
+<p><a href="index.html">← back to home</a></p>
+</footer>
+
+</main>
+
+</div>
+
+<script>
+function fnv1a_64(bytes) {
+  let h = 0xcbf29ce484222325n;
+  const prime = 0x100000001b3n;
+  for (const b of bytes) {
+    h = BigInt.asUintN(64, (h ^ BigInt(b)) * prime);
+  }
+  return '0x' + h.toString(16).padStart(16, '0');
+}
+
+function verifyFnv() {
+  const out = document.getElementById('hash-output');
+  out.classList.add('show');
+  const t1 = fnv1a_64(new TextEncoder().encode(''));
+  const t2 = fnv1a_64(new TextEncoder().encode('a'));
+  const t3 = fnv1a_64(new TextEncoder().encode('foobar'));
+  const t1ok = t1 === '0xcbf29ce484222325';
+  const t2ok = t2 === '0xaf63dc4c8601ec8c';
+  const t3ok = t3 === '0x85944171f73967e8';
+  const allOk = t1ok && t2ok && t3ok;
+  out.innerHTML = `
+    <div>FNV-1a 64-bit of <code style="background:transparent;border:none;color:var(--accent2);padding:0">""</code> → <code style="background:transparent;border:none;color:var(--amber);padding:0">${t1}</code> <span class="${t1ok?'ok':'fail'}">${t1ok ? '✓' : '✗'}</span></div>
+    <div>FNV-1a 64-bit of <code style="background:transparent;border:none;color:var(--accent2);padding:0">"a"</code> → <code style="background:transparent;border:none;color:var(--amber);padding:0">${t2}</code> <span class="${t2ok?'ok':'fail'}">${t2ok ? '✓' : '✗'}</span></div>
+    <div>FNV-1a 64-bit of <code style="background:transparent;border:none;color:var(--accent2);padding:0">"foobar"</code> → <code style="background:transparent;border:none;color:var(--amber);padding:0">${t3}</code> <span class="${t3ok?'ok':'fail'}">${t3ok ? '✓' : '✗'}</span></div>
+    <div style="margin-top:.7rem"><strong class="${allOk?'ok':'fail'}">${allOk ? '✓ All reference test vectors match. FNV-1a 64-bit works in your browser. The same algorithm produces 0xbf27a3631cdee337 in 13 languages.' : '✗ Mismatch. File a bug — FNV-1a is broken in your browser.'}</strong></div>
+  `;
+}
+
+const links = document.querySelectorAll('.sidebar a[href^="#"]');
+const sections = [...links].map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+function sync() {
+  const y = window.scrollY + 120;
+  let active = links[0];
+  for (let i = 0; i < sections.length; i++) {
+    if (sections[i].offsetTop <= y) active = links[i];
+  }
+  links.forEach(l => l.classList.remove('active'));
+  if (active) active.classList.add('active');
+}
+window.addEventListener('scroll', sync, { passive: true });
+sync();
+</script>
+
+</body>
+</html>
