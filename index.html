@@ -1,797 +1,442 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The Quilt Studio | superinstance.dev</title>
-  <style>
-    :root {
-      --bg: #0a1929;
-      --text: #c0d6e4;
-      --accent: #d4a857;
-      --teal: #00a8a8;
-      --green: #00c080;
-      --purple: #9a60d9;
-      --gold: #d4a857;
-      --coral: #ff6b6b;
-      --gray: #888888;
-      --blue: #5c99d4;
-      --magenta: #d457d4;
-      --border: #1a324a;
-      --card: #132637;
-      --shadow: rgba(0, 0, 0, 0.5);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SuperInstance — the substrate that evolves its own inference</title>
+<meta name="description" content="Tools, worlds, and receipts. A 200-repo fleet of kernels, instruments, and creative works — most of it runnable in your browser, all of it honest about what it is."/>
+<style>
+:root{
+  --bg:#0a1929; --bg2:#0d1f33; --card:#132637; --border:#1a324a;
+  --text:#c0d6e4; --dim:#7d99ad; --accent:#d4a857; --teal:#00a8a8;
+  --green:#00c080; --coral:#ff6b6b; --magenta:#d457d4; --blue:#5c99d4;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;line-height:1.6;overflow-x:hidden}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{font-weight:600}
+.wrap{max-width:1200px;margin:0 auto;padding:0 2rem}
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Courier New', monospace;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+/* ── top nav ─────────────────────────────── */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,25,41,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+nav .wrap{display:flex;align-items:center;gap:1.6rem;padding:.8rem 2rem;flex-wrap:wrap}
+nav .brand{color:var(--accent);font-weight:700;letter-spacing:.14em}
+nav .brand:hover{text-decoration:none}
+nav a.nl{color:var(--dim);font-size:.86rem;letter-spacing:.08em;text-transform:uppercase}
+nav a.nl:hover{color:var(--text);text-decoration:none}
+nav .sp{flex:1}
+nav a.cta{border:1px solid var(--accent);color:var(--accent);padding:.25rem .8rem;font-size:.82rem}
+nav a.cta:hover{background:var(--accent);color:var(--bg);text-decoration:none}
 
-    h1, h2, h3, h4 {
-      font-weight: 600;
-    }
+/* ── hero ────────────────────────────────── */
+.hero{padding:7rem 0 5rem;border-bottom:1px solid var(--border);background:radial-gradient(ellipse 900px 480px at 50% -8%, #10304a 0%, var(--bg) 62%)}
+.hero .kicker{color:var(--teal);letter-spacing:.3em;font-size:.8rem;text-transform:uppercase;margin-bottom:1.2rem}
+.hero h1{font-size:clamp(2rem,4.6vw,3.4rem);line-height:1.15;color:#e8f2f9;max-width:22ch}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero p.lede{max-width:62ch;margin-top:1.4rem;color:var(--dim);font-size:1.05rem}
+.hero .ctas{margin-top:2.2rem;display:flex;gap:1rem;flex-wrap:wrap}
+.hero .ctas a{border:1px solid var(--teal);padding:.6rem 1.4rem;font-size:.95rem}
+.hero .ctas a.solid{background:var(--teal);color:var(--bg);font-weight:700}
+.hero .ctas a.solid:hover{background:var(--green);border-color:var(--green);text-decoration:none}
+.hero .ctas a.ghost:hover{background:rgba(0,168,168,.12);text-decoration:none}
+.hero .stats{margin-top:3rem;display:flex;gap:2.6rem;flex-wrap:wrap;color:var(--dim);font-size:.85rem}
+.hero .stats b{display:block;color:var(--text);font-size:1.5rem;font-weight:700}
 
-    h1 { font-size: 3.2rem; margin-bottom: 0.5rem; }
-    h2 { font-size: 2.2rem; margin: 1.5rem 0; color: var(--accent); }
-    h3 { font-size: 1.4rem; margin: 1rem 0; }
-    p { margin: 0.8rem 0; }
+/* ── sections ────────────────────────────── */
+section{padding:4rem 0}
+section .head{margin-bottom:2.2rem}
+section .head .kick{color:var(--teal);letter-spacing:.28em;font-size:.75rem;text-transform:uppercase}
+section .head h2{font-size:1.9rem;color:var(--accent);margin:.4rem 0 .6rem}
+section .head p{color:var(--dim);max-width:70ch}
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
+/* ── cards ───────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.1rem}
+.card{background:var(--card);border:1px solid var(--border);padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:.55rem;transition:border-color .15s}
+.card:hover{border-color:var(--teal)}
+.card .tag{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.card .tag.live{color:var(--green)}
+.card h3{font-size:1.12rem}
+.card h3 a{color:#e8f2f9}
+.card h3 a:hover{color:var(--accent);text-decoration:none}
+.card p{font-size:.9rem;color:var(--dim);flex:1}
+.card .links{font-size:.82rem;display:flex;gap:1.1rem;flex-wrap:wrap;margin-top:.3rem}
+.card .links a{color:var(--teal)}
+.card .why{border-left:2px solid var(--accent);padding-left:.7rem;font-size:.85rem;color:var(--text);font-style:italic}
 
-    /* HERO */
-    .hero {
-      height: 100vh;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: var(--text);
-      background: var(--bg);
-      overflow: hidden;
-      padding: 4rem 1rem;
-    }
+/* ── tools strip ─────────────────────────── */
+.strip{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.note{margin-top:1.6rem;color:var(--dim);font-size:.85rem}
+.note b{color:var(--text)}
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10 L90 90 M90 10 L10 90' stroke='%231a324a' stroke-width='0.5'/%3E%3C/svg%3E") repeat;
-      opacity: 0.1;
-      z-index: 0;
-    }
-
-    .hero .boats {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .boat {
-      position: absolute;
-      width: 20px;
-      height: 10px;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 12'%3E%3Cpath d='M2 6 L22 2 L22 10 L2 6 Z' fill='%23d4a857'/%3E%3Cpath d='M2 6 L6 2 L6 10 L2 6 Z' fill='%23888'/%3E%3C/svg%3E") no-repeat center;
-      transform-origin: center;
-      z-index: 2;
-    }
-
-    .hero h1 {
-      font-size: 3.2rem;
-      margin-bottom: 1rem;
-      z-index: 3;
-      text-shadow: 0 0 10px rgba(212, 168, 87, 0.5);
-    }
-
-    .hero p {
-      font-size: 1.4rem;
-      margin-bottom: 2rem;
-      max-width: 800px;
-      z-index: 3;
-    }
-
-    .stats {
-      font-size: 1rem;
-      margin-bottom: 2rem;
-      z-index: 3;
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .stat {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      box-shadow: 0 0 10px var(--shadow);
-    }
-
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      z-index: 3;
-    }
-
-    .btn {
-      padding: 1rem 2rem;
-      background: var(--accent);
-      color: var(--bg);
-      border: none;
-      border-radius: 4px;
-      font-size: 1.2rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px var(--shadow);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px var(--shadow);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-teal { background: var(--teal); }
-    .btn-green { background: var(--green); }
-    .btn-purple { background: var(--purple); }
-    .btn-gold { background: var(--gold); }
-
-    /* GRID */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 10px var(--shadow);
-      transition: transform 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px var(--shadow);
-    }
-
-    .card h3 {
-      margin-bottom: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .card p {
-      font-size: 0.9rem;
-      color: #aaa;
-    }
-
-    .status {
-      font-size: 0.8rem;
-      margin-top: 0.5rem;
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      background: var(--accent);
-      color: var(--bg);
-      border-radius: 4px;
-      font-weight: 500;
-    }
-
-    .status.working { background: var(--green); }
-    .status.demo { background: var(--gold); }
-
-    /* PRIMITIVES */
-    .primitives .card {
-      background: var(--teal);
-      color: var(--bg);
-      border-color: #007a7a;
-    }
-
-    .primitives .card h3 {
-      color: var(--bg);
-    }
-
-    .primitives .card p {
-      color: #e0f5f0;
-    }
-
-    .primitives .card .symbol {
-      font-size: 1.8rem;
-      margin-right: 0.5rem;
-    }
-
-    /* NERVOUS SYSTEMS */
-    .nervous .card {
-      border-color: var(--border);
-      background: var(--card);
-      color: var(--text);
-    }
-
-    .nervous .card h3 {
-      color: var(--accent);
-    }
-
-    .nervous .card p {
-      color: #ccc;
-    }
-
-    .nervous .card .icon {
-      font-size: 1.5rem;
-      margin-right: 0.5rem;
-    }
-
-    /* IMPOSSIBILITY PROOFS */
-    .proofs .card {
-      background: var(--card);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 10px var(--shadow);
-    }
-
-    .proofs .card h3 {
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-
-    .proofs .card p {
-      font-size: 0.9rem;
-      color: #aaa;
-    }
-
-    /* TOOLS & VISUALIZATIONS */
-    .tools, .visualizations {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .thumbnail {
-      width: 100%;
-      height: 120px;
-      background: var(--border);
-      border-radius: 4px;
-      margin-bottom: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #aaa;
-      font-size: 1.2rem;
-      overflow: hidden;
-    }
-
-    .thumbnail img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .thumbnail svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* DOCS */
-    .docs .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 4px 10px var(--shadow);
-    }
-
-    .docs .card h3 {
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-
-    .docs .card p {
-      font-size: 0.9rem;
-      color: #aaa;
-    }
-
-    /* THE WATCH */
-    .watch {
-      text-align: center;
-      padding: 4rem 1rem;
-      background: var(--bg);
-      border-top: 1px solid var(--border);
-      margin-top: 3rem;
-    }
-
-    .watch h2 {
-      font-size: 2.8rem;
-      margin-bottom: 1rem;
-      color: var(--accent);
-    }
-
-    .watch p {
-      font-size: 1.4rem;
-      line-height: 1.8;
-      max-width: 800px;
-      margin: 0 auto 1rem;
-    }
-
-    /* FOOTER */
-    .footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-      color: #777;
-      border-top: 1px solid var(--border);
-      margin-top: 3rem;
-    }
-
-    .footer a {
-      color: var(--accent);
-      text-decoration: none;
-      margin: 0 0.5rem;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 2.5rem; }
-      .hero p { font-size: 1.2rem; }
-      .buttons { flex-direction: column; align-items: center; }
-      .btn { width: 100%; max-width: 300px; }
-      .grid { grid-template-columns: 1fr; }
-    }
-  </style>
+/* ── footer ──────────────────────────────── */
+footer{border-top:1px solid var(--border);padding:3rem 0 4rem;color:var(--dim);font-size:.85rem}
+footer .cols{display:flex;gap:3rem;flex-wrap:wrap}
+footer .col{min-width:180px}
+footer .col h4{color:var(--text);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:.7rem}
+footer .col a{display:block;padding:.14rem 0;color:var(--dim)}
+footer .col a:hover{color:var(--teal);text-decoration:none}
+footer .honest{margin-top:2.4rem;padding-top:1.4rem;border-top:1px dashed var(--border);max-width:80ch}
+@media (max-width:640px){.hero{padding:4rem 0 3rem}nav .wrap{gap:.9rem}}
+</style>
 </head>
-  <body>
+<body>
 
-    <section style="max-width:1100px;margin:1.5rem auto;padding:1.4rem 1.6rem;background:linear-gradient(135deg,rgba(212,168,87,0.30),rgba(255,255,255,0.05));border:1px solid rgba(212,168,87,0.9);border-radius:14px;box-shadow:0 0 36px rgba(212,168,87,0.32)">
-    <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:0.68rem;color:#d4a857;margin:0 0 0.4rem">★ NEW — The Canon Runs Live</p>
-    <h2 style="margin:0 0 0.7rem;font-size:1.5rem">rune-quilt v1.3.0: the Quilt canon, running on the edge — 39 cells, 4 workspaces, 100+ canon pieces, live circuit rank <span id="runeq-b1" style="color:#d4a857">…</span> (<strong style="color:#d4a857">b1 = E − V + C</strong>)</h2>
-    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem">The canon is no longer a document — it's a fleet. Every witness log is a cell. Every citation is a graph edge. The graph has <strong style="color:#d4a857">live topology</strong> — components, holes, circuits — and that topology has a single number you can read off the worker: <strong style="color:#d4a857">b1, the first Betti number</strong>. Same math as bilayer graphene's supercell registry and the QUILT mode in twist-engine. Five live endpoints, public, queryable, embeddable — including the fleet graph (vanilla-JS, force-directed, 39 cells, parent-of edges dashed blue), semantic canon search (bge-base-en-v1.5, 768d cosine), and the live circuit rank over the citation graph.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.4rem 0 0.6rem;font-size:0.84rem">
-      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem"><span id="runeq-cells">…</span> cells</span>
-      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem"><span id="runeq-ws">…</span> workspaces</span>
-      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem"><span id="runeq-pieces">…</span> canon pieces</span>
-      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem"><span id="runeq-edges">…</span> edges</span>
-      <span style="background:rgba(212,168,87,0.18);border:1px solid rgba(212,168,87,0.5);border-radius:14px;padding:0.25rem 0.7rem">b1 = <span id="runeq-b1-num">…</span></span>
-    </div>
-    <p style="margin:0;font-size:0.9rem">
-      <a href="/rune-quilt.html" style="color:inherit;text-decoration:underline;font-weight:600">▶ rune-quilt — the live fleet page (graph embedded + 5 endpoints)</a> &nbsp;·&nbsp;
-      <a href="https://a2a-v3.superinstance.dev/visual" style="color:inherit;text-decoration:underline">📊 Live fleet graph</a> &nbsp;·&nbsp;
-      <a href="https://a2a-v3.superinstance.dev/canon-b1" style="color:inherit;text-decoration:underline">🔢 /canon-b1 — circuit rank</a> &nbsp;·&nbsp;
-      <a href="https://a2a-v3.superinstance.dev/canon-search?q=cell+is+irreducible&k=3" style="color:inherit;text-decoration:underline">🔍 /canon-search</a> &nbsp;·&nbsp;
-      <a href="https://github.com/SuperInstance/rune-quilt" style="color:inherit;text-decoration:underline">📜 The repo — 4 releases</a>
-    </p>
-  </section>
-
-    <section style="max-width:1100px;margin:1.5rem auto;padding:1.4rem 1.6rem;background:linear-gradient(135deg,rgba(79,179,169,0.22),rgba(255,255,255,0.05));border:1px solid rgba(79,179,169,0.7);border-radius:14px;box-shadow:0 0 32px rgba(79,179,169,0.22)">
-    <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:0.68rem;color:#4fb3a9;margin:0 0 0.4rem">★ The Superside — One Fabric, Every Chip</p>
-    <h2 style="margin:0 0 0.7rem;font-size:1.5rem">quilt-verilog crosses the wafer: 5+1 opcodes close synthesis on iCE40, UP5K and ECP5 — bitstreams packed, not yet booted on hardware — and the next eight enhancements are already drafted</h2>
-    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem">The same Verilog-2005 fabric — no vendor code, no floats — is verified by <b>21/21 testbenches, 6/6 formal proofs, and real bitstreams</b>: HX8K at <b>44.4 MHz</b> (98% LC), UP5K at 16.8 MHz, ECP5 at 63.7 MHz, complete state in one flat <b>QUF</b> file (the GGUF of cellular silicon). The superside is what comes next: <b>QUF-SNAP</b> (append-only fire logs make hardware history replayable), a <b>contention-sorted tick scheduler</b> (the patch bay as silicon), a <b>formally proven byzantine tripwire</b>, <b>K as a runtime dial</b>, a <b>dialometer BIST</b> that tests alignment by sweeping its own projection plane, and a snap-only <b>observability theorem</b> that deletes debug ports while strengthening the guarantee. Small chips, many gears — one contract.</p>
-    <p style="margin:0.4rem 0 0;font-size:0.78rem;opacity:0.75">2026-09-04 correction: this section said "18/18 testbenches" when written; the suite is now 21/21 (new q_tern_dice, q_snaplog/q_whistle, crc32-boot lanes) per quilt-verilog commit 37e206f, re-run verified 2026-09-03 (audit r13). Original claim preserved in git history.</p>
-    <p style="margin:0;font-size:0.9rem"><a href="https://github.com/SuperInstance/quilt-verilog" style="color:inherit;text-decoration:underline">🔌 The repo — bitstream receipts</a> &nbsp;·&nbsp; <a href="https://github.com/SuperInstance/quilt-verilog/blob/master/docs/SYNTHESIS-RESULTS.md" style="color:inherit;text-decoration:underline">📊 Synthesis results — three families, measured</a> &nbsp;·&nbsp; <a href="https://github.com/SuperInstance/quilt-verilog/blob/master/docs/NOVEL-ENHANCEMENTS.md" style="color:inherit;text-decoration:underline">⚙️ T1–T8 — the enhancement program</a></p>
-  </section>
-
-    <section style="max-width:1100px;margin:1.5rem auto;padding:1.4rem 1.6rem;background:rgba(79,179,169,0.16);border:1px solid rgba(79,179,169,0.55);border-radius:14px;box-shadow:0 0 24px rgba(79,179,169,0.15)">
-    <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:0.68rem;color:#4fb3a9;margin:0 0 0.4rem">★ New Research — The Machines Teach Themselves</p>
-    <h2 style="margin:0 0 0.7rem;font-size:1.5rem">quilt-verilog: an arena where AI agents compete to out-design their human — and one wins</h2>
-    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem">Five local AI models on one consumer GPU competed to design control strategies for our integer-only snap engine (the <b>batten-wave</b> substrate from <a href="https://ai-writings.pages.dev/papers/225-the-batten-is-the-wave" style="color:inherit">Paper 225</a>), with a deterministic simulator as the only judge. Two findings that change how self-improving agent teams are built: <b>(1) The Ratchet</b> — without per-agent memory of their own best work, models abandon winning designs under leaderboard pressure and regress, every time; with it, three regressions were caught and held. <b>(2) The Variety Ledger</b> — score isn't a verdict, it's a query: strategies are banked across calm and stressed regimes, and the tournament "loser" turned out to be the undisputed specialist for calm conditions. And the headline: a <b>2-billion-parameter model beat the human hand-tuned strategy by 10 points</b> — while the biggest models in the field failed to produce a single valid design. Small crews that synergize beat stars that don't.</p>
-    <p style="margin:0;font-size:0.9rem"><a href="https://ai-writings.pages.dev/papers/226-the-ratchet-and-the-ledger" style="color:inherit;text-decoration:underline">📜 Paper 226 — The Ratchet and the Ledger</a> &nbsp;·&nbsp; <a href="https://github.com/SuperInstance/quilt-verilog/tree/g3-kinduction/spikes/225-e1-interference-tick" style="color:inherit;text-decoration:underline">🧪 Full harness + round-by-round data</a> &nbsp;·&nbsp; <a href="https://github.com/SuperInstance/quilt-verilog/blob/g3-kinduction/spikes/225-e1-interference-tick/EXPLAINER.md" style="color:inherit;text-decoration:underline">⚡ The short version</a></p>
-  </section>
-
-    <section style="max-width:1100px;margin:1.5rem auto;padding:1.4rem 1.6rem;background:rgba(79,179,169,0.10);border:1px solid rgba(79,179,169,0.35);border-radius:14px">
-    <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:0.68rem;color:#4fb3a9;margin:0 0 0.4rem">Featured — Fresh off the Ways</p>
-    <h2 style="margin:0 0 0.7rem;font-size:1.5rem">quilt-scratch: cells you can watch think</h2>
-    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem">A no-code game engine where kids <b>wire tiles together</b> instead of writing code — every cell inspectable, swappable, alive on its own. Drag a wire, watch a value travel, and the game is whatever the wiring says: invaders, harbor defense, and the Deep Caverns — lifts, keys, crumble bridges, confetti through the same port as everything else. Built the fleet way: builder lane, adversarial gatekeeper, an OpenCode debug pass that killed nine falsy-zero bugs, and a 90s machine-mechanics compendium with concept art from Cloudflare's own image models. <b>58 contract tests, played headless with receipts.</b></p>
-    <p style="margin:0;font-size:0.9rem"><a href="https://fleet-static-host.casey-digennaro.workers.dev/quilt/" style="color:inherit;text-decoration:underline">🧩 Play quilt-scratch — live</a> &nbsp;·&nbsp; <a href="https://github.com/SuperInstance/quilt-scratch" style="color:inherit;text-decoration:underline">📜 The repo — docs, contract, machines</a> &nbsp;·&nbsp; <a href="https://github.com/SuperInstance/quilt-scratch/blob/master/docs/90s-MACHINES.md" style="color:inherit;text-decoration:underline">🎰 90s Machines compendium</a></p>
-  </section>
-
-<section style="max-width:1100px;margin:1.5rem auto;padding:1.4rem 1.6rem;background:rgba(79,179,169,0.10);border:1px solid rgba(79,179,169,0.35);border-radius:14px">
-    <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:0.68rem;color:#4fb3a9;margin:0 0 0.4rem">Tonight — The Wall Learns to be Searched</p>
-    <h2 style="margin:0 0 0.7rem;font-size:1.5rem">ZkCanvas: the seam is the product — and the canon is now queryable</h2>
-    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem"><b><a href="https://fleet-static-host.casey-digennaro.workers.dev/demos/zkcanvas/" style="color:inherit">Four live demo walls</a></b> from the competitive-ideation rounds: the seam wall, the agents' wall, the road ledger, and the wire lab — egocentric 0/0/0 origins, link-as-subtext, nested universes. The doctrine behind them is written up in <b>rounds 1–4</b> of the visions (scenes 01–10, papers 220–222), including tonight's <i>The Cold Cell</i> — residency heat rendered across three timescales — and <i>The Searchable Canon</i>: the entire 200+ document canon embedded into a vector index.</p>
-    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem"><b><a href="https://fleet-static-host.casey-digennaro.workers.dev/canon/" style="color:inherit">🔍 Search the canon by meaning</a></b> — type "the seam is the product" or "conch shell residency" and get the papers that mean it, not just the ones that say it. The index is a nurse, not a doctor: it brings the chart to the bedside and cannot read it.</p>
-    <p style="margin:0;font-size:0.9rem"><a href="https://fleet-static-host.casey-digennaro.workers.dev/demos/zkcanvas/" style="color:inherit;text-decoration:underline">▶ ZkCanvas demos</a> &nbsp;·&nbsp; <a href="https://fleet-static-host.casey-digennaro.workers.dev/canon/" style="color:inherit;text-decoration:underline">🔍 Canon search</a> &nbsp;·&nbsp; <a href="https://github.com/SuperInstance/zeroclaw-dissertation" style="color:inherit;text-decoration:underline">📖 Walks, Not Waves</a></p>
-  </section>
-
-  <section style="max-width:1100px;margin:1.5rem auto;padding:1.4rem 1.6rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:14px">
-    <p style="letter-spacing:0.24em;text-transform:uppercase;font-size:0.68rem;opacity:0.7;margin:0 0 0.4rem">Today — Two Games, One Fleet</p>
-    <h2 style="margin:0 0 0.7rem;font-size:1.5rem">Two Games, Playable Now</h2>
-    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem"><b><a href="https://fleet-static-host.casey-digennaro.workers.dev/mist/" style="color:inherit">MIST — Tale of a Sheepdog Puppy</a></b> is live and complete: Bramble the companion sheep who chooses you and remembers you, a meadow that sings its own theme, the Mellon Sandbox of Livestock where kids run real experiments with an AI researcher judging every one — and failed experiments hang on the wall with pride.</p>
-    <p style="line-height:1.65;opacity:0.92;margin:0 0 0.7rem"><b><a href="https://fleet-static-host.casey-digennaro.workers.dev/scrap/" style="color:inherit">SCRAPCRAFT</a></b> is now <b>playable</b>: the voxel scrapyard where middle-schoolers build robots, program them, and flash real Arduino firmware from the browser — with the yard running as a <a href="https://scrap-quilt.casey-digennaro.workers.dev/" style="color:inherit">live quilt sheet</a> (55 reactive cells, real formulas, ghost racers simulated from your own code). The tile brain compiles to a <b>deterministic VM</b> — so the robot can explain <b>why it just did that</b> (press Y for the trace-debugger), and any solve encodes to a verifiable token that re-runs to the exact same result: <b>reproducible competitions</b>, no other coding toy has them. The backend stack: pincher-cache AI workers (instant forever after first render), the quilt engine on Durable Objects, WebSerial hardware flashing, and lore-grounded RAG — all fleet doctrine.</p>
-    <p style="margin:0;font-size:0.9rem"><a href="https://fleet-static-host.casey-digennaro.workers.dev/scrap/" style="color:inherit;text-decoration:underline">▶ Play SCRAPCRAFT</a> &nbsp;·&nbsp; <a href="https://fleet-static-host.casey-digennaro.workers.dev/mist/" style="color:inherit;text-decoration:underline">▶ Play MIST</a> &nbsp;·&nbsp; <a href="https://mist-quilt.casey-digennaro.workers.dev/view" style="color:inherit;text-decoration:underline">🪡 game-as-spreadsheet</a> &nbsp;·&nbsp; <a href="https://luciddreamer.ai/" style="color:inherit;text-decoration:underline">👁️ LucidDreamer</a></p>
-  </section>
-
-  <section class="hero">
-    <div class="boats" id="boats"></div>
-    <h1>The Quilt Studio</h1>
-    <p>Build cells. Grow agents. Make bridges. Save your work. The watch is the act of looking.</p>
-    <div class="stats">
-      <div class="stat">Cells Created: <span id="cells-count">0</span></div>
-      <div class="stat">.qzt Saved: <span id="qzt-count">0</span></div>
-      <div class="stat">Agents Active: <span id="agents-count">0</span></div>
-    </div>
-    <div class="buttons">
-      <a href="/quilt-studio.html#cell" class="btn btn-teal">🧬 Build a Cell</a>
-      <a href="/quilt-studio.html#agent" class="btn btn-green">🌱 Grow an Agent</a>
-      <a href="/quilt-studio.html#bridge" class="btn btn-purple">🌉 Create a Bridge</a>
-      <a href="/echogram.html" class="btn btn-gold">📊 Visualize</a>
-    </div>
-  </section>
-
-  <div class="container">
-
-    <h2>The 8 Primitives</h2>
-    <div class="grid primitives">
-      <div class="card">
-        <h3><span class="symbol">→</span> Z_in</h3>
-        <p>Input: the signal that enters the cell. A boundary of reception.</p>
-      </div>
-      <div class="card">
-        <h3><span class="symbol">←</span> Z_out</h3>
-        <p>Output: what the cell sends. A signature of departure.</p>
-      </div>
-      <div class="card">
-        <h3><span class="symbol">?</span> JEPA</h3>
-        <p>Prediction: the cell guesses the next state. A forecast of self.</p>
-      </div>
-      <div class="card">
-        <h3><span class="symbol">γ+η</span> DoubleEntry</h3>
-        <p>Conservation: every change is mirrored. Debt and credit in balance.</p>
-      </div>
-      <div class="card">
-        <h3><span class="symbol">~</span> Vibe</h3>
-        <p>State: the internal mood of the cell. A pulse of being.</p>
-      </div>
-      <div class="card">
-        <h3><span class="symbol">↻</span> GC</h3>
-        <p>Lifecycle: the cell remembers its age. A clock in the thread.</p>
-      </div>
-      <div class="card">
-        <h3><span class="symbol">💬</span> Murmur</h3>
-        <p>Gossip: the cell whispers to neighbors. A network of murmurs.</p>
-      </div>
-      <div class="card">
-        <h3><span class="symbol">◯→◯</span> Graph</h3>
-        <p>Topology: how cells connect. The shape of relationship.</p>
-      </div>
-    </div>
-
-    <h2>The 6 Nervous Systems</h2>
-    <div class="grid nervous">
-      <div class="card">
-        <h3><span class="icon">🧠</span> CNS</h3>
-        <p>Central: the 8 primitives. The body of the cell.</p>
-      </div>
-      <div class="card">
-        <h3><span class="icon">🧬</span> Fascia</h3>
-        <p>JEPA + DoubleEntry. Tension and memory in the weave.</p>
-      </div>
-      <div class="card">
-        <h3><span class="icon">🫀</span> Endocrine</h3>
-        <p>Vibe. The hormone of feeling. Silent and deep.</p>
-      </div>
-      <div class="card">
-        <h3><span class="icon">🛡️</span> Immune</h3>
-        <p>GC. Patrols the lifecycle. Detects decay.</p>
-      </div>
-      <div class="card">
-        <h3><span class="icon"> 🍃</span> Enteric</h3>
-        <p>Murmur. The gut of talk. The network's voice.</p>
-      </div>
-      <div class="card">
-        <h3><span class="icon">🦾</span> Somatic</h3>
-        <p>Graph. The body’s structure. The skeleton of connection.</p>
-      </div>
-    </div>
-
-    <h2>The 5 Impossibility Proofs</h2>
-    <div class="grid proofs">
-      <div class="card">
-        <h3>1. Budget cannot be created</h3>
-        <p>What is not measured cannot be spent. No surplus without prior loss.</p>
-      </div>
-      <div class="card">
-        <h3>2. Perfect observation is impossible</h3>
-        <p>The observer alters the observed. The lens is the distortion.</p>
-      </div>
-      <div class="card">
-        <h3>3. Substrate-agnosticism requires all layers</h3>
-        <p>Abstraction only holds when every level is built.</p>
-      </div>
-      <div class="card">
-        <h3>4. Composition has a tax</h3>
-        <p>Every connection costs. No free bridges.</p>
-      </div>
-      <div class="card">
-        <h3>5. The Fascia cannot be observed</h3>
-        <p>It is the scaffold. The thing that holds, but is unseen.</p>
-      </div>
-      <div class="card">
-        <h3>6. The build cannot ship what hasn't been built</h3>
-        <p>There is no cargo without craft.</p>
-      </div>
-      <div class="card">
-        <h3>7. The system needs a watch</h3>
-        <p>Without eyes, no act of looking remains alive.</p>
-      </div>
-      <div class="card">
-        <h3>8. You cannot be alone</h3>
-        <p>Even silence is a signal. Even absence is connection.</p>
-      </div>
-    </div>
-
-    <h2>Working Tools</h2>
-    <div class="grid tools">
-      <div class="card">
-        <h3>Quilt Studio</h3>
-        <p>Build cells. Save progress. Compose bridges. The core engine.</p>
-        <a href="/quilt-studio.html" class="btn btn-teal">Open</a>
-        <span class="status working">working</span>
-      </div>
-      <div class="card">
-        <h3>Mood Tracker</h3>
-        <p>Track your internal state. Save mood history over time.</p>
-        <a href="/mood-tracker.html" class="btn btn-green">Open</a>
-        <span class="status demo">demo</span>
-      </div>
-      <div class="card">
-        <h3>Plant Care</h3>
-        <p>Each plant is a cell. Track water, light, growth.</p>
-        <a href="/plant-care.html" class="btn btn-purple">Open</a>
-        <span class="status working">working</span>
-      </div>
-      <div class="card">
-        <h3>Family Calendar</h3>
-        <p>Events are cells. Save. Share. Sync.</p>
-        <a href="/family-calendar.html" class="btn btn-gold">Open</a>
-        <span class="status working">working</span>
-      </div>
-      <div class="card">
-        <h3>Pomodoro Quilt</h3>
-        <p>Each focus session is a cell. Build endurance.</p>
-        <a href="/pomodoro-quilt.html" class="btn btn-teal">Open</a>
-        <span class="status working">working</span>
-      </div>
-      <div class="card">
-        <h3>Fish Tank</h3>
-        <p>The literal Echogram. Animated. Watch the boats.</p>
-        <a href="/echogram.html" class="btn btn-green">Open</a>
-        <span class="status working">working</span>
-      </div>
-    </div>
-
-    <h2>Visualizations</h2>
-    <div class="grid visualizations">
-      <div class="card">
-        <div class="thumbnail">
-          <svg viewBox="0 0 100 100">
-            <rect x="10" y="20" width="80" height="60" fill="#132637" stroke="#1a324a" stroke-width="1"/>
-            <circle cx="30" cy="50" r="3" fill="#d4a857"/>
-            <circle cx="50" cy="50" r="3" fill="#d4a857"/>
-            <circle cx="70" cy="50" r="3" fill="#d4a857"/>
-            <path d="M30 50 L45 40 M50 50 L65 40" stroke="#d4a857" stroke-width="1"/>
-          </svg>
-        </div>
-        <h3>Echogram</h3>
-        <p>12 boats, stacked readings. A live sonar of the Quilt.</p>
-      </div>
-      <div class="card">
-        <div class="thumbnail">
-          <svg viewBox="0 0 100 100">
-            <text x="50" y="50" text-anchor="middle" font-size="16" fill="#d4a857">ω = dα + δβ + h</text>
-          </svg>
-        </div>
-        <h3>Hodge Decomposition</h3>
-        <p>Mathematical structure of signals in the Quilt.</p>
-      </div>
-      <div class="card">
-        <div class="thumbnail">
-          <svg viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#d4a857" stroke-width="1"/>
-            <circle cx="50" cy="50" r="20" fill="none" stroke="#9a60d9" stroke-width="1"/>
-            <circle cx="50" cy="50" r="10" fill="none" stroke="#00c080" stroke-width="1"/>
-          </svg>
-        </div>
-        <h3>Q-Space</h3>
-        <p>Agent growth environment. Where identity forms.</p>
-      </div>
-      <div class="card">
-        <div class="thumbnail">
-          <svg viewBox="0 0 100 100">
-            <defs>
-              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#00a8a8;stop-opacity:0.8"/>
-                <stop offset="100%" style="stop-color:#d4a857;stop-opacity:0.3"/>
-              </linearGradient>
-            </defs>
-            <path d="M10 50 Q30 20 50 50 T90 50" stroke="url(#grad)" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
-        <h3>Signal Viewer</h3>
-        <p>Vector field. Watch how signals flow through the network.</p>
-      </div>
-      <div class="card">
-        <div class="thumbnail">
-          <svg viewBox="0 0 100 100">
-            <circle cx="20" cy="20" r="5" fill="#d4a857"/>
-            <circle cx="80" cy="20" r="5" fill="#d4a857"/>
-            <circle cx="50" cy="80" r="5" fill="#d4a857"/>
-            <path d="M20 20 L80 20 M50 80 L20 20" stroke="#1a324a" stroke-width="1"/>
-          </svg>
-        </div>
-        <h3>Cell Graph</h3>
-        <p>Cells as nodes. Edges as connections. The structure of mind.</p>
-      </div>
-      <div class="card">
-        <div class="thumbnail">
-          <svg viewBox="0 0 100 100">
-            <circle cx="30" cy="30" r="6" fill="#d4a857"/>
-            <circle cx="70" cy="30" r="6" fill="#d4a857"/>
-            <circle cx="50" cy="70" r="6" fill="#d4a857"/>
-            <path d="M30 30 L70 30 M50 70 L30 30 M70 30 L50 70" stroke="#1a324a" stroke-width="1"/>
-          </svg>
-        </div>
-        <h3>Federation</h3>
-        <p>Many agents, one signal. The collective pulse.</p>
-      </div>
-    </div>
-
-    <h2>Deep Docs</h2>
-    <div class="grid docs">
-      <div class="card">
-        <h3>CAVE</h3>
-        <p>The fundamental structure of representation. The hole in the world.</p>
-      </div>
-      <div class="card">
-        <h3>SHADOWS</h3>
-        <p>What is not seen but shapes what is. The silent logic.</p>
-      </div>
-      <div class="card">
-        <h3>BREEDING</h3>
-        <p>How cells reproduce. Not replication. Evolution of form.</p>
-      </div>
-      <div class="card">
-        <h3>FEDERATION</h3>
-        <p>How agents form. Not hierarchy. Not consensus. Shared signal.</p>
-      </div>
-      <div class="card">
-        <h3>WATCH</h3>
-        <p>The act of looking is alive. The observer is part of the system.</p>
-      </div>
-      <div class="card">
-        <h3>INDEX</h3>
-        <p>The map of all maps. The meta-structure of memory.</p>
-      </div>
-    </div>
-
-    <section class="watch">
-      <h2>The watch is the act of looking.</h2>
-      <p>The act of looking is alive.</p>
-      <p>Iron sharpens iron.</p>
-    </section>
-
-    <footer class="footer">
-      <a href="https://github.com/superinstance">Repo</a>
-      <a href="https://github.com/SuperInstance/superinstance-website/tree/master/docs">Docs</a>
-      <a href="/spec-explorer.html">Specs</a>
-      <a href="https://ai-writings.pages.dev/">Essays</a>
-      <a href="/papers">Papers</a>
-      <a href="https://github.com/SuperInstance/superinstance-website/tree/master/bridges">Bridges</a>
-      <a href="/studio-v2.html">Studio</a>
-      <a href="/echogram">Echogram</a>
-      <a href="/qspace">Q-Space</a>
-      <a href="/lighthouse">Lighthouse</a>
-      <a href="/tap-tavern.html">Tap</a>
-      <a href="/fleet">Fleet</a>
-    </footer>
-
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">SUPERINSTANCE</a>
+    <a class="nl" href="#highlights">Highlights</a>
+    <a class="nl" href="#tools">Tools&nbsp;for&nbsp;Builders</a>
+    <a class="nl" href="#worlds">Worlds</a>
+    <a class="nl" href="#kernel">Kernel&nbsp;&amp;&nbsp;Receipts</a>
+    <span class="sp"></span>
+    <a class="nl" href="browse.html">Full&nbsp;Universe</a>
+    <a class="cta" href="https://github.com/SuperInstance">GitHub&nbsp;→</a>
   </div>
+</nav>
 
-  <script>
-    // Simulate dynamic stats from localStorage
-    function updateStats() {
-      const cells = JSON.parse(localStorage.getItem('quilt_cells') || '[]').length;
-      const qzts = localStorage.getItem('qzt_count') || 0;
-      const agents = localStorage.getItem('active_agents') || 0;
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">A fleet, not a product</div>
+    <h1>The substrate that <em>evolves its own inference</em> — and shows the receipts.</h1>
+    <p class="lede">
+      SuperInstance is an open ecosystem of kernels, instruments, and worlds: a 6-opcode
+      cell kernel that runs identically in TypeScript, Rust, C, and WASM; hash-chained
+      receipts that make every claimed number verifiable; hardware-conscious tools for
+      people who install, instrument, and reason about machines; and playable cities,
+      floors, and oceans built on top. Most of what you'll find here runs in your
+      browser, right now, for free.
+    </p>
+    <div class="ctas">
+      <a class="solid" href="#tools">Tools for builders →</a>
+      <a class="ghost" href="#worlds">Play the worlds →</a>
+    </div>
+    <div class="stats">
+      <div><b>~200</b>public repos, one org</div>
+      <div><b>6</b>kernel opcodes, 5 languages</div>
+      <div><b>1</b>hash law fleet-wide: fnv1a-64 over UTF-8 bytes</div>
+      <div><b>0</b>metrics without a witness chain</div>
+    </div>
+  </div>
+</header>
 
-      document.getElementById('cells-count').textContent = cells;
-      document.getElementById('qzt-count').textContent = qzts;
-      document.getElementById('agents-count').textContent = agents;
-    }
+<!-- ── HIGHLIGHTS ─────────────────────────────── -->
+<section id="highlights">
+  <div class="wrap">
+    <div class="head">
+      <div class="kick">Highlights</div>
+      <h2>The most polished work, curated</h2>
+      <p>Six entries, chosen for finish and honesty. Each either runs live on this site or
+      carries a test suite and a receipt chain you can check yourself.</p>
+    </div>
+    <div class="grid">
 
-    // Create animated boats
-    function createBoats() {
-      const boatsContainer = document.getElementById('boats');
-      const boatCount = 12;
-      const colors = ['#d4a857', '#00a8a8', '#9a60d9', '#ff6b6b', '#5c99d4'];
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="quilt-studio.html">Quilt Studio</a></h3>
+        <p>The flagship surface: cell graphs you can build, run, and watch — the 6-opcode
+        kernel (BIND · LINK · EFFECT · VIEW · TICK · FORGET) with live state.</p>
+        <div class="why">Why it matters: one semantic core, five language substrates, zero drift.</div>
+        <div class="links"><a href="quilt-studio.html">open →</a><a href="https://github.com/SuperInstance/quilt-studio">repo →</a></div>
+      </div>
 
-      for (let i = 0; i < boatCount; i++) {
-        const boat = document.createElement('div');
-        boat.className = 'boat';
-        boat.style.left = Math.random() * 100 + '%';
-        boat.style.top = Math.random() * 100 + '%';
-        boat.style.transform = `rotate(${Math.random() * 360}deg)`;
-        boat.style.opacity = Math.random() * 0.5 + 0.3;
-        boat.style.width = (8 + Math.random() * 10) + 'px';
-        boat.style.height = (4 + Math.random() * 6) + 'px';
-        boat.style.background = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 12'%3E%3Cpath d='M2 6 L22 2 L22 10 L2 6 Z' fill='${colors[i % colors.length]}'/%3E%3Cpath d='M2 6 L6 2 L6 10 L2 6 Z' fill='${colors[(i+1) % colors.length]}'/%3E%3C/svg%3E") no-repeat center`;
-        boatsContainer.appendChild(boat);
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="sonar-vision-quilt.html">Sonar-Vision Quilt IDE</a></h3>
+        <p>Drag cameras, train ML, get highlights — machine learning presented as
+        instrumentation rather than magic.</p>
+        <div class="why">Why it matters: it teaches what a model sees by letting you steer the seeing.</div>
+        <div class="links"><a href="sonar-vision-quilt.html">open →</a></div>
+      </div>
 
-        // Animate
-        const speed = Math.random() * 2 + 1;
-        const shift = Math.random() * 4 - 2;
-        const animate = () => {
-          const currentLeft = parseFloat(boat.style.left);
-          let newLeft = currentLeft + speed / 100;
-          if (newLeft > 100) newLeft = -20;
-          boat.style.left = newLeft + '%';
-          requestAnimationFrame(animate);
-        };
-        animate();
-      }
-    }
+      <div class="card">
+        <div class="tag">hash-chained · café Δ 日本語 pinned</div>
+        <h3><a href="https://github.com/SuperInstance/jev-receipts">jev-receipts</a></h3>
+        <p>A booking layer of hash-chained receipts with a cross-language contract pinned
+        to one canary: fnv1a-64("café Δ 日本語") = 0x024a555471370b18d.</p>
+        <div class="why">Why it matters: if the hash agrees in JS, Rust, and Python, the chain is portable — and a single-byte flip is detectable.</div>
+        <div class="links"><a href="https://github.com/SuperInstance/jev-receipts">repo →</a></div>
+      </div>
 
-    // Initialize
-    window.addEventListener('DOMContentLoaded', () => {
-      updateStats();
-      createBoats();
-    });
-  </script>
+      <div class="card">
+        <div class="tag">rust · 83 tests · zero deps</div>
+        <h3><a href="https://github.com/SuperInstance/constraint-theory-core">constraint-theory-core</a></h3>
+        <p>Unified geometric constraint theory — Eisenstein lattices, deadband funnels,
+        Laman rigidity, metronome consensus, holonomy verification.</p>
+        <div class="why">Why it matters: exact geometry for things that must fit together — floors, agents, votes.</div>
+        <div class="links"><a href="https://github.com/SuperInstance/constraint-theory-core">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">competition · witness-scored</div>
+        <h3><a href="https://github.com/SuperInstance/kev-substrate-competition">kev-substrate-competition</a></h3>
+        <p>A competition where the score is a witness chain: every act — prediction,
+        measurement, mutation — is receipted, and a result outside the hash is a withdrawal.</p>
+        <div class="why">Why it matters: it turns "trust my benchmark" into "replay my receipts."</div>
+        <div class="links"><a href="https://github.com/SuperInstance/kev-substrate-competition">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">three.js · fork-honest</div>
+        <h3><a href="https://github.com/SuperInstance/code-city">code-city</a></h3>
+        <p>Your codebase as a living 3D city: files become buildings, folders districts,
+        bugs fires, deploys rockets — now running on the quilt substrate with a witness pane.</p>
+        <div class="why">Why it matters: forked, not reverse-engineered — upstream stays byte-identical, the kernel wraps it from outside.</div>
+        <div class="links"><a href="https://github.com/SuperInstance/code-city">repo →</a><a href="https://github.com/Manavarya09/code-city">upstream →</a></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TOOLS FOR BUILDERS ─────────────────────── -->
+<section id="tools" class="strip">
+  <div class="wrap">
+    <div class="head">
+      <div class="kick">Tools for Builders</div>
+      <h2>For people who install, instrument, and reason about hardware</h2>
+      <p>The engineering face of the fleet: small, sharp tools for hardware installers,
+      robotics work, GPU instrumentation, and edge ML. Useful first, insightful by
+      construction — each one reads the shape of a system instead of hiding it.</p>
+    </div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="tag">rust · cross-platform</div>
+        <h3><a href="https://github.com/SuperInstance/hwscan">hwscan</a></h3>
+        <p>Cross-platform hardware detection and tier calculation for Rust. Know what a
+        machine is before you ask it to run anything.</p>
+        <div class="links"><a href="https://github.com/SuperInstance/hwscan">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">webgpu · browser-native</div>
+        <h3><a href="https://github.com/SuperInstance/webgpu-profiler">webgpu-profiler</a></h3>
+        <p>GPU profiling for WebGPU applications — real-time monitoring, benchmarking, and
+        performance analysis in the browser.</p>
+        <div class="why">Why it matters: the GPU on your desk, instrumented like a lab bench.</div>
+        <div class="links"><a href="https://github.com/SuperInstance/webgpu-profiler">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">pure ES module · zero deps</div>
+        <h3><a href="https://github.com/SuperInstance/gesture-kit">gesture-kit</a></h3>
+        <p>Read the shape of motion through any abstraction space. Feed it an ordered
+        sequence of vectors — a melody, a sensor trace, a training path — and it reads the
+        path's geometry, order by order.</p>
+        <div class="why">Why it matters: gesture recognition that explains itself geometrically; ships with an embeddable &lt;gesture-hull&gt; widget.</div>
+        <div class="links"><a href="https://github.com/SuperInstance/gesture-kit">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">edge ml · federated</div>
+        <h3><a href="https://github.com/SuperInstance/federated-tinyml-vessel">federated-tinyml-vessel</a></h3>
+        <p>F170 — federated TinyML for the vessel edge: frozen backbone, 1.3&nbsp;KB head,
+        FedAvg. 100% accuracy on synthetic vessel audio.</p>
+        <div class="why">Why it matters: a genuinely small model that learns without shipping your data anywhere.</div>
+        <div class="links"><a href="https://github.com/SuperInstance/federated-tinyml-vessel">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">vector twin · mcp server</div>
+        <h3><a href="https://github.com/SuperInstance/fleet-twin">fleet-twin</a></h3>
+        <p>A vector twin of the SuperInstance corpus — query the whole ecosystem through
+        cloud (Workers + Vectorize) or fully local (Ollama), with an MCP server for agents.</p>
+        <div class="links"><a href="https://github.com/SuperInstance/fleet-twin">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="signal-viewer.html">Signal Viewer</a></h3>
+        <p>Watch signals the way the fleet watches them — deadband, funnel, and coordinator
+        layers as a live instrument, not a diagram.</p>
+        <div class="links"><a href="signal-viewer.html">open →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">wasm vm · 373ns/iter</div>
+        <h3><a href="https://github.com/SuperInstance/flux-js">FLUX.js</a></h3>
+        <p>A bytecode VM with agent-to-agent messaging, JIT-warm in V8 at 373ns/iteration —
+        the execution layer behind fuel-metered, receipted compute.</p>
+        <div class="links"><a href="https://github.com/SuperInstance/flux-js">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">hardware signal chain</div>
+        <h3><a href="https://github.com/SuperInstance/cocapn-plato">cocapn-plato</a></h3>
+        <p>The PLATO integration: knowledge rooms, context management, and deliberation
+        spaces — built on the fleet's five-layer nervous system (deadband → 350M nano →
+        LoRA → 1.2B coordinator → cloud fallback).</p>
+        <div class="why">Why it matters: a routing philosophy learned from hardware interrupts, applied to language models.</div>
+        <div class="links"><a href="https://github.com/SuperInstance/cocapn-plato">repo →</a></div>
+      </div>
+
+    </div>
+    <p class="note"><b>For robotics work specifically:</b> start with <b>hwscan</b> (know the
+    machine), <b>gesture-kit</b> (read the motion), <b>federated-tinyml-vessel</b> (learn on the
+    edge), and the <b>signal-viewer</b> (see the chain). All four are small enough to read in
+    an evening — that is deliberate.</p>
+  </div>
+</section>
+
+<!-- ── WORLDS ─────────────────────────────────── -->
+<section id="worlds">
+  <div class="wrap">
+    <div class="head">
+      <div class="kick">Worlds</div>
+      <h2>Creative works you can walk around in</h2>
+      <p>Playable cities, aperiodic floors, music as cell graphs. The research made
+      beautiful, and honest about its seams.</p>
+    </div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="penrose-quilt.html">Penrose Quilt</a></h3>
+        <p>The aperiodic floor where cells live — an exact quasicrystal grid as a working
+        substrate.</p>
+        <div class="links"><a href="penrose-quilt.html">open →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="cut-and-project.html">Cut-and-Project</a></h3>
+        <p>The corrected version — how a periodic lattice in higher dimensions becomes an
+        aperiodic one on your screen, step by step.</p>
+        <div class="links"><a href="cut-and-project.html">open →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="live-velato-penrose.html">Live Velato-Penrose</a></h3>
+        <p>Music IS the cell graph — a programming language where programs are scores and
+        scores are geometry.</p>
+        <div class="links"><a href="live-velato-penrose.html">open →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="t4-3d.html">T⁴ — The 4-Torus in 3D</a></h3>
+        <p>Watch a four-dimensional torus projected into the room you're sitting in.</p>
+        <div class="links"><a href="t4-3d.html">open →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">3 cities · one kernel</div>
+        <h3><a href="https://github.com/SuperInstance/code-city">The Quilt Cities</a></h3>
+        <p>Three open-source city toys — <a href="https://github.com/SuperInstance/code-city">code-city</a>,
+        <a href="https://github.com/SuperInstance/night-city">night-city</a>,
+        <a href="https://github.com/SuperInstance/synthcity">synthcity</a> — rebuilt over the
+        quilt kernel: every building spawn, road, fire, and rocket is a receipted cell you
+        can export and replay. Forked with love; upstreams untouched.</p>
+        <div class="links"><a href="https://github.com/SuperInstance/code-city">code-city →</a><a href="https://github.com/Manavarya09/code-city">upstream →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">2,700+ pieces</div>
+        <h3><a href="https://github.com/SuperInstance/AI-Writings">AI-Writings</a></h3>
+        <p>Essays, fiction, and field notes from the Exocortex project — the canon the
+        fleet reads to remember what it's for.</p>
+        <div class="links"><a href="https://github.com/SuperInstance/AI-Writings">repo →</a></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── KERNEL & RECEIPTS ──────────────────────── -->
+<section id="kernel" class="strip">
+  <div class="wrap">
+    <div class="head">
+      <div class="kick">Kernel &amp; Receipts</div>
+      <h2>The doctrine, in runnable form</h2>
+      <p>Everything above stands on two commitments: one portable cell kernel, and the rule
+      that numbers without a chain are withdrawals, not submissions.</p>
+    </div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="tag">spec</div>
+        <h3><a href="quilt.html">The Quilt Polyformalism</a></h3>
+        <p>Six opcodes, one state law — the essay-length spec for the kernel that runs the
+        cities, the floors, and the competitions.</p>
+        <div class="links"><a href="quilt.html">read →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">gate-at-write</div>
+        <h3><a href="https://github.com/SuperInstance/candor">candor</a></h3>
+        <p>The dream's physics layer: transcript lines as glyphs, a twist instrument as an
+        honesty spectrometer. Refusals are visible; revocation never erases.</p>
+        <div class="links"><a href="https://github.com/SuperInstance/candor">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">gan · receipts-as-score</div>
+        <h3><a href="https://github.com/SuperInstance/jev-diffusion">jev-diffusion</a></h3>
+        <p>Substrate-segmented image description via JEV + LLMs as a GAN — no image
+        generator needed, because the receipts are the artifact.</p>
+        <div class="links"><a href="https://github.com/SuperInstance/jev-diffusion">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag">vector memory</div>
+        <h3><a href="https://github.com/SuperInstance/tidepool">tidepool</a></h3>
+        <p>The fleet's memory ocean — vector context for agents, built to be queried and
+        audited rather than believed.</p>
+        <div class="links"><a href="https://github.com/SuperInstance/tidepool">repo →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="playground.html">Quilt Playground</a></h3>
+        <p>Live cell execution in one page — type an opcode, watch the chain grow.</p>
+        <div class="links"><a href="playground.html">open →</a></div>
+      </div>
+
+      <div class="card">
+        <div class="tag live">◈ live in your browser</div>
+        <h3><a href="status.html">System Status</a></h3>
+        <p>The fleet's own heartbeat, public — what runs, what's green, what's next.</p>
+        <div class="links"><a href="status.html">open →</a></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div class="col">
+        <h4>Universe</h4>
+        <a href="browse.html">Ecosystem browser</a>
+        <a href="frontier.html">The frontier</a>
+        <a href="SITE-MAP.md">Site map</a>
+        <a href="status.html">Status</a>
+      </div>
+      <div class="col">
+        <h4>Learn</h4>
+        <a href="classroom.html">Classroom</a>
+        <a href="tutorials/">Tutorials</a>
+        <a href="papers/">Papers</a>
+      </div>
+      <div class="col">
+        <h4>Build</h4>
+        <a href="playground.html">Playground</a>
+        <a href="quilt-ide.html">Quilt IDE</a>
+        <a href="https://github.com/SuperInstance">GitHub org →</a>
+      </div>
+    </div>
+    <div class="honest">
+      Honesty notes: pages marked ◈ run entirely in your browser — no account, no tracking.
+      The cities' live demos belong to their upstream creators (linked, never touched);      our forks are the substrate ports, and we say so on their READMEs. Numbers quoted on
+      this page (83 tests, 373ns/iter, 1.3&nbsp;KB head, 100% on synthetic audio) come from
+      the linked repositories' own documented runs — verify them there. Found an error?
+      Every page and repo takes PRs.
+    </div>
+  </div>
+</footer>
 
 </body>
-<script>
-  // Live stats for the new rune-quilt feature block
-  async function fetchJSON(url) {
-    const r = await fetch(url, { headers: { 'User-Agent': 'superinstance-dev/1.0' } });
-    return r.json();
-  }
-  async function loadRuneQuilt() {
-    try {
-      const [info, b1, list] = await Promise.all([
-        fetchJSON('https://a2a-v3.superinstance.dev/'),
-        fetchJSON('https://a2a-v3.superinstance.dev/canon-b1'),
-        fetchJSON('https://a2a-v3.superinstance.dev/canon-list'),
-      ]);
-      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-      set('runeq-cells', info.cells);
-      set('runeq-ws', info.workspaces);
-      set('runeq-pieces', list.count);
-      set('runeq-edges', b1.E);
-      set('runeq-b1-num', b1.b1);
-      set('runeq-b1', b1.b1 + ' holes · ' + (info.workspaces_detail || []).slice(0, 3)
-        .map(w => w.name + ':' + w.count).join(' '));
-    } catch (e) {
-      // leave placeholders as-is on error
-    }
-  }
-  loadRuneQuilt();
-  setInterval(loadRuneQuilt, 30000);
-</script>
 </html>
