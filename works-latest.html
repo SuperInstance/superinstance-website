@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latest Works — SuperInstance</title>
+  <style>
+    :root {
+      --bg-dark: #0a111f;
+      --text-light: #a3b1c6;
+      --text-acc: #f0f4f8;
+      --accent: #6c99cc;
+      --border: #2a394a;
+      --glow: #3a5f8a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+      letter-spacing: 0.6px;
+      min-height: 100vh;
+      padding: 4vh 5vw;
+    }
+    header { border-bottom: 1px solid var(--border); padding-bottom: 2vh; margin-bottom: 3vh; }
+    h1 { color: var(--text-acc); font-size: 1.5rem; letter-spacing: 2px; }
+    .kick { color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 18px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+      background: rgba(58, 95, 138, 0.08);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .card:hover { border-color: var(--glow); box-shadow: 0 0 18px rgba(58, 95, 138, 0.25); }
+    .card h2 { color: var(--text-acc); font-size: 1.02rem; margin-bottom: 6px; }
+    .card p { font-size: 0.86rem; }
+    .tag { display: inline-block; color: var(--accent); font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .links { margin-top: 12px; font-size: 0.82rem; }
+    .links a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--glow); margin-right: 14px; }
+    .links a:hover { color: var(--text-acc); }
+    footer { margin-top: 4vh; padding-top: 2vh; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--glow); }
+    .when { float: right; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="kick">SuperInstance — what the fleet shipped most recently</div>
+    <h1>Latest Works <span class="when">updated 2026-09-26</span></h1>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="tag">Portfolio · live</div>
+      <h2>Z Machine — game engine portfolio</h2>
+      <p>Eighteen self-contained canvas demos across four repos: a canvas game engine with six
+      playable titles (blockblast, cyberclimb, dash, petcap, snake, tetris), a poker tournament
+      arena with JEV-backed seats, a live paper-trading desk with stochastic control, and a
+      workbench of render/physics/orchestration prototypes.</p>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/quilt-arcade">quilt-arcade</a>
+        <a href="https://github.com/SuperInstance/quilt-arena">quilt-arena</a>
+        <a href="https://github.com/SuperInstance/quilt-quant">quilt-quant</a>
+        <a href="https://github.com/SuperInstance/quilt-tools">quilt-tools</a>
+        <a href="https://github.com/SuperInstance/quilt-playtest">quilt-playtest</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tag">Show · episode 4</div>
+      <h2>Quilt Show — the instruments behind the floor</h2>
+      <p>The show site now carries episode four: native scrolling, warp, commensuration,
+      and the new instruments page — twist-field, percolation, and fan-out render models
+      live on the Penrose floor, all verified by Playwright against the vendored engine.</p>
+      <div class="links">
+        <a href="https://quilt-show.pages.dev">quilt-show.pages.dev</a>
+        <a href="https://github.com/SuperInstance/quilt-show">repo</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tag">Substrate · receipts</div>
+      <h2>jev-quilt — the JEV decision substrate</h2>
+      <p>The quantum-evidence substrate with signed decision receipts, replay≡live
+      determinism, FNV-1a fleet canary pinned across languages, and a Goodhart-resistant
+      receipt schema that rejects minted prose. 186 tests green; every receipt carries a
+      runnable repro.</p>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/jev-quilt">repo</a>
+        <a href="https://github.com/SuperInstance/jev-quilt/tree/main/docs/receipts">receipts</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tag">Theory · instruments</div>
+      <h2>twist-engine — commensuration instruments</h2>
+      <p>The theory face of the floor: registration/twist meters, the commensuration comb,
+      PERM mode in S_n, and suite-built verification that the instruments actually measure.</p>
+      <div class="links">
+        <a href="https://github.com/SuperInstance/twist-engine">repo</a>
+        <a href="quilt-studio.html">quilt studio →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tag">Ongoing · on this site</div>
+      <h2>The standing rooms</h2>
+      <p>The long-running presentations — quilt studio, sonar-vision, penrose memory,
+      the cut-and-project walk, the witness cell — stay where they always were.</p>
+      <div class="links">
+        <a href="quilt-studio.html">quilt-studio</a>
+        <a href="sonar-vision-quilt.html">sonar-vision</a>
+        <a href="penrose-quilt.html">penrose-quilt</a>
+        <a href="cut-and-project.html">cut-and-project</a>
+        <a href="witness.html">witness</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    fleet: cocapn · canon: one substrate, many faces · this page is static and versioned
+  </footer>
+</body>
+</html>
