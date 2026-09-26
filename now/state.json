@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-09-26T23:14:00Z",
+  "org": "SuperInstance",
+  "measures": {
+    "public_repos": {
+      "value": 942,
+      "source": "gh repo list SuperInstance --limit 1000 (public)"
+    },
+    "repos_pushed_24h": {
+      "value": 29,
+      "source": "same listing, pushedAt > 2026-09-25T23:14Z"
+    },
+    "open_prs": {
+      "value": 49,
+      "source": "gh search prs --owner SuperInstance --state open"
+    },
+    "canon_markdown_pieces": {
+      "value": 11499,
+      "source": "AI-Writings git tree, recursive, .md blobs"
+    },
+    "profile_head": {
+      "value": "1e70709",
+      "source": "SuperInstance/SuperInstance main"
+    },
+    "live_cells": {
+      "value": 5,
+      "source": "orchestrator tmux sessions (claude,cartographer,probe,skeptic,poet)"
+    }
+  },
+  "kernel": {
+    "opcodes": [
+      "BIND",
+      "LINK",
+      "EFFECT",
+      "VIEW",
+      "TICK",
+      "FORGET"
+    ],
+    "languages": [
+      "typescript",
+      "rust",
+      "c",
+      "wasm"
+    ]
+  },
+  "links": {
+    "kernel": "https://github.com/SuperInstance/quilt",
+    "canon": "https://ai-writings.pages.dev",
+    "demos": "https://superinstance.github.io/#demos"
+  },
+  "doctrine": "a claim without a receipt is a rumor; this file is the receipt for superinstance.dev/now",
+  "sha256_of_this_file_without_self_hash": "831a07b9a60976c70978f9e944419976f978ea52e606db84362199bc594b1b84"
+}

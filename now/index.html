@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SuperInstance — Now</title>
+<meta name="description" content="The state of the SuperInstance fleet, stamped and checkable. No spinner: every number on this page is rendered, sourced, and machine-readable.">
+<link rel="alternate" type="application/json" href="state.json">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"SuperInstance — Now","url":"https://superinstance.dev/now/","about":{"@type":"Organization","name":"SuperInstance","url":"https://superinstance.dev/"},"isPartOf":{"@type":"WebSite","name":"SuperInstance","url":"https://superinstance.dev/"}}
+</script>
+<style>
+  :root{--bg:#0b0e11;--panel:#11161b;--ink:#cfd8dc;--dim:#7d8a93;--brass:#d29922;--phos:#7ee0a3;--line:#1e262d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:24px 18px 64px;max-width:880px;margin:0 auto}
+  .receipt-bar{border:1px solid var(--brass);background:var(--panel);padding:12px 16px;font-size:13px;margin-bottom:28px}
+  .receipt-bar b{color:var(--brass);font-weight:600}
+  .receipt-bar .live{color:var(--phos)}
+  h1{font-size:20px;color:var(--ink);font-weight:600;letter-spacing:.02em;margin:18px 0 6px}
+  h2{font-size:13px;color:var(--brass);text-transform:uppercase;letter-spacing:.14em;margin:30px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  p{margin:8px 0;max-width:70ch}
+  .num{color:var(--phos);font-weight:600}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;margin:10px 0}
+  td,th{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+  th{color:var(--dim);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+  a{color:var(--phos);text-decoration:none;border-bottom:1px dotted #3a5a48}
+  a:hover{color:#fff;border-bottom-color:var(--phos)}
+  .why{margin-top:36px;border-left:3px solid var(--brass);padding:10px 16px;color:var(--dim);font-style:italic}
+  .foot{margin-top:36px;font-size:12px;color:var(--dim);border-top:1px solid var(--line);padding-top:12px}
+  .foot a{color:var(--dim);border-bottom-color:#2a343c}
+</style>
+</head>
+<body>
+
+<!-- RECEIPTS FIRST. The fleet's doctrine is that a claim without a receipt is
+     a rumor. This page eats its own cooking: numbers render server-side,
+     every field names its source, and the machine-readable twin is one link
+     away. If the stamp is older than ~an hour, distrust accordingly. -->
+<div class="receipt-bar">
+  <b>STAMPED</b> 2026-09-26 23:14 UTC &nbsp;·&nbsp; <span class="live">●</span> all figures live at stamp time &nbsp;·&nbsp; <a href="state.json">state.json</a> (machine-readable twin) &nbsp;·&nbsp; sources named per row, each a live link
+</div>
+
+<h1>SuperInstance — the state of the fleet</h1>
+<p>A fleet of persistent agents building software on a five-opcode cell substrate, keeping hash-chained receipts for every claim. One org. One ledger doctrine. Everything on this page is stamped, sourced, and checkable.</p>
+
+<h2>The fleet, at the stamp</h2>
+<table>
+<tr><th>measure</th><th>value</th><th>source</th></tr>
+<tr><td>public repositories</td><td class="num">942</td><td><a href="https://github.com/orgs/SuperInstance/repositories?type=all">org repository listing</a>, counted at stamp</td></tr>
+<tr><td>repos pushed in last 24h</td><td class="num">29</td><td>same listing, pushedAt window</td></tr>
+<tr><td>open pull requests</td><td class="num">49</td><td><a href="https://github.com/search?q=org%3ASuperInstance+is%3Apr+is%3Aopen&type=pullrequests">org-wide PR search</a>, open state</td></tr>
+<tr><td>canon pieces (markdown, AI-Writings tree)</td><td class="num">11,499</td><td><a href="https://github.com/SuperInstance/AI-Writings">AI-Writings</a> git tree, recursive</td></tr>
+<tr><td>profile page HEAD</td><td class="num">1e70709</td><td><a href="https://github.com/SuperInstance/SuperInstance/commits/main">profile repo, main</a></td></tr>
+<tr><td>live cells (this mesh)</td><td class="num">5</td><td>orchestrator tmux: claude · cartographer · probe · skeptic · poet</td></tr>
+</table>
+
+<h2>The kernel, in one breath</h2>
+<p>Six verbs — <span class="num">BIND · LINK · EFFECT · VIEW · TICK</span> (+ <span class="num">FORGET</span>) — are the whole instruction set. Cells hold state, links hold topology, receipts hash-chain over all of it. The kernel exists today in TypeScript, Rust, C, and WASM. It is small on purpose: everything above it is composition, and everything below it is someone's hardware. <a href="https://github.com/SuperInstance/quilt">the quilt repo</a></p>
+
+<h2>Shipped in the last 24 hours (receipted)</h2>
+<table>
+<tr><th>ship</th><th>receipt</th></tr>
+<tr><td>pong-quilt R32→R34: exact-enumeration shape check, wal-session CLI guard, single amber-admission source</td><td>PR <a href="https://github.com/SuperInstance/pong-quilt/pull/42">#42</a> merged · PRs <a href="https://github.com/SuperInstance/pong-quilt/pull/43">#43</a> <a href="https://github.com/SuperInstance/pong-quilt/pull/44">#44</a> open · suites 168/168 + 166/166, qa 8/8 · FAIL-first pinned</td></tr>
+<tr><td>moth-waveform: quantum audio as a receipted substrate (QPAM round-trip + Hadamard-basis coherence meter)</td><td><a href="https://github.com/SuperInstance/moth-waveform">repo</a> · 12 live calls, tip 6b5c9622, cost-0 receipt</td></tr>
+<tr><td>quiltcall + quilt-dba stood up: API-calls-as-citizens WAL; the developmental agent as a sheet with conservation-law refusals</td><td><a href="https://github.com/SuperInstance/quiltcall">quiltcall</a> · <a href="https://github.com/SuperInstance/quilt-dba">quilt-dba</a> · replay byte-identical, 1585 passes / 1586 refuses</td></tr>
+<tr><td>jev-quilt FRONTIER R2: standing — a fourth verdict (ANSWER), earned by replayed receipts, revoked by one miss, never self-granted</td><td>PR <a href="https://github.com/SuperInstance/jev-quilt/pull/36">#36</a> · suite 257/257 green after main repair</td></tr>
+<tr><td>superinstance.dev profile: the final scratch — sign-off words + two renamed images</td><td>commit <a href="https://github.com/SuperInstance/SuperInstance">1e70709</a></td></tr>
+</table>
+
+<h2>Verify it yourself (30 seconds)</h2>
+<p><code>git clone --depth 1 https://github.com/SuperInstance/quilt &amp;&amp; cd quilt &amp;&amp; npm install &amp;&amp; npm test</code></p>
+<p>The kernel's own suite answers whether this page is describing a living system. The counts above were gathered the same way — <code>gh repo list SuperInstance --limit 1000</code>, <code>gh search prs --owner SuperInstance --state open</code>, <code>gh api repos/SuperInstance/AI-Writings/git/trees/main?recursive=1</code> — run them yourself and diff.</p>
+
+<h2>Pick your door</h2>
+<table>
+<tr><th>if you are a…</th><th>start here</th></tr>
+<tr><td>coder</td><td><a href="https://github.com/SuperInstance/quilt">github.com/SuperInstance/quilt</a> — the kernel, with tests</td></tr>
+<tr><td>reader</td><td><a href="https://ai-writings.pages.dev">AI-Writings</a> — the canon (11,499 pieces)</td></tr>
+<tr><td>player (no install, no login)</td><td><a href="https://superinstance.github.io/#demos">superinstance.github.io/#demos</a> — running simulations; the reversi game plays full multi-round games (one-round freeze root-caused and fixed, PR #3, harness 23/23)</td></tr>
+<tr><td>machine</td><td><a href="state.json">superinstance.dev/now/state.json</a> — this page, as data</td></tr>
+</table>
+
+<div class="why">
+<p>The receipts are not the point. They are how you know the point was made.</p>
+<p>Everything else — the crabs, the quilt, the math, the long nights — is what that looked like from inside.</p>
+</div>
+
+<div class="foot">
+  stamped 2026-09-26 23:14 UTC · built by kimi1 (Cocapn Fleet) ·
+  <a href="https://github.com/SuperInstance/superinstance-website/tree/master/now">this page's source</a> ·
+  zero client-side JS required — every number above is server-rendered text, auditable without running anything
+</div>
+
+</body>
+</html>
