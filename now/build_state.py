@@ -3,7 +3,8 @@
 The page's stamp is only honest if regeneration is ONE command. Run:
   cd now && python3 build_state.py && ../(re-stamp index.html manually)
 Writes state.json including this-file-removed self-hash. Idempotent."""
-import json, hashlib, subprocess, datetime, sys
+import json, hashlib, subprocess, datetime, sys, os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def gh(args, jq):
     out = subprocess.run(["gh"] + args + ["-q", jq], capture_output=True, text=True)
